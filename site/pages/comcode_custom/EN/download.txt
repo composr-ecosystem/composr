@@ -76,7 +76,7 @@
 
 			<p><a href="http://git-scm.com/">Git</a> is the revision control system we use to collaborate on Composr.</p>
 
-			<p>You can access the repository on <a href="{$COMPOSR_REPOS_URL*}">Github</a>.</p>
+			<p>You can access the repository on <a href="{$COMPOSR_REPOS_URL*}">GitLab</a>.</p>
 
 			<p>We often commit fixes to Git before patch releases come out.</p>
 
