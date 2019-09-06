@@ -34,7 +34,7 @@ if (!addon_installed__messaged('composr_homesite', $error_msg)) {
 $title = get_screen_title('Publish new Composr release', false);
 $title->evaluate_echo();
 
-set_mass_import_mode(true);
+set_mass_import_mode();
 
 restrictify();
 require_code('permissions2');

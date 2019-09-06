@@ -93,7 +93,7 @@ This framework is designed to allow auto-runnable tests to easily be written for
 
 [b]Do not run this on a production system as it will interfere with installs and may contain security holes.[/b]
 
-This addon may have dependencies on any non-bundled Composr addon as it is designed to run directly out of a github clone of Composr (it is only available in the addon directory due to auto-packaging).
+This addon may have dependencies on any non-bundled Composr addon as it is designed to run directly out of a GitLab clone of Composr (it is only available in the addon directory due to auto-packaging).
 
 Make sure html_dump and anything in it has 777 permissions (full write permissions).
 

@@ -62,7 +62,7 @@ class Hook_content_meta_aware_catalogue_entry
             'title_field_dereference' => false,
             'description_field' => null,
             'description_field_dereference' => null,
-            'thumb_field' => 'CALL: generate_catalogue_thumb_field',
+            'thumb_field' => 'CALL: generate_catalogue_entry_thumb_url',
             'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
@@ -184,12 +184,13 @@ function generate_catalogue_entry_title($url_parts, $resource_fs_style = false)
 }
 
 /**
- * Find a catalogue entry thumbnail.
+ * Find an entry thumbnail.
  *
  * @param  array $url_parts The URL parts to search from
- * @return string The field title
+ * @param  array $row Database row of entry
+ * @return URLPATH The thumbnail URL
  */
-function generate_catalogue_thumb_field($url_parts)
+function generate_catalogue_entry_thumb_url($url_parts, $row)
 {
     $unique_key_num = null;
 

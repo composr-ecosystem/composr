@@ -20,7 +20,7 @@ This might mean making a bug report, or making a feature request -- if something
 
 The developers have a track record of responding to bug reports within just a few days. Don't expect a same-day response, but do post a reminder if you get no response after a week (it's rare for it to take that long).
 
-Bug fixes usually come with an automated (non-personal) response that includes a hotfix, a description of the bug, and/or a link to show the changes made in the code repository (git/github).
+Bug fixes usually come with an automated (non-personal) response that includes a hotfix, a description of the bug, and/or a link to show the changes made in the code repository (git/GitLab).
 
 If you really do require an urgent priority response it means either (or both):
  - You need to pay for support from a professional

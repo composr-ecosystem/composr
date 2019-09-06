@@ -87,9 +87,9 @@ This is a {EXAMPLE*}.
 
 [title="2"]Where can I get it all?[/title]
 
-Both the [url="Conposr"]https://github.com/ocproducts/conposr[/url] and [url="Conposr++"]https://github.com/ocproducts/conposr_plus_plus[/url] libraries are available on [url="GitHub"]https://github.com/ocproducts/[/url].
+Both the [url="Conposr"]https://gitlab.com/composr-foundation/conposr[/url] and [url="Conposr++"]https://gitlab.com/composr-foundation/conposr_plus_plus[/url] libraries are available on [url="GitLab"]https://gitlab.com/composr-foundation[/url].
 
-These libraries are not going to be managed as official projects, at least not by ocProducts. There won't be official releases or versions, and there won't be development documentation. Developers interested in using them can grab them directly off of GitHub and use them as they please. As with Composr, they are under the Open Source CPAL license.
+These libraries are not going to be managed as official projects, at least not by ocProducts. There won't be official releases or versions, and there won't be development documentation. Developers interested in using them can grab them directly off of GitLab and use them as they please. As with Composr, they are under the Open Source CPAL license.
 
 [title="2"]FAQ[/title]
 

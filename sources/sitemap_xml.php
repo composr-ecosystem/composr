@@ -407,7 +407,8 @@ function canonicalise_sitemap_page_link(&$page_link)
  */
 function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null, $priority = null, $refreshfreq = null, $guest_access = null)
 {
-    if (running_script('install')) {
+    // Maybe we're still installing
+    if (running_script('install') || !$GLOBALS['SITE_DB']->table_exists('sitemap_cache')) {
         return;
     }
 
@@ -427,27 +428,35 @@ function notify_sitemap_node_add($page_link, $add_date = null, $edit_date = null
         }
     }
 
-    // Maybe we're still installing
-    if (!$GLOBALS['SITE_DB']->table_exists('sitemap_cache') || running_script('install')) {
-        return;
-    }
-
     static $fresh = null;
     if ($fresh === null) {
         $fresh = ($GLOBALS['SITE_DB']->query_select_value('sitemap_cache', 'COUNT(*)') == 0) && (!$GLOBALS['RUNNING_BUILD_SITEMAP_CACHE_TABLE']);
     }
 
     // Find set number we will write into
-    $set_number = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'set_number', array(), 'WHERE guest_access=1 GROUP BY set_number HAVING COUNT(*)<' . strval(URLS_PER_SITEMAP_SET));
-    if ($set_number === null) { // No free space in existing set
-        // Next set number in sequence
-        $set_number = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(set_number)', array('guest_access' => 1));
-        if ($set_number === null) {
-            $set_number = 0;
+    static $set_number = null;
+    static $number_in_set = 0;
+    if ($set_number === null) {
+        $set_details = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('set_number', 'COUNT(*) AS cnt'), array('guest_access' => 1), 'GROUP BY set_number HAVING COUNT(*)<' . strval(URLS_PER_SITEMAP_SET));
+        if (array_key_exists(0, $set_details)) {
+            $set_number = $set_details[0]['set_number'];
+            $number_in_set = $set_details[0]['cnt'];
         } else {
-            $set_number++;
+            // Next set number in sequence
+            $set_number = $GLOBALS['SITE_DB']->query_select_value_if_there('sitemap_cache', 'MAX(set_number)', array('guest_access' => 1));
+            if ($set_number === null) {
+                $set_number = 0;
+            } else {
+                $set_number++;
+            }
+            $number_in_set = 0;
         }
+    } elseif ($number_in_set >= URLS_PER_SITEMAP_SET) {
+        // Advance
+        $set_number++;
+        $number_in_set = 0;
     }
+    $number_in_set++;
 
     if (($priority === null) || ($refreshfreq === null) || ($guest_access === null)) {
         $meta_gather = SITEMAP_GATHER_TIMES;
