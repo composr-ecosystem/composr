@@ -30,7 +30,7 @@ The version numbers here are not for interchange. sources/version2.php provides 
 function init__version()
 {
     if (!defined('COMPOSR_REPOS_URL')) {
-        define('COMPOSR_REPOS_URL', 'https://github.com/ocproducts/composr');
+        define('COMPOSR_REPOS_URL', 'https://gitlab.com/composr-foundation/composr');
     }
 }
 

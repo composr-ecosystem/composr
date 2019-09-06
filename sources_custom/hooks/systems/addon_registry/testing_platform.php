@@ -89,7 +89,7 @@ class Hook_addon_registry_testing_platform
      */
     public function get_description()
     {
-        return 'The Composr testing platform. Do not run this on a production system as it will interfere with installs and may contain security holes. It may have dependencies on any non-bundled Composr addon as it is designed to run directly out of a github clone of Composr (it is only available in the addon directory due to auto-packaging).';
+        return 'The Composr testing platform. Do not run this on a production system as it will interfere with installs and may contain security holes. It may have dependencies on any non-bundled Composr addon as it is designed to run directly out of a GitLab clone of Composr (it is only available in the addon directory due to auto-packaging).';
     }
 
     /**

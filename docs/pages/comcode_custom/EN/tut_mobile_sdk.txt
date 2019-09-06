@@ -11,7 +11,7 @@ As well as containing Composr integrations, there are also a large collection of
 
 [title="3"]SDK[/title]
 
-The main iOS/Android SDK can be [url="found on github"]https://github.com/ocproducts/composr_mobile_sdk/[/url].
+The main iOS/Android SDK can be [url="found on GitLab"]https://gitlab.com/composr-foundation/composr_mobile_sdk[/url].
 
 [title="3"]Server-side functionality[/title]
 
