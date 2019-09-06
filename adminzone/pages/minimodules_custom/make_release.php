@@ -80,7 +80,7 @@ function phase_0()
         foreach (explode("\n", $_changes) as $change) {
             $parts = explode(' ', $change, 2);
             if (count($parts) == 2) {
-                $changes .= ' - [url="' . $parts[1] . '"]https://github.com/ocproducts/composr/commit/' . $parts[0] . '[/url]' . "\n";
+                $changes .= ' - [url="' . $parts[1] . '"]https://gitlab.com/composr-foundation/composr/commit/' . $parts[0] . '[/url]' . "\n";
             }
         }
     } else {

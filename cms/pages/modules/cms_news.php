@@ -410,7 +410,7 @@ class Module_cms_news extends Standard_crud_module
         $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'newscats', false, $image));
 
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
-            $fields2->attach(form_input_date__scheduler(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
+            $fields2->attach(form_input_date__scheduler(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
         require_code('activities');

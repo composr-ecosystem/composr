@@ -62,7 +62,7 @@ The difficulty level can be either [tt]novice[/tt], [tt]regular[/tt], or [tt]exp
 
 [*] Add/Commit/Push your work (standard git workflow).
 
-[*] It would be good to then post on the forum to let people know of your commit (with a link to see it on github), so people can appreciate and discuss your work, and collaborate.
+[*] It would be good to then post on the forum to let people know of your commit (with a link to see it on GitLab), so people can appreciate and discuss your work, and collaborate.
 [/list]
 
 {$SET,tutorial_tags,Advice & Guidance,expert,Contributing}{$SET,tutorial_add_date,Nov 2015}{$SET,tutorial_summary,This tutorial will show you how to add a new supplementary tutorial to Composr.}[block]main_tutorial_rating[/block]

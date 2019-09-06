@@ -103,7 +103,7 @@ A user should upgrade an addon by installing it on top of itself. i.e. don't uni
 
 If you have two addons that are competing for overrides on the same file, there are two approaches to solve this:
 1) you'd write an override in such a way that both addons would package that same override, and you'd use [tt]if (addon_installed('...'))[/tt] to dynamically adjust how it runs depending on which of those are installed.
-2) you would improve the core code, e.g. with additional hook support, so that both addons could hook in (required github access).
+2) you would improve the core code, e.g. with additional hook support, so that both addons could hook in (required GitLab access).
 
 [title="3"]Modules[/title]
 
@@ -1033,7 +1033,7 @@ As mentioned above, the developers maintain an internally developed code quality
 These tools may now be downloaded:
  - [url="ocProducts PHP"]{$BRAND_BASE_URL}/docs/php-5.2.4-ocproducts.zip[/url] (The source code tree for our special version of PHP -- confirmed to work on Mac and Linux; optional, but useful for auto-detecting some common development mistakes)
  - [url="ocProducts PHP, Windows build"]{$BRAND_BASE_URL}/docs/php-windows-ocproducts.zip[/url] (The Windows build of our special version of PHP -- to transplant into a vanilla PHP 5.2.4 install)
- - (The Code Quality Checker is maintained inside the Composr github repository)
+ - (The Code Quality Checker is maintained inside the Composr GitLab repository)
 
 [title="3"]Software for editing code[/title]
 

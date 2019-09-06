@@ -405,14 +405,14 @@ function _convert_image($from, $to, $width, $height, $box_width = -1, $exit_on_e
             // $sx and $sy are fine, since they cover the whole image
             $source_x = 0;
             $source_y = 0;
-            $_width = ($pad_axis == 'x') ? ($width - $pad_amount) : $width;
-            $_height = ($pad_axis == 'y') ? ($height - $pad_amount) : $height;
+            $_width = ($pad_axis == 'x') ? ($width - $padding) : $width;
+            $_height = ($pad_axis == 'y') ? ($height - $padding) : $height;
             $dest_x = ($pad_axis == 'x') ? $pad_amount : 0;
             $dest_y = ($pad_axis == 'y') ? $pad_amount : 0;
         }
     }
 
-    if (($_width == $sx) && ($_height == $sy) && (!$reorientated)) {
+    if (($_width == $sx) && ($_height == $sy) && ($dest_x == 0) && ($dest_y == 0) && (!$reorientated)) {
         // We can just escape, nothing to do...
 
         imagedestroy($source);

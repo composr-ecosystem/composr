@@ -321,7 +321,7 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
-            $fields2->attach(form_input_date__scheduler(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
+            $fields2->attach(form_input_date__scheduler(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
         require_code('feedback2');
