@@ -393,6 +393,7 @@ class Hook_addon_registry_testing_platform
             '_tests/tests/unit_tests/api_classes_documented.php',
             '_tests/tests/unit_tests/lang_ini_size.php',
             '_tests/tests/unit_tests/adminzone_search.php',
+            '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/_tracker_categories.php',
             '_tests/tests/unit_tests/clean_reinstall.php',
             '_tests/tests/unit_tests/authors.php',

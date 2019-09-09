@@ -13,6 +13,13 @@
  * @package    composr_release_build
  */
 
+/*
+If you get git errors about missing username/email, you may need to set your git config system-wide...
+
+sudo git config --system user.name <user>
+sudo git config --system user.email <user>@<domain>
+*/
+
 /*EXTRA FUNCTIONS: shell_exec|escapeshellarg*/
 
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
@@ -20,12 +27,20 @@ i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_
 restrictify();
 safe_ini_set('ocproducts.xss_detect', '0');
 
+if (!is_suexec_like()) {
+    $user = posix_getpwuid(posix_geteuid());
+    attach_message('Warning: Not running an suEXEC-like environment (web user is ' . $user['name'] . '), your file permissions will likely get mangled.', 'warn');
+}
+
 $_title = get_screen_title('Composr bugfix tool', false);
 $_title->evaluate_echo();
 
 $type = isset($_GET['type']) ? $_GET['type'] : '0';
 
 require_code('version2');
+
+global $REMOTE_BASE_URL;
+$REMOTE_BASE_URL = get_brand_base_url();
 
 global $GIT_PATH;
 $GIT_PATH = 'git';
@@ -81,13 +96,15 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
 
     $submit_to = post_param_string('submit_to');
     global $REMOTE_BASE_URL;
-
     $REMOTE_BASE_URL = ($submit_to == 'live') ? get_brand_base_url() : get_base_url();
 
     // If no tracker issue number was given, one is made
     $tracker_id = post_param_integer('tracker_id', null);
     $tracker_title = $title;
     $tracker_message = $notes;
+    $tracker_project = post_param_integer('project');
+    $tracker_category = post_param_integer('category');
+    $tracker_severity = post_param_integer('severity');
     $tracker_additional = '';
     if ($affects != '') {
         $tracker_additional = 'Affects: ' . $affects;
@@ -95,38 +112,50 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
     $is_new_on_tracker = ($tracker_id === null);
     if ($is_new_on_tracker) {
         // Make tracker issue
-        $tracker_id = create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional);
+        $tracker_id = create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project);
+        if ($tracker_id !== null) {
+            $tracker_url = $REMOTE_BASE_URL . '/tracker/view.php?id=' . strval($tracker_id);
+            $done['Created new tracker issue'] = $tracker_url;
+        } else {
+            $tracker_url = null;
+            $done['Failed to create tracker issue'] = null;
+        }
     } else {
         // Make tracker comment
         $tracker_comment_message = 'Automated response: ' . $tracker_title . "\n\n" . $tracker_message . "\n\n" . $tracker_additional;
-        create_tracker_post($tracker_id, $tracker_comment_message);
-    }
-    if ($tracker_id === null) {
-        $tracker_url = null;
-    } else {
-        $tracker_url = $REMOTE_BASE_URL . '/tracker/view.php?id=' . strval($tracker_id);
+        $tracker_post_id = create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted, $tracker_severity, $tracker_category, $tracker_project);
+        if ($tracker_id !== null) {
+            $tracker_url = $REMOTE_BASE_URL . '/tracker/view.php?id=' . strval($tracker_id);
+            $done['Responded to existing tracker issue'] = $tracker_url;
+        } else {
+            $tracker_url = null;
+            $done['Failed to respond to existing tracker issue'] = null;
+        }
     }
 
     // A git commit and push happens on the changed files, with the ID number of the tracker issue in it
+    $git_commit_command_data = '';
     if ($git_commit_id == '') {
-        if ($tracker_id === null) {
-            $git_commit_message = $title;
+        if ($tracker_severity == 95) {
+            $git_commit_message = 'Security fix for MANTIS-' . strval($tracker_id);
         } else {
-            $git_commit_message = 'Committed fix to issue #' . strval($tracker_id) . ' (' . $tracker_url . '). [' . $title . ']';
+            $git_commit_message = 'Fixed MANTIS-' . strval($tracker_id);
         }
         if ($submit_to == 'live') {
-            $git_commit_id = do_git_commit($git_commit_message, $fixed_files);
+            $git_commit_id = do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
+            if ($git_commit_id !== null) {
+                $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
+                $done['Committed to git'] = $git_url;
+            } else {
+                $git_url = null;
+                $done['Failed to commit to git, ' . $git_commit_command_data] = null;
+            }
         } else {
+            $git_url = null;
             $git_commit_id = 'justtesting';
         }
-    }
-    if ($git_commit_id !== null) {
-        $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
-        if (post_param_string('git_commit_id', '') == '') {
-            $done['Committed to git'] = $git_url;
-        }
     } else {
-        $git_url = null;
+        $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
     }
 
     // Make tracker comment with fix link
@@ -135,13 +164,25 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
         $tracker_comment_message .= 'Fixed in git commit ' . escape_html($git_commit_id) . ' (' . escape_html($git_url) . ' - link will become active once code pushed to GitLab)' . "\n\n";
     }
     $tracker_comment_message .= 'A hotfix (a TAR of files to upload) have been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
-    create_tracker_post($tracker_id, $tracker_comment_message);
+    $update_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
+    if ($update_post_id !== null) {
+        $done['Created update post on tracker'] = null;
+    } else {
+        $done['Failed to create update post on tracker'] = null;
+    }
     // A TAR of fixed files is uploaded to the tracker issue (correct relative file paths intact)
-    upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
+    $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
+    if ($file_id !== null) {
+        $done['Uploaded hotfix'] = null;
+    } else {
+        $done['Failed to upload hotfix'] = null;
+    }
     // The tracker issue gets closed
-    close_tracker_issue($tracker_id);
-    if ($tracker_url !== null) {
-        $done[$is_new_on_tracker ? 'Created new tracker issue' : 'Responded to existing tracker issue'] = $tracker_url;
+    $close_success = close_tracker_issue($tracker_id);
+    if ($close_success) {
+        $done['Closed tracker issue'] = null;
+    } else {
+        $done['Failed to close tracker issue'] = null;
     }
 
     // If a forum post ID was given, an automatic reply is given pointing to the tracker issue
@@ -152,13 +193,17 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
         $post_important = 1;
         $reply_id = create_forum_post($post_id, $post_reply_title, $post_reply_message, $post_important);
         $reply_url = $REMOTE_BASE_URL . '/forum/topicview/findpost/' . strval($reply_id) . '.htm';
-        $done['Posted reply'] = $reply_url;
+        $done['Posted reply on forum'] = $reply_url;
     }
 
     // Show progress
     echo '<ol>';
     foreach ($done as $done_title => $done_url) {
-        echo '<li><a href="' . escape_html($done_url) . '">' . escape_html($done_title) . '</a></li>';
+        if ($done_url === null) {
+            echo '<li>' . $done_title . '</li>';
+        } else {
+            echo '<li><a href="' . escape_html($done_url) . '">' . $done_title . '</a></li>';
+        }
     }
     echo '</ol>';
 
@@ -176,23 +221,11 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
 require_code('version2');
 $on_disk_version = get_version_dotted();
 
-chdir(get_file_base());
-$git_command = $GIT_PATH . ' status';
-$git_result = shell_exec($git_command . ' 2>&1');
-$lines = explode("\n", $git_result);
-$git_found = array();
-foreach ($lines as $line) {
-    $matches = array();
-    if (preg_match('#\t(both )?modified:\s+(.*)$#', $line, $matches) != 0) {
-        if (($matches[2] != 'data/files.dat') && (basename($matches[2]) != 'push_bugfix.php') && ($matches[2] != 'data_custom/execute_temp.php')) {
-            $git_found[get_file_base() . '/' . $matches[2]] = true;
-        }
-    }
-}
+$git_found = git_find_uncommitted_files();
 if (@$_GET['full_scan'] == '1') {
-    $files = push_bugfix_do_dir(get_file_base(), $git_found, 24 * 60 * 60);
+    $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
     if (count($files) == 0) {
-        $files = push_bugfix_do_dir(get_file_base(), $git_found, 24 * 60 * 60 * 14);
+        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * 14);
     }
 } else {
     $files = array_keys($git_found);
@@ -205,12 +238,10 @@ $choose_files_label = 'Choose files';
 
 if ((count($files) == 0) && (@$_GET['full_scan'] != '1')) {
     echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on git). You can enter a git ID or select files.</p>';
-    $files = push_bugfix_do_dir(get_file_base(), $git_found, 24 * 60 * 60);
+    $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
     if (count($files) == 0) {
-        $files = push_bugfix_do_dir(get_file_base(), $git_found, 24 * 60 * 60 * 14);
+        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * 14);
     }
-    /*$git_status = 'required="required"';
-    $git_status_2 = '';*/
     $git_status_3 = '<strong>Git commit ID</strong>';
     $choose_files_label = '<strong>Choose files</strong>';
 }
@@ -218,6 +249,35 @@ if ((count($files) == 0) && (@$_GET['full_scan'] != '1')) {
 $post_url = escape_html(static_evaluate_tempcode(get_self_url()));
 
 $spammer_blackhole = static_evaluate_tempcode(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
+
+$categories = get_tracker_categories();
+if ($categories === null) {
+    warn_exit('Failed to connect to compo.sr');
+}
+$categories_list = '<option selected="selected"></option>';
+foreach ($categories as $category_id => $category_title) {
+    $categories_list .= '<option value="' . escape_html(strval($category_id)) . '">' . escape_html($category_title) . '</option>';
+}
+
+$projects = array(
+    1 => 'Composr',
+    2 => 'Composr alpha testing',
+    8 => 'Composr build tools',
+    7 => 'Composr documentation',
+    5 => 'Composr downloadable themes',
+    9 => 'Composr testing platform',
+    10 => 'Composr website (compo.sr)',
+    4 => 'Composr non-bundled addons',
+);
+if (in_array(cms_version_branch_status(), array(VERSION_ALPHA, VERSION_BETA))) {
+    $default_project_id = 2;
+} else {
+    $default_project_id = 1;
+}
+$projects_list = '';
+foreach ($projects as $project_id => $project_title) {
+    $projects_list .= '<option' . (($project_id == $default_project_id) ? ' selected="selected"' : '') . ' value="' . strval($project_id) . '" >' . escape_html($project_title) . '</option>';
+}
 
 echo <<<END
 <p>This script will push individual bug fixes to all the right places. Run it after you've developed a fix, and tell it how to link the fix in and what the fix is.</p>
@@ -233,12 +293,7 @@ echo <<<END
     {$spammer_blackhole}
 
     <fieldset>
-        <legend>Classification</legend>
-
-        <div>
-            <label for="version">Version</label>
-            <input step="0.1" required="required" name="version" id="version" type="text" value="{$on_disk_version}" />
-        </div>
+        <legend>Description</legend>
 
         <div>
             <label for="title">Bug summary</label>
@@ -255,25 +310,6 @@ echo <<<END
             <input size="40" name="affects" id="affects" type="text" value="" placeholder="optional" />
         </div>
     </fieldset>
-
-    <fieldset>
-        <legend>Post to</legend>
-
-        <div>
-            <label for="post_id">Forum post ID to reply to</label>
-            <input name="post_id" id="post_id" type="number" value="" placeholder="optional" />
-        </div>
-
-        <div>
-            <label for="tracker_id">Tracker ID to attach to <span style="font-size: 0.8em">(if not entered a new one will be made)</span></label>
-            <input name="tracker_id" id="tracker_id" type="number" value="" placeholder="optional" />
-        </div>
-
-        <div>
-            <label for="git_commit_id">{$git_status_3}{$git_status_2}</label>
-            <input onchange="document.getElementById('fixed_files').required=(this.value=='');" name="git_commit_id" id="git_commit_id" type="text" value="" {$git_status} />
-        </div>
-    </fieldset>
 END;
 
 if (count($files) != 0) {
@@ -282,39 +318,153 @@ if (count($files) != 0) {
         <legend>Fix</legend>
 
         <label for="fixed_files">{$choose_files_label}</label>
-        <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files">
+        <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
 END;
     foreach ($files as $file) {
         $git_dirty = isset($git_found[$file]);
-        $file = preg_replace('#^' . preg_quote(get_file_base() . '/', '#') . '#', '', $file);
         echo '<option' . ($git_dirty ? ' selected="selected"' : '') . '>' . escape_html($file) . '</option>';
     }
+    $_git_found = json_encode($git_found);
     echo <<<END
         </select>
     </fieldset>
+
+    <script>
+        function update_automatic_category()
+        {
+            // See if we can match all the selected files to a particular category
+            var fixed_files_e = document.getElementById('fixed_files');
+            var file_addons = {$_git_found};
+            var category_title = 'core';
+            for (var i = 0; i < fixed_files_e.options.length; i++) {
+                if (fixed_files_e.options[i].selected) {
+                    var filename = fixed_files_e.options[i].value;
+                    if ((typeof file_addons[filename] != 'undefined') && (file_addons[filename] !== null)) {
+                        if (category_title.match(/^core(_.*)?$/)) {
+                            category_title = file_addons[filename];
+                        } else if ((file_addons[filename] != category_title) && (!file_addons[filename].match(/^core(_.*)?$/))) {
+                            category_title = 'core'; // Conflict, so bump it back to core
+                            break; // ... and stop trying
+                        }
+                    } else {
+                        category_title = 'General'; // Must be from non-bundled addon
+                        break; // ... and stop trying
+                    }
+                }
+            }
+
+            // Now select that category
+            var category_e = document.getElementById('category');
+            for (var i = 0; i < category_e.options.length; i++) {
+                if (category_e.options[i].text == category_title) {
+                    category_e.selectedIndex = i;
+                    break;
+                }
+            }
+
+            // Now select the corresponding project
+            var project_e = document.getElementById('project');
+            for (var i = 0; i < project_e.options.length; i++) {
+                if (((project_e.options[i].value == '{$default_project_id}') && (category_title != 'General')) || ((project_e.options[i].value == '4') && (category_title == 'General'))) {
+                    project_e.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+		add_event_listener_abstract(window,'load',function() {
+            update_automatic_category();
+		});
+    </script>
 END;
 }
+
+echo <<<END
+    <fieldset>
+        <legend>Classification</legend>
+
+        <div>
+            <label for="version">Version</label>
+            <input step="0.1" size="8" required="required" name="version" id="version" type="text" value="{$on_disk_version}" />
+        </div>
+
+        <div>
+            <label for="project">Project</label>
+            <select id="project" name="project" required="required">
+                {$projects_list}
+            </select>
+        </div>
+
+        <div>
+            <label for="category">Category</label>
+            <select id="category" name="category" required="required">
+                {$categories_list}
+            </select>
+        </div>
+
+        <div>
+            <label>Severity</label>
+            <label for="severity_10"><input type="radio" id="severity_10" name="severity" value="10" /> Feature-request</span>
+            <label for="severity_20"><input type="radio" id="severity_20" name="severity" value="20" checked="checked" /> Trivial-bug</span>
+            <label for="severity_50"><input type="radio" id="severity_50" name="severity" value="50" /> Minor-bug</span>
+            <label for="severity_60"><input type="radio" id="severity_60" name="severity" value="60" /> Major-bug</span>
+            <label for="severity_95"><input type="radio" id="severity_95" name="severity" value="95" /> Security-hole</span>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Post to</legend>
+
+        <div>
+            <label for="tracker_id">Tracker ID to attach to <span style="font-size: 0.8em">(if not entered a new one will be made)</span></label>
+            <input name="tracker_id" id="tracker_id" size="5" type="number" value="" placeholder="optional" />
+        </div>
+
+        <div>
+            <label for="git_commit_id">{$git_status_3}{$git_status_2}</label>
+            <input onchange="document.getElementById('fixed_files').required=(this.value=='');" name="git_commit_id" id="git_commit_id" type="text" value="" {$git_status} />
+        </div>
+
+        <div>
+            <label for="post_id">Forum post ID to reply to</label>
+            <input name="post_id" id="post_id" size="8" type="number" value="" placeholder="optional" />
+        </div>
+    </fieldset>
+END;
 
 echo <<<END
     <fieldset>
         <legend>Submission</legend>
 
         <div>
-            <label for="password">Master password for compo.sr</label>
+            <label for="username">Username</label>
+            <input autocomplete="autocomplete" name="username" id="username" type="text" value="" />
+        </div>
+
+        <div>
+            <label for="password">Password</label>
             <input autocomplete="autocomplete" required="required" name="password" id="password" type="password" value="" />
         </div>
 
         <div>
-            <label style="margin-left: 430px; width: 10em" for="submit_to_test">
-                    Submit to test site
-                    <!-- remove disabled if testing -->
-                    <input disabled="disabled" name="submit_to" id="submit_to_test" type="radio" value="test" />
+            <label for="submit_to_test">
+                Submit to localhost test site
+                <input name="submit_to" id="submit_to_test" type="radio" value="test" />
             </label>
 
-            <label style="width: 10em" for="submit_to_live">
-                    Submit to live site
-                    <input name="submit_to" id="submit_to_live" type="radio" value="live" checked="checked" />
+            <label for="submit_to_live">
+                Submit to live site
+                <input name="submit_to" id="submit_to_live" type="radio" value="live" checked="checked" />
             </label>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Confirmations</legend>
+
+        <div>
+            <label for="tested">Has been tested?</label>
+            <input name="tested" id="tested" type="checkbox" required="required" value="1" />
         </div>
     </fieldset>
 
@@ -331,27 +481,31 @@ END;
 // API
 // ===
 
-function create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional)
+function git_find_uncommitted_files()
 {
-    $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
-    if ($result === false) {
-        return null;
+    global $GIT_PATH;
+
+    chdir(get_file_base());
+    $git_command = $GIT_PATH . ' status';
+    $git_result = shell_exec($git_command . ' 2>&1');
+    $lines = explode("\n", $git_result);
+    $git_found = array();
+    foreach ($lines as $line) {
+        $matches = array();
+        if (preg_match('#\t(both )?modified:\s+(.*)$#', $line, $matches) != 0) {
+            if (($matches[2] != 'data/files.dat') && (basename($matches[2]) != 'push_bugfix.php')) {
+                $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', array('filename' => $matches[2]));
+                if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
+                    $file_addon = null;
+                }
+                $git_found[$matches[2]] = $file_addon;
+            }
+        }
     }
-    return intval($result);
+    return $git_found;
 }
 
-function create_tracker_post($tracker_id, $tracker_comment_message)
-{
-    $args = func_get_args();
-    $result = make_call(__FUNCTION__, array('parameters' => $args));
-    if ($result === false) {
-        return null;
-    }
-    return intval($result);
-}
-
-function do_git_commit($git_commit_message, $files)
+function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 {
     global $GIT_PATH;
 
@@ -362,63 +516,51 @@ function do_git_commit($git_commit_message, $files)
         $cmd .= ' ' . escapeshellarg($file);
     }
     $cmd .= ' -m ' . escapeshellarg($git_commit_message);
-    $result = shell_exec($cmd . ' 2>&1');
+    $git_commit_command_data = shell_exec($cmd . ' 2>&1');
 
     $matches = array();
-    if (preg_match('# ([\da-z]+)\]#', $result, $matches) != 0) {
+    if (preg_match('# ([\da-z]+)\]#', $git_commit_command_data, $matches) != 0) {
         // Success, do a push too
-        $cmd = $GIT_PATH . ' push origin master';
-        echo '<!--' . shell_exec($cmd . ' 2>&1') . '-->';
+        $cmd = $GIT_PATH . ' push';
+        $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
 
         return $matches[1];
     }
 
     // Error
-    echo '<p>Failed to make a git commit: ' . escape_html($result) . '</p><p>Command was: ' . escape_html($cmd) . '</p>';
-    //exit();
+    $git_commit_command_data = 'Failed to make a git commit: ' . escape_html($git_commit_command_data) . '; Command was: ' . escape_html($cmd);
     return null;
 }
 
-function close_tracker_issue($tracker_id)
+function get_tracker_categories()
 {
     $args = func_get_args();
     $result = make_call(__FUNCTION__, array('parameters' => $args));
+    if (empty($result)) {
+        return null;
+    }
+    $ret = @json_decode($result, true);
+    if ($ret === false) {
+        return null;
+    }
+    return $ret;
 }
 
-function create_hotfix_tar($tracker_id, $files)
-{
-    require_code('make_release');
-    $builds_path = get_builds_path();
-    if (!file_exists($builds_path . '/builds/hotfixes')) {
-        mkdir($builds_path . '/builds/hotfixes', 0777);
-        fix_permissions($builds_path . '/builds/hotfixes');
-    }
-    chdir($builds_path . '/builds/hotfixes');
-    $tar = ((DIRECTORY_SEPARATOR == '\\') ? ('tar') : 'COPYFILE_DISABLE=1 tar');
-    $tar_path = $builds_path . '/builds/hotfixes/hotfix-' . strval($tracker_id) . ', ' . date('Y-m-d ga') . '.tar';
-    $cmd = $tar . ' cvf ' . escapeshellarg(basename($tar_path)) . ' -C ' . escapeshellarg(get_file_base()); // Windows doesn't allow absolute path for 'f' option so we need to use 'f' & 'C' to do it
-    foreach ($files as $file) {
-        $cmd .= ' ' . escapeshellarg($file);
-    }
-    echo '<!--' . shell_exec($cmd . ' 2>&1') . '-->';
-    return $tar_path;
-}
-
-function create_forum_post($replying_to_post, $post_reply_title, $post_reply_message, $post_important)
+function create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project)
 {
     $args = func_get_args();
     $result = make_call(__FUNCTION__, array('parameters' => $args));
-    if ($result === false) {
+    if (empty($result)) {
         return null;
     }
     return intval($result);
 }
 
-function create_forum_topic($forum_id, $topic_title, $post)
+function create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
 {
     $args = func_get_args();
     $result = make_call(__FUNCTION__, array('parameters' => $args));
-    if ($result === false) {
+    if (!is_numeric($result)) {
         return null;
     }
     return intval($result);
@@ -426,124 +568,122 @@ function create_forum_topic($forum_id, $topic_title, $post)
 
 function upload_to_tracker_issue($tracker_id, $tar_path)
 {
-    $result = make_call('upload_to_tracker_issue', array('parameters' => array(strval($tracker_id))), $tar_path);
+    $result = make_call('upload_to_tracker_issue', array('parameters' => array($tracker_id)), $tar_path);
+    if (!is_numeric($result)) {
+        return null;
+    }
+    return intval($result);
 }
 
-function make_call($call, $params, $file = null)
+function close_tracker_issue($tracker_id)
 {
-    $data = $params;
-    $data['password'] = post_param_string('password');
-    if (is_null($file)) {
-        $data_url = http_build_query($data);
-        $data_len = strlen($data_url);
-        $header = "Content-type: application/x-www-form-urlencoded\r\nContent-Length: $data_len\r\n";
-    } else {
-        list($header, $data_url) = make_post_request_with_attached_file(basename($file), $file, $data);
+    $args = func_get_args();
+    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    return ($result === '1');
+}
+
+function create_forum_post($replying_to_post, $post_reply_title, $post_reply_message, $post_important)
+{
+    $args = func_get_args();
+    $result = make_call(__FUNCTION__, array('parameters' => $args));
+    if (!is_numeric($result)) {
+        return null;
+    }
+    return intval($result);
+}
+
+function create_hotfix_tar($tracker_id, $files)
+{
+    require_code('make_release');
+    require_code('files2');
+    require_code('tar');
+
+    $builds_path = get_builds_path();
+    $hotfix_path = $builds_path . '/builds/hotfixes';
+
+    if (!file_exists($hotfix_path)) {
+        mkdir($hotfix_path, 0777);
+        fix_permissions($hotfix_path);
     }
 
-    $opts = array('http' =>
-        array(
-            'method' => 'POST',
-            'header' => $header,
-            'content' => $data_url,
-        )
-    );
+    $prior_hotfixes = get_directory_contents($hotfix_path, '', false, false);
+    foreach ($prior_hotfixes as $prior_hotfix) {
+        if (preg_match('#^hotfix-' . strval($tracker_id) . ', #', $prior_hotfix) != 0) {
+            $tar_file = tar_open($hotfix_path . '/' . $prior_hotfix, 'rb', true);
+            $tar_directory = tar_get_directory($tar_file);
+            foreach ($tar_directory as $tar_entry) {
+                $files[] = $tar_entry['path'];
+            }
+            tar_close($tar_file);
+        }
+    }
 
-    $context = stream_context_create($opts);
+    $files = array_unique($files);
+
+    $tar_path = $hotfix_path . '/hotfix-' . strval($tracker_id) . ', ' . date('Y-m-d ga') . '.tar';
+    $tar_file = tar_open($tar_path, 'wb');
+    foreach ($files as $file) {
+        $file_fullpath = get_file_base() . '/' . $file;
+        tar_add_file($tar_file, $file, $file_fullpath, 0644, filemtime($file_fullpath), true);
+    }
+    tar_close($tar_file);
+
+    sync_file($tar_path);
+    fix_permissions($tar_path);
+
+    return $tar_path;
+}
+
+function make_call($call, $post_params, $file = null)
+{
+    if ($post_params !== null) {
+        foreach ($post_params as $key => $param) {
+            if (is_array($param)) {
+                foreach ($param as $i => $val) {
+                    $post_params[$key . '[' . strval($i) . ']'] = @strval($val);
+                }
+                unset($post_params[$key]);
+            }
+        }
+    }
+
+    $_username = post_param_string('username', null);
+    if ($_username !== null) {
+        $_password = post_param_string('password', '');
+        if ($post_params === null) {
+            $post_params = array();
+        }
+        $post_params['password'] = ($_username == '') ? $_password : ($_username . ':' . $_password);
+    }
 
     global $REMOTE_BASE_URL;
     $call_url = $REMOTE_BASE_URL . '/data_custom/composr_homesite_web_service.php?call=' . urlencode($call);
 
-    $result = @file_get_contents($call_url, false, $context);
-    if ($result == 'Access Denied' || $result == 'No master password defined in _config.php currently so cannot authenticate') {
-        echo '<p>' . $result . '</p>';
-        $result = false;
-    }
-    if ($result === false) {
-        echo '
-            <form method="post" target="_blank" action="' . escape_html($call_url) . '">
-        ';
-        foreach ($data as $key => $val) {
-            if (!is_array($val)) {
-                echo '<input type="hidden" name="' . escape_html($key) . '" value="' . escape_html($val) . '" />';
-            } else {
-                foreach ($val as $k2 => $v2) {
-                    if (!is_string($k2)) {
-                        $k2 = strval($k2);
-                    }
-                    if (!is_string($v2)) {
-                        $v2 = strval($v2);
-                    }
-                    echo '<input type="hidden" name="' . escape_html($key . '[' . $k2 . ']') . '" value="' . escape_html($v2) . '" />';
-                }
-            }
-        }
-        echo '
-                    <input class="buttons__proceed button_screen" type="submit" value="Action failed: Try manually" />
-            </form>
-        ';
-        $result = '';
-    }
+    $files = ($file === null) ? null : array('upload' => $file);
+
+    $result = http_download_file($call_url, null, true, false, 'Composr', $post_params, null, null, null, null, null, null, null, 6.0, false, $files);
+
     return $result;
 }
 
-function make_post_request_with_attached_file($filename, $file_path, $more_post_data)
+function push_bugfix_do_dir($git_found, $seconds_since, $subdir = '')
 {
-    $multipart_boundary = '--------------------------' . strval(microtime(true));
-
-    $header = 'Content-Type: multipart/form-data; boundary=' . $multipart_boundary;
-
-    $file_contents = file_get_contents($file_path);
-
-    $content = "--" . $multipart_boundary . "\r\n" .
-               "Content-Disposition: form-data; name=\"upload\"; filename=\"" . addslashes($filename) . "\"\r\n" .
-               "Content-Type: application/octet-stream\r\n\r\n" .
-               $file_contents . "\r\n";
-
-    // add some POST fields to the request too
-    foreach ($more_post_data as $key => $val) {
-        if (is_array($val)) {
-            foreach ($val as $val2) {
-                if (!is_string($val2)) {
-                    $val2 = strval($val2);
-                }
-
-                $content .= "--" . $multipart_boundary . "\r\n" .
-                            "Content-Disposition: form-data; name=\"" . addslashes($key) . "[]\"\r\n\r\n" .
-                            $val2 . "\r\n";
-            }
-        } else {
-            if (!is_string($val)) {
-                $val = strval($val);
-            }
-
-            $content .= "--" . $multipart_boundary . "\r\n" .
-                        "Content-Disposition: form-data; name=\"" . addslashes($key) . "\"\r\n\r\n" .
-                        $val . "\r\n";
-        }
-    }
-
-    // signal end of request (note the trailing "--")
-    $content .= "--" . $multipart_boundary . "--\r\n";
-    return array($header, $content);
-}
-
-function push_bugfix_do_dir($dir, $git_found, $seconds_since)
-{
+    $stub = get_file_base() . '/' . (($subdir == '') ? '' : ($subdir . '/'));
     $out = array();
-    $_dir = ($dir == '') ? '.' : $dir;
-    $dh = opendir($_dir);
+    $dh = opendir($stub);
     if ($dh) {
         while (($file = readdir($dh)) !== false) {
-            if (($file != 'push_bugfix.php') && (!should_ignore_file(str_replace(get_file_base() . '/', '', $_dir . '/' . $file), IGNORE_CUSTOM_DIR_SUPPLIED_CONTENTS | IGNORE_CUSTOM_DIR_GROWN_CONTENTS | IGNORE_HIDDEN_FILES | IGNORE_NONBUNDLED_SCATTERED | IGNORE_USER_CUSTOMISE | IGNORE_BUNDLED_VOLATILE | IGNORE_BUNDLED_UNSHIPPED_VOLATILE))) {
-                $path = $dir . ((substr($dir, -1) != '/') ? '/' : '') . $file;
-                if (is_file($_dir . '/' . $file)) {
-                    if ((filemtime($path) < time() - $seconds_since) && (!isset($git_found[$path]))) {
+            if (($file != 'push_bugfix.php') && (!should_ignore_file($stub . $file, IGNORE_CUSTOM_DIR_SUPPLIED_CONTENTS | IGNORE_CUSTOM_DIR_GROWN_CONTENTS | IGNORE_HIDDEN_FILES | IGNORE_NONBUNDLED_SCATTERED | IGNORE_USER_CUSTOMISE | IGNORE_BUNDLED_VOLATILE | IGNORE_BUNDLED_UNSHIPPED_VOLATILE))) {
+                $full_path = $stub . $file;
+                $path = (($subdir == '') ? '' : ($subdir . '/')) . $file;
+
+                if (is_file($full_path)) {
+                    if ((filemtime($full_path) < time() - $seconds_since) && (!isset($git_found[$path]))) {
                         continue;
                     }
                     $out[] = $path;
-                } elseif (is_dir($_dir . '/' . $file)) {
-                    $out = array_merge($out, push_bugfix_do_dir($path, $git_found, $seconds_since));
+                } elseif (is_dir($full_path)) {
+                    $out = array_merge($out, push_bugfix_do_dir($git_found, $seconds_since, $path));
                 }
             }
         }
