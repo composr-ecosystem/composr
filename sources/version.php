@@ -89,7 +89,7 @@ function cms_version_time_major()
  */
 function cms_version_branch_status()
 {
-    return VERSION_MAINLINE;
+    return VERSION_ALPHA;
 }
 
 /**
