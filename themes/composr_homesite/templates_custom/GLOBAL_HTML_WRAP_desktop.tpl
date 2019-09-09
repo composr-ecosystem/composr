@@ -11,7 +11,7 @@
 
 				<div class="headRCol">
 					<ul>
-						<li class="textLabel"><a href="{$COMPOSR_REPOS_URL*}">Github</a></li>
+						<li class="textLabel"><a href="{$COMPOSR_REPOS_URL*}">GitLab</a></li>
 
 						<li class="textLabel"><a href="{$PAGE_LINK*,forum:}">Community Forum</a></li>
 
