@@ -51,6 +51,8 @@ require_code('composr_homesite');
 
 header('Content-type: text/plain; charset=' . get_charset());
 
+$call = get_param_string('call');
+
 $parameters = isset($_POST['parameters']) ? $_POST['parameters'] : array();
 if (get_magic_quotes_gpc()) {
     $parameters = array_map('stripslashes', $parameters);
@@ -58,12 +60,27 @@ if (get_magic_quotes_gpc()) {
 
 $password_given = post_param_string('password', null);
 if ($password_given === null) {
-    call_user_func_array('server__public__' . get_param_string('call'), $parameters);
+    call_user_func_array('server__public__' . $call, $parameters);
 } else {
-    require_code('crypt_master');
-    if (!check_master_password($password_given)) {
-        exit('Access Denied');
+    if (strpos($password_given, ':') !== false) {
+        list($username, $password) = array_map('trim', explode(':', $password_given, 2));
+
+        $login_array = $GLOBALS['FORUM_DRIVER']->forum_authorise_login($username, null, apply_forum_driver_md5_variant($password, $username), $password);
+        $member = $login_array['id'];
+        if (($member === null) || (!$GLOBALS['FORUM_DRIVER']->is_super_admin($member))) {
+            exit('Access Denied');
+        }
+    } else {
+        require_code('crypt_master');
+        if (!check_master_password($password_given)) {
+            exit('Access Denied');
+        }
+
+        $member = LEAD_DEVELOPER_MEMBER_ID;
     }
 
-    call_user_func_array('server__' . get_param_string('call'), $parameters);
+    require_code('users_inactive_occasionals');
+    create_session($member);
+
+    call_user_func_array('server__' . $call, $parameters);
 }

@@ -22,6 +22,7 @@ Use &test_mode=1 for using non-live test data.
 function init__composr_homesite()
 {
     define('DEMONSTRATR_DEMO_LAST_DAYS', 30);
+    define('LEAD_DEVELOPER_MEMBER_ID', 2);
 }
 
 // IDENTIFYING RELEASES
@@ -199,6 +200,41 @@ function load_version_news_rows()
     }
 }
 
+function get_composr_branches()
+{
+    require_code('version2');
+
+    $_branches = shell_exec('git branch');
+    $branches = array();
+    foreach (explode("\n", $_branches) as $_branch) {
+        $matches = array();
+        if (preg_match('#^\s*\*?\s*(master|v[\d\.]+)$#', $_branch, $matches) != 0) {
+            $git_branch = $matches[1];
+
+            $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
+
+            $tempnam = cms_tempnam();
+            file_put_contents($tempnam, $version_file . "\n\necho serialize(array(cms_version_number(), defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown', defined('cms_version_branch_eol') ? cms_version_branch_eol() : null));");
+            $results = @unserialize(shell_exec('php ' . $tempnam));
+            unlink($tempnam);
+            if ((is_array($results)) && (count($results) == 3)) {
+                list($version_number, $status, $eol) = $results;
+
+                $branches[str_pad(float_to_raw_string($version_number), 10, '0', STR_PAD_LEFT)] = array(
+                    'git_branch' => $git_branch,
+                    'branch' => get_version_branch($version_number),
+                    'status' => $status,
+                    'eol' => $eol,
+                );
+            }
+        }
+    }
+
+    ksort($branches);
+
+    return $branches;
+}
+
 // PROBING RELEASES
 // ----------------
 
@@ -229,24 +265,37 @@ function recursive_unzip($zip_path, $unzip_path)
     zip_close($zip_handle);
 }
 
-// MAKING RELEASES
-// ---------------
+// MAKING RELEASES AND BUG FIXES
+// -----------------------------
+
+function server__public__get_tracker_issue_titles($ids)
+{
+    $_ids = array_map('intval', explode(',', $ids)); // Security to prevent SQL injection
+    require_code('mantis');
+    $issue_titles = get_tracker_issue_titles($_ids);
+    echo json_encode($issue_titles);
+}
 
 function server__public__get_tracker_categories()
 {
-    $categories = collapse_1d_complexity('name', $GLOBALS['SITE_DB']->query('SELECT DISTINCT name FROM mantis_category_table WHERE status=0'));
-    echo serialize($categories);
+    $categories = collapse_2d_complexity('id', 'name', $GLOBALS['SITE_DB']->query('SELECT id,name FROM mantis_category_table WHERE status=0'));
+    $categories = array_unique($categories);
+    echo json_encode($categories);
 }
 
-function server__create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional)
+function server__create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project)
 {
     require_code('mantis');
-    echo strval(create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional));
+    echo strval(create_tracker_issue($version_dotted, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project));
 }
 
-function server__create_tracker_post($tracker_id, $tracker_comment_message)
+function server__create_tracker_post($tracker_id, $tracker_comment_message, $version_dotted = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
 {
+    // If the last 3 parameters are passed, this will update the issue along with making the post
     require_code('mantis');
+    if (($version_dotted === null) && ($tracker_severity === null) && ($tracker_category === null) && ($tracker_project === null)) {
+        update_tracker_issue(intval($tracker_id), $version_dotted, $tracker_severity, $tracker_category, $tracker_project);
+    }
     echo strval(create_tracker_post(intval($tracker_id), $tracker_comment_message));
 }
 
@@ -254,6 +303,8 @@ function server__close_tracker_issue($tracker_id)
 {
     require_code('mantis');
     close_tracker_issue(intval($tracker_id));
+
+    echo '1';
 }
 
 function server__create_forum_post($_replying_to_post, $post_reply_title, $post_reply_message, $_post_important)
@@ -275,9 +326,9 @@ function server__create_forum_topic($forum_id, $topic_title, $post)
     require_code('cns_topics_action');
     require_code('cns_posts_action');
     require_code('mantis'); // Defines LEAD_DEVELOPER_MEMBER_ID
-    $topic_id = cns_make_topic($forum_id, '', '', 1, 1, 0, 0, 0, null, null, false);
+    $topic_id = cns_make_topic(intval($forum_id), '', '', 1, 1, 0, 0, 0, null, null, false);
 
-    $post_id = cns_make_post($topic_id, $topic_title, $post, 0, true, 1, 0, null, null, null, LEAD_DEVELOPER_MEMBER_ID, null, null, null, false);
+    $post_id = cns_make_post(intval($topic_id), $topic_title, $post, 0, true, 1, 0, null, null, null, LEAD_DEVELOPER_MEMBER_ID, null, null, null, false);
 
     echo strval($topic_id);
 }
@@ -285,7 +336,9 @@ function server__create_forum_topic($forum_id, $topic_title, $post)
 function server__upload_to_tracker_issue($tracker_id)
 {
     require_code('mantis');
-    upload_to_tracker_issue(intval($tracker_id), $_FILES['upload']);
+    $file_id = upload_to_tracker_issue(intval($tracker_id), $_FILES['upload']);
+
+    echo strval($file_id);
 }
 
 // DEMONSTRATR
