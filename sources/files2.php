@@ -1134,6 +1134,8 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
     $put_path = mixed();
     $put_no_delete = false;
     if ((!is_null($post_params)) || ($raw_post) || (!empty($files))) {
+        $sent_http_post_content = true;
+
         if (is_null($post_params)) {
             $post_params = array(); // POST is implied
         }
@@ -1164,7 +1166,6 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
 
             $raw_payload .= $_postdetails_params;
             $raw_payload_curl = $_postdetails_params; // Other settings will be passed via cURL itself
-            $sent_http_post_content = true;
         } else { // If files, use more complex multipart/form-data
             if (strtolower($http_verb) == 'put') {
                 $put_no_delete = (count($post_params) == 0) && (count($files) == 1); // Can we just use the one referenced file as a direct PUT
@@ -1190,7 +1191,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                         $raw_payload2 .= 'Content-Type: ' . $raw_content_type . "\r\n\r\n";
                     }
                 } else {
-                    $raw_payload2 .= 'Content-Disposition: form-data; name="' . urlencode($key) . '"' . "\r\n\r\n";
+                    $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $key) . '"' . "\r\n\r\n";
                 }
                 $raw_payload2 .= $val . "\r\n";
             }
@@ -1202,7 +1203,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                 if (($put === null) || (count($post_params) != 0) || (count($files) != 1)) {
                     $raw_payload2 .= '----cms' . $divider . "\r\n";
                     if (strpos($upload_field, '/') === false) {
-                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . urlencode(basename($file_path)) . '"' . "\r\n";
+                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
                         $raw_payload2 .= 'Content-Type: application/octet-stream' . "\r\n\r\n";
                     } else {
                         $raw_payload2 .= 'Content-Type: ' . $upload_field . "\r\n\r\n";
