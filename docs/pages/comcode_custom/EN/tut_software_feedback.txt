@@ -504,6 +504,8 @@ Please note that the developers don't usually immediately release a new version 
 
 Please note that if Composr is installed by a hosting-control-panel, it is very unlikely that it will be up-to-date. Thus, hosting-control-panel installs will need immediate upgrade.
 
+To see the current status of releases, see [url="Maintenance status"]https://compo.sr/maintenance-status.htm[/url].
+
 [title="4"]Example[/title]
 
 At the time of writing, let's assume the support statuses for Composr versions are:

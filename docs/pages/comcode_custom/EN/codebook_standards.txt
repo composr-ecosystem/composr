@@ -2777,6 +2777,47 @@ Provide addon screenshots
 | Use text-based file formats rather than binary documents (like [tt]xlsx[/tt] or [tt]docx[/tt]). Revision management and global search and replace works much better with text files.
 |}
 
+[title="4"]Use of the Composr git repository[/title]
+
+{|
+! Standard
+! Reason
+! Scope
+! Test method
+! Notes
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Use standardised commit messages
+| So that the tracker and git are bound together. Also so that typos don't generally happen in git commit messages, given all the custom text is in the tracker issue.
+| Composr development
+| Git hooks
+| The message for any commit on a stable branch must start with either "Fixed MANTIS-<tracker-ID>" or "Implementing MANTIS-<tracker-ID>" or "Implemented MANTIS-<tracker-ID>" or "Security fix for MANTIS-<tracker-ID>" or "New build" (for updating metadata files around a new release) or "Merge branch" (for a merge). Multiple commits may reference the same tracker issue. When doing a clone make sure the [tt]git-hooks/*[/tt] files have the [tt]u+x[/tt] permission set. When fixing bugs you can use the "push bugfix" Admin Zone module to automatically create appropriate git commits, tracker issues, and hotfixes.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Granular commits[/color]
+| Changelogs are auto-generated from git history for new releases.
+| Composr development
+| Manually
+| Any commit on a stable branch should fix one issue only (tip: [url="use the git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-file-in-git[/url] if a file contains changes that should be made across multiple commits).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use temporary branches and commit regularly[/color]
+| [list="1"]
+[*] Entanglements occur when multiple developments are happening in parallel (changes to the same files), which is unavoidable when working over an extended period of time. The isolation capabilities of branches makes things much more manageable with only the small overhead of creating and merging these branches.
+[*] Being able to make regular commits is useful for many reasons, but if it's not on a branch it looks like a messy chain of consciousness scattered within a wider sea of other work. The aforementioned reasons include getting backups, delineating (logging) clear steps within the development, and being able to share your progress with others at relatively stable stopping points.
+[/list]
+| Composr development
+| Manually
+| If working on something for extended periods of time (days or longer), use a git branch for it. That branch may or may not be pushed upstream, this is your choice depending on whether collaboration is required while it is developed as a separate branch. By the way, it's your personal choice whether to use merge or rebase.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+Appropriate branch naming
+| Consistency
+| Composr development
+| Automated test ([tt]sensible_git_branches[/tt])
+| The current 'mainline' version branch should be in [tt]master[/tt], and any other version branch should be in [tt]v<version-number>[/tt].
+}
+
 [title="3"]Agency standards[/title]
 
 {|
