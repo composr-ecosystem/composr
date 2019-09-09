@@ -105,7 +105,7 @@ function phase_0()
             if (is_numeric($id)) {
                 $url = get_brand_base_url() . '/tracker/view.php?id=' . $id;
                 if (array_key_exists(intval($id), $tracker_issue_titles)) {
-                    $change_label .= ' (' . $tracker_issue_titles[intval($id)] . ')';
+                    $change_label .= $tracker_issue_titles[intval($id)];
                 } else {
                     continue; // A private issue, should not advertise
                 }

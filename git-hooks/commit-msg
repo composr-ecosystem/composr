@@ -13,7 +13,7 @@ if ($msg == 'Misc fixes') {
     failing('You should make individual commits with proper commit messages; on a stable release each commit should also be attached to a tracker issue');
 }
 
-$regexp = '/^(Fixed MANTIS-\d+|Implemented MANTIS-\d+|Security fix for MANTIS-\d+|New build|Merge branch .*)$/';
+$regexp = '/^(Fixed MANTIS-\d+|Implementing MANTIS-\d+|Implemented MANTIS-\d+|Security fix for MANTIS-\d+|New build|Merge branch .*)/';
 if (preg_match($regexp, $msg) == 0) {
     failing("Commit message must match this regexp:\n" . $regexp . "\nFor this provided message: " . $msg . "\n");
 }
