@@ -481,6 +481,8 @@ abstract class HttpDownloader
                 $this->post_params = array(); // POST is implied
             }
 
+            $this->sent_http_post_content = true;
+
             if ($this->raw_post) {
                 $_postdetails_params = $this->post_params[0];
             } else {
@@ -510,7 +512,6 @@ abstract class HttpDownloader
                 if (!$this->add_content_type_header_manually) {
                     $this->raw_payload .= "\r\n\r\n";
                 }
-                $this->sent_http_post_content = true;
             } else { // If files, use more complex multipart/form-data
                 if (strtolower($this->http_verb) == 'put') {
                     $this->put_no_delete = (count($this->post_params) == 0) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
@@ -536,7 +537,7 @@ abstract class HttpDownloader
                             $raw_payload2 .= 'Content-Type: ' . $this->raw_content_type . "\r\n\r\n";
                         }
                     } else {
-                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . urlencode($key) . '"' . "\r\n\r\n";
+                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $key) . '"' . "\r\n\r\n";
                     }
                     $raw_payload2 .= $val . "\r\n";
                 }
@@ -548,7 +549,7 @@ abstract class HttpDownloader
                     if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 1)) {
                         $raw_payload2 .= '----cms' . $this->divider . "\r\n";
                         if (strpos($upload_field, '/') === false) {
-                            $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . urlencode(basename($file_path)) . '"' . "\r\n";
+                            $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
 
                             require_code('mime_types');
                             require_code('files');

@@ -77,11 +77,43 @@ function phase_0()
     if ($previous_version !== null) {
         $changes = "The following changes have been made since version " . $previous_version . "...\n";
         $_changes = shell_exec('git log --pretty=oneline HEAD...refs/tags/' . $previous_version);
+        $discovered_tracker_issues = array();
+        $__changes = array();
         foreach (explode("\n", $_changes) as $change) {
             $parts = explode(' ', $change, 2);
             if (count($parts) == 2) {
-                $changes .= ' - [url="' . $parts[1] . '"]https://gitlab.com/composr-foundation/composr/commit/' . $parts[0] . '[/url]' . "\n";
+                $change_label = $parts[1];
+                $id = $parts[0];
+
+                if (preg_match('#MANTIS-(\d+)#', $change_label, $matches) != 0) {
+                    $id = $matches[1];
+                    if (isset($discovered_tracker_issues[$id])) {
+                        continue;
+                    }
+                    $discovered_tracker_issues[$id] = true;
+                }
+
+                $__changes[$id] = $change_label;
             }
+        }
+        if (count($discovered_tracker_issues) > 0) {
+            $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
+            $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array(implode(',', array_keys($discovered_tracker_issues)))));
+            $tracker_issue_titles = json_decode($_result, true);
+        }
+        foreach ($__changes as $id => $change_label) {
+            if (is_numeric($id)) {
+                $url = get_brand_base_url() . '/tracker/view.php?id=' . $id;
+                if (array_key_exists(intval($id), $tracker_issue_titles)) {
+                    $change_label .= $tracker_issue_titles[intval($id)];
+                } else {
+                    continue; // A private issue, should not advertise
+                }
+            } else {
+                $url = COMPOSR_REPOS_URL . '/commit/' . $id;
+            }
+
+            $changes .= ' - [url="' . addslashes($change_label) . '"]' . $url . '[/url]' . "\n";
         }
     } else {
         $changes = 'All reported bugs since the last release have been fixed.';
@@ -419,7 +451,7 @@ function phase_2()
 
             <li><strong>Wikipedia</strong>: <form target="_blank" style="display: inline" action="https://compo.sr/forum/forumview.htm" method="post"><input type="hidden" name="title" value="Wikipedia listing needs updating (for version ' . strval(intval(cms_version_number())) . ')" /><input type="hidden" name="post" value="(This is a standard post we make each time a new major release comes out)&#10;&#10;As Composr version ' . strval(intval(cms_version_number())) . ' is out now, ideally someone will update the [url=&quot;Composr Wikipedia page&quot;]http://en.wikipedia.org/wiki/Composr_CMS[/url]. The developers don\'t maintain this because it\'d be inappropriate for us to maintain our own Wikipedia entry (neutrality reasons). The version details need updating, but generally it is worth reviewing the page is still accurate and up-to-date.&#10;&#10;Thanks to anyone who helps here, it\'s important we keep the outside world updated on Composr." /><button class="hyperlink-button" type="submit">Get someone to update our release history on Wikipedia</button></form></li>
 
-            <li><strong>Syndication</strong>: Syndicate news to these sites (<a href="http://ocportal.com/tracker/view.php?id=2085" target="_blank">Passwords</a>):<ul>
+            <li><strong>Syndication</strong>: Syndicate news to these sites (<a href="' . get_brand_base_url() . '/tracker/view.php?id=2085" target="_blank">Passwords</a>):<ul>
                 <li>Add <a target="_blank" href="http://cmsreport.com/submit-story">news on CMS Report</a></li>
                 <li>Add <a target="_blank" href="http://cmscritic.com/">news on CMS Critic</a> (may mean emailing the story in)</li>
                 <li>Update <a target="_blank" href="http://www.cmsmatrix.org/">listing on CMS Matrix</a></li>

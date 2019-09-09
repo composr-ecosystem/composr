@@ -530,6 +530,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/ecommerce_shipping.php',
             '_tests/tests/unit_tests/resource_closing.php',
             '_tests/tests/unit_tests/sorting.php',
+            '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/clean_reinstall.php',
             '_tests/tests/unit_tests/authors.php',
             '_tests/tests/unit_tests/dns.php',

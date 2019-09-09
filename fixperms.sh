@@ -30,6 +30,13 @@ else
 	echo "4/4 Fixed permissions of uploads"
 fi
 
+# Git hooks should be writable, and linked in correctly
+if [ -e ".git" ]; then
+	echo "Setting up git hooks to run correctly"
+	git config core.hooksPath git-hooks
+	chmod a+x git-hooks/*
+fi
+
 # Messages...
 
 echo "DONE"

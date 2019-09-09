@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+chdir(dirname(dirname(__FILE__)));
+
 shell_exec('sh decache.sh');
 
 exit(0);

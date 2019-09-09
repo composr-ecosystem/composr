@@ -13,20 +13,23 @@
  * @package    composr_homesite_support_credits
  */
 
-function init__mantis()
+function get_tracker_issue_titles($ids)
 {
-    define('LEAD_DEVELOPER_MEMBER_ID', 2);
+    $_ids = @implode(',', $ids);
+    $sql = 'SELECT id,summary FROM mantis_bug_table WHERE id IN (' . $_ids . ') AND view_state=10';
+    $issue_titles = collapse_2d_complexity('id', 'summary', $GLOBALS['SITE_DB']->query($sql));
+    return $issue_titles;
 }
 
-function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional)
+function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1')
 {
-    $text_id = $GLOBALS['SITE_DB']->_query("
+    $query = "
         INSERT INTO
         `mantis_bug_text_table`
         (
-          `description`,
-          `steps_to_reproduce`,
-          `additional_information`
+            `description`,
+            `steps_to_reproduce`,
+            `additional_information`
         )
         VALUES
         (
@@ -34,73 +37,52 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
             '',
             '" . db_escape_string($tracker_additional) . "'
         )
-    ", null, 0, false, true, null, '', false);
+    ";
+    $text_id = $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
 
-    if ($GLOBALS['SITE_DB']->query_value_if_there('SELECT version FROM mantis_project_version_table WHERE ' . db_string_equal_to('version', $version)) === null) {
-        $GLOBALS['SITE_DB']->_query("
-            INSERT INTO
-            `mantis_project_version_table`
-            (
-              `project_id`,
-              `version`,
-              `description`,
-              `released`,
-              `obsolete`,
-              `date_order`
-            )
-            VALUES
-            (
-                    1,
-                    '" . db_escape_string($version) . "',
-                    '',
-                    0,
-                    0,
-                    " . strval(time()) . "
-            )
-        ", null, 0, true);
-    }
+    ensure_version_exists_in_tracker($version);
 
-    return $GLOBALS['SITE_DB']->_query("
+    $query = "
         INSERT INTO
         `mantis_bug_table`
         (
-          `project_id`,
-          `reporter_id`,
-          `handler_id`,
-          `duplicate_id`,
-          `priority`,
-          `severity`,
-          `reproducibility`,
-          `status`,
-          `resolution`,
-          `projection`,
-          `eta`,
-          `bug_text_id`,
-          `os`,
-          `os_build`,
-          `platform`,
-          `version`,
-          `fixed_in_version`,
-          `build`,
-          `profile_id`,
-          `view_state`,
-          `summary`,
-          `sponsorship_total`,
-          `sticky`,
-          `target_version`,
-          `category_id`,
-          `date_submitted`,
-          `due_date`,
-          `last_updated`
+            `project_id`,
+            `reporter_id`,
+            `handler_id`,
+            `duplicate_id`,
+            `priority`,
+            `severity`,
+            `reproducibility`,
+            `status`,
+            `resolution`,
+            `projection`,
+            `eta`,
+            `bug_text_id`,
+            `os`,
+            `os_build`,
+            `platform`,
+            `version`,
+            `fixed_in_version`,
+            `build`,
+            `profile_id`,
+            `view_state`,
+            `summary`,
+            `sponsorship_total`,
+            `sticky`,
+            `target_version`,
+            `category_id`,
+            `date_submitted`,
+            `due_date`,
+            `last_updated`
         )
         VALUES
         (
-            '1', /* Composr project */
-            '" . strval(LEAD_DEVELOPER_MEMBER_ID) . "',
-            '" . strval(LEAD_DEVELOPER_MEMBER_ID) . "',
+            '" . db_escape_string($tracker_project) . "',
+            '" . strval(get_member()) . "',
+            '" . strval(get_member()) . "',
             '0',
             '40', /* High priority */
-            '50', /* Minor severity */
+            '" . db_escape_string($tracker_severity) . "',
             '10', /* Always reproducible */
             '80', /* Status: Resolved */
             '20', /* Resolution: Fixed */
@@ -119,20 +101,93 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
             '0',
             '0',
             '" . db_escape_string($version) . "',
-            '1', /* General category */
+            '" . db_escape_string($tracker_category) . "',
             '" . strval(time()) . "',
             '1',
             '" . strval(time()) . "'
         )
-    ", null, 0, false, true, null, '', false);
+    ";
+    return $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
+}
+
+function update_tracker_issue($tracker_id, $version = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
+{
+    ensure_version_exists_in_tracker($version);
+
+    $query = "
+        UPDATE
+        `mantis_bug_table`
+        SET
+    ";
+    if ($tracker_project !== null) {
+        $query .= "
+            `project_id_id`='" . db_escape_string($tracker_project) . "',
+        ";
+    }
+    if (true) {
+        $query .= "
+            `handler_id`='" . strval(get_member()) . "',
+        ";
+    }
+    if ($tracker_severity !== null) {
+        $query .= "
+            `severity`='" . db_escape_string($tracker_severity) . "',
+        ";
+    }
+    if ($version !== null) {
+        $query .= "
+            `version`='" . db_escape_string($version) . "',
+        ";
+    }
+    if ($tracker_category !== null) {
+        $query .= "
+            `category_id`='" . db_escape_string($tracker_category) . "',
+        ";
+    }
+    $query .= "
+            `last_updated`='" . strval(time()) . "'
+        WHERE
+            id=" . strval($tracker_id);
+    $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, false, null, '', false);
+}
+
+function ensure_version_exists_in_tracker($version)
+{
+    if ($GLOBALS['SITE_DB']->query_value_if_there('SELECT version FROM mantis_project_version_table WHERE ' . db_string_equal_to('version', $version)) === null) {
+        $query = "
+            INSERT INTO
+            `mantis_project_version_table`
+            (
+                `project_id`,
+                `version`,
+                `description`,
+                `released`,
+                `obsolete`,
+                `date_order`
+            )
+            VALUES
+            (
+                    1,
+                    '" . db_escape_string($version) . "',
+                    '',
+                    0,
+                    0,
+                    " . strval(time()) . "
+            )
+        ";
+        $GLOBALS['SITE_DB']->_query($query, null, 0, true);
+    }
 }
 
 function upload_to_tracker_issue($tracker_id, $upload)
 {
     $disk_filename = md5(serialize($upload));
-    move_uploaded_file($upload['tmp_name'], get_custom_file_base() . '/tracker/uploads/' . $disk_filename);
+    $save_path = get_custom_file_base() . '/tracker/uploads/' . $disk_filename;
+    move_uploaded_file($upload['tmp_name'], $save_path);
+    fix_permissions($save_path);
+    sync_file($save_path);
 
-    $GLOBALS['SITE_DB']->_query("
+    $query = "
         INSERT INTO
         `mantis_bug_file_table`
         (
@@ -162,12 +217,14 @@ function upload_to_tracker_issue($tracker_id, $upload)
             '" . strval(time()) . "',
             '" . strval(LEAD_DEVELOPER_MEMBER_ID) . "'
         )
-    ");
+    ";
+
+    return $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
 }
 
 function create_tracker_post($tracker_id, $tracker_comment_message)
 {
-    $text_id = $GLOBALS['SITE_DB']->_query("
+    $query = "
         INSERT INTO
         `mantis_bugnote_text_table`
         (
@@ -177,9 +234,10 @@ function create_tracker_post($tracker_id, $tracker_comment_message)
         (
             '" . db_escape_string($tracker_comment_message) . "'
         )
-    ", null, 0, false, true, null, '', false);
+    ";
+    $text_id = $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
 
-    $monitors = $GLOBALS['SITE_DB']->query_select('mantis_bug_monitor_table', array('user_id'), array('bug_id' => $tracker_id));
+    $monitors = $GLOBALS['SITE_DB']->query('SELECT user_id FROM mantis_bug_monitor_table WHERE bug_id=' . strval($tracker_id));
     foreach ($monitors as $m) {
         $to_name = $GLOBALS['FORUM_DRIVER']->get_username($m['user_id'], true, USERNAME_DEFAULT_NULL);
         if ($to_name !== null) {
@@ -192,7 +250,7 @@ function create_tracker_post($tracker_id, $tracker_comment_message)
         }
     }
 
-    return $GLOBALS['SITE_DB']->_query("
+    $query = "
         INSERT INTO
         `mantis_bugnote_table`
         (
@@ -218,7 +276,8 @@ function create_tracker_post($tracker_id, $tracker_comment_message)
             '" . strval(time()) . "',
             '" . strval(time()) . "'
         )
-    ", null, 0, false, true, null, '', false);
+    ";
+    return $GLOBALS['SITE_DB']->_query($query, null, 0, false, true, null, '', false);
 }
 
 function close_tracker_issue($tracker_id)
@@ -232,7 +291,7 @@ function get_user_currency()
     $return_default = false;
     $safe_currency = 'USD';
     $the_id = intval(get_member());
-    $member_id = is_guest($the_id) ? null : $the_id;
+    $member_id = is_guest($the_id) ? mixed() : $the_id;
     if ($member_id !== null) {
         $cpf_id = get_credits_profile_field_id('cms_currency');
         if ($cpf_id !== null) {
