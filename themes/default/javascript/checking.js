@@ -613,7 +613,12 @@ function check_form(the_form,for_preview)
 		}
 	}
 
-	if (erroneous)
+	if (!the_form.checkValidity())
+	{
+		erroneous=true;
+	}
+
+	if (erroneous && error_element!==null)
 	{
 		if (!alerted) window.fauxmodal_alert('{!IMPROPERLY_FILLED_IN;^}');
 		var posy=find_pos_y(error_element,true);

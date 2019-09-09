@@ -706,11 +706,10 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
         $image_url = '';
         if ($cma_info['thumb_field'] !== null) {
             if ((strpos($cma_info['thumb_field'], 'CALL:') !== false) && ($content_id !== null)) {
-                $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), false);
+                $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), $row);
             } else {
-                if ($content_type === 'image') {
+                if ($content_type === 'image') { // FUDGE (we don't actually want thumb in this case, we want full image)
                     $image_url = $row['url'];
-                    // FUDGE
                 } else {
                     $image_url = $row[$cma_info['thumb_field']];
                 }

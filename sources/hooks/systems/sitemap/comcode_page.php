@@ -108,6 +108,10 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
         $zone_default_page = get_zone_default_page($zone);
 
         $path = end($details);
+        $full_path = get_custom_file_base() . '/' . $path;
+        if (!is_file($path)) {
+            $full_path = get_file_base() . '/' . $path;
+        }
 
         $row = $this->_load_row_from_page_groupings($row, $zone, $page);
 
@@ -134,8 +138,8 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                 'description' => null,
                 'image' => $test_icon,
                 'image_2x' => $test_icon_2x,
-                'add_date' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime(get_file_base() . '/' . $path) : null,
-                'edit_date' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filemtime(get_file_base() . '/' . $path) : null,
+                'add_date' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime(get_file_base() . '/' . $full_path) : null,
+                'edit_date' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filemtime(get_file_base() . '/' . $full_path) : null,
                 'submitter' => null,
                 'views' => null,
                 'rating' => null,
@@ -195,10 +199,6 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
             if (($meta_gather & SITEMAP_GATHER_DB_ROW) != 0) {
                 $struct['extra_meta']['db_row'] = $db_row[0] + (($row === null) ? array() : $struct['extra_meta']['db_row']);
             }
-        }
-        $full_path = get_custom_file_base() . '/' . $path;
-        if (!is_file($full_path)) {
-            $full_path = get_file_base() . '/' . $path;
         }
         $page_contents = file_get_contents($full_path);
         if (!$got_title || strpos($page_contents, 'sub=') !== false) {

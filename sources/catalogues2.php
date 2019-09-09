@@ -36,7 +36,11 @@ function init__catalogues2()
  */
 function catalogue_to_tree($catalogue_name)
 {
-    $new_root = actual_add_catalogue_category($catalogue_name, get_translated_text($GLOBALS['SITE_DB']->query_select_value('catalogues', 'c_title', array('c_name' => $catalogue_name))), '', '', null, '');
+    $_c_title = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_title', array('c_name' => $catalogue_name));
+    if ($_c_title === null) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue'));
+    }
+    $new_root = actual_add_catalogue_category($catalogue_name, get_translated_text($_c_title), '', '', null, '');
     $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'catalogue_categories SET cc_parent_id=' . strval($new_root) . ' WHERE id<>' . strval($new_root) . ' AND ' . db_string_equal_to('c_name', $catalogue_name));
     $GLOBALS['SITE_DB']->query_update('catalogues', array('c_is_tree' => 1), array('c_name' => $catalogue_name), '', 1);
 }

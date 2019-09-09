@@ -66,6 +66,8 @@ function fetch_more_fields()
 	var i,store;
 	for (i=0;i<form.elements.length;i++)
 	{
+		if (form.elements[i].name==='csrf_token') continue;
+
 		store=document.createElement('input');
 		store.setAttribute('type','hidden');
 		store.name=form.elements[i].name;

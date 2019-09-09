@@ -18,6 +18,8 @@
  * @package    core
  */
 
+// This file must work completely standalone, and should be API-locked even across versions.
+
 /*
 The version numbers here are not for interchange. sources/version2.php provides a way to turn these into the 'dotted' interchange format that the Composr platform recognises programmatically.
 */
@@ -30,7 +32,13 @@ The version numbers here are not for interchange. sources/version2.php provides 
 function init__version()
 {
     if (!defined('COMPOSR_REPOS_URL')) {
-        define('COMPOSR_REPOS_URL', 'https://github.com/ocproducts/composr');
+        define('COMPOSR_REPOS_URL', 'https://gitlab.com/composr-foundation/composr');
+
+        define('VERSION_ALPHA', 'Alpha');
+        define('VERSION_BETA', 'Beta');
+        define('VERSION_MAINLINE', 'Mainline');
+        define('VERSION_SUPPORTED', 'Supported');
+        define('VERSION_EOL', 'EOL');
     }
 }
 
@@ -72,4 +80,24 @@ function cms_version_time()
 function cms_version_time_major()
 {
     return 1211025869;
+}
+
+/**
+ * Find the status of this branch version.
+ *
+ * @return string A VERSION_* constant.
+ */
+function cms_version_branch_status()
+{
+    return VERSION_MAINLINE;
+}
+
+/**
+ * Find the EOL for this branch version.
+ *
+ * @return ?integer Timestamp of EOL (null: unknown).
+ */
+function cms_version_branch_eol()
+{
+    return null;
 }

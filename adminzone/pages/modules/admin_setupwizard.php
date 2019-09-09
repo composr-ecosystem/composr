@@ -850,7 +850,7 @@ class Module_admin_setupwizard
 
         // Proceed...
 
-        set_mass_import_mode(true);
+        set_mass_import_mode();
 
         require_code('config2');
         require_code('themes2');

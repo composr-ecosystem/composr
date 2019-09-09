@@ -874,7 +874,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 $this->_find_theme_image($row, $struct);
             } else {
                 if (strpos($cma_info['thumb_field'], 'CALL:') !== false) {
-                    $struct['extra_meta']['image'] = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), false);
+                    $struct['extra_meta']['image'] = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), $row);
                 } else {
                     $struct['extra_meta']['image'] = $row[$cma_info['thumb_field']];
                 }
