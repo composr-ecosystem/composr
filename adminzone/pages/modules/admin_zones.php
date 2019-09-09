@@ -165,6 +165,9 @@ class Module_admin_zones
         }
 
         if ($type == '__edit') {
+            require_code('input_filter_2');
+            modsecurity_workaround_enable();
+
             $delete = post_param_integer('delete', 0);
             if ($delete == 1) {
                 $this->title = get_screen_title('DELETE_ZONE');
@@ -255,9 +258,6 @@ class Module_admin_zones
      */
     public function _editor()
     {
-        require_code('input_filter_2');
-        modsecurity_workaround_enable();
-
         $id = $this->id;
         $nice_zone_name = $this->nice_zone_name;
 

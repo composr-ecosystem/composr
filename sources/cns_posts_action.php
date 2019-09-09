@@ -166,7 +166,7 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
         $title = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_first_title', array('id' => $topic_id));
     }
 
-    if (!running_script('install')) {
+    if ((!running_script('install')) && (!get_mass_import_mode())) {
         require_code('antispam');
         inject_action_spamcheck($poster_name_if_guest, post_param_string('email', null));
     }
@@ -200,7 +200,7 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
         }
     }
 
-    if ((is_null($forum_id)) || (($topic_title == '') && (!$is_starter))) {
+    if ((is_null($forum_id)) || (($topic_title == '') && (!$is_starter) && ($check_permissions || $update_caching || $send_notification))) {
         $info = $GLOBALS['FORUM_DB']->query_select('f_topics', array('t_is_open', 't_pt_from', 't_pt_to', 't_forum_id', 't_cache_last_member_id', 't_cache_first_title'), array('id' => $topic_id), '', 1);
         if (!array_key_exists(0, $info)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
@@ -233,7 +233,7 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
     }
 
     // Ensure parent post is from the same topic
-    if (!is_null($parent_id)) {
+    if ((!is_null($parent_id)) && (!get_mass_import_mode())) {
         $test_topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $parent_id), ' AND ' . cns_get_topic_where($topic_id, $poster));
         if (is_null($test_topic_id)) {
             $parent_id = null;
@@ -451,8 +451,10 @@ function cns_make_post($topic_id, $title, $post, $skip_sig = 0, $is_starter = fa
     }
 
     // Tidy up auto-save
-    require_code('autosave');
-    clear_cms_autosave();
+    if (!get_mass_import_mode()) {
+        require_code('autosave');
+        clear_cms_autosave();
+    }
 
     if (!get_mass_import_mode()) {
         set_value('cns_post_count', strval(intval(get_value('cns_post_count')) + 1));

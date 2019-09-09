@@ -56,8 +56,8 @@ class Hook_content_meta_aware_news_category
             'title_field' => 'nc_title',
             'title_field_dereference' => true,
             'description_field' => null,
-            'thumb_field' => 'nc_img',
-            'thumb_field_is_theme_image' => true,
+            'thumb_field' => 'CALL: generate_news_category_thumb_url',
+            'thumb_field_is_theme_image' => false,
             'alternate_icon_theme_image' => null,
 
             'view_page_link_pattern' => '_SEARCH:news:browse:_WILD',
@@ -126,4 +126,17 @@ class Hook_content_meta_aware_news_category
 
         return render_news_category_box($row, $zone, $give_context, $attach_to_url_filter, null, $guid);
     }
+}
+
+/**
+ * Find an entry thumbnail.
+ *
+ * @param  array $url_parts The URL parts to search from
+ * @param  array $row Database row of entry
+ * @return string The thumbnail URL
+ */
+function generate_news_category_thumb_url($url_parts, $row)
+{
+    require_code('news');
+    return get_news_category_image_url($row['nc_img']);
 }

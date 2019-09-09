@@ -219,26 +219,32 @@ class images_test_set extends cms_test_case
                 return false;
             }
 
+            // 'corners' will be somewhere in middle of quadrant, biased a bit towards real corner due to blending distortions
+            $dim_x_min = max(0, intval($dimensions[0] / 4) - 1);
+            $dim_x_max = min($dimensions[0] - 1, intval($dimensions[0] * 0.75) + 1);
+            $dim_y_min = max(0, intval($dimensions[1] / 4) - 1);
+            $dim_y_max = min($dimensions[1] - 1, intval($dimensions[1] * 0.75) + 1);
+
             // Test red quadrant in upper left corner
-            if (!testColor($image_resource, intval($dimensions[0] / 4), intval($dimensions[1] / 4), 255, 0, 0, 0, 60, $additional_information)) {
+            if (!testColor($image_resource, $dim_x_min, $dim_y_min, 255, 0, 0, 0, 90, $additional_information)) {
                 outputDebugVisual($path);
                 return false;
             }
 
             // Test green quadrant in upper right corner
-            if (!testColor($image_resource, intval($dimensions[0] * 0.75), intval($dimensions[1] / 4), 0, 255, 0, 0, 60, $additional_information)) {
+            if (!testColor($image_resource, $dim_x_max, $dim_y_min, 0, 255, 0, 0, 90, $additional_information)) {
                 outputDebugVisual($path);
                 return false;
             }
 
             // Test blue quadrant in lower left corner
-            if (!testColor($image_resource, intval($dimensions[0] / 4), intval($dimensions[1] * 0.75), 0, 0, 255, 0, 60, $additional_information)) {
+            if (!testColor($image_resource, $dim_x_min, $dim_y_max, 0, 0, 255, 0, 90, $additional_information)) {
                 outputDebugVisual($path);
                 return false;
             }
 
             // Test white quadrant in lower right corner
-            if (!testColor($image_resource, intval($dimensions[0] * 0.75), intval($dimensions[1] * 0.75), 255, 255, 255, 0, 60, $additional_information)) {
+            if (!testColor($image_resource, $dim_x_max, $dim_y_max, 255, 255, 255, 0, 90, $additional_information)) {
                 outputDebugVisual($path);
                 return false;
             }

@@ -582,7 +582,7 @@ function create_addon($file, $files, $addon, $incompatibilities, $dependencies, 
 
     $touch_result = @touch($_full, $max_mtime);
     if ($GLOBALS['DEV_MODE'] && !$touch_result && get_page_name() == 'build_addons') {
-        warn_exit(comcode_to_tempcode('You need to fix file ownership of the existing tar files. Run a command like [tt]sudo chown _www exports/addons/*.tar[/tt]'));
+        warn_exit(comcode_to_tempcode('You need to fix file ownership of the existing tar files. Run a command like [tt]sudo chown www-data exports/addons/*.tar[/tt]'));
     }
 
     fix_permissions($_full);

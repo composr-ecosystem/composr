@@ -1135,6 +1135,8 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
     $put_path = mixed();
     $put_no_delete = false;
     if ((!is_null($post_params)) || ($raw_post) || (!empty($files))) {
+        $sent_http_post_content = true;
+
         if (is_null($post_params)) {
             $post_params = array(); // POST is implied
         }
@@ -1165,7 +1167,6 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
 
             $raw_payload .= $_postdetails_params;
             $raw_payload_curl = $_postdetails_params; // Other settings will be passed via cURL itself
-            $sent_http_post_content = true;
         } else { // If files, use more complex multipart/form-data
             if (strtolower($http_verb) == 'put') {
                 $put_no_delete = (count($post_params) == 0) && (count($files) == 1); // Can we just use the one referenced file as a direct PUT
@@ -1191,7 +1192,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                         $raw_payload2 .= 'Content-Type: ' . $raw_content_type . "\r\n\r\n";
                     }
                 } else {
-                    $raw_payload2 .= 'Content-Disposition: form-data; name="' . urlencode($key) . '"' . "\r\n\r\n";
+                    $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $key) . '"' . "\r\n\r\n";
                 }
                 $raw_payload2 .= $val . "\r\n";
             }
@@ -1203,7 +1204,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                 if (($put === null) || (count($post_params) != 0) || (count($files) != 1)) {
                     $raw_payload2 .= '----cms' . $divider . "\r\n";
                     if (strpos($upload_field, '/') === false) {
-                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . urlencode(basename($file_path)) . '"' . "\r\n";
+                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
                         $raw_payload2 .= 'Content-Type: application/octet-stream' . "\r\n\r\n";
                     } else {
                         $raw_payload2 .= 'Content-Type: ' . $upload_field . "\r\n\r\n";
@@ -1325,7 +1326,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                                                     curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1); // https://jve.linuxwall.info/blog/index.php?post/TLS_Survey
                                                 } else {
                                                     if ((!is_array($curl_version)) || (!isset($curl_version['ssl_version'])) || (strpos($curl_version['ssl_version'], 'NSS') === false) || (version_compare($curl_version['version'], '7.36.0') >= 0)) {
-                                                        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+                                                        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'TLSv1.2:TLSv1');
                                                         // Best to never mess with CURLOPT_SSL_CIPHER_LIST, because different servers have different ciphers, and things constantly evolve, hard-coding isn't going to work - this is a last-ditch option for old versions of PHP, we can be specifying TLSv1 as a cipher [=category] (which is undocumented)
                                                     } else {
                                                         curl_setopt($ch, CURLOPT_SSLVERSION, 1); // the above fails on old NSS, so we use numeric equivalent to the CURL_SSLVERSION_TLSv1 constant here
@@ -1667,7 +1668,7 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
         $_frh = array($mysock);
         $_fwh = null;
         while (($chunked) || (!@feof($mysock))) { // @'d because socket might have died. If so fread will will return false and hence we'll break
-            if ((function_exists('stream_select')) && (count($_frh) > 0) && (!stream_select($_frh, $_fwh, $_fwh, intval($timeout), fmod($timeout, 1.0) / 1000000.0))) {
+            if ((function_exists('stream_select')) && (count($_frh) > 0) && (!@stream_select($_frh, $_fwh, $_fwh, intval($timeout), fmod($timeout, 1.0) / 1000000.0))) {
                 if ((!$chunked) || ($buffer_unprocessed == '')) {
                     if ($trigger_error) {
                         warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_CONNECTION_STALLED', escape_html($url)));

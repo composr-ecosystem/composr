@@ -40,7 +40,7 @@ class mail_test_set extends cms_test_case
 
                 case 'NOTIFICATIONS':
                     require_code('notifications');
-                    set_mass_import_mode(true);
+                    set_mass_import_mode();
                     $_GET['keep_debug_notifications'] = '1';
                     dispatch_notification('error_occurred', '', 'test', 'test', array(get_member()), get_member(), 1, false, true, '', '', '', '', '', '', $attachments);
                     break;

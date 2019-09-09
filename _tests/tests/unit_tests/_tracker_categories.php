@@ -22,7 +22,8 @@ class _tracker_categories_test_set extends cms_test_case
     {
         $brand_base_url = get_brand_base_url();
         $post = array();
-        $categories = unserialize(http_download_file($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', null, true, false, 'Composr Test Platform', $post));
+        $_categories = http_download_file($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', null, true, false, 'Composr Test Platform', $post);
+        $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
         foreach ($addons as $addon => $place) {
             if ($place == 'sources') {
@@ -39,7 +40,8 @@ class _tracker_categories_test_set extends cms_test_case
     {
         $brand_base_url = get_brand_base_url();
         $post = array();
-        $categories = unserialize(http_download_file($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', null, true, false, 'Composr Test Platform', $post));
+        $_categories = http_download_file($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', null, true, false, 'Composr Test Platform', $post);
+        $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
         foreach ($categories as $category) {
             if (strtolower($category) != $category) {

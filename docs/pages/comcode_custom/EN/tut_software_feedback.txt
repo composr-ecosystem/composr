@@ -20,7 +20,7 @@ This might mean making a bug report, or making a feature request -- if something
 
 The developers have a track record of responding to bug reports within just a few days. Don't expect a same-day response or in general a weekend/morning/evening response (UK timezone), but do post a reminder if you get no response after a week (it's rare for it to take that long).
 
-Bug fixes usually come with an automated (non-personal) response that includes a hotfix, a description of the bug, and a link to show the changes made in the code repository (git/github).
+Bug fixes usually come with an automated (non-personal) response that includes a hotfix, a description of the bug, and a link to show the changes made in the code repository (git/GitLab).
 
 If you really do require an urgent priority response it means either (or both):
  - You need to be using paid support tickets to get professional-grade support
@@ -554,13 +554,13 @@ Bugs and security issues are both classified as 'flaws'. There are two classific
  - [b]Minor[/b]. Any flaw that is not major.
 
 ocProducts has a rolling support status for versions of Composr (aka/formerly ocPortal).
-Versions may be classified as: [b]beta[/b], [b]stable[/b], [b]supported[/b], [b]defunct[/b].
+Versions may be classified as: [b]alpha[/b], [b]beta[/b], [b]mainline[/b], [b]supported[/b], [b]eol[/b].
 
-A [b]supported[/b] version is a previous major version where the initial release of a subsequent new major version was made only in the past 8 months. A [b]defunct[/b] version is older than that. Flaws are handled for the different support statuses as follows:
- - [b]Beta[/b] version. ocProducts will typically release the next new beta version with all bugs up to the major flaw fixed, but there are no guarantees.
- - [b]Stable[/b] version. ocProducts will release a new version with all bugs fixed.
+A [b]supported[/b] version is a previous major version where the initial release of a subsequent new major version was made only in the past 8 months. A [b]eol[/b] version is older than that. Flaws are handled for the different support statuses as follows:
+ - [b]Alpha[/b]/[b]Beta[/b] version. ocProducts will typically release the next new beta version with all bugs up to the major flaw fixed, but there are no guarantees. These versions are also together known as 'bleeding edge'.
+ - [b]Mainline[/b] version. ocProducts will release a new version with all bugs fixed.
  - [b]Supported[/b] version. ocProducts will release a new version with only the major flaws fixed, as any minor bugs truly will be minor as a whole new version had been developed before they were found. Note that any installation issues or compatibility issues with new software are degraded to minor flaws when considering the [b]supported[/b] version, and hence not fixed in it.
- - [b]Defunct[/b] version. No flaws are handled except when there is an active support contract with particular customers (in which case fixes would only be sent to those customers and to the git repository).
+ - [b]EOL[/b] version (end of life). No flaws are handled except when there is an active support contract with particular customers (in which case fixes would only be sent to those customers and to the git repository).
 
 Please note that we don't usually immediately release a new version when there is a flaw. We usually put out a hotfix, then a new patch release every few months.
 
@@ -568,11 +568,13 @@ Please note that if Composr is installed by a hosting-control-panel, it is very 
 
 [title="4"]Example[/title]
 
+([color="red"]Note these examples are very out-dated[/color])
+
 At the time of writing, the support statuses for Composr/ocPortal versions are:
  - 10.x.x - this is [b]beta[/b]
  - 9.x.x - this is [b]supported[/b]
- - 8.x.x - this is [b]stable[/b] (normally this would be defunct, as v9 has been out far longer than 8 months -- but v8 is/was being maintained longer due to the theme compatibility break in v9)
- - 7.x.x - this is [b]defunct[/b]
+ - 8.x.x - this is [b]mainline[/b] (normally this would be defunct, as v9 has been out far longer than 8 months -- but v8 is/was being maintained longer due to the theme compatibility break in v9)
+ - 7.x.x - this is [b]eol[/b]
 
 If a major flaw was found that exists in 10.x.x, 9.x.x, 8.x.x, then ocProducts would:
  - fix 10.x.x silently (as it is in beta)
@@ -587,20 +589,28 @@ If a minor flaw was found that exists in 10.x.x, 9.x.x, 8.x.x, then ocProducts w
 [title="3"]Security policy[/title]
 
 [media width="64" thumb="0" float="right" framed="0"]themes/default/images/icons/64x64/menu/adminzone/security.png[/media]
-ocProducts believes in being open about how we treat security issues. By explaining how we deal with security issues and why we deal with them in the way we do, we hope that you can better understand how to keep your site patched up. Unfortunately it is virtually impossible to write computer code that doesn't have security issues, because even the smallest mistake or unintended-consequence can lead to them -- ocProducts has very strong standards for writing code to minimalise security holes, as well as in-house developed automatic scanning technology, and layers of redundant security built in to Composr itself. Even with all this though, problems will inevitably by found.
+Unfortunately it is virtually impossible to write computer code that doesn't have security issues, because even the smallest mistake or unintended-consequence can lead to them -- the developers have very strong standards for writing code to minimise security holes, as well as in-house developed automatic scanning technology, and layers of redundant security built in to Composr itself. Even with all this though, problems will inevitably by found.
 
-There is a security philosophy known as 'full disclosure'. The basis of this is that vulnerabilities are specified in the open soon after they are found. While implementing this would be an act of openness from us, we have decided to not implement it because we have large numbers of users who do not have the expertise and funds to rapidly react to such public disclosures. By not giving full details of security holes, we make it harder for hackers to find them -- reducing the threat by increasing the investment a hacker needs to make. However, we strongly encourage users to keep up to date with all patch releases, because we may have fixed vulnerabilities. The idea is that we make it harder for hackers by not disclosing vulnerabilities, but we quickly release patches and thus don't leave conscientious users vulnerable to persistent hackers. If less-conscientious users don't patch then at least the vulnerabilities aren't disclosed, and if they were disclosed the users would not likely have patched anyway and therefore be in even greater danger. We never sit on vulnerabilities.
+The developers believe in being open about how we treat security issues. By explaining how we deal with security issues and why we deal with them in the way we do, we hope that you can better understand how to manage incidents.
 
-Security researchers sometimes find vulnerabilities, and usually they do follow full disclosure processes. Therefore it is very possible security holes do get disclosed by third-parties. However, these researchers usually only do their full disclosure after a reasonable time window.
+The developers have to address both the need to responsibly inform our users of the need to apply proper handling around security incidents, and the need to not make the lives of hackers easy by detailing vulnerabilities before a patch release can be distributed. Further, because Composr is an Open Source project, with a distributed community of developers, and clean public/immutable git commit logs, we cannot hide vulnerabilities. We follow a security philosophy known as 'full disclosure', the basis of which is that vulnerabilities are specified in the open soon after they are found -- but we do so responsibly.
 
-ocProducts reacts to vulnerabilities different depending on whether we classify them as 'major' or 'minor'.
- - Major vulnerabilities are considered a 'major flaw', and hence new versions for [b]supported[/b], [b]stable[/b] and [b]beta[/b] are released quickly after the flaw is found. The vulnerabilities are mentioned as existing (along with the severity) in the notes accompanying a new release, the 'version notes' for the prior version, and in a newsletter; there is one exception to this: if the vulnerability is obscure enough to only affect a small proportion of users, it may not be mentioned (keep reading this section for more details on this).
- - Minor vulnerabilities either have a low risk or are so inherently commonplace in all similar software that making new releases to fix each of them is unfeasible. These vulnerabilities are silently fixed, and if there are enough of them or if they are borderline cases, the next minor release mentions their existence. Sometimes a minor vulnerability will be treated as a major one if it has already been disclosed by a third-party (due to an elevated risk).
+Our policy is as follows:
+1) Fixes for vulnerabilities will show up as soon as they are made in git commit logs. These logs will show the presence of the vulnerability, and inevitably will provide hints to hackers on what a security hole might be.
+2) The actual security reports will be kept permanently private on the tracker. Anyone posting a vulnerability should initially post it as private, but if not then developer(s) will make it as such as soon as they are aware and able. Anyone in the community with access to view the private issues will be expected to maintain confidence. By keeping the full details of a vulnerability temporarily private, it will in most circumstances make it more difficult for the typical hacker to learn how to exploit a vulnerability -- giving the developers and users sufficient time to respond.
+3) Within one month of the developers becoming aware of a vulnerability, they will put out a new patch release that deals with it for any 'Mainline' or 'Beta' or 'Supported' branches, along with a full description of the vulnerability and any other important information (such as manual patches for those who do not wish to fully upgrade). The release notes for the new version(s) will mention that the upgrade addresses security issue(s). Wherever possible the time period will be much shorter than a month, measured in days.
+4) The developers make no guarantee on posting information about the vulnerabilities on communication channels outside the main news section of the Composr homesite. This is to reduce the pressures on over-stretched developers for what will be a stressful period for them. It is the responsibility of Composr users to monitor this news and apply patches as appropriate. That said, the news section is automatically syndicated via Twitter, Facebook, and available as RSS. If other groups wish to syndicate security news more broadly, this is encouraged.
+5) 'Alpha' and 'EOL' branches will likely receive no official treatment from the core developers, although private companies may provide fix backporting services to clients in a free market. For example, clients may provide a company a recurring fee to have critical issues fixed for them on their legacy or forked or bleeding-edge versions.
 
-As stated, we will not always disclose the existence of low-risk vulnerabilities. We appreciate that some might consider this a 'cover up' on ocProduct's part, but the reality is that the decision is made for two reasons:
- - to avoid alarming users
- - and most importantly, to avoid alerting hackers
-We hope by being up-front, our users will appreciate this and keep their version of Composr up-to-date with the latest stable version of the major version they are using (and within 8 months of release, the latest major version). If users do this, their sites will stay patched for all vulnerabilities ocProducts knows of.
+This policy applies to any code bundled with the main Composr distribution or held within the main git repository.
+
+The developers request any third-party security professionals implement their own responsible full disclosure policy, i.e. hold off before fully publishing details around a vulnerability.
+
+The developers reserve the right to not disclose vulnerabilities that match any of the following low-risk circumstances:
+a) Vulnerabilities the developers believe can not actually be exploited in practice due to additional layers of built-in defense (for example, CSRF vulnerabilities that security tokens mean can never actually be exploited).
+b) Vulnerabilities that require staff privileges to begin with, and can only be exploited by some kind of associated social engineering attack. (As the staff could abuse their positions to undermine security by such social engineering attacks anyway, without any software vulnerability.)
+These exceptions are carved out to ease burden on the developers and remove noise from the security announcement process.
+This security policy may be amended based on particular unique contexts the developers find around vulnerabilities. The developers provide no guarantees or warranty: it is the responsibility of any Composr website owner to satisfy themselves with whatever level of additional support they may find is necessary for their organisation or business.
 
 [title="2"]See also[/title]
 

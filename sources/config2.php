@@ -90,11 +90,12 @@ function _multi_lang()
  * Get the default value of a config option.
  *
  * @param  ID_TEXT $name The name of the option
- * @return ?SHORT_TEXT The value (null: disabled)
+ * @return ?SHORT_TEXT The value (null: disabled / no such option)
  */
 function get_default_option($name)
 {
     $path = 'hooks/systems/config/' . filter_naughty($name);
+    clearstatcache();
     if (!is_file(get_file_base() . '/sources/' . $path . '.php') && !is_file(get_file_base() . '/sources_custom/' . $path . '.php')) {
         return null;
     }

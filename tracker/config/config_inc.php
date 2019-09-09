@@ -86,7 +86,7 @@ $cms_sc_report_guidance_url = $cms_sc_site_url . '/docs/tut-software-feedback.ht
 $cms_sc_join_url = $cms_sc_site_url . '/join.htm';
 $cms_sc_lostpassword_url = $cms_sc_site_url . '/lost_password.htm';
 $cms_sc_member_view_url = $cms_sc_site_url . '/members/view/%1$d.htm'; // Set the user id as variable in the url ie %1$d
-$cms_sc_sourcecode_url = 'https://github.com/ocproducts/composr';
+$cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
 $cms_sc_home_url = 'https://compo.sr';
 $cms_sc_product_name = 'Composr';
 $cms_sc_business_name = 'ocProducts';
@@ -134,7 +134,7 @@ $g_enable_sponsorship = ON;
 $g_sponsorship_currency = $cms_sc_main_currency . ' ' . $cms_sc_main_currency_symbol;
 $g_minimum_sponsorship_amount = $cms_sc_price_per_credit;
 
-// Simplify by removing unneeded filter complexity
+// Simplify by removing unneeded complexity
 $g_default_bug_severity = FEATURE;
 $g_default_bug_reproducibility = 100;
 $g_bug_reopen_status = NEW_;
@@ -149,3 +149,54 @@ $g_status_colors = array(
     'resolved' => '//d2f5b0', // green
     'closed' => '//c9ccc4', // grey
 );
+$g_bug_report_page_fields = array(
+	'additional_info',
+	'attachments',
+	'category_id',
+	//'due_date',
+	'handler',
+	//'os',
+	//'os_version',
+	//'platform',
+	//'priority',
+	//'product_build',
+	'product_version',
+	//'reproducibility',
+	'severity',
+	'steps_to_reproduce',
+	'tags',
+	//'target_version',
+	'view_state',
+);
+$g_bug_view_page_fields = array(
+	'additional_info',
+	'attachments',
+	'category_id',
+	'date_submitted',
+	'description',
+	//'due_date',
+	//'eta',
+	'fixed_in_version',
+	'handler',
+	'id',
+	'last_updated',
+	//'os',
+	//'os_version',
+	//'platform',
+	//'priority',
+	//'product_build',
+	'product_version',
+	'project',
+	'projection',
+	'reporter',
+	//'reproducibility',
+	'resolution',
+	'severity',
+	'status',
+	'steps_to_reproduce',
+	'summary',
+	'tags',
+	//'target_version',
+	'view_state',
+);
+$g_severity_enum_string = '10:Feature-request,20:Trivial-bug,50:Minor-bug,60:Major-bug,95:Security-hole';

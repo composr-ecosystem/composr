@@ -90,7 +90,11 @@ function load_themewizard_params_from_theme($theme, $guess_images_if_needed = fa
     }
 
     if ($autodetect_background_images) {
-        $dh = opendir(get_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/'));
+        $css_dir_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/');
+        if (!is_dir($css_dir_path)) {
+            $css_dir_path = get_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/');
+        }
+        $dh = opendir($css_dir_path);
         while (($sheet = readdir($dh)) !== false) {
             if (substr($sheet, -4) == '.css') {
                 $css_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/' . $sheet;

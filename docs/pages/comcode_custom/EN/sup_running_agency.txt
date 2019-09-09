@@ -33,7 +33,7 @@ Here are some areas to consider, and suggestions:
  - Sharing files (e.g. Dropbox)
  - Writing documents (e.g. Microsoft Office, LibreOffice, Google Docs) -- sadly, no Open Source tool can currently match Microsoft Office in terms of stability, ease of use, and performance
  - Source code control system (e.g. Git, Bitbucket)
- - Issue tracker (e.g. MantisBT, Bitbucket issues, Github issues, JIRA)
+ - Issue tracker (e.g. MantisBT, GitLab issues, JIRA)
  - Standard IDE (e.g. CodeLobster, Netbeans, PhpStorm, TextMate)
  - Analytics (e.g. Google Analytics)
  - Stack software (e.g. LAMP)
