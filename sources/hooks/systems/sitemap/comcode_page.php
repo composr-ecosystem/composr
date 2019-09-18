@@ -109,7 +109,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
 
         $path = end($details);
         $full_path = get_custom_file_base() . '/' . $path;
-        if (!is_file($path)) {
+        if (!is_file($full_path)) {
             $full_path = get_file_base() . '/' . $path;
         }
 
