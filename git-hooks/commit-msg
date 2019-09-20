@@ -9,7 +9,9 @@ if (empty($_msg)) {
 }
 $msg = file_get_contents($_msg);
 
-if (strpos(file_get_contents('sources/version.php'), VERSION_ALPHA) !== false) {
+require('sources/version.php');
+init__version();
+if (cms_version_branch_status() == VERSION_ALPHA) {
     exit(0);
 }
 
