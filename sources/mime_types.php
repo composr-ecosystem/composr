@@ -43,7 +43,7 @@ function get_mime_types($as_admin)
         'dotx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
         'xls' => 'application/vnd.ms-excel',
         'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'ppt' => 'application/powerpoint',
+        'ppt' => 'application/vnd.ms-powerpoint',
         'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'mdb' => 'application/x-msaccess',
         'pub' => 'application/x-mspublisher',
@@ -66,12 +66,12 @@ function get_mime_types($as_admin)
         'diff' => 'text/plain',
         'patch' => 'text/plain',
         'tpl' => 'text/plain',
-        'sql' => 'text/plain',
-        'eml' => 'text/plain',
+        'sql' => 'application/x-sql',
+        'eml' => 'message/rfc822',
 
         // Documents
         'pdf' => 'application/pdf',
-        'rtf' => 'text/rtf',
+        'rtf' => 'application/rtf',
         'ps' => 'application/postscript',
 
         // Web documents
@@ -81,7 +81,7 @@ function get_mime_types($as_admin)
         'json' => $as_admin ? 'application/json' : 'application/octet-stream',
         'css' => $as_admin ? 'text/css' : 'application/octet-stream',
         'xsd' => $as_admin ? 'text/xml' : 'application/octet-stream',
-        'xsl' => $as_admin ? 'text/xsl' : 'application/octet-stream',
+        'xsl' => $as_admin ? 'text/xml' : 'application/octet-stream',
         'xml' => $as_admin ? 'text/xml' : 'application/octet-stream',
         'rss' => $as_admin ? 'application/rss+xml' : 'application/octet-stream',
         'atom' => $as_admin ? 'application/atom+xml' : 'application/octet-stream',
@@ -98,38 +98,38 @@ function get_mime_types($as_admin)
         'svg' => $as_admin ? 'image/svg+xml' : 'application/octet-stream',
 
         // Non/badly compressed images
-        'bmp' => 'image/x-MS-bmp',
-        'tga' => 'image/x-targa',
+        'bmp' => 'image/bmp',
+        'tga' => 'image/x-tga',
         'tif' => 'image/tiff',
         'tiff' => 'image/tiff',
-        'ico' => 'image/vnd.microsoft.icon',
+        'ico' => 'image/x-icon',
         'cur' => 'image/x-win-bitmap',
 
         // Movies
-        'avi' => 'video/mpeg', //'video/x-ms-asf' works with the plugin on Windows Firefox but nothing else, //'video/x-msvideo' is correct but does not get recognised by Microsoft Firefox WMV plugin and confuses RealMedia Player if it sees data transferred under that mime type,
+        'avi' => 'video/msvideo',
         'mp2' => 'video/mpeg',
         'mpv2' => 'video/mpeg',
         'm2v' => 'video/mpeg',
         'mpa' => 'video/mpeg',
         'mpg' => 'video/mpeg',
         'mpe' => 'video/mpeg',
-        '3g2' => 'video/3gpp',
+        '3g2' => 'video/3gpp2',
         '3gp' => 'video/3gpp',
-        '3gp2' => 'video/3gpp',
+        '3gp2' => 'video/3gpp2',
         '3gpp' => 'video/3gpp',
         '3p' => 'video/3gpp',
         'f4v' => 'video/mp4',
         'mp4' => 'video/mp4',
         'm4v' => 'video/mp4',
-        'mov' => 'video/mp4',
-        'qt' => 'video/mp4',
+        'mov' => 'video/quicktime',
+        'qt' => 'video/quicktime',
         'mpeg' => 'video/mpeg',
         'ogv' => 'video/ogg',
         'webm' => 'video/webm',
         // Proprietary movie formats
         'wmv' => 'video/x-ms-wmv',
         'ram' => 'audio/x-pn-realaudio',
-        'rm' => 'audio/x-pn-realaudio',
+        'rm' => 'application/vnd.rn-realmedia',
         'asf' => 'video/x-ms-asf',
 
         // Closed Captions
@@ -137,8 +137,8 @@ function get_mime_types($as_admin)
 
         // Audio
         'mp3' => 'audio/mpeg',
-        'aac' => 'audio/mpeg',
-        'wav' => 'audio/x-wav',
+        'aac' => 'audio/aac',
+        'wav' => 'audio/wav',
         'mid' => 'audio/midi',
         'aif' => 'audio/x-aiff',
         'aifc' => 'audio/x-aiff',
@@ -147,12 +147,12 @@ function get_mime_types($as_admin)
         'weba' => 'audio/webm',
         // Proprietary audio formats
         'wma' => 'audio/x-ms-wma',
-        'ra' => 'audio/x-pn-realaudio-plugin',
+        'ra' => 'audio/x-pn-realaudio',
 
         // Fonts
         'ttf' => 'font/ttf',
         'woff' => 'font/woff',
-        'woff2' => 'font/woff',
+        'woff2' => 'font/woff2',
         'otf' => 'font/otf',
 
         // Archives / Compression

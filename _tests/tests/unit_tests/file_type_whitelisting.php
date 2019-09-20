@@ -35,6 +35,123 @@ class file_type_whitelisting_test_set extends cms_test_case
         }
     }
 
+    public function testIISMimeTypeConsistency()
+    {
+        require_code('mime_types');
+
+        $url = 'https://raw.githubusercontent.com/microsoft/computerscience/f44092740662393051af0ed1c2fa3b2443660b79/Labs/Azure%20Services/Azure%20Storage/Solutions/Intellipix/.vs/config/applicationhost.config';
+        $c = http_get_contents($url);
+
+        $found_bin = false;
+
+        $matches = array();
+        $num_matches = preg_match_all('#<mimeMap fileExtension="\.([^"]*)" mimeType="([^"]*)" />#', $c, $matches);
+        $exts = array();
+        for ($i = 0; $i < $num_matches; $i++) {
+            $ext = $matches[1][$i];
+            $mime_type = $matches[2][$i];
+
+            if ($ext == 'bin') { // Needed for security
+                $this->assertTrue($mime_type == 'application/octet-stream');
+                $found_bin = true;
+            }
+
+            // Things 'incorrect' in IIS
+            if (in_array(serialize(array($ext, $mime_type)), array(
+                serialize(array('aifc', 'audio/aiff')),
+                serialize(array('aiff', 'audio/aiff')),
+                serialize(array('gz', 'application/x-gzip')),
+                serialize(array('mid', 'audio/mid')),
+                serialize(array('odc', 'text/x-ms-odc')),
+                serialize(array('ods', 'application/oleobject')),
+                serialize(array('ogg', 'video/ogg')),
+                serialize(array('tgz', 'application/x-compressed')),
+                serialize(array('woff', 'font/x-woff')),
+                serialize(array('woff2', 'application/font-woff2')),
+                serialize(array('zip', 'application/x-zip-compressed')),
+            ))) {
+                continue;
+            }
+
+            $cms_mime_type = get_mime_type($ext, true);
+            $this->assertTrue(($cms_mime_type == $mime_type) || ($cms_mime_type == 'application/octet-stream') || ($mime_type == 'application/octet-stream'), 'Inconsistency between IIS mime types and Composr: ' . $ext . ': ' . $cms_mime_type . ' vs ' . $mime_type);
+        }
+
+        $this->assertTrue($found_bin);
+    }
+
+    public function testApacheMimeTypeConsistency()
+    {
+        require_code('mime_types');
+
+        $url = 'https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types';
+        $c = http_get_contents($url);
+
+        $found_bin = false;
+
+        $matches = array();
+        $num_matches = preg_match_all('#^\#?\s*([^\s]*' . '/[^\s]*)\t+([^\t]+)$#m', $c, $matches);
+        $exts = array();
+        for ($i = 0; $i < $num_matches; $i++) {
+            $exts = $matches[2][$i];
+            $mime_type = $matches[1][$i];
+
+            foreach (explode(' ', $exts) as $ext) {
+                if ($ext == 'bin') { // Needed for security
+                    $this->assertTrue($mime_type == 'application/octet-stream');
+                    $found_bin = true;
+                }
+
+                // Things 'incorrect' in Apache
+                if (in_array(serialize(array($ext, $mime_type)), array(
+                    serialize(array('aac', 'audio/x-aac')),
+                    serialize(array('xml', 'application/xml')),
+                    serialize(array('xsl', 'application/xml')),
+                    serialize(array('mp2', 'audio/mpeg')),
+                    serialize(array('wav', 'audio/x-wav')),
+                    serialize(array('tpl', 'application/vnd.groove-tool-template')),
+                    serialize(array('f4v', 'video/x-f4v')),
+                    serialize(array('m4v', 'video/x-m4v')),
+                    serialize(array('avi', 'video/x-msvideo')),
+                ))) {
+                    continue;
+                }
+
+                $cms_mime_type = get_mime_type($ext, true);
+                $this->assertTrue(($cms_mime_type == $mime_type) || ($cms_mime_type == 'application/octet-stream') || ($mime_type == 'application/octet-stream'), 'Inconsistency between Apache mime types and Composr: ' . $ext . ': ' . $cms_mime_type . ' vs ' . $mime_type);
+            }
+        }
+
+        $this->assertTrue($found_bin);
+    }
+
+    public function testCodeTypes()
+    {
+        require_code('files2');
+        $php_files = get_directory_contents(get_file_base(), '', IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, array('php'));
+        $exts = array();
+        foreach ($php_files as $path) {
+            $c = file_get_contents($path);
+            $matches = array();
+            $num_matches = preg_match_all('#\.(\w{3})\'#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $ext = $matches[1][$i];
+
+                if (preg_match('#^(\d+em|\d+)$#', $ext) != 0) {
+                    continue;
+                }
+
+                $exts[$ext] = true;
+            }
+        }
+        $file_types = array_keys($exts);
+        sort($file_types);
+        $file_types = array_diff($file_types, array('MAD', 'MAI', 'MYD', 'MYI', 'alt', 'api', 'bat', 'cat', 'cgi', 'cms', 'com', 'crt', 'dir', 'dll', 'for', 'gcd', 'gid', 'git', 'inc', 'inf', 'jit', 'key', 'lcd', 'low', 'max', 'min', 'msg', 'net', 'old', 'org', 'pem', 'pid', 'pre', 'pwl', 'pws', 'rel', 'rev', 'src', 'swf', 'tcp', 'tld', 'tmp', 'uid', 'xap', 'xxx')); // Lots of stuff that is not needed to have any explicit handling
+
+        $diff = array_diff($file_types, $this->file_types);
+        $this->assertTrue(count($diff) == 0, 'File types used in code unknown to mime_types.php: ' . serialize($diff));
+    }
+
     public function testTrackerValidTypes()
     {
         $path = get_file_base() . '/tracker/config/config_inc.php';
