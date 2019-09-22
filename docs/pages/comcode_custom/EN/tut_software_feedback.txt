@@ -560,7 +560,7 @@ A [b]supported[/b] version is a previous major version where the initial release
  - [b]Alpha[/b]/[b]Beta[/b] version. ocProducts will typically release the next new beta version with all bugs up to the major flaw fixed, but there are no guarantees. These versions are also together known as 'bleeding edge'.
  - [b]Mainline[/b] version. ocProducts will release a new version with all bugs fixed.
  - [b]Supported[/b] version. ocProducts will release a new version with only the major flaws fixed, as any minor bugs truly will be minor as a whole new version had been developed before they were found. Note that any installation issues or compatibility issues with new software are degraded to minor flaws when considering the [b]supported[/b] version, and hence not fixed in it.
- - [b]EOL[/b] version (end of life). No flaws are handled except when there is an active support contract with particular customers (in which case fixes would only be sent to those customers and to the git repository).
+ - [b]EOL[/b] version (end-of-life). No flaws are handled except when there is an active support contract with particular customers (in which case fixes would only be sent to those customers and to the git repository).
 
 Please note that we don't usually immediately release a new version when there is a flaw. We usually put out a hotfix, then a new patch release every few months.
 
