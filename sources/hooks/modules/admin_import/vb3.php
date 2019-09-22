@@ -517,7 +517,7 @@ class Hook_vb3
                     }
                 }
 
-                import_id_remap_put('cpf_member', strval($member['userid']), '1');
+                import_id_remap_put('cpf_member', strval($member['userid']), 1);
             }
 
             $row_start += 200;
@@ -933,10 +933,10 @@ class Hook_vb3
             require_code('files');
 
             $filename = find_derivative_filename('uploads/' . $sections, $filename);
-            $path = get_custom_file_base() . '/uploads/' . $sections . '/' . $filename . ($obfuscate ? '.dat' : '');
+            $path = get_custom_file_base() . '/uploads/' . $sections . '/' . $filename . ($obfuscate ? '.bin' : '');
             cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-            $url = 'uploads/' . $sections . '/' . urlencode($filename) . ($obfuscate ? '.dat' : '');
+            $url = 'uploads/' . $sections . '/' . urlencode($filename) . ($obfuscate ? '.bin' : '');
 
             if ($thumbnail_data == '') {
                 if ($thumbnail) {
