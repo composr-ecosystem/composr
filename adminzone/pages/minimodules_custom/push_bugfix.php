@@ -493,7 +493,7 @@ function git_find_uncommitted_files()
     foreach ($lines as $line) {
         $matches = array();
         if (preg_match('#\t(both )?modified:\s+(.*)$#', $line, $matches) != 0) {
-            if (($matches[2] != 'data/files.dat') && (basename($matches[2]) != 'push_bugfix.php')) {
+            if (($matches[2] != 'data/files.bin') && (basename($matches[2]) != 'push_bugfix.php')) {
                 $file_addon = $GLOBALS['SITE_DB']->query_select_value_if_there('addons_files', 'addon_name', array('filename' => $matches[2]));
                 if (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $file_addon . '.php')) {
                     $file_addon = null;

@@ -134,7 +134,7 @@ function get_mime_types($as_admin)
         'torrent' => 'application/x-bittorrent',
 
         // Misc data
-        'dat' => 'application/octet-stream',
+        'bin' => 'application/octet-stream',
     );
     if (file_exists(get_file_base() . '/data/jwplayer.flash.swf')) {
         $mime_types['flv'] = 'video/x-flv';

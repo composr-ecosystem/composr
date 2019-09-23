@@ -37,7 +37,7 @@ function incoming_uploads_script()
         make_missing_directory($path);
     }
 
-    $savename = 'uploads/incoming/' . uniqid('', true) . '.dat';
+    $savename = 'uploads/incoming/' . uniqid('', true) . '.bin';
 
     if (array_key_exists('file', $_FILES)) { // Nice mime upload
         if (is_uploaded_file($_FILES['file']['tmp_name'])) {

@@ -132,7 +132,7 @@ class Hook_admin_stats_search
         $output = create_pie_chart($data);
         $ob->save_graph('Global-Search', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => '980eb41a9c3f73edc67c842dd8573fcc', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Search.xml', 'TITLE' => do_lang_tempcode('SEARCH_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_SEARCH_STATISTICS')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => '980eb41a9c3f73edc67c842dd8573fcc', 'GRAPH' => $ob->get_stats_url('Global-Search'), 'TITLE' => do_lang_tempcode('SEARCH_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_SEARCH_STATISTICS')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => '727a59e061727c4a1e24345cecb769aa', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list));
 

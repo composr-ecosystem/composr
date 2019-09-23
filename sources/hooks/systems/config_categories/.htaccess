@@ -1,6 +1,3 @@
 order deny,allow
 deny from all
 
-<Files ~ "static_cache.php">
-  Allow from all
-</Files>

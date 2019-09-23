@@ -278,7 +278,7 @@ class Module_cms_tutorials extends Standard_crud_module
 
         log_it('ADD_TUTORIAL', strval($id), $title);
 
-        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.dat');
+        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
 
         return strval($id);
     }
@@ -327,7 +327,7 @@ class Module_cms_tutorials extends Standard_crud_module
 
         log_it('EDIT_TUTORIAL', strval($id), $title);
 
-        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.dat');
+        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
     }
 
     /**
@@ -349,6 +349,6 @@ class Module_cms_tutorials extends Standard_crud_module
 
         log_it('DELETE_TUTORIAL', strval($id), $title);
 
-        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.dat');
+        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
     }
 }

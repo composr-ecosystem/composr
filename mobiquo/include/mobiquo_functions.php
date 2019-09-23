@@ -25,7 +25,7 @@ function initialise_mobiquo()
         return;
     }
 
-    define('TAPATALK_LOG', dirname(dirname(__FILE__)) . '/logging.dat'); // Make this file (writeable) if you want automatic logging
+    define('TAPATALK_LOG', dirname(dirname(__FILE__)) . '/logging.bin'); // Make this file (writeable) if you want automatic logging
     define('TAPATALK_REQUEST_ID', md5(uniqid('', true)));
 
     $already_initialised = true;
@@ -141,7 +141,7 @@ function request_helper_get_file($request_method)
         return 'attachment';
     }
 
-    $data_file = dirname(__FILE__) . '/request_helper.dat';
+    $data_file = dirname(__FILE__) . '/request_helper.bin';
     if (!is_file($data_file)) {
         $func_file_mapping = array();
 

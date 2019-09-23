@@ -151,7 +151,7 @@ class Hook_admin_stats_downloads
         $output = create_bar_chart(array_slice($downloads, $start, $max), do_lang('TITLE'), do_lang('COUNT_DOWNLOADS'), '', '');
         $ob->save_graph('Global-Downloads', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => 'd2cd5da7cf2139f750d4373acf6149e8', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Downloads.xml', 'TITLE' => do_lang_tempcode('SECTION_DOWNLOADS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_DOWNLOADS_STATISTICS')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => 'd2cd5da7cf2139f750d4373acf6149e8', 'GRAPH' => $ob->get_stats_url('Global-Downloads'), 'TITLE' => do_lang_tempcode('SECTION_DOWNLOADS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_DOWNLOADS_STATISTICS')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => '4b8e0478231473d690e947ffc4580840', 'TITLE' => $title, 'GRAPH' => $graph, 'STATS' => $list));
 

@@ -30,7 +30,7 @@
 
 # Ensure those won't be messed up with
 *.class binary
-*.dat binary
+*.bin binary
 *.db binary
 *.dll binary
 *.exe binary
