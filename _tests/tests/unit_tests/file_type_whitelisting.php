@@ -39,6 +39,8 @@ class file_type_whitelisting_test_set extends cms_test_case
     {
         require_code('mime_types');
 
+        $cms_mime_types = get_mime_types(true);
+
         $url = 'https://raw.githubusercontent.com/microsoft/computerscience/f44092740662393051af0ed1c2fa3b2443660b79/Labs/Azure%20Services/Azure%20Storage/Solutions/Intellipix/.vs/config/applicationhost.config';
         $c = http_get_contents($url);
 
@@ -69,12 +71,18 @@ class file_type_whitelisting_test_set extends cms_test_case
                 serialize(array('woff', 'font/x-woff')),
                 serialize(array('woff2', 'application/font-woff2')),
                 serialize(array('zip', 'application/x-zip-compressed')),
+                serialize(array('csv', 'application/octet-stream')),
+                serialize(array('cur', 'application/octet-stream')),
+                serialize(array('psd', 'application/octet-stream')),
+                serialize(array('rar', 'application/octet-stream')),
+                serialize(array('exe', 'application/octet-stream')),
+                serialize(array('ttf', 'application/octet-stream')),
             ))) {
                 continue;
             }
 
-            $cms_mime_type = get_mime_type($ext, true);
-            $this->assertTrue(($cms_mime_type == $mime_type) || ($cms_mime_type == 'application/octet-stream') || ($mime_type == 'application/octet-stream'), 'Inconsistency between IIS mime types and Composr: ' . $ext . ': ' . $cms_mime_type . ' vs ' . $mime_type);
+            $cms_mime_type = array_key_exists($ext, $cms_mime_types) ? $cms_mime_types[$ext] : null;
+            $this->assertTrue(($cms_mime_type == $mime_type) || ($cms_mime_type === null), 'Inconsistency between IIS mime types and Composr: ' . $ext . ': ' . $cms_mime_type . ' vs ' . $mime_type);
         }
 
         $this->assertTrue($found_bin);
@@ -83,6 +91,8 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testApacheMimeTypeConsistency()
     {
         require_code('mime_types');
+
+        $cms_mime_types = get_mime_types(true);
 
         $url = 'https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types';
         $c = http_get_contents($url);
@@ -117,8 +127,8 @@ class file_type_whitelisting_test_set extends cms_test_case
                     continue;
                 }
 
-                $cms_mime_type = get_mime_type($ext, true);
-                $this->assertTrue(($cms_mime_type == $mime_type) || ($cms_mime_type == 'application/octet-stream') || ($mime_type == 'application/octet-stream'), 'Inconsistency between Apache mime types and Composr: ' . $ext . ': ' . $cms_mime_type . ' vs ' . $mime_type);
+                $cms_mime_type = array_key_exists($ext, $cms_mime_types) ? $cms_mime_types[$ext] : null;
+                $this->assertTrue(($cms_mime_type == $mime_type) || ($cms_mime_type === null), 'Inconsistency between Apache mime types and Composr: ' . $ext . ': ' . $cms_mime_type . ' vs ' . $mime_type);
             }
         }
 
