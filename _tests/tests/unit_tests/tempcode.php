@@ -418,19 +418,19 @@ bar
 <table><tbody>
 <tr>
 	<td>
-
+		{a} {b} {c}
 	</td>
 
 	<td>
-
+		{a} {b} {c}
 	</td>
 </tr><tr>
 	<td>
-
+		{a} {b} {c}
 	</td>
 
 	<td>
-
+		{a} {b} {c}
 	</td>
 </tr>
 </tbody></table>';
