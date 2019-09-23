@@ -463,7 +463,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
                                              'sites' => '',
 
                                              // Tapatalk
-                                             'request_helper.dat' => 'mobiquo/include',
+                                             'request_helper.bin' => 'mobiquo/include',
 
                                              // API docs
                                              'api' => 'docs',
@@ -513,7 +513,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
                                 // Temporary files
                                 'tmp' => '.*',
                                 'inc' => 'safe_mode_temp',
-                                'dat' => 'safe_mode_temp',
+                                'bin' => 'safe_mode_temp',
                                 'bak' => '.*',
                                 'old' => '.*',
                                 'cms' => '.*', // Installers and upgraders
@@ -543,7 +543,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
             // Bundled stuff that is not necessarily in a *_custom dir yet is volatile
             '_config.php' => '',
             'map.ini' => 'themes',
-            'functions.dat' => 'data_custom',
+            'functions.bin' => 'data_custom',
             'errorlog.php' => 'data_custom',
             'execute_temp.php' => 'data_custom',
             'upgrader.cms.tmp' => 'data_custom',
@@ -554,9 +554,9 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
     if ((($bitmask & IGNORE_BUNDLED_VOLATILE) != 0) || (($bitmask & IGNORE_BUNDLED_UNSHIPPED_VOLATILE) != 0)) {
         $ignore_filenames_and_dir_names += array(
             // Bundled stuff that is not necessarily in a *_custom dir yet is volatile and should not be included in shipped builds
-            'chat_last_full_check.dat' => 'data_custom/modules/chat',
-            'chat_last_msg.dat' => 'data_custom/modules/chat',
-            'latest.dat' => 'data_custom/modules/web_notifications',
+            'chat_last_full_check.bin' => 'data_custom/modules/chat',
+            'chat_last_msg.bin' => 'data_custom/modules/chat',
+            'latest.bin' => 'data_custom/modules/web_notifications',
             'permissioncheckslog.php' => 'data_custom',
             'failover_rewritemap.txt' => 'data_custom',
             'failover_rewritemap__mobile.txt' => 'data_custom',
@@ -605,7 +605,7 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
     }
 
     if (($bitmask & IGNORE_CUSTOM_DIR_SUPPLIED_CONTENTS) != 0) { // Ignore all override directories, for both users and addons
-        if (($dir == 'data_custom') && (in_array($filename, array('errorlog.php', 'execute_temp.php', 'functions.dat')))) {
+        if (($dir == 'data_custom') && (in_array($filename, array('errorlog.php', 'execute_temp.php', 'functions.bin')))) {
             // These are allowed, as they are volatile yet bundled. Use IGNORE_BUNDLED_VOLATILE if you don't want them.
         } else {
             $ignore_filename_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(

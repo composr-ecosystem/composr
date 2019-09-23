@@ -1,3 +1,8 @@
+# Stop any potential content-type sniffing vulnerabilities
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
 # Disable inaccurate security scanning (Composr has its own). This disabling only works with modsecurity1 unfortunately.
 <IfModule mod_security.c>
 SecFilterEngine Off

@@ -507,7 +507,7 @@ function erase_persistent_cache()
     if (is_dir($path)) {
         $d = opendir($path);
         while (($e = readdir($d)) !== false) {
-            if (substr($e, -4) == '.dat') {
+            if (substr($e, -4) == '.bin') {
                 @unlink(get_custom_file_base() . '/safe_mode_temp/' . $e);
             }
         }

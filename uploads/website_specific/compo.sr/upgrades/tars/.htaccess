@@ -10,3 +10,10 @@ php_value engine off
 <IfModule mod_php7.c>
 php_value engine off
 </IfModule>
+
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+Header set Content-Security-Policy "default-src 'none'"
+Header set X-XSS-Protection "1"
+</IfModule>
+

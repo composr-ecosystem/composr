@@ -37,12 +37,12 @@ class Hook_commandr_command_alien_check
             return array('', do_command_help('alien_check', array('h'), array()), '', '');
         } else {
             require_code('upgrade');
-            $master_data = @unserialize(file_get_contents(get_file_base() . '/data/files.dat'));
+            $master_data = @unserialize(file_get_contents(get_file_base() . '/data/files.bin'));
             if ($master_data === false) {
                 $master_data = array();
             }
             $addon_files = collapse_2d_complexity('filename', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', array('filename', 'addon_name')));
-            list($result,) = check_alien($addon_files, file_exists(get_file_base() . '/data/files_previous.dat') ? unserialize(file_get_contents(get_file_base() . '/data/files_previous.dat')) : array(), $master_data, get_file_base() . '/', '', true);
+            list($result,) = check_alien($addon_files, file_exists(get_file_base() . '/data/files_previous.bin') ? unserialize(file_get_contents(get_file_base() . '/data/files_previous.bin')) : array(), $master_data, get_file_base() . '/', '', true);
             if ($result == '') {
                 $result = do_lang('NO_ACTION_REQUIRED');
             } else {

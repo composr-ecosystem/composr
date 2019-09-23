@@ -147,7 +147,7 @@ class DatabaseRepair
             );
         }
 
-        $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.dat'));
+        $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.bin'));
 
         $expected_tables = array();
         foreach ($data['tables'] as $table_name => $table) {

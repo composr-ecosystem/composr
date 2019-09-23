@@ -204,12 +204,12 @@ Tapatalk uses XML-RPC for communication. A simple test harness and testing frame
 
 Composr has been configured to generate any errors in Tapatalk\'s XML-RPC format, via the enabling and catching/handling of Exceptions.
 
-If a [tt]mobiquo/logging.dat[/tt] file exists and is writable then full logging will be written to it.
+If a [tt]mobiquo/logging.bin[/tt] file exists and is writable then full logging will be written to it.
 Never use this on a live site as it is not secure, unless you limit access via an [tt]data_custom/.htaccess[/tt] file:
 [code]
 # < Apache 2.4
 <IfModule !mod_authz_core.c>
-    <Files logging.dat>
+    <Files logging.bin>
         Order Allow,Deny
         Deny from all
     </Files>
@@ -217,7 +217,7 @@ Never use this on a live site as it is not secure, unless you limit access via a
 
 # >= Apache 2.4
 <IfModule mod_authz_core.c>
-    <Files logging.dat>
+    <Files logging.bin>
         Require all denied
     </Files>
 </IfModule>

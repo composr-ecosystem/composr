@@ -184,8 +184,8 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
 
     // Make actual upgrader
     if ($old_base_path !== null) {
-        @copy($old_base_path . '/data/files.dat', $wip_path . '/data/files_previous.dat');
-        fix_permissions($wip_path . '/data/files_previous.dat');
+        @copy($old_base_path . '/data/files.bin', $wip_path . '/data/files_previous.bin');
+        fix_permissions($wip_path . '/data/files_previous.bin');
     }
     $log_file = fopen(get_file_base() . '/uploads/website_specific/compo.sr/upgrades/tarring.log', GOOGLE_APPENGINE ? 'wb' : 'wt');
     flock($log_file, LOCK_EX);

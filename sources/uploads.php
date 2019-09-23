@@ -190,7 +190,7 @@ function is_plupload($fake_prepopulation = false)
 
         if ((preg_match('#^hidFileID\_#i', $key) != 0) && ($value != '-1')) {
             // Get the incoming uploads appropriate database table row
-            if (substr($value, -4) == '.dat') { // By .dat name
+            if (substr($value, -4) == '.bin') { // By .bin name
                 $filename = post_param_string(str_replace('hidFileID', 'hidFileName', $key), '');
                 if ($filename == '') {
                     continue; // Was cancelled during plupload, but plupload can't cancel so was allowed to finish. So we have hidFileID but not hidFileName.
@@ -266,7 +266,7 @@ function is_plupload($fake_prepopulation = false)
  * @param  ID_TEXT $specify_name The name of the POST parameter storing the URL (if '', then no POST parameter). Parameter value may be blank.
  * @param  ID_TEXT $attach_name The name of the HTTP file parameter storing the upload (if '', then no HTTP file parameter). No file necessarily is uploaded under this.
  * @param  ID_TEXT $upload_folder The folder name where we will put this upload
- * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .dat as well, 3=only obfuscate if we need to)
+ * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .bin as well, 3=only obfuscate if we need to)
  * @set    0 1 2 3
  * @param  integer $enforce_type The type of upload it is (bitmask, from CMS_UPLOAD_* constants)
  * @param  boolean $make_thumbnail Make a thumbnail (this only makes sense, if it is an image)
@@ -325,7 +325,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
         // ID of the upload from the incoming uploads database table
         if (!is_null($row_id_file_value)) { // plupload was used
             // Get the incoming upload's appropriate DB table row
-            if ((substr($row_id_file_value, -4) == '.dat') && (strpos($row_id_file_value, ':') === false)) {
+            if ((substr($row_id_file_value, -4) == '.bin') && (strpos($row_id_file_value, ':') === false)) {
                 $path = 'uploads/incoming/' . filter_naughty($row_id_file_value);
                 if (file_exists(get_custom_file_base() . '/' . $path)) {
                     $filearrays[$_attach_name] = array('type' => 'plupload', 'name' => post_param_string(str_replace('hidFileID', 'hidFileName', $row_id_file)), 'tmp_name' => get_custom_file_base() . '/' . $path, 'size' => filesize(get_custom_file_base() . '/' . $path));
@@ -452,7 +452,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
             }
             if (is_null($filename)) {
                 if (($obfuscate != 0) && ($obfuscate != 3)) {
-                    $ext = (($obfuscate == 2) && (!is_image($HTTP_FILENAME))) ? 'dat' : get_file_extension($HTTP_FILENAME);
+                    $ext = (($obfuscate == 2) && (!is_image($HTTP_FILENAME))) ? 'bin' : get_file_extension($HTTP_FILENAME);
 
                     $filename = preg_replace('#\..*\.#', '.', $HTTP_FILENAME) . ((substr($HTTP_FILENAME, -strlen($ext) - 1) == '.' . $ext) ? '' : ('.' . $ext));
                     $place = $upload_folder_full . '/' . $filename;
@@ -833,7 +833,7 @@ function _check_enforcement_of_type($member_id, $file, $enforce_type, $accept_er
  * @param  ID_TEXT $upload_folder The folder name where we will put this upload
  * @param  PATH $upload_folder_full Full folder path
  * @param  integer $enforce_type The type of upload it is (bitmask, from CMS_UPLOAD_* constants)
- * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .dat as well)
+ * @param  integer $obfuscate Whether to obfuscate file names so the URLs can not be guessed/derived (0=do not, 1=do, 2=make extension .bin as well)
  * @set    0 1 2
  * @param  boolean $accept_errors Whether to accept upload errors
  * @param  ?string $filename Filename to use (null: choose one)
@@ -885,7 +885,7 @@ function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folde
             sync_file($place);
         } else { // A result of some randomness
             $ext = get_file_extension($file);
-            $ext = (($obfuscate == 2) && (!is_image($file))) ? 'dat' : get_file_extension($file);
+            $ext = (($obfuscate == 2) && (!is_image($file))) ? 'bin' : get_file_extension($file);
 
             $filename = uniqid('', true) . '.' . $ext;
             $place = $upload_folder_full . '/' . $filename;

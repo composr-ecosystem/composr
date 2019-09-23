@@ -143,7 +143,6 @@ class Hook_addon_registry_testing_platform
             'lang_custom/EN/phpdoc.ini',
             'sources_custom/php.php',
             'sources_custom/phpstub.php',
-            '_tests/codechecker/.htaccess',
             '_tests/codechecker/build.sh',
             '_tests/codechecker/code_quality.php',
             '_tests/codechecker/codechecker.app/.htaccess',

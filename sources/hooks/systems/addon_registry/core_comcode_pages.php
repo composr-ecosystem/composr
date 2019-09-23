@@ -142,6 +142,8 @@ class Hook_addon_registry_core_comcode_pages
             'data/modules/cms_comcode_pages/EN/rules_balanced.txt',
             'data/modules/cms_comcode_pages/EN/rules_corporate.txt',
             'data/modules/cms_comcode_pages/EN/rules_liberal.txt',
+            'data_custom/modules/cms_comcode_pages/.htaccess',
+            'data_custom/modules/cms_comcode_pages/index.html',
             'themes/default/images/under_construction_animated.gif',
             'themes/default/images/icons/24x24/menu/pages/guestbook.png',
             'themes/default/images/icons/48x48/menu/pages/guestbook.png',

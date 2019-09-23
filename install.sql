@@ -2170,11 +2170,11 @@ INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1970, 'core', 's
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1971, 'core', 'data/confirm_session.php');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1972, 'core', 'data/cron_bridge.php');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1973, 'core', 'data/curl-ca-bundle.crt');
-INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1974, 'core', 'data/db_meta.dat');
+INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1974, 'core', 'data/db_meta.bin');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1975, 'core', 'data/empty.html');
-INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1976, 'core', 'data/files.dat');
-INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1977, 'core', 'data/files_previous.dat');
-INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1978, 'core', 'data/guids.dat');
+INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1976, 'core', 'data/files.bin');
+INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1977, 'core', 'data/files_previous.bin');
+INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1978, 'core', 'data/guids.bin');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1979, 'core', 'data/iframe.php');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1980, 'core', 'data/images/index.html');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1981, 'core', 'data/images/.htaccess');
@@ -2196,7 +2196,7 @@ INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1996, 'core', 'd
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1997, 'core', 'data/soundmanager/index.html');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1998, 'core', 'data/sounds/index.html');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (1999, 'core', 'data_custom/execute_temp.php');
-INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (2000, 'core', 'data_custom/functions.dat');
+INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (2000, 'core', 'data_custom/functions.bin');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (2001, 'core', 'data_custom/index.html');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (2002, 'core', 'data_custom/modules/index.html');
 INSERT INTO cms_addons_files (id, addon_name, filename) VALUES (2003, 'core', 'cms/index.php');

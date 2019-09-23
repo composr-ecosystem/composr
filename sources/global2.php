@@ -157,7 +157,7 @@ function init__global2()
         require_code('chat_poller');
         chat_poller();
     }
-    if ((running_script('notifications')) && (get_param_integer('time_barrier', null) !== null) && (@filemtime(get_custom_file_base() . '/data_custom/modules/web_notifications/latest.dat') <= get_param_integer('time_barrier')) && (get_param_string('type', '') == 'poller')) {
+    if ((running_script('notifications')) && (get_param_integer('time_barrier', null) !== null) && (@filemtime(get_custom_file_base() . '/data_custom/modules/web_notifications/latest.bin') <= get_param_integer('time_barrier')) && (get_param_string('type', '') == 'poller')) {
         prepare_for_known_ajax_response();
 
         header('Content-Type: application/xml');

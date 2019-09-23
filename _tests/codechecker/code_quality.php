@@ -113,8 +113,8 @@ $MADE_CALL = null;
 
 // Load up table info
 global $TABLE_FIELDS;
-if (file_exists($COMPOSR_PATH . '/data/db_meta.dat') && (filemtime($COMPOSR_PATH . '/index.php') < filemtime($COMPOSR_PATH . '/data/db_meta.dat'))) {
-    $_table_fields = unserialize(file_get_contents($COMPOSR_PATH . '/data/db_meta.dat'));
+if (file_exists($COMPOSR_PATH . '/data/db_meta.bin') && (filemtime($COMPOSR_PATH . '/index.php') < filemtime($COMPOSR_PATH . '/data/db_meta.bin'))) {
+    $_table_fields = unserialize(file_get_contents($COMPOSR_PATH . '/data/db_meta.bin'));
     $TABLE_FIELDS = $_table_fields['tables'];
 } else {
     $TABLE_FIELDS = array();
@@ -692,7 +692,7 @@ function load_function_signatures()
     // Load up function info
     global $FUNCTION_SIGNATURES;
     global $COMPOSR_PATH;
-    $functions_file_path = file_exists($COMPOSR_PATH . '/data_custom/functions.dat') ? ($COMPOSR_PATH . '/data_custom/functions.dat') : 'functions.dat';
+    $functions_file_path = file_exists($COMPOSR_PATH . '/data_custom/functions.bin') ? ($COMPOSR_PATH . '/data_custom/functions.bin') : 'functions.bin';
     $functions_file = file_get_contents($functions_file_path);
     $FUNCTION_SIGNATURES = unserialize($functions_file);
 }
