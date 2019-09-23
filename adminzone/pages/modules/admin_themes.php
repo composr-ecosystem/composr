@@ -1674,7 +1674,7 @@ class Module_admin_themes
             $guids = array();
             $file_bits = explode('/', $file);
             $clean_file = str_replace('.' . get_file_extension($file), '', $file_bits[count($file_bits) - 1]);
-            $_guids = @unserialize(@file_get_contents(get_file_base() . '/data/guids.dat'));
+            $_guids = @unserialize(@file_get_contents(get_file_base() . '/data/guids.bin'));
             if (($_guids !== false) && (array_key_exists($clean_file, $_guids))) {
                 foreach ($_guids[$clean_file] as $_guid) {
                     $guids[] = array('FILENAME' => $_guid[0], 'LINE' => integer_format($_guid[1]), 'THIS_GUID' => $_guid[2]);

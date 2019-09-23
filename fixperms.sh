@@ -2,14 +2,21 @@
 
 # NB: This script is not needed if you have suexec
 
+# Git hooks should be writable, and linked in correctly
+if [ -e ".git" ]; then
+	echo "0/4 Setting up git hooks to run correctly"
+	git config core.hooksPath git-hooks
+	chmod a+x git-hooks/*
+fi
+
 # Clear cache first, as we don't chmod cache files in this code
 sh decache.sh
 echo "1/4 Cleared caches"
 
 # Reset to good start state first
 touch _config.php
-find . -type f -not -path "./sites/*" -not -path "./servers/*" -not -path "./_old/*" -not -path "./uploads/website_specific/compo.sr/upgrades/full/*" -exec chmod 644 {} \;
-find . -type d -not -path "./sites/*" -not -path "./servers/*" -not -path "./_old/*" -not -path "./uploads/website_specific/compo.sr/upgrades/full/*" -exec chmod 755 {} \;
+find . -type f -not -path "./sites/*" -not -path "./servers/*" -not -path "./_old/*" -not -path "./uploads/website_specific/compo.sr/upgrades/full/*" -not -path "./git-hooks" -exec chmod 644 {} \;
+find . -type d -not -path "./sites/*" -not -path "./servers/*" -not -path "./_old/*" -not -path "./uploads/website_specific/compo.sr/upgrades/full/*" -not -path "./git-hooks" -exec chmod 755 {} \;
 echo "2/4 Reset all permissions to good default state"
 
 # Commonly the uploads directory can be missing in git repositories backing up live sites (due to size); but we need it
@@ -28,13 +35,6 @@ if [ -e "sites" ]; then
 else
 	find uploads/* -not -path "uploads/website_specific/compo.sr/upgrades/full/*" -exec chmod a+w {} \;
 	echo "4/4 Fixed permissions of uploads"
-fi
-
-# Git hooks should be writable, and linked in correctly
-if [ -e ".git" ]; then
-	echo "Setting up git hooks to run correctly"
-	git config core.hooksPath git-hooks
-	chmod a+x git-hooks/*
 fi
 
 # Messages...

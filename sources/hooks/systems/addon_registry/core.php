@@ -618,7 +618,6 @@ class Hook_addon_registry_core
             'sources/hooks/systems/login_providers/httpauth.php',
             'data/question_ui.php',
             'data/crossdomain.php',
-            'data/.htaccess',
             'data_custom/.htaccess',
             'data/xml_config/.htaccess',
             'data/xml_config/index.html',
@@ -900,9 +899,11 @@ class Hook_addon_registry_core
             'themes/default/css/font_sizer.css',
             'themes/default/templates/FONT_SIZER.tpl',
             'themes/default/css/index.html',
+            'themes/default/css/.htaccess',
             'themes/default/css/no_cache.css',
             'data/editarea/reg_syntax/index.html',
             'themes/default/css_custom/index.html',
+            'themes/default/css_custom/.htaccess',
             'themes/default/index.html',
             'themes/default/templates/.htaccess',
             'themes/default/templates/index.html',
@@ -985,11 +986,11 @@ class Hook_addon_registry_core
             'data/confirm_session.php',
             'data/cron_bridge.php',
             'data/curl-ca-bundle.crt',
-            'data/db_meta.dat',
+            'data/db_meta.bin',
             'data/empty.html',
-            'data/files.dat',
-            'data/files_previous.dat',
-            'data/guids.dat',
+            'data/files.bin',
+            'data/files_previous.bin',
+            'data/guids.bin',
             'data/iframe.php',
             'data/images/index.html',
             'data/images/.htaccess',
@@ -1011,7 +1012,7 @@ class Hook_addon_registry_core
             'data/soundmanager/index.html',
             'data/sounds/index.html',
             'data_custom/execute_temp.php',
-            'data_custom/functions.dat',
+            'data_custom/functions.bin',
             'data_custom/index.html',
             'data_custom/modules/index.html',
             'cms/index.php',
@@ -1410,11 +1411,14 @@ class Hook_addon_registry_core
 
             // Admin theme
             'themes/admin/css/index.html',
+            'themes/admin/css/.htaccess',
             'themes/admin/css/adminzone.css',
             'themes/admin/css_custom/.htaccess',
             'themes/admin/css_custom/index.html',
             'themes/admin/images/index.html',
             'themes/admin/images_custom/index.html',
+            'themes/admin/images/.htaccess',
+            'themes/admin/images_custom/.htaccess',
             'themes/admin/index.html',
             'themes/admin/templates/.htaccess',
             'themes/admin/templates/GLOBAL_HTML_WRAP.tpl',
@@ -2259,16 +2263,11 @@ class Hook_addon_registry_core
         return array(
             lorem_globalise(do_lorem_template('tempcode_test', array(
                 'EMPTY1' => '',
-                'EMPTY2' => '',
+                'EMPTY2' => new Tempcode(),
                 'NONEMPTY' => lorem_word(),
-                'PASSED' => lorem_word(),
-                'ARRAY' => array(
-                    array(
-                        'A' => '',
-                        'B' => '',
-                        'C' => '',
-                    )
-                )
+                'PASSED' => 'This is a passed parameter',
+                'SIMPLE_ARRAY' => array('1', '2', '3'),
+                'ARRAY' => array(array('a' => 'A1', 'b' => 'B1', 'c' => 'C1'), array('a' => 'A2', 'b' => 'B2', 'c' => 'C2'), array('a' => 'A3', 'b' => 'B3', 'c' => 'C3'), array('a' => 'A4', 'b' => 'B4', 'c' => 'C4')),
             ), null, false, null, '.txt', 'text'), null, '', true)
         );
     }

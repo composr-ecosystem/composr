@@ -395,7 +395,7 @@
 <table><tbody>
 {+START,LOOP,ARRAY,2,<tr>,</tr>,a,DESC}
 	<td>
-		{A} {B} {C}
+		{a} {b} {c}
 	</td>
 {+END}
 </tbody></table>

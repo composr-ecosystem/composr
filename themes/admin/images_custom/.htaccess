@@ -1,0 +1,30 @@
+# Some Apache setups will look at double extensions and execute any that look interesting to it - bad for security. Composr filters those though.
+
+SetHandler default-handler
+AddType text/plain php
+
+<IfModule mod_php5.c>
+php_value engine off
+</IfModule>
+
+<IfModule mod_php7.c>
+php_value engine off
+</IfModule>
+
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+Header set Content-Security-Policy "default-src 'none'"
+Header set X-XSS-Protection "1"
+</IfModule>
+
+
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/gif "access plus 1 months"
+ExpiresByType image/jpg "access plus 1 months"
+ExpiresByType image/jpeg "access plus 1 months"
+ExpiresByType image/png "access plus 1 months"
+ExpiresByType image/vnd.microsoft.icon "access plus 1 months"
+ExpiresByType image/x-icon "access plus 1 months"
+ExpiresByType image/ico "access plus 1 months"
+</IfModule>
