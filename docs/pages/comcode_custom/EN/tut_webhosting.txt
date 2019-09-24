@@ -107,6 +107,7 @@ We require:
 We require:
  - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial);
   - Only Apache 2.4+ is fully supported
+  - It is assumed the [tt]AccessFileName[/tt] option is set to the default [tt].htaccess[/tt].
  - If you want URL Schemes or URL Redirects on Apache, [tt]mod_rewrite[/tt] must be enabled.
  - The CGI timeout on the server must not be lower than 60 seconds (which is the default on Apache).
  - That the web server is not overloaded with too many users, or has very poor performance.
