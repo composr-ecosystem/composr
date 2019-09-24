@@ -80,7 +80,7 @@
 *.bmp binary
 *.bz2 binary
 *.cur binary
-*.dat binary
+*.bin binary
 *.dmg binary
 *.doc binary
 *.docx binary

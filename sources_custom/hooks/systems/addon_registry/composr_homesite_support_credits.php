@@ -1741,6 +1741,7 @@ class Hook_addon_registry_composr_homesite_support_credits
             'tracker/wiki.php',
             'tracker/workflow_graph_img.php',
             'tracker/xmlhttprequest.php',
+            'tracker/uploads/index.html',
         );
     }
 }

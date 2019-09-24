@@ -209,7 +209,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_TOP_SEARCH
         CATEGORIES_SORT_ORDER
         GALLERY_DEFAULT_SORT_ORDER
-        GALLERY_NAME_ORDER
         DESCRIPTION_CATEGORIES_SORT_ORDER
         CONFIG_OPTION_galleries_sort_order_VALUE_add_date__ASC
         CONFIG_OPTION_galleries_sort_order_VALUE_add_date__DESC
@@ -5284,7 +5283,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         GALLERY_MEDIA_TITLE_REQUIRED
         GALLERY_MEMBER_SYNCED
         GALLERY_MODE_IS
-        GALLERY_NAME_ORDER
         GALLERY_PERMISSIONS
         GALLERY_REP_IMAGE
         GALLERY_SELECTORS

@@ -85,7 +85,7 @@ function cms_version_time_major()
 /**
  * Find the status of this branch version.
  *
- * @return string A VERSION_* constant.
+ * @return string A VERSION_* constant
  */
 function cms_version_branch_status()
 {
@@ -95,7 +95,7 @@ function cms_version_branch_status()
 /**
  * Find the EOL for this branch version.
  *
- * @return ?integer Timestamp of EOL (null: unknown).
+ * @return ?integer Timestamp of EOL (null: unknown)
  */
 function cms_version_branch_eol()
 {

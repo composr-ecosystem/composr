@@ -69,8 +69,8 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
         $url_safe = get_custom_base_url() . '/' . $url_safe;
     }
     $url = null;
-    $is_dat = (substr($url_safe, -4) == '.dat');
-    if ($tag == 'attachment' || $is_dat) {
+    $is_bin = (substr($url_safe, -4) == '.bin') || (substr($url_safe, -4) == '.dat')/*LEGACY*/;
+    if ($tag == 'attachment' || $is_bin) {
         $url = new Tempcode();
 
         $url->attach(find_script('attachment') . '?id=' . urlencode(strval($attachment_row['id'])));
@@ -81,8 +81,8 @@ function render_attachment($tag, $attributes, $attachment_row, $pass_id, $source
             $attributes['num_downloads'] = symbol_tempcode('ATTACHMENT_DOWNLOADS', array(strval($attachment_row['id']), '0'));
         }
 
-        if ($is_dat) {
-            $url_safe = $url->evaluate(); // We can't show file-path to a .dat, can't be downloaded and looks ugly
+        if ($is_bin) {
+            $url_safe = $url->evaluate(); // We can't show file-path to a .bin, can't be downloaded and looks ugly
         }
 
         $keep = symbol_tempcode('KEEP');

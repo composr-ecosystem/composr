@@ -45,7 +45,7 @@ class images_test_set extends cms_test_case
         $this->assertTrue(!is_image('test.ico', IMAGE_CRITERIA_GD_READ, /* $as_admin */ false));
         // May not be in PHP build $this->assertTrue(is_image('test.webp', IMAGE_CRITERIA_GD_READ, /*$as_admin*/false));
         // May not be in PHP build $this->assertTrue(is_image('test.bmp', IMAGE_CRITERIA_GD_READ, /*$as_admin*/false));
-        $this->assertTrue(!is_image('test.dat', IMAGE_CRITERIA_GD_READ, /* $as_admin */ false));
+        $this->assertTrue(!is_image('test.bin', IMAGE_CRITERIA_GD_READ, /* $as_admin */ false));
 
         $this->assertTrue(is_image('test.png', IMAGE_CRITERIA_GD_WRITE, /* $as_admin */ false));
         $this->assertTrue(is_image('test.jpg', IMAGE_CRITERIA_GD_WRITE, /* $as_admin */ false));
@@ -55,7 +55,7 @@ class images_test_set extends cms_test_case
         $this->assertTrue(!is_image('test.ico', IMAGE_CRITERIA_GD_WRITE, /* $as_admin */ false));
         // May not be in PHP build $this->assertTrue(is_image('test.webp', IMAGE_CRITERIA_GD_WRITE, /*$as_admin*/false));
         // May not be in PHP build $this->assertTrue(is_image('test.bmp', IMAGE_CRITERIA_GD_WRITE, /*$as_admin*/false));
-        $this->assertTrue(!is_image('test.dat', IMAGE_CRITERIA_GD_WRITE, /* $as_admin */ false));
+        $this->assertTrue(!is_image('test.bin', IMAGE_CRITERIA_GD_WRITE, /* $as_admin */ false));
 
         $this->assertTrue(is_image('test.png', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
         $this->assertTrue(is_image('test.jpg', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
@@ -65,7 +65,7 @@ class images_test_set extends cms_test_case
         $this->assertTrue(is_image('test.ico', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
         $this->assertTrue(!is_image('test.webp', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
         // Won't be in valid_images if not in PHP build $this->assertTrue(is_image('test.bmp', IMAGE_CRITERIA_WEBSAFE, /*$as_admin*/false));
-        $this->assertTrue(!is_image('test.dat', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
+        $this->assertTrue(!is_image('test.bin', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
 
         $this->assertTrue(!is_image('test.svg', IMAGE_CRITERIA_GD_READ, /* $as_admin */ true));
         $this->assertTrue(!is_image('test.svg', IMAGE_CRITERIA_WEBSAFE, /* $as_admin */ false));
@@ -1047,7 +1047,7 @@ class images_test_set extends cms_test_case
             return false;
         }
 
-        // Find quandrant centers, biased a bit towards edges to avoid problems with blending
+        // Find quadrant centers, biased a bit towards edges to avoid problems with blending
         $min_x = max(0, intval($dimensions[0] / 4) - 1);
         $min_y = max(0, intval($dimensions[1] / 4) - 1);
         $max_x = min($dimensions[0] - 1, intval($dimensions[0] * 0.75) + 1);

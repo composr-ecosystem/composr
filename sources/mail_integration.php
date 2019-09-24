@@ -421,7 +421,7 @@ abstract class EmailIntegration
                     )
                 )
             ) {
-                $filename = isset($structure->dparameters[0]) ? $structure->dparameters[0]->value : 'unknown.dat';
+                $filename = isset($structure->dparameters[0]) ? $structure->dparameters[0]->value : 'unknown.bin';
 
                 $this->log_message('Found attachment, ' . $filename . $qualifier_exp);
 
@@ -668,7 +668,7 @@ abstract class EmailIntegration
                 $errors[] = do_lang('MAIL_INTEGRATION_ATTACHMENT_OVER_QUOTA', clean_file_size($daily_quota * 1024 * 1024));
             }
 
-            $new_filename = preg_replace('#\..*#', '', $filename) . '.dat';
+            $new_filename = preg_replace('#\..*#', '', $filename) . '.bin';
             list($new_path, $new_url, $new_filename) = find_unique_path('uploads/attachments', $new_filename);
             cms_file_put_contents_safe($new_path, $filedata, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 

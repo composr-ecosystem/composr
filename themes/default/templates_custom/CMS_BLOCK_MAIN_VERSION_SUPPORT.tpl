@@ -14,13 +14,13 @@
 				<td>{GIT_BRANCH*}</td>
 				<td>{STATUS*}</td>
 				<td>
-                    {+START,IF_NON_EMPTY,{EOL}}
-                        {EOL*}
-                    {+END}
-                    {+START,IF_EMPTY,{EOL}}
-                        <em>Unknown</em>
-                    {+END}
-                </td>
+					{+START,IF_NON_EMPTY,{EOL}}
+						{EOL*}
+					{+END}
+					{+START,IF_EMPTY,{EOL}}
+						<em>Unknown</em>
+					{+END}
+				</td>
 			</tr>
 		{+END}
 	</tbody>

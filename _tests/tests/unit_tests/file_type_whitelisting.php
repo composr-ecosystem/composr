@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+/*EXTRA FUNCTIONS: shell_exec*/
+
 /**
  * Composr test case class (unit testing).
  */
@@ -101,7 +103,6 @@ class file_type_whitelisting_test_set extends cms_test_case
 
         $matches = array();
         $num_matches = preg_match_all('#^\#?\s*([^\s]*' . '/[^\s]*)\t+([^\t]+)$#m', $c, $matches);
-        $exts = array();
         for ($i = 0; $i < $num_matches; $i++) {
             $exts = $matches[2][$i];
             $mime_type = $matches[1][$i];
@@ -151,6 +152,10 @@ class file_type_whitelisting_test_set extends cms_test_case
                     continue;
                 }
 
+                if ($ext == 'dat') { // LEGACY
+                    continue;
+                }
+
                 $exts[$ext] = true;
             }
         }
@@ -174,7 +179,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         sort($file_types);
 
         $file_types_expected = $this->file_types;
-        $file_types_expected = array_diff($file_types_expected, array('exe', 'dmg', 'htm', 'html', 'svg', 'css', 'js', 'json', 'woff', 'woff2', 'xml', 'xsd', 'xsl', 'rss', 'atom')); // No executable or web formats should be uploaded by non-admins
+        $file_types_expected = array_diff($file_types_expected, array('bin', 'exe', 'dmg', 'htm', 'html', 'svg', 'css', 'js', 'json', 'woff', 'woff2', 'xml', 'xsd', 'xsl', 'rss', 'atom')); // No executable or web formats should be uploaded by non-admins
         sort($file_types_expected);
 
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
@@ -192,7 +197,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         sort($file_types);
 
         $file_types_expected = $this->file_types;
-        $file_types_expected = array_diff($file_types_expected, array('exe', 'dmg')); // No executables as users may try and get people to run on own machine (separately internally we filter web formats)
+        $file_types_expected = array_diff($file_types_expected, array('bin', 'exe', 'dmg')); // No executables as users may try and get people to run on own machine (separately internally we filter web formats)
         sort($file_types_expected);
 
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
@@ -228,7 +233,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         sort($file_types);
 
         $file_types_expected = $this->file_types;
-        $file_types_expected = array_diff($file_types_expected, array('php', 'htm')); // No files which may be web-processed/web-generated
+        $file_types_expected = array_diff($file_types_expected, array('bin', 'php', 'htm')); // No files which may be web-processed/web-generated
         sort($file_types_expected);
 
         $this->assertTrue($file_types == $file_types_expected, 'Difference of: ' . serialize(array_diff($file_types_expected, $file_types)) . '/' . serialize(array_diff($file_types, $file_types_expected)));
@@ -332,7 +337,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         foreach (array_keys($exts) as $ext) {
             $this->assertTrue(array_key_exists($ext, $found), 'Unknown file type in git that should be in .gitattributes to clarify how to manage it: ' . $ext);
         }
-     }
+    }
 
     public function testCSS()
     {

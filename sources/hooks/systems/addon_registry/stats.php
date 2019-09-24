@@ -138,7 +138,6 @@ class Hook_addon_registry_stats
             'adminzone/pages/modules/admin_stats.php',
             'themes/default/css/stats.css',
             'themes/default/css/svg.css',
-            'data/modules/admin_stats/.htaccess',
             'data/modules/admin_stats/index.html',
             'data/modules/admin_stats/IP_Country.txt', // http://geolite.maxmind.com/download/geoip/database/
             'data_custom/modules/admin_stats/index.html',
@@ -146,6 +145,9 @@ class Hook_addon_registry_stats
             'sources/svg.php',
             'sources/hooks/systems/config/bot_stats.php',
             'sources/hooks/systems/tasks/install_geolocation_data.php',
+            'data/modules/admin_stats/.htaccess',
+            'data_custom/modules/admin_stats/.htaccess',
+            'adminzone/stats_graph.php',
         );
     }
 

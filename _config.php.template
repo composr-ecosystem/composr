@@ -24,4 +24,3 @@ $SITE_INFO['db_forums_password'] = '{DB_SITE_PASSWORD}';
 $SITE_INFO['cns_table_prefix'] = 'cms_';
 $SITE_INFO['self_learning_cache'] = '1';
 $SITE_INFO['multi_lang_content'] = '0';
-

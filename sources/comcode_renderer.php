@@ -2172,11 +2172,11 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     break;
                 }
                 $md5 = md5(substr($file, 0, 30));
-                $original_filename = array_key_exists('filename', $attributes) ? $attributes['filename'] : ($md5 . '.dat');
-                if (get_file_extension($original_filename) != 'dat') {
+                $original_filename = array_key_exists('filename', $attributes) ? $attributes['filename'] : ($md5 . '.bin');
+                if (get_file_extension($original_filename) != 'bin') {
                     require_code('files2');
                     check_extension($original_filename, true);
-                    $new_filename = $md5 . '.' . get_file_extension($original_filename) . '.dat';
+                    $new_filename = $md5 . '.' . get_file_extension($original_filename) . '.bin';
                 } else {
                     $new_filename = $md5 . '.' . get_file_extension($original_filename);
                 }

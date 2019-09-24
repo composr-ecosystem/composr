@@ -1401,7 +1401,7 @@ if ($foo) {
     $number = null;
 }
 [/code]
-and then use the [tt]is_null[/tt]/[tt]is_integer[/tt] functions as required. We do not consider [tt]null[/tt] a type like the others, due to how databases interpret it. We consider it more like a special marker meaning 'no value'.
+and then use [tt]=== null[/tt] checks/[tt]is_integer[/tt] functions as required. We do not consider [tt]null[/tt] a type like the others, due to how databases interpret it. We consider it more like a special marker meaning 'no value'.
 
 If a variable really must have multiple types, do...
 [code="PHP"]

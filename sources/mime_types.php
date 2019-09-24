@@ -169,7 +169,7 @@ function get_mime_types($as_admin)
         'ics' => 'text/calendar',
 
         // Misc data
-        'dat' => 'application/octet-stream',
+        'bin' => 'application/octet-stream',
         'dmg' => 'application/x-apple-diskimage',
         'exe' => 'application/x-msdownload',
         'iso' => 'application/x-iso9660-image',

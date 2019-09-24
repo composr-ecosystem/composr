@@ -183,7 +183,7 @@ class Hook_admin_stats_cns_posting_rates
 
         $graph = do_template('STATS_GRAPH', array(
             '_GUID' => '8c6f81c928789e267c81b1d50544ca25',
-            'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Posting_rates.xml',
+            'GRAPH' => $ob->get_stats_url('Global-Posting_rates'),
             'TITLE' => do_lang_tempcode('POSTING_RATES'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_POSTING_RATES'),
         ));

@@ -420,22 +420,22 @@ bar
 <tr>
 	<th>Blah</th>
 	<td>
-		A1 B1 C1
+		{a} {b} {c}
 	</td>
 
 	<th>Blah</th>
 	<td>
-		A2 B2 C2
+		{a} {b} {c}
 	</td>
 </tr><tr>
     <th>Blah</th>
 	<td>
-		A3 B3 C3
+		{a} {b} {c}
 	</td>
 
 	<th>Blah</th>
 	<td>
-		A4 B4 C4
+		{a} {b} {c}
 	</td>
 </tr>
 </tbody></table>';

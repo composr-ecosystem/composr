@@ -1584,13 +1584,13 @@ function addon_installed($addon, $check_hookless = false)
                 $answer = true;
             }
 
-            // Won't check tables because we don't know them for hookless addons (not in db_meta.dat)
+            // Won't check tables because we don't know them for hookless addons (not in db_meta.bin)
         } else {
             if ($answer) {
-                // Check tables defined in db_meta.dat (bundled addons)
+                // Check tables defined in db_meta.bin (bundled addons)
                 static $data = null;
                 if ($data === null) {
-                    $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.dat'));
+                    $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.bin'));
                 }
                 foreach ($data['tables'] as $table_name => $table) {
                     if ($table['addon'] == $addon) {

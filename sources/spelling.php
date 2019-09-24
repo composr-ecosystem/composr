@@ -244,7 +244,7 @@ function _find_words($text, $unicode_accepted = true)
 {
     $text = str_replace('_', '-', $text); // Underscores as dashes
 
-    $text = preg_replace('#\w+://[^\s]*#', '', $text); // Strip URLs
+    $text = preg_replace('#\w+://[^\s\'",;>\[\])]*#', '', $text); // Strip URLs
 
     $words = array();
 

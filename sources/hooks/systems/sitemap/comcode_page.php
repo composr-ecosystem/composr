@@ -110,7 +110,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
 
         $path = end($details);
         $full_path = get_custom_file_base() . '/' . $path;
-        if (!is_file($path)) {
+        if (!is_file($full_path)) {
             $full_path = get_file_base() . '/' . $path;
         }
 
@@ -135,8 +135,8 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
             'extra_meta' => array(
                 'description' => null,
                 'image' => $test_icon,
-                'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime(get_file_base() . '/' . $full_path) : null,
-                'edit_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filemtime(get_file_base() . '/' . $full_path) : null,
+                'add_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filectime($full_path) : null,
+                'edit_time' => (($meta_gather & SITEMAP_GATHER_TIMES) != 0) ? filemtime($full_path) : null,
                 'submitter' => null,
                 'views' => null,
                 'rating' => null,

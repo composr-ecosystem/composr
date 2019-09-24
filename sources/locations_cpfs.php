@@ -111,10 +111,10 @@ function _autofill_geo_cpfs($row)
             $gps_parts = geocode(implode(', ', $address_components));
             if ($gps_parts !== null) {
                 list($latitude, $longitude) = $gps_parts;
-                if (!$has_latitude) {
+                if (($latitude_field !== null) && (!$has_latitude)) {
                     $changes['field_' . strval($latitude_field)] = $latitude;
                 }
-                if (!$has_longitude) {
+                if (($longitude_field !== null) && (!$has_longitude)) {
                     $changes['field_' . strval($longitude_field)] = $longitude;
                 }
             }
@@ -130,23 +130,23 @@ function _autofill_geo_cpfs($row)
             $address_parts = reverse_geocode($latitude, $longitude);
             if ($address_parts !== null) {
                 list(, , $city, $county, $state, , $country) = $address_parts;
-                if (!$has_city && !empty($city) && (!empty($row['field_' . strval($city_field)]))) {
+                if (($city_field !== null) && (!$has_city) && (!empty($city))) {
                     $changes['field_' . strval($city_field)] = $city;
                 }
-                if (!$has_county && !empty($county) && (!empty($row['field_' . strval($county_field)]))) {
+                if (($county_field !== null) && (!$has_county) && (!empty($county))) {
                     $changes['field_' . strval($county_field)] = $county;
                 }
-                if (!$has_state && !empty($state) && (!empty($row['field_' . strval($state_field)]))) {
+                if (($state_field !== null) && (!$has_state) && (!empty($state))) {
                     $changes['field_' . strval($state_field)] = $state;
                 }
-                if (!$has_country && !empty($country) && (!empty($row['field_' . strval($country_field)]))) {
+                if (($country_field !== null) && (!$has_country) && (!empty($country))) {
                     $changes['field_' . strval($country_field)] = $country;
                 }
                 // We cannot reliably geocode street addresses, so we don't go deeper than cities. We geocode *from* this to get GPS, but not vice-versa.
             }
-        } elseif ($has_ip && !$has_country) {
+        } elseif (($has_ip) && (!$has_country)) {
             $country = geolocate_ip($row['m_ip_address']);
-            if (!empty($country)) {
+            if (($country_field !== null) && (!empty($country))) {
                 $changes['field_' . strval($country_field)] = $country;
             }
         }

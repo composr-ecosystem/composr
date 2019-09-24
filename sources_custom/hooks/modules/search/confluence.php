@@ -200,7 +200,7 @@ class Hook_search_confluence extends FieldsSearchHook
     public function render($myrow)
     {
         global $SEARCH__CONTENT_BITS;
-        $highlight_bits = is_null($SEARCH__CONTENT_BITS) ? array() : $SEARCH__CONTENT_BITS;
+        $highlight_bits = ($SEARCH__CONTENT_BITS === null) ? array() : $SEARCH__CONTENT_BITS;
 
         $text_summary_h = nl2br(escape_html(preg_replace('#\n+#', "\n", str_replace('@', '', $myrow['excerpt']))));
         $text_summary = generate_text_summary($text_summary_h, $highlight_bits);

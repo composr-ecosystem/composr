@@ -363,7 +363,7 @@ function install_cns($upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_mailing_list_style', 'BINARY', 1);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
     }
-    if ((!is_null($upgrade_from)) && ($upgrade_from < 11.0)) {
+    if (($upgrade_from !== null) && ($upgrade_from < 11.0)) {
         $GLOBALS['FORUM_DB']->add_table_field('f_member_known_login_ips', 'i_time', 'TIME');
     }
 

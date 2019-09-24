@@ -169,7 +169,7 @@ function i_force_refresh()
 
         global $I_REFRESH_URL, $I_REFRESH_TIME;
 
-        $post = build_keep_post_fields(null, true);
+        $post = build_keep_post_fields(array(), true);
         $refresh = do_template('JS_REFRESH', array('FORM_NAME' => 'redir_form'));
 
         $title = get_screen_title('IMPORT');

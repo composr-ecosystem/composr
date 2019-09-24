@@ -48,7 +48,7 @@ function upgrader_integrity_scan_screen()
  */
 function load_integrity_manifest($previous = false)
 {
-    $path = get_file_base() . '/data/' . ($previous ? 'files_previous.dat' : 'files.dat');
+    $path = get_file_base() . '/data/' . ($previous ? 'files_previous.bin' : 'files.bin');
     $manifest = @unserialize(file_get_contents($path));
     if ($manifest === false) {
         $manifest = array();
@@ -157,11 +157,11 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
         if (should_ignore_file($file, IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_DIRS | IGNORE_UPLOADS)) {
             continue;
         }
-        if ($file == 'data/files.dat') {
+        if ($file == 'data/files.bin') {
             continue; // Can't check integrity against self!
         }
-        if ($file == 'data/files_previous.dat') {
-            continue; // Comes in outside scope of files.dat
+        if ($file == 'data/files_previous.bin') {
+            continue; // Comes in outside scope of files.bin
         }
         if ($file == 'recommended.htaccess') {
             continue; // May be renamed
@@ -383,7 +383,7 @@ function move_modules_ui()
  *
  * @param  SHORT_TEXT $dir The directory we are scanning relative to
  * @param  SHORT_TEXT $rela The directory (relative) we are scanning
- * @param  array $manifest Unserialised data/files.dat
+ * @param  array $manifest Unserialised data/files.bin
  * @param  array $hook_files A list of the contents of our addon registry hook files
  * @param  boolean $allow_merging Whether merging of CSS changes is allowed
  * @return array Tuple of various kinds of outdated/missing files
@@ -490,7 +490,7 @@ function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files,
  * @param  SHORT_TEXT $rela The directory (relative) we are scanning
  * @param  boolean $raw Whether to give raw output (no UI)
  * @param  ?array $addon_files List of files from non-bundled addons (a map: relative file paths as keys of map) (null: unknown, load them from addons_files table)
- * @param  ?array $old_files List of files from old version (a map: relative file paths as keys of map) (null: unknown, load them from files_previous.dat manifest)
+ * @param  ?array $old_files List of files from old version (a map: relative file paths as keys of map) (null: unknown, load them from files_previous.bin manifest)
  * @param  ?array $files List of verbatim files (a map: relative file paths as keys of map) (null: unknown, load them from files.day manifest)
  * @return array A pair: HTML list of alien files, HTML list of addon files
  */

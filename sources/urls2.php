@@ -1022,13 +1022,13 @@ function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict
 {
     if ($filename === null) {
         require_code('crypt');
-        $filename = get_secure_random_string() . '.dat';
+        $filename = get_secure_random_string() . '.bin';
     }
 
     $ext = get_file_extension($filename);
     if ($ext == '') {
-        $ext = 'dat';
-        $filename .= '.dat';
+        $ext = 'bin';
+        $filename .= '.bin';
     }
 
     $basename = basename($filename, '.' . $ext);

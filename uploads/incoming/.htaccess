@@ -11,6 +11,12 @@ php_value engine off
 php_value engine off
 </IfModule>
 
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+Header set Content-Security-Policy "default-src 'none'"
+Header set X-XSS-Protection "1"
+</IfModule>
+
 # Breaks editing tools like Aviary
 #order deny,allow
 #deny from all

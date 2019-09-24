@@ -6,7 +6,7 @@
 *.old
 ._*
 test_a
-/caches/http/*.dat
+/caches/http/*.bin
 /temp/*
 /sources_custom/user_sync__customise.php
 /www.pid
@@ -35,14 +35,14 @@ test_a
 /exports/backups/test
 /exports/builds/*/*
 /imports/*/*.tar
-/mobiquo/logging.dat
-/mobiquo/include/request_helper.dat
+/mobiquo/logging.bin
+/mobiquo/include/request_helper.bin
 /data_custom/ckeditor
 /data_custom/sitemaps/*.xml
 /data_custom/sitemaps/*.gz
-/data_custom/modules/chat/*.dat
+/data_custom/modules/chat/*.bin
 /data_custom/modules/admin_stats/*.xml
-/data_custom/modules/web_notifications/latest.dat
+/data_custom/modules/web_notifications/latest.bin
 /cms_sitemap.xml
 /*.clpprj
 /*.csprj
@@ -65,7 +65,7 @@ php.ini
 /*.shtml
 /uploads/auto_thumbs/*
 /uploads/captcha/*
-/uploads/incoming/*.dat
+/uploads/incoming/*.bin
 /uploads/*/*__*.png
 images_custom/*/*__*.png
 default/images/*/*__*.png
@@ -131,7 +131,7 @@ pages/html_custom/*/*.htm
 /data_custom/spelling/personal_dicts/*.pws
 /data_custom/spelling/personal_dicts/*.pwl
 /themes/default/images_custom/*logo.png
-/_tests/codechecker/functions.dat
+/_tests/codechecker/functions.bin
 /if_hosted_service.txt
 /.htpasswd
 /robots.txt
