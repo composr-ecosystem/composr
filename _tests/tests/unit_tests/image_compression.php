@@ -60,7 +60,7 @@ class image_compression_test_set extends cms_test_case
 
                     list($width, $height) = cms_getimagesize($base . '/' . $path);
                     $area = $width * $height;
-                    $this->assertTrue(floatval($area) / floatval($filesize) > $min_ratio, 'Rubbish compression density on ' . $path . ' theme image (' . strval($width) . 'x' . strval($height) . ' is ' . clean_file_size($filesize) . ')');
+                    $this->assertTrue(floatval($area) / floatval($filesize) > $min_ratio, 'Poor compression density on ' . $path . ' theme image (' . strval($width) . 'x' . strval($height) . ' is ' . clean_file_size($filesize) . ')');
                 }
             }
         }
