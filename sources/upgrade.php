@@ -1143,7 +1143,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
             closedir($dh);
         }
     }
-    $master_data = @unserialize(file_get_contents(get_file_base() . '/data/files.dat'));
+    $master_data = @unserialize(file_get_contents(get_file_base() . '/data/files.bin'));
     if ($master_data === false) {
         $master_data = array();
     }
@@ -1210,11 +1210,11 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
         if ((!isset($master_data[$file])) && (strpos($file, '_custom') !== false)) {
             continue; // These won't be in the manifest
         }
-        if ($file == 'data/files.dat') {
+        if ($file == 'data/files.bin') {
             continue; // Can't check integrity against self!
         }
-        if ($file == 'data/files_previous.dat') {
-            continue; // Comes in outside scope of files.dat
+        if ($file == 'data/files_previous.bin') {
+            continue; // Comes in outside scope of files.bin
         }
         if (($file == 'recommended.htaccess') || ($file == 'plain.htaccess')) {
             continue; // May be renamed
@@ -1338,7 +1338,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
         }
 
         $addon_files = collapse_2d_complexity('filename', 'addon_name', $GLOBALS['SITE_DB']->query_select('addons_files', array('filename', 'addon_name')));
-        list($alien, $addon) = check_alien($addon_files, file_exists(get_file_base() . '/data/files_previous.dat') ? unserialize(file_get_contents(get_file_base() . '/data/files_previous.dat')) : array(), $master_data, get_file_base() . '/');
+        list($alien, $addon) = check_alien($addon_files, file_exists(get_file_base() . '/data/files_previous.bin') ? unserialize(file_get_contents(get_file_base() . '/data/files_previous.bin')) : array(), $master_data, get_file_base() . '/');
         if (($alien != '') || ($addon != '')) {
             $ret_str .= '<div>';
             if ($alien != '') {
@@ -1368,7 +1368,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
  *
  * @param  SHORT_TEXT $dir The directory we are scanning relative to
  * @param  SHORT_TEXT $rela The directory (relative) we are scanning
- * @param  array $master_data Unserialised data/files.dat
+ * @param  array $master_data Unserialised data/files.bin
  * @param  array $hook_files A list of the contents of our addon registry hook files
  * @param  boolean $allow_merging Whether merging of CSS changes is allowed
  * @return array Tuple of various kinds of outdated/missing files

@@ -175,6 +175,8 @@ function lex($text = null)
         $TEXT = $text;
     }
 
+    $TEXT = preg_replace('#declare\(\w+=\w+\);#', '', $TEXT); // HACKHACK: We do not support parsing declare directives
+
     // Composr doesn't make use of this, so no need to understand it
     $matches = array();
     if (strpos($TEXT, '<' . '?php') === false) {

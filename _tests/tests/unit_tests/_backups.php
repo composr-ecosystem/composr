@@ -76,7 +76,7 @@ $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_con
         $GLOBALS['SITE_DB']->query('CREATE DATABASE cms_backup_test', null, null, true);
 
         for ($i = 0; $i < 2; $i++) {
-            $test = http_download_file(get_base_url() . '/exports/backups/test/restore.php?time_limit=1000', null, false, false, 'Composr', array(), null, null, null, null, null, null, null, 100.0);
+            $test = http_download_file(get_base_url() . '/exports/backups/test/restore.php?time_limit=1000', null, false, false, 'Composr', array(), null, null, null, null, null, null, null, 1000.0);
             $success = (strpos($test, do_lang('backups:BACKUP_RESTORE_SUCCESS')) !== false);
             $message = 'Failed to run restorer script on iteration ' . strval($i + 1) . ' [' . $test . ']; to debug manually run exports/backups/test/restore.php?time_limit=1000';
             if (strpos(get_db_type(), 'odbc') !== false) {

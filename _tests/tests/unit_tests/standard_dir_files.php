@@ -27,6 +27,56 @@ class standard_dir_files_test_set extends cms_test_case
         parent::setUp();
     }
 
+    public function testHtaccessConsistency()
+    {
+        require_code('files2');
+        $files = get_directory_contents(get_file_base(), '', true);
+        sort($files);
+        $types = array();
+        foreach ($files as $path) {
+            // Exceptions
+            if ($path == '.htaccess') {
+                continue;
+            }
+            if (preg_match('#^(tracker|exports/backups|exports/builds)/#', $path) != 0) {
+                continue;
+            }
+
+            if (basename($path) == '.htaccess') {
+                $md5 = md5(file_get_contents(get_file_base() . '/' . $path));
+                if (!array_key_exists($md5, $types)) {
+                    $types[$md5] = array();
+                }
+                $types[$md5][] = $path;
+            }
+        }
+
+        ksort($types);
+
+        // To reset
+        /*foreach (array_keys($types) as $type) {
+            echo "\t\t\t'" . $type . "',\n";
+        }*/
+
+        $this->assertTrue(array_keys($types) == array(
+            '040f254836ecefb94bebc44d91e391eb',
+            '0e665ce3d0ae5f44e1a6affe3c7f5303',
+            '296a0f42479e015438791d0b21e22a07',
+            '3c3283f2b3f7d57a8bdf38ca126ff678',
+            '44c2cb384e8efd1ab789978e00d6ea19',
+            '45c31898af89e12147cf987481cae64b',
+            '4afd84b898945e884f88b7f2cda376c0',
+            '61b32927345080611fa4772255f4a70b',
+            '97656c6f2c60873d55a421cd762fac00',
+            'b4af30b08914c4a8240106cf7c614034',
+            'c1bfa4b9b62eff28d2c697aff749bd76',
+            'd565e2958abd06bfac42906ea7b4ea9d',
+            'd90c4471fc2a552580896dd6dae99df7',
+            'e584f07661e5fee9170ba1df153359ad',
+            'ede82ed9879b9d6d011638ca5736bddd',
+        ));
+    }
+
     public function testStandardDirFiles()
     {
         $this->do_dir(get_file_base());
@@ -78,7 +128,12 @@ class standard_dir_files_test_set extends cms_test_case
                 && (strpos($dir, 'themes') === false) &&
                 (strpos($dir, 'exports') === false)
             ) {
-                $this->assertTrue(file_exists($dir . '/.htaccess'), 'cp "' . get_file_base() . '/sources/.htaccess" "' . $dir . '/.htaccess" ; git add "' . $dir . '/.htaccess"');
+                if (strpos($dir, '/uploads/') !== false) {
+                    $best_htaccess = 'uploads/downloads/.htaccess';
+                } else {
+                    $best_htaccess = 'sources/.htaccess';
+                }
+                $this->assertTrue(file_exists($dir . '/.htaccess'), 'cp "' . get_file_base() . '/' . $best_htaccess . '" "' . $dir . '/.htaccess" ; git add "' . $dir . '/.htaccess"');
             }
         }
     }

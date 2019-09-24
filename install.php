@@ -334,7 +334,7 @@ function step_1()
                 $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER'))));
             }
         } else {
-            $files = @unserialize(file_get_contents(get_file_base() . '/data/files.dat'));
+            $files = @unserialize(file_get_contents(get_file_base() . '/data/files.bin'));
             if ($files !== false) {
                 $missing = array();
                 $corrupt = array();
@@ -344,15 +344,15 @@ function step_1()
                     'data_custom/errorlog.php',
                     'data_custom/execute_temp.php',
                     '_config.php',
-                    'data_custom/functions.dat',
-                    'data/files_previous.dat',
+                    'data_custom/functions.bin',
+                    'data/files_previous.bin',
                     'data/spelling/aspell/bin/aspell-15.dll',
                     'data/spelling/aspell/bin/en-only.rws',
                 ));
                 $skipped_files_may_be_changed = array_flip(array(
                     'themes/map.ini',
                     'sources/version.php',
-                    'data/files.dat',
+                    'data/files.bin',
                     'data/modules/admin_stats/IP_Country.txt',
                 ));
 
@@ -2966,6 +2966,13 @@ function compress_filter($input)
 function test_htaccess($conn)
 {
     $clauses = array();
+
+    $clauses[] = <<<END
+# Stop any potential content-type sniffing vulnerabilities
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+</IfModule>
+END;
 
     $clauses[] = <<<END
 # Disable inaccurate security scanning (Composr has its own)

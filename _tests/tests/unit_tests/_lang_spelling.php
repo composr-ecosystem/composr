@@ -58,6 +58,14 @@ class _lang_spelling_test_set extends cms_test_case
             'hu',
             'lu',
             'mhash',
+            'besluit',
+            'colormind',
+            'xfn',
+            'punycode',
+            'hreview',
+            'upwork',
+            'gitlab',
+            'eol',
             'exifrotated',
             'runexiftest',
             'runquadranttest',
@@ -3411,7 +3419,7 @@ class _lang_spelling_test_set extends cms_test_case
                     $_c = '';
                     $matches = array();
 
-                    $num_matches = preg_match_all('#//(.*)#', $c, $matches);
+                    $num_matches = preg_match_all('#[^:]//(.*)#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $_c .= ' ' . $matches[1][$i];
                     }
@@ -3430,7 +3438,7 @@ class _lang_spelling_test_set extends cms_test_case
 
                 $c = str_replace('_', '-', $c); // Underscores as dashes
 
-                $c = preg_replace('#\w+://[^\s]*#', '', $c); // Strip URLs
+                $c = preg_replace('#\w+://[^\s\'",;>\[\])]*#', '', $c); // Strip URLs
 
                 $c = preg_replace('#\[[a-z]+#', '', $c); // Strip opening tag
                 $c = preg_replace('#\[/[a-z]+\]#', '', $c); // Strip closing tag

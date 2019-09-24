@@ -18,6 +18,8 @@
  * @package    import
  */
 
+/*EXTRA FUNCTIONS: register_tick_function*/
+
 declare(ticks=1);
 
 /**

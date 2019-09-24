@@ -599,11 +599,11 @@ class Hook_wowbb
     public function data_to_disk($data, $filename, $sections)
     {
         $filename = find_derivative_filename('uploads/' . $sections, $filename);
-        $path = get_custom_file_base() . '/uploads/' . $sections . '/' . $filename . '.dat';
+        $path = get_custom_file_base() . '/uploads/' . $sections . '/' . $filename . '.bin';
         require_code('files');
         cms_file_put_contents_safe($path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-        $url = 'uploads/' . $sections . '/' . $filename . '.dat';
+        $url = 'uploads/' . $sections . '/' . $filename . '.bin';
 
         return $url;
     }

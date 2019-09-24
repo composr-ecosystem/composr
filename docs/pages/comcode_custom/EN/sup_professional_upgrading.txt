@@ -376,7 +376,7 @@ There is a [tt]themechanges.sh[/tt] script which may be useful, but realisticall
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Run CQC.
-| Run the Code Quality Checker on any custom code. Do this by copying [tt]data_custom/functions.dat[/tt] from a Composr GitLab pull, and then run the CQC out of that GitLab pull while reconfiguring the scan folder to the [tt]<webroot>/<codename>[/tt] directory.
+| Run the Code Quality Checker on any custom code. Do this by copying [tt]data_custom/functions.bin[/tt] from a Composr GitLab pull, and then run the CQC out of that GitLab pull while reconfiguring the scan folder to the [tt]<webroot>/<codename>[/tt] directory.
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Users may be used to some different configuration if upgrading from ocPortal, maybe set [tt]simplified_attachments_ui[/tt] to [tt]0[/tt]. US users may also like [tt]yeehaw[/tt] to be set to [tt]1[/tt].

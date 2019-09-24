@@ -95,9 +95,9 @@ foreach ($files as $filename) {
 
 $classes['__global'] = array('functions' => $global);
 if (file_exists($COMPOSR_PATH . '/data_custom')) {
-    $myfile = fopen($COMPOSR_PATH . '/data_custom/functions.dat', 'wb');
+    $myfile = fopen($COMPOSR_PATH . '/data_custom/functions.bin', 'wb');
 } else {
-    $myfile = fopen('functions.dat', 'wb');
+    $myfile = fopen('functions.bin', 'wb');
 }
 flock($myfile, LOCK_EX);
 fwrite($myfile, serialize($classes));

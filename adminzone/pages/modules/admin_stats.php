@@ -500,7 +500,7 @@ class Module_admin_stats
         $output = create_scatter_graph($data, do_lang('DATE'), do_lang('USERS_ONLINE'), '', '');
         $this->save_graph('Global-Users-online', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => '9688722e526a814f3b90ca93a21333ad', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Users-online.xml', 'TITLE' => do_lang_tempcode('USERS_ONLINE_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_USERS_ONLINE_STATISTICS')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => '9688722e526a814f3b90ca93a21333ad', 'GRAPH' => $this->get_stats_url('Global-Users-online'), 'TITLE' => do_lang_tempcode('USERS_ONLINE_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_USERS_ONLINE_STATISTICS')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => '2e5a6a2f7317c80464c518996728d839', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list));
 
@@ -581,7 +581,7 @@ class Module_admin_stats
         $output = create_scatter_graph($data, do_lang('DATE'), do_lang('SUBMISSION_STATISTICS'), '', '');
         $this->save_graph('Global-Submissions', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => 'f6d5a58eae148a555e0f868eda245304', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Submissions.xml', 'TITLE' => do_lang_tempcode('SUBMISSION_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_SUBMISSION_STATISTICS')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => 'f6d5a58eae148a555e0f868eda245304', 'GRAPH' => $this->get_stats_url('Global-Submissions'), 'TITLE' => do_lang_tempcode('SUBMISSION_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_SUBMISSION_STATISTICS')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => '66e8534ef342c1d0197f4ddb8f767025', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list));
 
@@ -696,7 +696,7 @@ class Module_admin_stats
         $output = create_bar_chart($data, do_lang('PAGE'), do_lang('LOAD_TIME'), '', do_lang('dates:DPLU_SECONDS'));
         $this->save_graph('Global-Load-times', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => '3f1ef4ebbed1e064c0ec89481dc39afc', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Load-times.xml', 'TITLE' => do_lang_tempcode('LOAD_TIMES'), 'TEXT' => do_lang_tempcode('DESCRIPTION_LOAD_TIMES')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => '3f1ef4ebbed1e064c0ec89481dc39afc', 'GRAPH' => $this->get_stats_url('Global-Load-times'), 'TITLE' => do_lang_tempcode('LOAD_TIMES'), 'TEXT' => do_lang_tempcode('DESCRIPTION_LOAD_TIMES')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => '8f7c585bdbc0180ed116693723108e2b', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list));
 
@@ -828,7 +828,7 @@ class Module_admin_stats
         $output = create_pie_chart($data);
         $this->save_graph('Global-Referrers', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => '22c565665d8a98528659bbfc25526855', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Referrers.xml', 'TITLE' => do_lang_tempcode('REFERRER_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_REFERRER_SHARE')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => '22c565665d8a98528659bbfc25526855', 'GRAPH' => $this->get_stats_url('Global-Referrers'), 'TITLE' => do_lang_tempcode('REFERRER_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_REFERRER_SHARE')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => '777bc5f8573a5cef54aa0bc9bdc0ee29', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list));
 
@@ -970,7 +970,7 @@ class Module_admin_stats
         $output = create_pie_chart($data);
         $this->save_graph('Global-Keywords', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => 'a199b095199a0e337d38c78564909e52', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Keywords.xml', 'TITLE' => do_lang_tempcode('KEYWORDS_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_KEYWORDS_SHARE')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => 'a199b095199a0e337d38c78564909e52', 'GRAPH' => $this->get_stats_url('Global-Keywords'), 'TITLE' => do_lang_tempcode('KEYWORDS_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_KEYWORDS_SHARE')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => 'ab791072361184a05c7e60a3127ee439', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list));
 
@@ -1108,7 +1108,7 @@ class Module_admin_stats
         $output = create_bar_chart(array_slice($views, $start, $max), do_lang('PAGE'), do_lang('COUNT_VIEWS'), '', '');
         $this->save_graph('Global-Views', $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => 'ea79fdc013046ef94992daeab961f2da', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Views.xml', 'TITLE' => do_lang_tempcode('PAGES_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_PAGES_STATISTICS')));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => 'ea79fdc013046ef94992daeab961f2da', 'GRAPH' => $this->get_stats_url('Global-Views'), 'TITLE' => do_lang_tempcode('PAGES_STATISTICS'), 'TEXT' => do_lang_tempcode('DESCRIPTION_PAGES_STATISTICS')));
 
         $tpl = do_template('STATS_SCREEN', array('_GUID' => 'cfe7d5aee8aa3c0d3a54bd3bf2d09e7f', 'TITLE' => $this->title, 'GRAPH' => $graph, 'STATS' => $list));
 
@@ -1307,7 +1307,7 @@ class Module_admin_stats
                 $output = create_pie_chart($data);
                 $this->save_graph(strval($rows[0]['id']) . '-Keywords', $output);
 
-                $graph_keywords = do_template('STATS_GRAPH', array('_GUID' => '6e3a48274f2e3babf546292b8eec2f9b', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/' . strval($rows[0]['id']) . '-Keywords.xml', 'TITLE' => do_lang_tempcode('KEYWORDS_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_KEYWORDS_SHARE')));
+                $graph_keywords = do_template('STATS_GRAPH', array('_GUID' => '6e3a48274f2e3babf546292b8eec2f9b', 'GRAPH' => $this->get_stats_url(strval($rows[0]['id']) . '-Keywords'), 'TITLE' => do_lang_tempcode('KEYWORDS_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_KEYWORDS_SHARE')));
             }
         }
 
@@ -1383,7 +1383,7 @@ class Module_admin_stats
                 $output = create_pie_chart($data);
                 $this->save_graph('Regionality', $output);
 
-                $graph_regionality = do_template('STATS_GRAPH', array('_GUID' => '1087a34b5aa2ec808dcdce234dfe492e', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/' . strval($rows[0]['ip']) . '-Regionality.xml', 'TITLE' => do_lang_tempcode('REGIONALITY_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_REGIONALITY_SHARE')));
+                $graph_regionality = do_template('STATS_GRAPH', array('_GUID' => '1087a34b5aa2ec808dcdce234dfe492e', 'GRAPH' => $this->get_stats_url(strval($rows[0]['ip']) . '-Regionality'), 'TITLE' => do_lang_tempcode('REGIONALITY_SHARE'), 'TEXT' => do_lang_tempcode('DESCRIPTION_REGIONALITY_SHARE')));
             }
         } else {
             // Geo-IP data isn't installed
@@ -1627,7 +1627,7 @@ class Module_admin_stats
 
         $graph = do_template('STATS_GRAPH', array(
             '_GUID' => 'b4cf5df74c012c2df5e3988a0ca0e622',
-            'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/' . strval($rows[0]['id']) . '-Views-' . strval($hours) . '_' . strval($start_date_and_time) . '.xml',
+            'GRAPH' => $this->get_stats_url(strval($rows[0]['id']) . '-Views-' . strval($hours) . '_' . strval($start_date_and_time)),
             'TITLE' => do_lang_tempcode($graph_title),
             'TEXT' => do_lang_tempcode($graph_description),
         ));
@@ -1730,7 +1730,7 @@ class Module_admin_stats
         $output = create_pie_chart($data);
         $this->save_graph(strval($rows[0]['id']) . '-' . $type, $output);
 
-        $graph = do_template('STATS_GRAPH', array('_GUID' => '5a88fdf891e9af4eb1cca3470f263c7d', 'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/' . strval($rows[0]['id']) . '-' . $type . '.xml', 'TITLE' => do_lang_tempcode($graph_title), 'TEXT' => do_lang_tempcode($graph_description)));
+        $graph = do_template('STATS_GRAPH', array('_GUID' => '5a88fdf891e9af4eb1cca3470f263c7d', 'GRAPH' => $this->get_stats_url(strval($rows[0]['id']) . '-' . $type), 'TITLE' => do_lang_tempcode($graph_title), 'TEXT' => do_lang_tempcode($graph_description)));
 
         return array($graph, $list);
     }
@@ -1738,13 +1738,26 @@ class Module_admin_stats
     /**
      * Save a graph to the server so it can be viewed client-side.
      *
-     * @param  string $path Name of the graph (no path or extension)
+     * @param  string $file Name of the graph (no path or extension)
      * @param  string $graph SVG markup
      */
-    public function save_graph($path, $graph)
+    public function save_graph($file, $graph)
     {
         require_code('files');
-        $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . filter_naughty_harsh($path) . '.xml';
+        $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . filter_naughty_harsh($file) . '.xml';
         cms_file_put_contents_safe($path, $graph, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    }
+
+    /**
+     * Get the URL to a graph.
+     *
+     * @param  string $file Name of the graph (no path or extension)
+     * @return URLPATH URL to graph
+     */
+    public function get_stats_url($file)
+    {
+        //return get_custom_base_url() . '/data_custom/modules/admin_stats/' . $file . '.xml'; We do not allow direct access, as it would not be secure
+        $keep = symbol_tempcode('KEEP');
+        return find_script('stats_graph') . '?file=' . urlencode($file) . $keep->evaluate();
     }
 }

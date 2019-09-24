@@ -225,7 +225,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100) // This is called
 
     if ($b_type == 'full') {
         set_value('last_backup', strval(time()));
-        $original_files = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(file_get_contents(get_file_base() . '/data/files.dat')) : null;
+        $original_files = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(file_get_contents(get_file_base() . '/data/files.bin')) : null;
         $root_only_dirs = directories_to_backup();
         tar_add_folder($backup_file, $log_file, get_custom_file_base(), $max_size, '', $original_files, $root_only_dirs, !running_script('cron_bridge'));
     } elseif ($b_type == 'incremental') {

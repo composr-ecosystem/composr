@@ -97,7 +97,7 @@ function cache_and_carry($func, $args, $timeout = null)
 
     $ret = mixed();
 
-    $path = get_custom_file_base() . '/safe_mode_temp/' . md5(serialize($args)) . '.dat';
+    $path = get_custom_file_base() . '/safe_mode_temp/' . md5(serialize($args)) . '.bin';
     if (is_file($path) && (($timeout === null) || (filemtime($path) > time() - $timeout * 60))) {
         $_ret = cms_file_get_contents_safe($path);
         if ($func == 'http_download_file') {

@@ -11,6 +11,10 @@ php_value engine off
 php_value engine off
 </IfModule>
 
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
 
 <IfModule mod_expires.c>
 <FilesMatch "\.(css|js)$">

@@ -189,13 +189,13 @@ function phase_1_pre()
     echo '
     <p>As this is a substantial new release make sure you have done the following:</p>
     <ul>
-        <li>Copy <kbd>data/files.dat</kbd> from the most recent past release to <kbd>data/files_previous.dat</kbd> in the new release (the hosted upgrade generator does this for upgrade TARs dynamically, but we want our main release to have the correct metadata also)</li>
+        <li>Copy <kbd>data/files.bin</kbd> from the most recent past release to <kbd>data/files_previous.bin</kbd> in the new release (the hosted upgrade generator does this for upgrade TARs dynamically, but we want our main release to have the correct metadata also)</li>
         <li>Run the <a href="' . escape_html(static_evaluate_tempcode(build_url(array('page' => 'plug_guid'), 'adminzone'))) . '" target="_blank">plug_guid</a> tool to build needed GUIDs into the PHP.</li>
         <li>Test with a non-Conversr forum driver (e.g. phpBB)</li>
         <li>Test with the none forum driver (no forums and members)</li>
         <li>Test doing an upgrade from the prior version</li>
         <li>Go through a full quick installer test install, and then through the full Setup Wizard</li>
-        <li>A good way to test that module/block/addon upgrade code is working as expected is to use the MySQL cleanup tool. It will say if tables/indices/privileges are not in the database as they are expected to be (assuming you already generated <kbd>db_meta.dat</kbd> via <kbd>data_custom/build_db_meta_file.php</kbd> on a clean install).</li>
+        <li>A good way to test that module/block/addon upgrade code is working as expected is to use the MySQL cleanup tool. It will say if tables/indices/privileges are not in the database as they are expected to be (assuming you already generated <kbd>db_meta.bin</kbd> via <kbd>data_custom/build_db_meta_file.php</kbd> on a clean install).</li>
         <li>Write custom theme upgrading code into <kbd>sources/upgrade.php</kbd>. Make sure all ocProducts themes are up-to-date (CSS changes, template changes, theme image changes). TODO: Update this when Convertr done.</li>
         <li>Make sure <kbd>curl-ca-bundle.crt</kbd> is reasonably up-to-date</li>
         <li>Consider updating the <kbd>$discontinued</kbd> array in <kbd>sources_custom/composr_homesite.php</kbd></li>
