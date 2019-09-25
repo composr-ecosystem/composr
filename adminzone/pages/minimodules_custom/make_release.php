@@ -99,7 +99,7 @@ function phase_0()
 
         $api_url = get_brand_base_url() . '/data_custom/composr_homesite_web_service.php?call=get_tracker_issue_titles';
         $_discovered_tracker_issues = implode(',', array_keys($discovered_tracker_issues));
-        $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $previous_version)));
+        $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version)));
         $tracker_issue_titles = json_decode($_result, true);
         foreach ($tracker_issue_titles as $key => $summary) {
             $url = get_brand_base_url() . '/tracker/view.php?id=' . $id;
