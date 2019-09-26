@@ -102,14 +102,16 @@ function phase_0()
         $_result = http_download_file($api_url, null, true, false, 'Composr', array('parameters' => array($_discovered_tracker_issues, $on_disk_version)));
         $tracker_issue_titles = json_decode($_result, true);
         foreach ($tracker_issue_titles as $key => $summary) {
-            $url = get_brand_base_url() . '/tracker/view.php?id=' . $id;
-            $changes .= ' - [url="' . addslashes($summary) . '"]' . $url . '[/url]' . "\n";
+            if (strpos($summary, '[General]') === false) { // Only ones in the main Composr project
+                $url = get_brand_base_url() . '/tracker/view.php?id=' . substr($key, 1);
+                $changes .= ' - [url="' . comcode_escape($summary) . '"]' . $url . '[/url]' . "\n";
+            }
         }
 
         foreach ($__changes as $id => $change_label) {
             if (!is_numeric($id)) {
                 $url = COMPOSR_REPOS_URL . '/commit/' . $id;
-                $changes .= ' - [url="' . addslashes($change_label) . '"]' . $url . '[/url]' . "\n";
+                $changes .= ' - [url="' . comcode_escape($change_label) . '"]' . $url . '[/url]' . "\n";
             }
         }
     } else {
