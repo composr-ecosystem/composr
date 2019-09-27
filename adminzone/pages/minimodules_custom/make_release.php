@@ -308,13 +308,6 @@ function phase_2()
     <p>Here\'s a list of things for you to do. Get to it!</p>
     <ol>
     ';
-    if (!$is_bleeding_edge && !$is_substantial) {
-        echo '
-            <li>
-                Security Advice (<em>Optional</em>): If you are fixing a security issue, follow the security process. This may mean delaying the release for around a week and sending a newsletter telling people when exactly the upgrade will come.
-            </li>
-        ';
-    }
     if (strpos(PHP_OS, 'Darwin') !== false) {
         $command_to_try = 'open';
     } elseif (strpos(PHP_OS, 'WIN') !== false) {

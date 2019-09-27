@@ -242,8 +242,8 @@ if ((count($files) == 0) && (@$_GET['full_scan'] != '1')) {
     if (count($files) == 0) {
         $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * 14);
     }
-    $git_status_3 = '<strong>Git commit ID</strong>';
-    $choose_files_label = '<strong>Choose files</strong>';
+    $git_status_3 = 'Git commit ID';
+    $choose_files_label = 'Choose files';
 }
 
 $post_url = escape_html(static_evaluate_tempcode(get_self_url()));
@@ -283,9 +283,15 @@ echo <<<END
 <p>This script will push individual bug fixes to all the right places. Run it after you've developed a fix, and tell it how to link the fix in and what the fix is.</p>
 
 <style>
-#bugfix_form label {
+#bugfix_form>fieldset>div>label {
     float: left;
     width: 430px;
+}
+
+#bugfix_form>fieldset>div>div>label {
+    clear: both;
+    float: left;
+    margin-left: 430px;
 }
 </style>
 
@@ -317,8 +323,9 @@ if (count($files) != 0) {
     <fieldset>
         <legend>Fix</legend>
 
-        <label for="fixed_files">{$choose_files_label}</label>
-        <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
+        <div>
+            <label for="fixed_files">{$choose_files_label}</label>
+            <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
 END;
     foreach ($files as $file) {
         $git_dirty = isset($git_found[$file]);
@@ -326,7 +333,8 @@ END;
     }
     $_git_found = json_encode($git_found);
     echo <<<END
-        </select>
+            </select>
+        </div>
     </fieldset>
 
     <script>
@@ -375,6 +383,12 @@ END;
 		add_event_listener_abstract(window,'load',function() {
             update_automatic_category();
 		});
+
+        function security_hole_radio()
+        {
+            var ob = document.getElementById('severity_95');
+            document.getElementById('security-process').style.display = ob.checked ? 'inline' : 'none';
+        }
     </script>
 END;
 }
@@ -404,11 +418,33 @@ echo <<<END
 
         <div>
             <label>Severity</label>
-            <label for="severity_10"><input type="radio" id="severity_10" name="severity" value="10" /> Feature-request</span>
-            <label for="severity_20"><input type="radio" id="severity_20" name="severity" value="20" checked="checked" /> Trivial-bug</span>
-            <label for="severity_50"><input type="radio" id="severity_50" name="severity" value="50" /> Minor-bug</span>
-            <label for="severity_60"><input type="radio" id="severity_60" name="severity" value="60" /> Major-bug</span>
-            <label for="severity_95"><input type="radio" id="severity_95" name="severity" value="95" /> Security-hole</span>
+
+            <div>
+                <label for="severity_10">
+                    <input type="radio" id="severity_10" name="severity" value="10" onchange="return security_hole_radio(this);" />
+                    Feature-request
+                </label>
+                <label for="severity_20">
+                    <input type="radio" id="severity_20" name="severity" value="20" onchange="return security_hole_radio(this);" checked="checked" />
+                    Trivial-bug
+                </label>
+                <label for="severity_50">
+                    <input type="radio" id="severity_50" name="severity" value="50" onchange="return security_hole_radio(this);" />
+                    Minor-bug
+                </label>
+                <label for="severity_60">
+                    <input type="radio" id="severity_60" name="severity" value="60" onchange="return security_hole_radio(this);" />
+                    Major-bug
+                </label>
+                <label for="severity_95">
+                    <input type="radio" id="severity_95" name="severity" value="95" onchange="return security_hole_radio(this);" />
+                    Security-hole
+
+                    <span style="display: none" id="security-process">
+                        &ndash; Follow the <a target="_blank" title="Security policy (this link will open in a new window)" href="{$REMOTE_BASE_URL}/docs/tut-software-feedback.htm#title__46">security policy</a>.
+                    </span>
+                </label>
+            </div>
         </div>
     </fieldset>
 
