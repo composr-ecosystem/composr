@@ -109,7 +109,7 @@ class Hook_profiles_tabs_edit_privacy
 
         // UI fields
 
-        $custom_fields = cns_get_all_custom_fields_match_member($member_id_of);
+        $custom_fields = cns_get_all_custom_fields_match_member($member_id_of, 1);
 
         require_javascript('multi');
 
@@ -120,20 +120,10 @@ class Hook_profiles_tabs_edit_privacy
         $tmp_groups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(true);
 
         $cpf_ids = array();
-        foreach ($custom_fields as $custom_field) {
+        foreach ($custom_fields as $cpf_title => $custom_field) {
             $cpf_id = intval($custom_field['FIELD_ID']);
             $cpf = $custom_field['RAW'];
 
-            // Look up the details for this field
-            $cpf_data = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array('id' => $cpf_id), '', 1);
-            if (!array_key_exists(0, $cpf_data)) {
-                continue;
-            }
-            if ($cpf_data[0]['cf_public_view'] == 0) {
-                continue;
-            }
-
-            $cpf_title = get_translated_text($cpf_data[0]['cf_name'], $GLOBALS['FORUM_DB']);
             if ((cms_preg_replace_safe('#^((\s)|(<br\s*/?' . '>)|(&nbsp;))*#', '', $cpf_title) === '') && (count($custom_fields) > 15)) {
                 continue; // If there are lots of CPFs, and this one seems to have a blank name, skip it (likely corrupt data)
             }
