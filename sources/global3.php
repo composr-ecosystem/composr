@@ -2489,6 +2489,7 @@ function is_valid_ip($ip)
 
 /**
  * Attempt to get the clean IP address of the current user.
+ * Note we do not consider potential proxying because that can easily be forged, and even if not it could be some local IP that is not unique enough.
  *
  * @param  integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled.
  * @set 1 2 3 4
