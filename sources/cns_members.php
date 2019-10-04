@@ -309,7 +309,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
             if (!$display_cpf) { // Guard this, as the code will take some time to run
                 if ($cpf_permissions['friend_view'] == 1) {
                     if (addon_installed('chat')) {
-                        if ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', array('member_likes' => $member_id, 'member_liked' => get_member())) === null) {
+                        if ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', array('member_likes' => $member_id, 'member_liked' => get_member())) !== null) {
                             $display_cpf = true;
                         }
                     }
@@ -322,15 +322,8 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
                         if (strlen($cpf_permissions['group_view']) > 0) {
                             require_code('selectcode');
 
-                            $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, false, null, $member_id);
-
-                            $groups_to_search = array();
-                            foreach (array_keys($groups) as $group_id) {
-                                $groups_to_search[$group_id] = null;
-                            }
-                            $matched_groups = selectcode_to_idlist_using_memory($cpf_permissions['group_view'], $groups_to_search);
-
-                            if (count($matched_groups) > 0) {
+                            $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
+                            if (count(array_intersect(selectcode_to_idlist_using_memory($cpf_permissions['group_view'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)) > 0) {
                                 $display_cpf = true;
                             }
                         }

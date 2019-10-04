@@ -129,7 +129,7 @@ class Module_members
             $privacy_ok = true;
             if (addon_installed('content_privacy')) {
                 require_code('content_privacy');
-                $privacy_ok = has_privacy_access('_photo', strval($member_id_of), get_member());
+                $privacy_ok = has_privacy_access('_photo', strval($member_id_of), get_member(), '', $member_id_of);
             }
 
             $photo_url = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_photo_url');

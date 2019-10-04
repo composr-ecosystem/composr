@@ -71,18 +71,12 @@ class Hook_profiles_tabs_edit_privacy
                     $friends_view = ($_view == 'guests' || $_view == 'members' || $_view == 'friends') ? 1 : 0;
                     $groups_view = '';
                 } else {
-                    $_guests_view = post_param_string('guests_' . strval($field_id), null);
-                    //$_members_view = post_param_string('members_' . strval($field_id), null);
-                    $_friends_view = post_param_string('friends_' . strval($field_id), null);
-                    $_groups_view = post_param_string('groups_' . strval($field_id), null);
-                    $_members_view = ($_groups_view == 'all') ? 1 : 0;
-
-                    $guests_view = (!is_null($_guests_view)) ? 1 : 0;
-                    $members_view = (!is_null($_members_view)) ? 1 : 0;
-                    $friends_view = (!is_null($_friends_view)) ? 1 : 0;
-                    $groups_view = (!is_null($_groups_view)) ? $_groups_view : '';
+                    $guests_view = post_param_integer('guests_' . strval($field_id), 0);
+                    //$members_view = post_param_integer('members_' . strval($field_id), 0);
+                    $friends_view = post_param_integer('friends_' . strval($field_id), 0);
+                    $groups_view = post_param_string('groups_' . strval($field_id), '');
+                    $members_view = ($groups_view == 'all') ? 1 : 0;
                 }
-
                 $cpf_permissions = $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', array('*'), array('member_id' => $member_id_of, 'field_id' => $field_id), '', 1);
 
                 // if there are permissions saved already
@@ -177,6 +171,9 @@ class Hook_profiles_tabs_edit_privacy
                 $groups = new Tempcode();
                 $groups->attach(form_input_list_entry('all', $view_by_groups == array('all'), do_lang_tempcode('_ALL')));
                 foreach ($tmp_groups as $gr_key => $group) {
+                    if ($gr_key == db_get_first_id()) {
+                        continue;
+                    }
                     if ($group == get_option('probation_usergroup')) {
                         continue;
                     }
