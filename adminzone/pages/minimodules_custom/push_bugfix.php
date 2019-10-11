@@ -18,6 +18,12 @@ If you get git errors about missing username/email, you may need to set your git
 
 sudo git config --system user.name <user>
 sudo git config --system user.email <user>@<domain>
+
+If it is not pushing, you may need to tell git about your key directly (as it may not have access to environment settings)...
+sudo git config --system core.sshCommand "ssh -i /home/you/.ssh/id_rsa -F /dev/null"
+Your key will have to be not encrypted. A key can be decrypted with:
+openssl rsa -in /home/you/.ssh/id_rsa -out /home/you/.ssh/id_rsa
+Only do this if you have secure file permissions on the key file and are very confident nobody can get into your filesystem.
 */
 
 /*EXTRA FUNCTIONS: shell_exec|escapeshellarg*/
