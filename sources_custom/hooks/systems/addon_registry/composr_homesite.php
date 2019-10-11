@@ -202,6 +202,7 @@ This addon does not contain the compo.sr install code and the overall site and t
             'uploads/website_specific/compo.sr/banners.zip',
             'uploads/website_specific/compo.sr/demonstratr/template.sql',
             'uploads/website_specific/compo.sr/demonstratr/template.tar',
+            'uploads/website_specific/compo.sr/demonstratr/servers/index.html',
             'uploads/website_specific/compo.sr/errorservice.csv',
             'uploads/website_specific/compo.sr/facebook.html',
             'uploads/website_specific/compo.sr/index.html',

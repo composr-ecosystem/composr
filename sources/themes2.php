@@ -491,6 +491,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
         @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
         if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
             fix_permissions(get_custom_file_base() . '/' . $upload_to);
+            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '');
         } else {
             $upload_to = 'themes/default/images_custom';
         }

@@ -609,8 +609,7 @@ function create_hotfix_tar($tracker_id, $files)
     $hotfix_path = $builds_path . '/builds/hotfixes';
 
     if (!file_exists($hotfix_path)) {
-        mkdir($hotfix_path, 0777);
-        fix_permissions($hotfix_path);
+        make_missing_directory($hotfix_path);
     }
 
     $prior_hotfixes = get_directory_contents($hotfix_path, '', 0, false);

@@ -283,6 +283,7 @@ class Hook_addon_registry_better_mail
             'sources_custom/swift_mailer/lib/classes/Swift/Signers/HeaderSigner.php',
             'sources_custom/swift_mailer/lib/classes/Swift/Signers/OpenDKIMSigner.php',
             'sources_custom/swift_mailer/lib/classes/Swift/Signers/SMimeSigner.php',
+            'sources_custom/swift_mailer/lib/classes/Swift/Signers/index.html',
             'sources_custom/swift_mailer/lib/classes/Swift/SmtpTransport.php',
             'sources_custom/swift_mailer/lib/classes/Swift/Spool.php',
             'sources_custom/swift_mailer/lib/classes/Swift/SpoolTransport.php',
@@ -338,6 +339,7 @@ class Hook_addon_registry_better_mail
             'sources_custom/swift_mailer/LICENSE',
             'sources_custom/swift_mailer/README',
             'sources_custom/swift_mailer/VERSION',
+            'sources_custom/swift_mailer/lib/classes/Swift/Signers/.htaccess',
             'sources_custom/hooks/systems/health_checks/email.php',
         );
     }

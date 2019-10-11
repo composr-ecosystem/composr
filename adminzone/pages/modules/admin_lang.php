@@ -662,10 +662,12 @@ class Module_admin_lang
             force_have_afm_details();
 
             afm_make_directory('lang_custom/' . $lang, true);
+            afm_make_file('lang_custom/' . $lang . '/index.html', '', false);
 
             $cached_dir = get_custom_file_base() . '/caches/lang/' . $lang;
             if (!file_exists($cached_dir)) {
                 afm_make_directory('caches/lang/' . $lang, true);
+                afm_make_file('caches/lang/' . $lang . '/index.html', '', false);
             }
 
             // Make Comcode page dirs
@@ -674,10 +676,12 @@ class Module_admin_lang
                 $_special_dir = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang;
                 if (!file_exists($_special_dir)) {
                     afm_make_directory($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang, true);
+                    afm_make_file($zone . (($zone == '') ? '' : '/') . 'pages/comcode_custom/' . $lang . '/index.html', '', false);
                 }
                 $_special_dir = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/html_custom/' . $lang;
                 if (!file_exists($_special_dir)) {
                     afm_make_directory($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $lang, true);
+                    afm_make_file($zone . (($zone == '') ? '' : '/') . 'pages/html_custom/' . $lang . '/index.html', '', false);
                 }
             }
 
@@ -688,6 +692,7 @@ class Module_admin_lang
                 $_special_dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang;
                 if (!file_exists($_special_dir)) {
                     afm_make_directory('themes/' . $theme . '/templates_cached/' . $lang, true);
+                    afm_make_file('themes/' . $theme . '/templates_cached/' . $lang . '/index.html', '', false);
                 }
             }
         }

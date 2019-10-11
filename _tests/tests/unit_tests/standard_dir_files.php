@@ -96,28 +96,8 @@ class standard_dir_files_test_set extends cms_test_case
                     if (in_array($file, array('tracker'))) {
                         continue;
                     }
-                } elseif ($dir_stub == 'sources_custom') {
-                    if (in_array($file, array('ILess', 'aws', 'sabredav', 'photobucket', 'spout', 'Transliterator', 'swift_mailer'))) {
-                        continue;
-                    }
-                } elseif ($dir_stub == 'sources_custom/composr_mobile_sdk') {
-                    if (in_array($file, array('ios', 'android'))) {
-                        continue;
-                    }
-                } elseif ($dir_stub == 'data') {
-                    if (in_array($file, array('ckeditor'))) {
-                        continue;
-                    }
-                } elseif ($dir_stub == 'uploads/website_specific') {
-                    if (in_array($file, array(get_db_site(), 'test'))) {
-                        continue;
-                    }
-                } elseif ($dir_stub == '_tests') {
-                    if (in_array($file, array('assets'))) {
-                        continue;
-                    }
                 } elseif ($dir_stub == '_tests/codechecker') {
-                    if (in_array($file, array('netbeans'))) {
+                    if (in_array($file, array('netbeans'))) { // Auto-generated folder, should not be meddled with
                         continue;
                     }
                 }
@@ -139,17 +119,17 @@ class standard_dir_files_test_set extends cms_test_case
             }
 
             if (
+                (preg_match('#^_tests/assets(/|$)#', $dir_stub) == 0) && // Needs to be web-executable
                 (!file_exists($dir . '/index.php')) && // Not in a zone (needs to run)
                 (!file_exists($dir . '/html_custom')) && // Not in an HTML directory (want to be able to call by hand)
                 (!file_exists($dir . '/EN')) && // Not in a pages directory (as parent of HTML directory)
-                (strpos($dir, '/uploads') === false) && // Not from uploads (we need to download from)
+                (preg_match('#^uploads(/|$)#', $dir_stub) == 0) && // Not from uploads (we need to download from)
                 (preg_match('#/data(/|$|_)#', $dir) == 0) && // Not from data (scripts need to run)
-                (strpos($dir, '/themes') === false) && // Not from themes (we need to download from)
-                (strpos($dir, '/exports') === false) && // Not in exports (we need to download from)
-                (!file_exists($dir . '/code_quality.php')) && // Not in codechecker (we need to call CQC)
-                (!file_exists($dir . '/mobiquo.php')) && // Not in mobiquo (we need to call Tapatalk)
-                (!file_exists($dir . '/appbanner.js')) && // Not in mobiquo (we need to call Tapatalk)
-                (!file_exists($dir . '/tapatalk-banner-logo.png')) // Not in mobiquo (we need to call Tapatalk)
+                (preg_match('#themes($|/[^/]*($|/(images|images_custom|templates_cached)(/|$)))#', $dir_stub) == 0) && // Not from themes (we need to download from)
+                (preg_match('#^exports(/|$)#', $dir_stub) == 0) && // Not in exports (we need to download from)
+                (preg_match('#^_tests/codechecker$#', $dir_stub) == 0) && // Not in codechecker (we need to call CQC)
+                (preg_match('#^mobiquo(/smartbanner(/images)?)?$#', $dir_stub) == 0) && // Not in mobiquo (we need to call Tapatalk)
+                (preg_match('#^sources_custom/composr_mobile_sdk(/|$)#', $dir_stub) == 0) // composr_mobile_sdk may need to be callable
             ) {
                 if (strpos($dir, '/uploads/') !== false) {
                     $best_htaccess = 'uploads/downloads/.htaccess';

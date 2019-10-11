@@ -32,9 +32,10 @@ function init__files2()
  * Make a missing required directory, or exit with an error if we cannot (unless error suppression is on).
  *
  * @param  PATH $dir Path to create
+ * @param  boolean $make_index_file Whether to make an empty index file, to prevent browsing
  * @return boolean Success status
  */
-function make_missing_directory($dir)
+function make_missing_directory($dir, $make_index_file = true)
 {
     if (@mkdir($dir, 0777, true) === false) {
         if (error_reporting() == 0) {
@@ -48,6 +49,9 @@ function make_missing_directory($dir)
     }
     fix_permissions($dir);
     sync_file($dir);
+
+    cms_file_put_contents_safe($dir . '/index.html', '');
+
     return true;
 }
 

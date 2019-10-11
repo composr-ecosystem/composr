@@ -18,7 +18,6 @@
  */
 class Hook_addon_registry_testing_platform
 {
-
     /**
      * Get a list of file permissions to set.
      *
@@ -746,6 +745,9 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/_performance.php',
             '_tests/tests/regression_tests/input_filter_post_block.php',
             '_tests/tests/unit_tests/privilege_existence.php',
+            '_tests/codechecker/java_src/index.html',
+            '_tests/html_dump/forum_test_set/index.html',
+            '_tests/codechecker/java_src/.htaccess',
         );
     }
 }
