@@ -74,6 +74,9 @@ class MobiquoServerPOST extends MobiquoServer
         ini_set('ocproducts.xss_detect', '0');
 
         global $SERVER_DEFINE;
+        if (!isset($SERVER_DEFINE[$this->get_method_name()])) {
+            warn_exit('Unknown endpoint');
+        }
         $function = $SERVER_DEFINE[$this->get_method_name()]['function'];
         try {
             $response = call_user_func($function, $params);
