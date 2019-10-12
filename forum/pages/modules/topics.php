@@ -674,11 +674,14 @@ class Module_topics
      * Mark a topic as unread by the current member.
      *
      * @param  AUTO_LINK $topic_id The ID of the topic to mark as unread.
-     * @return boolean Success status.
+     * @return boolean Success status (false = too old to mark read; true = marked read or topic entirely missing).
      */
     public function cns_ping_topic_unread($topic_id)
     {
-        $last_time = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_cache_last_time', array('id' => $topic_id));
+        $last_time = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_cache_last_time', array('id' => $topic_id));
+        if ($last_time === null) {
+            return true;
+        }
         $too_old = $last_time < time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'));
         if (!$too_old) {
             if (!$GLOBALS['FORUM_DB']->table_is_locked('f_read_logs')) {
