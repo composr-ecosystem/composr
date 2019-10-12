@@ -86,8 +86,8 @@ function rss_backend_script()
         return;
     }
 
-    $type = get_param_string('type', 'RSS2');
-    $mode = get_param_string('mode', 'opml');
+    $type = filter_naughty_harsh(get_param_string('type', 'RSS2'));
+    $mode = filter_naughty_harsh(get_param_string('mode', 'opml'));
     require_lang('rss');
     require_code('xml');
 
@@ -192,7 +192,10 @@ function rss_backend_script()
         return;
     }
 
-    require_code('hooks/systems/rss/' . filter_naughty_harsh($mode), true);
+    if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+    require_code('hooks/systems/rss/' . $mode, true);
     $object = object_factory('Hook_rss_' . $mode);
     require_code('selectcode');
     $_content = $object->run($select, $cutoff, $prefix, $date_string, $max);
