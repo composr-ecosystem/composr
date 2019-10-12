@@ -103,7 +103,7 @@ A user should upgrade an addon by installing it on top of itself. i.e. don't uni
 
 If you have two addons that are competing for overrides on the same file, there are two approaches to solve this:
 1) you'd write an override in such a way that both addons would package that same override, and you'd use [tt]if (addon_installed('...'))[/tt] to dynamically adjust how it runs depending on which of those are installed.
-2) you would improve the core code, e.g. with additional hook support, so that both addons could hook in (required github access).
+2) you would improve the core code, e.g. with additional hook support, so that both addons could hook in (required GitLab access).
 
 [title="3"]Modules[/title]
 
@@ -997,7 +997,7 @@ Composr has a multi-faceted testing strategy as there is no perfect solution for
 2) Automated test framework, with a large number of tests written for it. The framework can incorporate  regression testing, as long as we write regression tests whenever we find bugs. It can incorporate UI testing in a sense as we can program a web bot to do things plus dump all the XHTML). The framework is documented in the description for the [tt]testing_platform[/tt] addon.
 3) Web standards Validation (partly built into CQC, partly built into Composr -- and also implemented as an automated test).
 4) Manual functional test set. The main test set is no longer maintained due to the enormous amount of time required to manually go through the tests, while things likely to break are picked up pretty well by the automated testing. However, we also maintain a smaller list of important tests (https://compo.sr/tracker/view.php?id=3383).
-5) [url="Custom version of PHP"]https://github.com/ocproducts/ocp-php[/url], with type strictness, and XSS detection, among other things.
+5) [url="Custom version of PHP"]https://gitlab.com/composr-foundation/ocp-php[/url], with type strictness, and XSS detection, among other things.
 6) Manual testing at core-team meet-ups, especially Usability testing / Blackbox testing.
 7) Public beta testing and bug reporting.
 8) Composr development mode, which applies lots of tricksy things, checking various things are done at run-time, and turning features on and off randomly, and doing some performance testing.
@@ -1401,7 +1401,7 @@ if ($foo) {
     $number = null;
 }
 [/code]
-and then use the [tt]is_null[/tt]/[tt]is_integer[/tt] functions as required. We do not consider [tt]null[/tt] a type like the others, due to how databases interpret it. We consider it more like a special marker meaning 'no value'.
+and then use [tt]=== null[/tt] checks/[tt]is_integer[/tt] functions as required. We do not consider [tt]null[/tt] a type like the others, due to how databases interpret it. We consider it more like a special marker meaning 'no value'.
 
 If a variable really must have multiple types, do...
 [code="PHP"]

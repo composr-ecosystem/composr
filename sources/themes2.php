@@ -349,7 +349,7 @@ function find_template_guids($file, $active_guid = null)
     $clean_file = basename($file, $suffix);
 
     $guids = array();
-    $_guids = @unserialize(@file_get_contents(get_file_base() . '/data/guids.dat'));
+    $_guids = @unserialize(@file_get_contents(get_file_base() . '/data/guids.bin'));
     if (($_guids !== false) && (array_key_exists($clean_file, $_guids))) {
         foreach ($_guids[$clean_file] as $_guid) {
             $guids[] = array(
@@ -491,6 +491,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
         @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
         if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
             fix_permissions(get_custom_file_base() . '/' . $upload_to);
+            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '');
         } else {
             $upload_to = 'themes/default/images_custom';
         }

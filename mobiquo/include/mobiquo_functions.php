@@ -139,7 +139,7 @@ function request_helper_get_file($request_method)
         return 'attachment';
     }
 
-    $data_file = __DIR__ . '/request_helper.dat';
+    $data_file = __DIR__ . '/request_helper.bin';
     if (!is_file($data_file)) {
         $func_file_mapping = array();
 

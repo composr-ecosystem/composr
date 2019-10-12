@@ -133,7 +133,7 @@ class MobiquoServerXMLRPC extends MobiquoServer
             $data = html_entity_decode($data, ENT_QUOTES, 'UTF-8');
         }
 
-        if (is_null($type)) {
+        if ($type === null) {
             return php_xmlrpc_encode($data);
         }
 

@@ -279,7 +279,7 @@ function _get_timezone_list()
 }
 
 /**
- * Sanitise a POST inputted date, and get the dat/time components.
+ * Sanitise a POST inputted date, and get the date/time components.
  *
  * @param  ID_TEXT $stub The stub of the parameter name (stub_year, stub_month, stub_day, stub_hour, stub_minute)
  * @param  ?integer $year Default year (null: none)

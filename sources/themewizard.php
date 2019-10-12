@@ -66,7 +66,11 @@ function load_themewizard_params_from_theme($theme, $guess_images_if_needed = fa
     $autodetect_background_images = (($guess_images_if_needed) && (get_theme_option('themewizard_images', '') == ''));
 
     if ($autodetect_background_images) {
-        $dh = opendir(get_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/'));
+        $css_dir_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/');
+        if (!is_dir($css_dir_path)) {
+            $css_dir_path = get_file_base() . '/themes/' . filter_naughty($theme) . (($theme == 'default') ? '/css/' : '/css_custom/');
+        }
+        $dh = opendir($css_dir_path);
         while (($sheet = readdir($dh)) !== false) {
             if (substr($sheet, -4) == '.css') {
                 $css_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/' . $sheet;
@@ -508,7 +512,13 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
                             if ($image !== null) {
                                 $pos = strrpos($image_code, '/');
                                 if (($pos !== false) || (strpos($orig_url, '/' . fallback_lang() . '/') !== false)) {
-                                    afm_make_directory($composite . substr($image_code, 0, $pos), true, true);
+                                    afm_make_directory($composite . substr($image_code, 0, $pos), true, true, true);
+                                    $parts = explode('/', substr($image_code, 0, $pos));
+                                    $buildup = $composite;
+                                    foreach ($parts as $part) {
+                                        $build_up .= '/' . $part;
+                                        afm_make_file($build_up . '/index.html', '', false);
+                                    }
                                 }
                                 cms_imagesave($image, $saveat) or intelligent_write_error($saveat);
                                 imagedestroy($image);

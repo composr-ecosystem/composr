@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+chdir(dirname(dirname(__FILE__)));
+
+$_msg = $_SERVER['argv'][1];
+if (empty($_msg)) {
+    failing('No commit message supplied');
+}
+$msg = file_get_contents($_msg);
+
+require('sources/version.php');
+init__version();
+if (cms_version_branch_status() == VERSION_ALPHA) {
+    exit(0);
+}
+
+if ($msg == 'Misc fixes') {
+    failing('You should make individual commits with proper commit messages; on a stable release each commit should also be attached to a tracker issue');
+}
+
+$regexp = '/^(Fixed MANTIS-\d+|Implementing MANTIS-\d+|Implemented MANTIS-\d+|Security fix for MANTIS-\d+|New build|Merge branch .*)/';
+if (preg_match($regexp, $msg) == 0) {
+    failing("Commit message must match this regexp:\n" . $regexp . "\nFor this provided message: " . $msg . "\n");
+}
+
+exit(0);
+
+function failing($msg)
+{
+    echo $msg . "\n";
+    exit(1);
+}
+

@@ -547,7 +547,7 @@ class Notification_dispatcher
                     }
                     require_code('files');
                     $path = get_custom_file_base() . '/data_custom/modules/web_notifications';
-                    cms_file_put_contents_safe($path . '/latest.dat', strval(time()), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+                    cms_file_put_contents_safe($path . '/latest.bin', strval(time()), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
                 }
 
                 inject_web_resources_context_to_comcode($message);

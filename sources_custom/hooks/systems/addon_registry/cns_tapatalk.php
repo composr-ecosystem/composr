@@ -348,6 +348,7 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
             'mobiquo/mbqClass/write/subscription_write.php',
             'mobiquo/mbqClass/write/topics_write.php',
             'mobiquo/mbqClass/write/user_write.php',
+            'mobiquo/mbqClass/index.html',
             'mobiquo/lib/classTTCipherEncrypt.php',
             'mobiquo/lib/classTTConnection.php',
             'mobiquo/lib/mobiquo.php',
@@ -396,6 +397,8 @@ For a demo, see this [url="video tutorial"]https://www.youtube.com/watch?v=SAGuj
             'mobiquo/smartbanner/index.html',
             'mobiquo/tests/.htaccess',
             'mobiquo/tests/index.html',
+            'mobiquo/mbqClass/.htaccess',
+            'mobiquo/lib/.htaccess',
         );
     }
 }

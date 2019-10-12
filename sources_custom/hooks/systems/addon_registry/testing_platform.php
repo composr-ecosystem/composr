@@ -18,7 +18,6 @@
  */
 class Hook_addon_registry_testing_platform
 {
-
     /**
      * Get a list of file permissions to set.
      *
@@ -93,7 +92,7 @@ This framework is designed to allow auto-runnable tests to easily be written for
 
 [b]Do not run this on a production system as it will interfere with installs and may contain security holes.[/b]
 
-This addon may have dependencies on any non-bundled Composr addon as it is designed to run directly out of a github clone of Composr (it is only available in the addon directory due to auto-packaging).
+This addon may have dependencies on any non-bundled Composr addon as it is designed to run directly out of a GitLab clone of Composr (it is only available in the addon directory due to auto-packaging).
 
 Make sure html_dump and anything in it has 777 permissions (full write permissions).
 
@@ -177,7 +176,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             'lang_custom/EN/phpdoc.ini',
             'sources_custom/php.php',
             'sources_custom/phpstub.php',
-            '_tests/codechecker/.htaccess',
             '_tests/codechecker/build.sh',
             '_tests/codechecker/code_quality.php',
             '_tests/codechecker/codechecker.app/.htaccess',
@@ -406,8 +404,6 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/assets/images/crop_start_32x18_8x8.png',
             '_tests/assets/images/crop_end_32x18_8x8.jpg',
             '_tests/assets/images/18x32.jpeg',
-            '_tests/assets/images/.htaccess',
-            '_tests/assets/.htaccess',
             '_tests/screens_tested/.htaccess',
             '_tests/screens_tested/index.html',
             '_tests/simpletest/.htaccess',
@@ -530,6 +526,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/ecommerce_shipping.php',
             '_tests/tests/unit_tests/resource_closing.php',
             '_tests/tests/unit_tests/sorting.php',
+            '_tests/tests/unit_tests/sensible_git_branches.php',
             '_tests/tests/unit_tests/clean_reinstall.php',
             '_tests/tests/unit_tests/authors.php',
             '_tests/tests/unit_tests/dns.php',
@@ -748,6 +745,9 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/_performance.php',
             '_tests/tests/regression_tests/input_filter_post_block.php',
             '_tests/tests/unit_tests/privilege_existence.php',
+            '_tests/codechecker/java_src/index.html',
+            '_tests/html_dump/forum_test_set/index.html',
+            '_tests/codechecker/java_src/.htaccess',
         );
     }
 }

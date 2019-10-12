@@ -64,6 +64,7 @@ class Module_admin_permissions
         delete_privilege('unfiltered_input');
         delete_privilege('see_query_errors');
         delete_privilege('bypass_spam_heuristics');
+        delete_privilege('avoid_captcha');
     }
 
     /**

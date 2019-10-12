@@ -1,15 +1,1 @@
-order deny,allow
-deny from all
-
-# Some Apache setups will look at double extensions and execute any that look interesting to it - bad for security. Since v5 ocP filters those though.
-
-SetHandler default-handler
-AddType text/plain php
-
-<IfModule mod_php5.c>
-php_value engine off
-</IfModule>
-
-<IfModule mod_php7.c>
-php_value engine off
-</IfModule>
+require all denied

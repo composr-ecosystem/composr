@@ -18,6 +18,10 @@
  * @package    import
  */
 
+/*EXTRA FUNCTIONS: register_tick_function*/
+
+declare(ticks=1);
+
 /**
  * Module page class.
  */
@@ -376,7 +380,7 @@ class Module_admin_import
             $db_name = get_db_site();
             $db_user = get_db_site_user();
             $db_table_prefix = array_key_exists('prefix', $info) ? $info['prefix'] : $GLOBALS['SITE_DB']->get_table_prefix();
-            $refresh_time = 0;
+            $refresh_time = 45;
         }
 
         // Build the form
@@ -569,7 +573,8 @@ class Module_admin_import
 
         $hidden = new Tempcode();
         $hidden->attach(build_keep_post_fields($skip_hidden));
-        $hidden->attach(build_keep_form_fields('', true));
+        $hidden->attach(build_keep_form_fields('', true, array('type', 'label_for__old_base_dir', 'require__old_base_dir', 'label_for__refresh_time', 'require__refresh_time')));
+        $hidden->attach(form_input_hidden('db_password', $db_password));
 
         return do_template('IMPORT_ACTION_SCREEN', array(
             '_GUID' => 'a3a69637e541923ad76e9e7e6ec7e1af',
@@ -606,12 +611,18 @@ class Module_admin_import
         $info = $object->info();
 
         // Protection from if things take too long
-        $refresh_url = get_self_url(true, false, array('type' => 'import'), true);
+        $refresh_url = get_self_url(true, false, array('type' => 'import'), false, true);
         $refresh_time = either_param_integer('refresh_time', 0); // Shouldn't default, but reported on some systems to do so
         cms_set_time_limit($refresh_time);
-        global $I_REFRESH_URL;
+        send_http_output_ping();
+        cms_ini_set('log_errors', '0');
+        global $I_REFRESH_URL, $I_REFRESH_TIME;
         $I_REFRESH_URL = $refresh_url;
+        $I_REFRESH_TIME = $refresh_time;
         $GLOBALS['NO_QUERY_LIMIT'] = true;
+        if ($I_REFRESH_TIME != 0) {
+            register_tick_function('i_timed_refresh');
+        }
 
         cms_ini_set('log_errors', '0');
 

@@ -141,8 +141,9 @@ class Hook_cleanup_page_stats
         fwrite($tmpfile, substr($_install_php_file, $place + strlen($look_for)));
 
         // Make TAR
+        require_code('crypt');
         require_code('tar');
-        $file = 'stats-leading-to-' . date('Y-m-d', utctime_to_usertime(time() - 60 * 60 * 24 * $delete_older_than));
+        $file = get_secure_random_string() . '-stats-leading-to-' . date('Y-m-d', utctime_to_usertime(time() - 60 * 60 * 24 * $delete_older_than));
         $stats_backup_url = get_custom_base_url() . '/exports/backups/' . $file . '.tar';
         $myfile = tar_open(get_custom_file_base() . '/exports/backups/' . $file . '.tar', 'wb');
         tar_add_file($myfile, $file . '.php', $install_php_file, 0664, time(), true);

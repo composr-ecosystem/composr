@@ -86,7 +86,7 @@ foreach ($files as $i => $file) {
 echo 'Finished!';
 
 if ($limit_file == '') {
-    cms_file_put_contents_safe(get_file_base() . '/data/guids.dat', serialize($GUID_LANDSCAPE), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/guids.bin', serialize($GUID_LANDSCAPE), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
 
 function callback($match)

@@ -331,19 +331,19 @@ function step_1()
                 $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER'))));
             }
         } else {
-            $files = @unserialize(file_get_contents(get_file_base() . '/data/files.dat'));
+            $files = @unserialize(file_get_contents(get_file_base() . '/data/files.bin'));
             if ($files !== false) {
                 $missing = array();
                 $corrupt = array();
 
                 // Volatile files (see also list in make_release.php)
                 $skipped_files_may_be_changed_or_missing = array_flip(array(
-                    'data_custom/functions.dat',
-                    'data/files_previous.dat',
+                    'data_custom/functions.bin',
+                    'data/files_previous.bin',
                 ));
                 $skipped_files_may_be_changed = array_flip(array(
                     'sources/version.php',
-                    'data/files.dat',
+                    'data/files.bin',
 
                     // Large file size, skip for performance
                     'data/modules/admin_stats/IP_Country.txt',
@@ -435,9 +435,9 @@ function step_1()
         }
     }
 
-    // GitHub downloads should not be used directly
+    // GitLab downloads should not be used directly
     if (file_exists(get_file_base() . '/_tests')) {
-        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => 'You appear to be installing via the official github repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.')));
+        $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => 'You appear to be installing via the official GitLab repository. This is not intended for end-users and will lead to a bloated insecure site. You should use an official package from the Composr download page.')));
     }
 
     // Language selection...
@@ -3016,6 +3016,13 @@ function compress_filter($input)
 function test_htaccess($conn)
 {
     $clauses = array();
+
+    $clauses[] = <<<END
+# Stop any potential content-type sniffing vulnerabilities
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+</IfModule>
+END;
 
     $clauses[] = <<<END
 # Disable inaccurate security scanning (Composr has its own). This disabling only works with modsecurity1 unfortunately.

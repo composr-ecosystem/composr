@@ -111,7 +111,7 @@ class Hook_profiles_tabs_edit_settings
                 if (cns_field_editable('dob', $special_type)) {
                     require_code('temporal2');
                     list($dob_year, $dob_month, $dob_day) = post_param_date_components('birthday');
-                    if ((is_null($dob_year)) || (is_null($dob_month)) || (is_null($dob_day))) {
+                    if (($dob_year === null) || ($dob_month === null) || ($dob_day === null)) {
                         if (member_field_is_required($member_id_of, 'dob', null, $member_id_viewing)) {
                             warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html('birthday')));
                         }

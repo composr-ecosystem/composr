@@ -69,9 +69,9 @@ handlers:
 #  script: index.php
 #- url: /([^/\&\?]+)
 #  script: index.php
-- url: /(.*\.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bmp|bz2|css|csv|cur|dat|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|xls|xlsx|xml|xsd|xsl|zip))
+- url: /(.*\.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bin|bmp|bz2|css|csv|cur|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|swf|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|woff2|xls|xlsx|xml|xsd|xsl|zip))
   static_files: \1
-  upload: .*\.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bmp|bz2|css|csv|cur|dat|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|xls|xlsx|xml|xsd|xsl|zip)
+  upload: .*\.(1st|3g2|3gp|3gp2|3gpp|3p|7z|aac|ai|aif|aifc|aiff|asf|atom|avi|bmp|bz2|css|csv|cur|diff|dmg|doc|docx|dot|dotx|eml|exe|f4v|gif|gz|html|ico|ics|ini|iso|jpe|jpeg|jpg|js|json|keynote|log|m2v|m4v|mdb|mid|mov|mp2|mp3|mp4|mpa|mpe|mpeg|mpg|mpv2|numbers|odb|odc|odg|odi|odp|ods|odt|ogg|ogv|otf|pages|patch|pdf|png|ppt|pptx|ps|psd|pub|qt|ra|ram|rar|rm|rss|rtf|sql|svg|tar|tga|tgz|tif|tiff|torrent|tpl|ttf|txt|vsd|vtt|wav|weba|webm|webp|wma|wmv|woff|woff2|xls|xlsx|xml|xsd|xsl|zip)
   application_readable: true
 - url: /
   script: index.php

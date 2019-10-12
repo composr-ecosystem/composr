@@ -397,7 +397,7 @@ ul.compact-list li {
 [/code]
 Therefore to make things display neatly you will need to make a modified theme that makes these kinds of changes for margin settings, padding settings, and background settings.
 
-If there are cases where our default theme can be improved without encumbering the left-to-right majority too much, please consider making a Pull Request on the Composr project on github. Only do this if you have brought things up to a default level and tested it. We would love regular users of right-to-left languages to contribute corrections, as it is too big and complex a task to integrate into the core development process.{+END}
+If there are cases where our default theme can be improved without encumbering the left-to-right majority too much, please consider making a Pull Request on the Composr project on GitLab. Only do this if you have brought things up to a default level and tested it. We would love regular users of right-to-left languages to contribute corrections, as it is too big and complex a task to integrate into the core development process.{+END}
 
 [title="3"]Additional things you can translate[/title]
 
@@ -447,7 +447,7 @@ You may want to just skip translating images. The toolbar buttons that use image
 Composr uses a third-party WYSIWYG editor &ndash; CKEditor.
 It has its own translations which should automatically be linked to your own by the standard ISO language name.
 
-If there's no translation for CKEditor then you need to manually add one. The [tt]data/ckeditor/lang/ta.js[/tt] file provides a good example of the basic strings to translate (the ones we translated are obvious). However, you also need to make some technical code edits to [tt]data/ckeditor/ckeditor.js[/tt] to reference that the language exists; for this reason a language pack can't really include a custom CKEditor translation and we would need to take the translation via a pull request on github instead.
+If there's no translation for CKEditor then you need to manually add one. The [tt]data/ckeditor/lang/ta.js[/tt] file provides a good example of the basic strings to translate (the ones we translated are obvious). However, you also need to make some technical code edits to [tt]data/ckeditor/ckeditor.js[/tt] to reference that the language exists; for this reason a language pack can't really include a custom CKEditor translation and we would need to take the translation via a merge request on GitLab instead.
 
 [title="4"]Template/CSS editor[/title]
 

@@ -1,5 +1,5 @@
-order deny,allow
-deny from all
+require all denied
+
 <Files ~ "static_cache.php">
   Allow from all
 </Files>

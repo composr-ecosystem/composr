@@ -44,7 +44,7 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
 {
     $ret = mixed();
 
-    $path = get_custom_file_base() . '/caches/http/' . md5(serialize($args)) . '.dat';
+    $path = get_custom_file_base() . '/caches/http/' . $func . '__' . md5(serialize($args)) . '.bin';
     if (is_file($path) && (($timeout === null) || (filemtime($path) > time() - $timeout * 60))) {
         $_ret = cms_file_get_contents_safe($path);
         if ($func === 'cms_http_request') {
@@ -52,18 +52,22 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
         } else {
             $ret = $_ret;
         }
-    } else {
-        $_ret = call_user_func_array($func, $args);
-        require_code('files');
-        if ($func === 'cms_http_request') {
-            $ret = array($_ret->data, $_ret->download_mime_type, $_ret->download_size, $_ret->download_url, $_ret->message, $_ret->message_b, $_ret->new_cookies, $_ret->filename, $_ret->charset, $_ret->download_mtime);
-            if (($cache_errors) || (($_ret->message !== null) && (substr($_ret->message, 0, 1) == '2'))) {
-                cms_file_put_contents_safe($path, serialize($ret), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
-            }
-        } else {
-            $ret = is_string($_ret) ? $_ret : serialize($_ret);
-            cms_file_put_contents_safe($path, $ret, FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+
+        if ($ret !== null) {
+            return $ret;
         }
+    }
+
+    $_ret = call_user_func_array($func, $args);
+    require_code('files');
+    if ($func === 'cms_http_request') {
+        $ret = array($_ret->data, $_ret->download_mime_type, $_ret->download_size, $_ret->download_url, $_ret->message, $_ret->message_b, $_ret->new_cookies, $_ret->filename, $_ret->charset, $_ret->download_mtime);
+        if (($cache_errors) || (($_ret->message !== null) && (substr($_ret->message, 0, 1) == '2'))) {
+            cms_file_put_contents_safe($path, serialize($ret), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
+        }
+    } else {
+        $ret = is_string($_ret) ? $_ret : serialize($_ret);
+        cms_file_put_contents_safe($path, $ret, FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
     }
     return $ret;
 }
@@ -481,6 +485,8 @@ abstract class HttpDownloader
                 $this->post_params = array(); // POST is implied
             }
 
+            $this->sent_http_post_content = true;
+
             if ($this->raw_post) {
                 $_postdetails_params = $this->post_params[0];
             } else {
@@ -510,7 +516,6 @@ abstract class HttpDownloader
                 if (!$this->add_content_type_header_manually) {
                     $this->raw_payload .= "\r\n\r\n";
                 }
-                $this->sent_http_post_content = true;
             } else { // If files, use more complex multipart/form-data
                 if (strtolower($this->http_verb) == 'put') {
                     $this->put_no_delete = (count($this->post_params) == 0) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
@@ -536,7 +541,7 @@ abstract class HttpDownloader
                             $raw_payload2 .= 'Content-Type: ' . $this->raw_content_type . "\r\n\r\n";
                         }
                     } else {
-                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . urlencode($key) . '"' . "\r\n\r\n";
+                        $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $key) . '"' . "\r\n\r\n";
                     }
                     $raw_payload2 .= $val . "\r\n";
                 }
@@ -548,7 +553,7 @@ abstract class HttpDownloader
                     if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 1)) {
                         $raw_payload2 .= '----cms' . $this->divider . "\r\n";
                         if (strpos($upload_field, '/') === false) {
-                            $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . urlencode(basename($file_path)) . '"' . "\r\n";
+                            $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
 
                             require_code('mime_types');
                             require_code('files');
@@ -1400,7 +1405,7 @@ class HttpDownloaderSockets extends HttpDownloader
             $time_init = time();
             $line = '';
             while (($chunked) || (!@feof($mysock))) { // @'d because socket might have died. If so fread will will return false and hence we'll break
-                if ((function_exists('stream_select')) && (count($_frh) > 0) && (!stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)))) {
+                if ((function_exists('stream_select')) && (count($_frh) > 0) && (!@stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)))) {
                     if (($input === '') && ($time_init + $this->timeout < time())) {
                         if ((!$chunked) || ($buffer_unprocessed == '')) {
                             $line = false; // Manual timeout

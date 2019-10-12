@@ -437,6 +437,10 @@
                 theElements = arrVal(theForm.elements),
                 fieldCheckPromiseCalls = [];
 
+            if (!theForm.checkValidity()) {
+                erroneous = true;
+            }
+
             theElements.forEach(function (theElement) {
                 fieldCheckPromiseCalls.push(function () {
                     var checkResult = checkField(theElement, theForm);

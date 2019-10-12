@@ -150,7 +150,7 @@ It is possible to run Composr direct from a [url="main git repository"]{$COMPOSR
 
 However, be aware the main git repository contains all non-bundled addons. It is used by developers who want to keep everything in the ecosystem in-harmony when developing new features.
 
-If you are going to run from the main git repository, it is best to install it properly rather than just downloading the ZIP from github. Then you can do [tt]git pull[/tt] commands whenever you want to update the code with the latest changes.
+If you are going to run from the main git repository, it is best to install it properly rather than just downloading the ZIP from GitLab. Then you can do [tt]git pull[/tt] commands whenever you want to update the code with the latest changes.
 
 If you are a programmer making your own standalone site you can use git, but you should make your own repository from a normal Composr install.
 

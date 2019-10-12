@@ -238,6 +238,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'data_custom/webfonts/adgs-icons.svg',
                 'themes/default/javascript_custom/confluence.js',
                 'themes/default/javascript_custom/confluence2.js',
+                'sources_custom/Cloudinary/cacert.pem',
             );
             if (in_array($path, $exceptions)) {
                 continue;

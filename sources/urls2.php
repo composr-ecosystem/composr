@@ -224,10 +224,10 @@ function _build_keep_post_fields($exclude = array(), $force_everything = false)
  */
 function _url_to_filename($url_full)
 {
-    $bad_chars = array('!', '/', '\\', '?', '*', '<', '>', '|', '"', ':', '%', ' ');
+    $bad_chars = array('!', '/', '\\', '?', '*', '<', '>', '|', '"', ':', '%', '!', ';', '~', ' ');
     $new_name = $url_full;
     foreach ($bad_chars as $bad_char) {
-        $good_char = '!' . strval(ord($bad_char));
+        $good_char = '~' . strval(ord($bad_char));
         if ($bad_char == ':') {
             $good_char = ';'; // So page_links save nice
         }
@@ -1022,13 +1022,13 @@ function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict
 {
     if ($filename === null) {
         require_code('crypt');
-        $filename = get_secure_random_string() . '.dat';
+        $filename = get_secure_random_string() . '.bin';
     }
 
     $ext = get_file_extension($filename);
     if ($ext == '') {
-        $ext = 'dat';
-        $filename .= '.dat';
+        $ext = 'bin';
+        $filename .= '.bin';
     }
 
     $basename = basename($filename, '.' . $ext);

@@ -143,7 +143,22 @@ function add_wordfilter_word($word, $replacement = '', $substr = 0)
 }
 
 /**
- * Force a page refresh due to maximum execution timeout.
+ * Detect if we have reached our timerout, more accurately than set_time_limit could.
+ */
+function i_timed_refresh()
+{
+    static $time = null;
+    if ($time === null) {
+        $time = time();
+    }
+    global $I_REFRESH_TIME;
+    if (time() >= $time + $I_REFRESH_TIME) {
+        i_force_refresh();
+    }
+}
+
+/**
+ * Force a page refresh due to maximum execution timeout / tick-function determined timeout.
  */
 function i_force_refresh()
 {
@@ -152,8 +167,24 @@ function i_force_refresh()
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
         }
 
-        require_code('site2');
-        redirect_exit($GLOBALS['I_REFRESH_URL']);
+        global $I_REFRESH_URL, $I_REFRESH_TIME;
+
+        $post = build_keep_post_fields(array(), true);
+        $refresh = do_template('JS_REFRESH', array('FORM_NAME' => 'redir_form'));
+
+        $title = get_screen_title('IMPORT');
+        $url = $I_REFRESH_URL;
+        foreach ($GLOBALS as $key => $val) {
+            if (preg_match('#^JUMPSTART_#', $key) != 0) {
+                $url = preg_replace('#&' . preg_quote($key, '#') . '=\d+#', '', $url);
+                $url .= '&' . $key . '=' . strval($val);
+            }
+        }
+        $middle = do_template('REDIRECT_POST_METHOD_SCREEN', array('REFRESH' => $refresh, 'TITLE' => $title, 'TEXT' => do_lang_tempcode('REFRESH_TIMEOUT_REACHED', strval($I_REFRESH_TIME)), 'URL' => $url, 'POST' => $post));
+
+        $echo = globalise($middle, null, '', true);
+        $echo->evaluate_echo();
+        exit();
     }
 }
 

@@ -1101,11 +1101,11 @@ abstract class Standard_crud_module
 
         $select_field = ($this->orderer !== null) ? $this->orderer : ($this->table_prefix . strtolower($this->select_name));
 
-        $table_raw = (is_null($this->table) ? $this->module_type : $this->table);
+        $table_raw = (($this->table === null) ? $this->module_type : $this->table);
         $table = $table_raw . ' r';
         $db = get_db_for($table, $force_site_db);
 
-        if (is_null($orderer)) {
+        if ($orderer === null) {
             $orderer = $select_field;
         }
         $orderer_is_multi_lang = isset($GLOBALS['TABLE_LANG_FIELDS_CACHE'][$table_raw][preg_replace('# (ASC|DESC)$#', '', $orderer)]);

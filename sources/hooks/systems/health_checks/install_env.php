@@ -51,6 +51,8 @@ class Hook_health_check_install_env extends Hook_Health_Check
         $this->process_checks_section('testDiskSpaceInstallation', 'Disk Space (Installation)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testUnicode', 'Database Unicode settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testPCRE', 'PCRE settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testSELinux', 'SELinux settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testUmask', 'Umask settings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return array($this->category_label, $this->results);
     }
@@ -478,5 +480,147 @@ class Hook_health_check_install_env extends Hook_Health_Check
 
         $this->assertTrue(preg_replace('#\n#', '', "\n") == '', 'PHP is using a non-default copy of the PCRE library that is not configured with the usual line endings, which will cause some major problems'); // Checks correct line endings
         $this->assertTrue(@preg_replace('#\n#u', '', "\n") !== false, 'PCRE does not have inbuilt Unicode support, which means Unicode may not work correctly'); // Checks correct line endings
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testSELinux($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            return;
+        }
+
+        if (!$manual_checks) {
+            return;
+        }
+
+        if (php_function_allowed('shell_exec')) {
+            $result = shell_exec('sestatus');
+            if (strpos($result, 'enabled') !== false) {
+                $this->stateCheckManual('SELinux is enabled, check the httpd_sys_rw_content_t context is recursively applied to your webroot');
+            } elseif (strpos($result, 'disabled') !== false) {
+                $this->stateCheckSkipped('SELinux not enabled');
+            } else {
+                $this->stateCheckSkipped('SELinux probably not enabled');
+            }
+        } else {
+            $this->stateCheckSkipped('PHP shell_exec function not available');
+        }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testUmask($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if ($check_context != CHECK_CONTEXT__LIVE_SITE) {
+            return;
+        }
+
+        // Test problems with lack of umask-derived permissions when Apache is not running as web user (possible in various cases, e.g. suPHP causes PHP to use web user but not therefore for static requests)...
+
+        // File test
+        $filename = 'hc-test.html';
+        $subdir = '';
+        $result = $this->runUmaskTest($filename, $subdir);
+        if ($result !== null) {
+            list($ok, $perms, $dir_perms) = $result;
+            $has_group_read_perms = (($perms & 0040) != 0);
+            $this->assertTrue($ok, 'Could not access test static file created with default permissions, group read permissions ' . ($has_group_read_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_read_perms) ? ' (likely the web server itself is running as a different server to PHP is executed with so relies on the group permissions)' : ''));
+        }
+
+        // Directory test
+        if ($ok) { // Only for this test if previous test passed
+            $filename = 'hc-test.html';
+            $subdir = 'test/';
+            $result = $this->runUmaskTest($filename, $subdir);
+            if ($result !== null) {
+                list($ok, $perms, $dir_perms) = $result;
+                $has_group_execute_perms = (($perms & 0010) != 0);
+                $this->assertTrue($ok, 'Could not access test static file in directory created with default permissions, group execute permissions ' . ($has_group_execute_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_execute_perms) ? ' (likely the web server itself is running as a different server to PHP is executed with so relies on the group permissions)' : ''));
+            }
+        }
+
+        // Test problems with excess of permissions (possible in various cases, e.g. suPHP allow_file_group_writeable/allow_directory_group_writeable/allow_file_others_writeable/allow_directory_others_writeable)...
+
+        // File test
+        $filename = 'hc-test.php';
+        $subdir = '';
+        $result = $this->runUmaskTest($filename, $subdir);
+        if ($result !== null) {
+            list($ok, $perms, $dir_perms) = $result;
+            $has_excess_write_perms = (($perms & 0022) != 0);
+            $this->assertTrue($ok, 'Could not access test PHP file created with default permissions, excess write permissions ' . ($has_excess_write_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_excess_write_perms) ? ' (likely you are using suPHP and wisely have allow_file_group_writeable or allow_file_others_writeable not set)' : ''));
+        }
+
+        // Directory test
+        if ($ok) { // Only for this test if previous test passed
+            $filename = 'hc-test.php';
+            $subdir = 'test/';
+            $result = $this->runUmaskTest($filename, $subdir);
+            if ($result !== null) {
+                list($ok, $perms, $dir_perms) = $result;
+                $has_excess_write_perms = (($perms & 0022) != 0);
+                $this->assertTrue($ok, 'Could not access test PHP file in directory created with default permissions, excess write permissions ' . ($has_excess_write_perms ? 'were' : 'were NOT') . ' set by default umask' . ((!$has_group_execute_perms) ? ' (likely you are using suPHP and wisely have allow_directory_group_writeable or allow_directory_others_writeable not set)' : ''));
+            }
+        }
+    }
+
+    /**
+     * Run a umask check (creates a file and sees if web server can access it).
+     *
+     * @param  string $filename Filename
+     * @param  string $subdir Subdirectory
+     * @return ?array A tuple: Success status, Permissions, Directory permissions (null: error)
+     */
+    protected function runUmaskTest($filename, $subdir)
+    {
+        $dir_path = get_file_base() . '/uploads/' . $subdir;
+        $path = $dir_path . $filename;
+        $url = get_base_url() . '/uploads/' . $subdir . $filename;
+
+        if ($subdir != '') {
+            // Create a directory using the default umask
+            @call_user_func('mkdir', $dir_path); // In call_user_func to trick CQC, which demands a permissions parameter that we explicitly don't want for this test (testing for what happens with default umask)
+            if (!is_dir($dir_path)) {
+                $this->stateCheckSkipped('Could not create test directory');
+                return null;
+            }
+        }
+
+        @file_put_contents($path, 'test');  // Create a file using the default umask
+        if (!is_file($path)) {
+            $this->stateCheckSkipped('Could not create test file');
+            return null;
+        }
+
+        $data = http_get_contents($url, array('trigger_error' => false));
+        $ok = (is_string($data)) && (strpos($data, 'test') !== false);
+
+        $perms = fileperms($path);
+        $dir_perms = fileperms($dir_path);
+
+        // Cleanup
+        if ($subdir != '') {
+            @rmdir($dir_path);
+        }
+        @unlink($path);
+
+        return array($ok, $perms, $dir_perms);
     }
 }

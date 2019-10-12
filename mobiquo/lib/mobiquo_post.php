@@ -56,7 +56,7 @@ class MobiquoServerPOST extends MobiquoServer
     {
         $this->output_server = $this->get_output_server();
 
-        if (is_null($this->output_server)) {
+        if ($this->output_server === null) {
             header('Content-type: text/plain; charset=utf-8');
         }
 
@@ -137,7 +137,7 @@ class MobiquoServerPOST extends MobiquoServer
      */
     public function val($data, $type)
     {
-        if (is_null($this->output_server)) {
+        if ($this->output_server === null) {
             if (is_string($data)) {
                 $data = convert_to_internal_encoding($data, get_charset(), 'utf-8');
                 $data = html_entity_decode($data, ENT_QUOTES, 'utf-8');
@@ -173,7 +173,7 @@ class MobiquoServerPOST extends MobiquoServer
      */
     public function response($data)
     {
-        if (is_null($this->output_server)) {
+        if ($this->output_server === null) {
             return serialize($data);
         }
 
@@ -187,7 +187,7 @@ class MobiquoServerPOST extends MobiquoServer
      */
     public function output_response($response)
     {
-        if (is_null($this->output_server)) {
+        if ($this->output_server === null) {
             parent::output_response($response);
             return;
         }

@@ -310,6 +310,9 @@ class Hook_addon_registry_transliteration
             'sources_custom/Transliterator/data/xfd.php',
             'sources_custom/Transliterator/data/xfe.php',
             'sources_custom/Transliterator/data/xff.php',
+            'sources_custom/Transliterator/index.html',
+            'sources_custom/Transliterator/data/index.html',
+            'sources_custom/Transliterator/.htaccess',
         );
     }
 }

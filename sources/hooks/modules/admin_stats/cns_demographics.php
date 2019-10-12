@@ -145,7 +145,7 @@ class Hook_admin_stats_cns_demographics
 
         $graph = do_template('STATS_GRAPH', array(
             '_GUID' => 'ae6e151806c83a6ac6df84b645de3f69',
-            'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Demographics.xml',
+            'GRAPH' => $ob->get_stats_url('Global-Demographics'),
             'TITLE' => do_lang_tempcode('DEMOGRAPHICS'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_DEMOGRAPHICS'),
         ));

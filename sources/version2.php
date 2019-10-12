@@ -221,11 +221,14 @@ function is_substantial_release($dotted)
  */
 function is_php_version_supported($v)
 {
-    require_code('http');
-    if (function_exists('set_option')) {
-        $data = cache_and_carry('http_get_contents', array('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('trigger_error' => false)), 60 * 60 * 24 * 7);
-    } else {
-        $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('trigger_error' => false));
+    static $data = null;
+    if ($data === null) {
+        require_code('http');
+        if (function_exists('set_option')) {
+            $data = cache_and_carry('http_get_contents', array('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('trigger_error' => false)), 60 * 60 * 24 * 7);
+        } else {
+            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('trigger_error' => false));
+        }
     }
 
     $matches = array();

@@ -314,6 +314,7 @@ class Database_Static_xml extends DatabaseDriver
         require_code('files');
         fix_permissions($path);
         sync_file($path);
+        cms_file_put_contents_safe($path . '/index.html', '');
     }
 
     /**
@@ -388,6 +389,7 @@ class Database_Static_xml extends DatabaseDriver
             require_code('files');
             fix_permissions($db_name);
             sync_file($db_name);
+            cms_file_put_contents_safe($db_name . '/index.html', '');
         }
 
         return array($db_name);
@@ -926,7 +928,8 @@ class Database_Static_xml extends DatabaseDriver
                 require_code('files');
                 fix_permissions($db[0] . '/' . $table_name);
                 sync_file($db[0] . '/' . $table_name);
-            }
+                cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '');
+           }
             @chdir($db[0] . '/' . $table_name);
             $files = @glob('{,.}*.{xml,xml-volatile}', GLOB_NOSORT | GLOB_BRACE);
             if ($files === false) {
@@ -1234,6 +1237,7 @@ class Database_Static_xml extends DatabaseDriver
             require_code('files');
             fix_permissions($db[0] . '/' . $table_name);
             sync_file($db[0] . '/' . $table_name);
+            cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '');
         }
 
         $path = $db[0] . '/' . $table_name . '/' . $guid . $suffix;
@@ -1633,6 +1637,7 @@ class Database_Static_xml extends DatabaseDriver
         require_code('files');
         fix_permissions($path);
         sync_file($path);
+        cms_file_put_contents_safe($path . '/index.html', '');
 
         return null;
     }

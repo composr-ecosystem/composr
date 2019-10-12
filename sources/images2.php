@@ -575,8 +575,8 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
             // Now set all of the parameters needed for blitting our image $sx and $sy are fine, since they cover the whole image
             $source_x = 0;
             $source_y = 0;
-            $_width = ($pad_axis == 'x') ? ($width - $pad_amount) : $width;
-            $_height = ($pad_axis == 'y') ? ($height - $pad_amount) : $height;
+            $_width = ($pad_axis == 'x') ? ($width - $padding) : $width;
+            $_height = ($pad_axis == 'y') ? ($height - $padding) : $height;
             $dest_x = ($pad_axis == 'x') ? $pad_amount : 0;
             $dest_y = ($pad_axis == 'y') ? $pad_amount : 0;
         }
@@ -603,7 +603,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
         }
     }
 
-    if (($_width == $sx) && ($_height == $sy) && (!$reorientated)) {
+    if (($_width == $sx) && ($_height == $sy) && ($dest_x == 0) && ($dest_y == 0) && (!$reorientated)) {
         // We can just escape, nothing to do...
         imagedestroy($source);
 
@@ -621,7 +621,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
             cms_file_put_contents_safe($to, $from_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
         cms_set_time_limit($old_limit);
-        return $to;
+        return _image_path_to_url($to);
     }
 
     unset($from_file);

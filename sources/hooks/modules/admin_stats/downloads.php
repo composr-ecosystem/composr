@@ -151,7 +151,7 @@ class Hook_admin_stats_downloads
 
         $graph = do_template('STATS_GRAPH', array(
             '_GUID' => 'd2cd5da7cf2139f750d4373acf6149e8',
-            'GRAPH' => get_custom_base_url() . '/data_custom/modules/admin_stats/Global-Downloads.xml',
+            'GRAPH' => $ob->get_stats_url('Global-Downloads'),
             'TITLE' => do_lang_tempcode('SECTION_DOWNLOADS'),
             'TEXT' => do_lang_tempcode('DESCRIPTION_DOWNLOADS_STATISTICS'),
         ));

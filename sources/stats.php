@@ -19,6 +19,26 @@
  */
 
 /**
+ * Output a cached stats SVG file.
+ *
+ * @ignore
+ */
+function stats_graph_script()
+{
+    header('X-Robots-Tag: noindex');
+
+    header('Content-Type: image/svg+xml');
+
+    $file = filter_naughty(get_param_string('file'));
+
+    $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . $file . '.xml';
+
+    if (file_exists($path)) {
+        echo file_get_contents($path);
+    }
+}
+
+/**
  * Function to find Alexa details of the site.
  *
  * @param  string $url The URL of the site which you want to find out information on.)

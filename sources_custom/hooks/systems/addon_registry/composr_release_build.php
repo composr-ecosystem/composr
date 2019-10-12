@@ -184,6 +184,8 @@ You may want to put them in your git \'cmd\' directory, as that is in your path.
             'aps/scripts/templates/index.html',
             'aps/test/.htaccess',
             'aps/test/index.html',
+            'exports/builds/build/index.html',
+            'exports/builds/hotfixes/index.html',
         );
     }
 }

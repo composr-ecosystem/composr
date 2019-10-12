@@ -480,7 +480,7 @@ function should_ignore_file($path, $bitmask = 0)
 
         // Temporary files
         'tmp' => '.*',
-        'dat' => 'caches/http',
+        'bin' => 'caches/http',
         'bak' => '.*',
         'old' => '.*',
         'cms' => '.*', // Installers and upgraders
@@ -592,6 +592,12 @@ function should_ignore_file($path, $bitmask = 0)
     }
 
     if (($bitmask & IGNORE_FLOATING) != 0) {
+        if (preg_match('#^tracker/uploads(/|$)#i', $path) != 0) {
+            return true; // Mantis upload files
+        }
+        if (preg_match('#^uploads/website_specific/compo.sr/demonstratr/servers(/|$)#i', $path) != 0) {
+            return true; // Demonstrate site
+        }
         if (preg_match('#^data_custom/sitemaps(/|$)#i', $path) != 0) {
             return true; // Sitemap files
         }
@@ -660,7 +666,7 @@ function should_ignore_file($path, $bitmask = 0)
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, array(
             '_config.php' => '',
             'map.ini' => 'themes',
-            'functions.dat' => 'data_custom',
+            'functions.bin' => 'data_custom',
             'errorlog.php' => 'data_custom',
             'execute_temp.php' => 'data_custom',
             '.user.ini' => '.*',
@@ -675,7 +681,7 @@ function should_ignore_file($path, $bitmask = 0)
         $ignore_filenames_and_dir_names = array_merge($ignore_filenames_and_dir_names, array(
             'upgrader.cms.tmp' => 'data_custom',
             'unit_test_positive_ignore_sampler.xxx' => 'data_custom', // To help us test this function. This file won't ever exist.
-            'latest.dat' => 'data_custom/modules/web_notifications',
+            'latest.bin' => 'data_custom/modules/web_notifications',
             'failover_rewritemap.txt' => 'data_custom',
             'failover_rewritemap__mobile.txt' => 'data_custom',
             'aggregate_types.xml' => 'data_custom/xml_config',
@@ -687,7 +693,7 @@ function should_ignore_file($path, $bitmask = 0)
 
             // Non-bundled addons inside the git repository
             'out.csv' => 'data_custom/modules/user_export', // user_simple_csv_sync
-            'request_helper.dat' => 'mobiquo/include', // tapatalk
+            'request_helper.bin' => 'mobiquo/include', // tapatalk
             'server_certificates.pem' => 'data_custom/modules/composr_mobile_sdk/ios', // composr_mobile_sdk
             'if_hosted_service.txt' => 'text', // composr_homesite (Demonstratr)
         ));

@@ -686,7 +686,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = '';
             } elseif (($pretend_dir . $file) == 'themes/map.ini') {
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = 'default=default' . "\n";
-            } elseif ($pretend_dir . $file == 'data_custom/functions.dat') {
+            } elseif ($pretend_dir . $file == 'data_custom/functions.bin') {
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = '';
             } elseif ($pretend_dir . $file == 'data_custom/errorlog.php') {
                 $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = "<" . "?php return; ?" . ">\n";
@@ -709,7 +709,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
     return $out;
 }
 
-function make_files_manifest() // Builds files.dat, the Composr file manifest (used for integrity checks)
+function make_files_manifest() // Builds files.bin, the Composr file manifest (used for integrity checks)
 {
     global $MAKE_INSTALLERS__FILE_ARRAY;
 
@@ -723,7 +723,7 @@ function make_files_manifest() // Builds files.dat, the Composr file manifest (u
 
     $files = array();
     foreach ($MAKE_INSTALLERS__FILE_ARRAY as $file => $contents) {
-        if ($file == 'data/files.dat') {
+        if ($file == 'data/files.bin') {
             continue;
         }
 
@@ -738,18 +738,18 @@ function make_files_manifest() // Builds files.dat, the Composr file manifest (u
 
     $file_manifest = serialize($files);
 
-    cms_file_put_contents_safe(get_file_base() . '/data/files.dat', $file_manifest, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/files.bin', $file_manifest, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-    $MAKE_INSTALLERS__FILE_ARRAY['data/files.dat'] = $file_manifest;
+    $MAKE_INSTALLERS__FILE_ARRAY['data/files.bin'] = $file_manifest;
 
     // Write the file out
     require_code('version2');
     $version_branch = get_version_branch();
     $builds_path = get_builds_path();
-    cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/data/files.dat', $file_manifest, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($builds_path . '/builds/build/' . $version_branch . '/data/files.bin', $file_manifest, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
 
-function make_database_manifest() // Builds db_meta.dat, which is used for database integrity checks
+function make_database_manifest() // Builds db_meta.bin, which is used for database integrity checks
 {
     if (!addon_installed('meta_toolkit')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('meta_toolkit')));
@@ -853,7 +853,7 @@ function make_database_manifest() // Builds db_meta.dat, which is used for datab
         }
     }
 
-    // Build up db_meta.dat structure...
+    // Build up db_meta.bin structure...
 
     $field_details = $GLOBALS['SITE_DB']->query_select('db_meta', array('*'));
     $tables = array();
@@ -916,7 +916,7 @@ function make_database_manifest() // Builds db_meta.dat, which is used for datab
 
     // Save
     require_code('files');
-    $path = get_file_base() . '/data/db_meta.dat';
+    $path = get_file_base() . '/data/db_meta.bin';
     cms_file_put_contents_safe($path, serialize($data), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
     pop_db_scope_check();
@@ -1141,6 +1141,6 @@ function _download_latest_data_no_banning()
     cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data);
 }
 
-// See phpdoc_parser.php for functions.dat manifest building
+// See phpdoc_parser.php for functions.bin manifest building
 
 // Also see chmod_consistency.php, and build_rewrite_rules.php

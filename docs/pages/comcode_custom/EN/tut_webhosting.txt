@@ -106,16 +106,22 @@ We require:
 
 We require:
  - A web server running Apache (the common Linux web server), {$IS_MAINTAINED,platform_litespeed,LiteSpeed} [an Apache drop-in replacement], or {$IS_MAINTAINED,platform_iis,IIS7+} [the Microsoft web server]. It is very unlikely you will find a webhost that provides something else. Other servers might work but are not supported (additional guidance is provided in this tutorial);
-  - Only Apache 2.4+ is fully supported
- - If you want URL Schemes or URL Redirects on Apache, [tt]mod_rewrite[/tt] must be enabled.
  - The CGI timeout on the server must not be lower than 60 seconds (which is the default on Apache).
  - That the web server is not overloaded with too many users, or has very poor performance.
  - Either a suEXEC-style web server (strongly recommended) &dagger;, or a working FTP connection from PHP back to the hosting (so the server has to be running FTP, and PHP has to be running the PHP [tt]ftp[/tt] extension).
 
 If running Apache:
+ - Only Apache 2.4+ is fully supported
+ - It is assumed the [tt]AccessFileName[/tt] option is set to the default [tt].htaccess[/tt].
+ - If you want URL Schemes or URL Redirects, [tt]mod_rewrite[/tt] must be enabled.
  - The server configuration needs to have [tt]AllowOverride All[/tt] or at least [tt]AllowOverride Options FileInfo Limit[/tt] (because we use distributed [tt].htaccess[/tt] files containing settings to increase security).
  - If you want URL Schemes, [tt]mod_rewrite[/tt] must be enabled.
  - The following Apache modules are recommended (for maximum performance): [tt]mod_headers[/tt], [tt]mod_setenvif[/tt], [tt]mod_env[/tt], [tt]mod_deflate[/tt], [tt]mod_filter[/tt]
+
+If running IIS:
+ - You may not have disabled default Feature Delegation for anything the bundled [tt]web.config[/tt] file changes (unless you manually change your main IIS configuration and edit the [tt]web.config[/tt] as required to match)
+ - You must have the URL Rewrite module installed. This is not just needed for URL Schemes and URL Redirects, but also for basic security.
+ - It is possible you may need to configure IIS for additional mime-types, depending on what you are trying to do. Unlike Apache, IIS will not (by default) serve file types it is not configured to know a mime-type for.
  
 &dagger; By suEXEC-style web server we mean either:
 [list="a"]

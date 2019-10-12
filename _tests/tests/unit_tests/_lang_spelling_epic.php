@@ -35,6 +35,18 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = array(
+            'umask',
+            'changelogs',
+            'rebase',
+            'besluit',
+            'colormind',
+            'xfn',
+            'punycode',
+            'hreview',
+            'upwork',
+            'imagecopyresampled',
+            'gitlab',
+            'eol',
             'strcoll',
             'colspans',
             'ctype',
@@ -3393,7 +3405,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                         $matches = array();
 
                         if ($ext != 'css') {
-                            $num_matches = preg_match_all('#//(.*)#', $c, $matches);
+                            $num_matches = preg_match_all('#[^:]//(.*)#', $c, $matches);
                             for ($i = 0; $i < $num_matches; $i++) {
                                 $_c .= ' ' . $matches[1][$i];
                             }

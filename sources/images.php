@@ -747,6 +747,24 @@ function cms_imagesave($image, $path, $ext = null, $lossy = false, &$unknown_for
     } elseif ((function_exists('imagejpeg')) && (($ext == 'jpg') || ($ext == 'jpeg'))) {
         $test = @imagejpeg($image, $path, intval(get_option('jpeg_quality')));
     } elseif ((function_exists('imagegif')) && ($ext == 'gif')) {
+        if (imageistruecolor($image)) {
+            // We need to convert to 8-bit, with particular care for preserving transparency (as far as is possible)
+            $width = imagesx($image);
+            $height = imagesy($image);
+            $temp = imagecreate($width, $height);
+            imagecopy($temp, $image, 0, 0, 0, 0, $width, $height);
+            imagetruecolortopalette($image, true, 255);
+            $transparent = imagecolortransparent($image, imagecolorallocate($image, 255, 0, 255));
+            for ($y = 0; $y < $height; $y++) {
+                for ($x = 0; $x < $width; $x++) {
+                    $components = imagecolorsforindex($temp, imagecolorat($temp, $x, $y));
+                    if ($components['alpha'] >= 64) {
+                        imagesetpixel($image, $x, $y, $transparent);
+                    }
+                }
+            }
+        }
+
         $test = @imagegif($image, $path);
     } elseif ((function_exists('imagewebp')) && ($ext == 'webp')) {
         $test = @imagewebp($image, $path);

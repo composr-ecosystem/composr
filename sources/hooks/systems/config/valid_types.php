@@ -53,6 +53,6 @@ class Hook_config_valid_types
      */
     public function get_default()
     {
-        return '1st,3g2,3gp,3gp2,3gpp,3p,7z,aac,ai,aif,aifc,aiff,asf,atom,avi,bmp,bz2,css,csv,cur,dat,diff,doc,docx,dot,dotx,eml,f4v,gif,gz,htm,html,ico,ics,ini,iso,jpe,jpeg,jpg,js,json,keynote,log,m2v,m4v,mdb,mid,mov,mp2,mp3,mp4,mpa,mpe,mpeg,mpg,mpv2,numbers,odb,odc,odg,odi,odp,ods,odt,ogg,ogv,otf,pages,patch,pdf,php,png,ppt,pptx,ps,psd,pub,qt,ra,ram,rar,rm,rss,rtf,sql,svg,tar,tga,tgz,tif,tiff,torrent,tpl,ttf,txt,vsd,vtt,wav,weba,webm,webp,woff,wma,wmv,xls,xlsx,xml,xsd,xsl,zip';
+        return '1st,3g2,3gp,3gp2,3gpp,3p,7z,aac,ai,aif,aifc,aiff,asf,atom,avi,bmp,bz2,css,csv,cur,diff,doc,docx,dot,dotx,eml,f4v,gif,gz,htm,html,ico,ics,ini,iso,jpe,jpeg,jpg,js,json,keynote,log,m2v,m4v,mdb,mid,mov,mp2,mp3,mp4,mpa,mpe,mpeg,mpg,mpv2,numbers,odb,odc,odg,odi,odp,ods,odt,ogg,ogv,otf,pages,patch,pdf,php,png,ppt,pptx,ps,psd,pub,qt,ra,ram,rar,rm,rss,rtf,sql,svg,tar,tga,tgz,tif,tiff,torrent,tpl,ttf,txt,vsd,vtt,wav,weba,webm,webp,woff,woff2,wma,wmv,xls,xlsx,xml,xsd,xsl,zip';
     }
 }

@@ -969,7 +969,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
             $image_url = '';
             if ($cma_info['thumb_field'] !== null) {
                 if ((strpos($cma_info['thumb_field'], 'CALL:') !== false) && ($content_id !== null)) {
-                    $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), false);
+                    $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), $row);
                 } else {
                     if ($content_type === 'image') {
                         $image_url = $row['url'];
@@ -1584,13 +1584,13 @@ function addon_installed($addon, $check_hookless = false)
                 $answer = true;
             }
 
-            // Won't check tables because we don't know them for hookless addons (not in db_meta.dat)
+            // Won't check tables because we don't know them for hookless addons (not in db_meta.bin)
         } else {
             if ($answer) {
-                // Check tables defined in db_meta.dat (bundled addons)
+                // Check tables defined in db_meta.bin (bundled addons)
                 static $data = null;
                 if ($data === null) {
-                    $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.dat'));
+                    $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.bin'));
                 }
                 foreach ($data['tables'] as $table_name => $table) {
                     if ($table['addon'] == $addon) {
@@ -2489,6 +2489,7 @@ function is_valid_ip($ip)
 
 /**
  * Attempt to get the clean IP address of the current user.
+ * Note we do not consider potential proxying because that can easily be forged, and even if not it could be some local IP that is not unique enough.
  *
  * @param  integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled.
  * @set 1 2 3 4

@@ -133,10 +133,8 @@ function lang_string_translation($lang_from, $lang_to, $lang_string_changes, $te
 
     $lang_to_dir = get_custom_file_base() . '/lang_custom/' . $lang_to;
     if (!file_exists($lang_to_dir)) {
-        mkdir($lang_to_dir, 0777);
-        fix_permissions($lang_to_dir);
-
-        cms_file_put_contents_safe($lang_to_dir . '/index.html', '');
+        require_code('files2');
+        make_missing_directory($lang_to_dir);
     }
 
     foreach ($lang_string_changes as $lang_file => $_lang_string_changes) {

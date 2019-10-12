@@ -286,6 +286,9 @@ if( !is_blank( $t_history_link ) ) {
 	print_small_button( $t_history_link, $t_history_label );
 }
 
+// Composr
+print_small_button( 'https://gitlab.com/ocproducts/skills-for-murs/commits/master?search=MANTIS-' . strval($t_bug_id), 'Search commits' );
+
 echo '</div>';
 
 # prev/next links

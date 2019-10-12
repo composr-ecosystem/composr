@@ -105,7 +105,7 @@ function generate_recursive_map_table($metadata)
         if (is_float($_val)) {
             $_val = float_format($_val);
         }
-        if (is_null($_val)) {
+        if ($_val === null) {
             $_val = do_lang('NA');
         }
         if (is_bool($_val)) {

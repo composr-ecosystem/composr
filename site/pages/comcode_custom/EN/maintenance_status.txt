@@ -1,6 +1,12 @@
 [title]Maintenance status[/title]
 
-[title="2"]Introduction[/title]
+[title="2"]Branch maintenance[/title]
+
+As based on our policy described in our [page="docs:tut_software_feedback"]Problem and feedback reports, and development policies[/page] tutorial, current Composr branches are maintained as follows...
+
+[block]main_version_support[/block]
+
+[title="2"]Feature maintenance[/title]
 
 Composr is an enormous system that contains a number of highly specialist features as well as integration with third-party systems that are subject to unpredictable change.
 
@@ -16,11 +22,11 @@ Further discussion and justification may be found in and directed to the [url="o
 
 Bugs may be reported for non-actively-maintained functionality, and it may be fixed quickly as normal, or may be left on the tracker indefinitely -- depending on developer availability, ease of fixing the issue, and our sense of priority. In most cases it will likely be resolved within a reasonable period of time regardless, it's just we can't [i]guarantee[/i] it.
 
-[title="2"]Functionality table[/title]
+[title="3"]Functionality table[/title]
 
 [block]composr_maintenance_status[/block]
 
-[title="2"]Sponsorship[/title]
+[title="3"]Sponsorship[/title]
 
 Sponsorship involves taking direct responsibility including testing and bug fixing, or paying someone (such as ocProducts) to do that. In some cases it may also involve taking some up-stream responsibility, funding or maintaining frameworks or projects that Composr functionality is depending on.
 
@@ -28,10 +34,10 @@ The cost of sponsoring functionality may vary greatly, from hours of time per ye
 
 Note that sponsoring functionality initially is not the same as sponsoring on-going maintenance. Once something is implemented and delivered there isn't a guarantee it can be maintained forever without on-going sponsorship.
 
-[title="2"]Non-bundled addons[/title]
+[title="3"]Non-bundled addons[/title]
 
 No non-bundled addon will be put into the table [i]unless[/i] it is being officially supported by the core developers. The default assumption should be that no non-bundled addon is supported by the core developers to the same level of reliability and quality as Composr itself. If you want a non-bundled addon added to the list you can request to sponsor it though. Most non-bundled addons will regardless be supported by bug fixes, and automatically updated as Composr APIs change -- but not to the normal expected quality, and not proactively tested.
 
-[title="2"]Third-party software[/title]
+[title="3"]Third-party software[/title]
 
 The above list does not include third-party software (such as CKEditor) that is directly integrated into Composr. We do not usually take direct responsibility for improving this software or for regularly re-synching it. Sponsors may therefore want to consider sponsoring upstream projects too, and sponsoring refreshes of those within Composr. A list of third-party software may be found on the [url="Sync with upstream"]https://compo.sr/tracker/view.php?id=651[/url] tracker issue.
