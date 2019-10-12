@@ -299,49 +299,42 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
         }
 
         // Get custom permissions for the current CPF
-        $cpf_permissions = isset($all_cpf_permissions[$field_to_show['id']]) ? $all_cpf_permissions[$field_to_show['id']] : array();
+        $cpf_permissions = isset($all_cpf_permissions[$field_to_show['id']]) ? $all_cpf_permissions[$field_to_show['id']] : null;
 
         $display_cpf = true;
 
         // If there are custom permissions set and we are not showing to all
-        if ((isset($cpf_permissions[0])) && ($public_view !== null)) {
+        if (($cpf_permissions !== null) && ($public_view !== null)) {
             $display_cpf = false;
 
             // Negative ones
-            if ($cpf_permissions[0]['guest_view'] == 1) {
+            if ($cpf_permissions['guest_view'] == 1) {
                 $display_cpf = true;
             }
             if (!is_guest()) {
-                if ($cpf_permissions[0]['member_view'] == 1) {
+                if ($cpf_permissions['member_view'] == 1) {
                     $display_cpf = true;
                 }
             }
 
             if (!$display_cpf) { // Guard this, as the code will take some time to run
-                if ($cpf_permissions[0]['friend_view'] == 1) {
+                if ($cpf_permissions['friend_view'] == 1) {
                     if (addon_installed('chat')) {
-                        if ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', array('member_likes' => $member_id, 'member_liked' => get_member())) === null) {
+                        if ($GLOBALS['SITE_DB']->query_select_value_if_there('chat_friends', 'member_liked', array('member_likes' => $member_id, 'member_liked' => get_member())) !== null) {
                             $display_cpf = true;
                         }
                     }
                 }
 
                 if (!is_guest()) {
-                    if ($cpf_permissions[0]['group_view'] == 'all') {
+                    if ($cpf_permissions['group_view'] == 'all') {
                         $display_cpf = true;
                     } else {
-                        if (strlen($cpf_permissions[0]['group_view']) > 0) {
+                        if (strlen($cpf_permissions['group_view']) > 0) {
                             require_code('selectcode');
 
-                            $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, false, array(), $member_id);
-
-                            $groups_to_search = array();
-                            foreach (array_keys($groups) as $group_id) {
-                                $groups_to_search[$group_id] = null;
-                            }
-                            $matched_groups = selectcode_to_idlist_using_memory($cpf_permissions[0]['group_view'], $groups_to_search);
-
-                            if (count($matched_groups) > 0) {
+                            $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
+                            if (count(array_intersect(selectcode_to_idlist_using_memory($cpf_permissions['group_view'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)) > 0) {
                                 $display_cpf = true;
                             }
                         }

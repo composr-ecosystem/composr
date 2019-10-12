@@ -172,8 +172,8 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
             'description' => $description,
             'install_time' => filemtime($path),
             'files' => $file_list,
-            'dependencies' => $dep['requires'],
-            'incompatibilities' => $dep['conflicts_with'],
+            'dependencies' => array_key_exists('requires', $dep) ? $dep['requires'] : array(),
+            'incompatibilities' => array_key_exists('conflicts_with', $dep) ? $dep['conflicts_with'] : array(),
             'default_icon' => $default_icon,
         );
         if ($get_dependencies_on_this) {

@@ -75,18 +75,12 @@ class Hook_profiles_tabs_edit_privacy
                     $friends_view = ($_view == 'guests' || $_view == 'members' || $_view == 'friends') ? 1 : 0;
                     $groups_view = '';
                 } else {
-                    $_guests_view = post_param_string('guests_' . strval($field_id), null);
-                    //$_members_view = post_param_string('members_' . strval($field_id), null);
-                    $_friends_view = post_param_string('friends_' . strval($field_id), null);
-                    $_groups_view = post_param_string('groups_' . strval($field_id), null);
-                    $_members_view = ($_groups_view == 'all') ? 1 : 0;
-
-                    $guests_view = ($_guests_view !== null) ? 1 : 0;
-                    $members_view = ($_members_view !== null) ? 1 : 0;
-                    $friends_view = ($_friends_view !== null) ? 1 : 0;
-                    $groups_view = ($_groups_view !== null) ? $_groups_view : '';
+                    $guests_view = post_param_integer('guests_' . strval($field_id), 0);
+                    //$members_view = post_param_integer('members_' . strval($field_id), 0);
+                    $friends_view = post_param_integer('friends_' . strval($field_id), 0);
+                    $groups_view = post_param_string('groups_' . strval($field_id), '');
+                    $members_view = ($groups_view == 'all') ? 1 : 0;
                 }
-
                 $cpf_permissions = $GLOBALS['FORUM_DB']->query_select('f_member_cpf_perms', array('*'), array('member_id' => $member_id_of, 'field_id' => $field_id), '', 1);
 
                 // If there are permissions saved already
@@ -113,7 +107,7 @@ class Hook_profiles_tabs_edit_privacy
 
         // UI fields
 
-        $custom_fields = cns_get_all_custom_fields_match_member($member_id_of);
+        $custom_fields = cns_get_all_custom_fields_match_member($member_id_of, 1);
 
         $fields = new Tempcode();
         require_code('form_templates');
@@ -121,20 +115,10 @@ class Hook_profiles_tabs_edit_privacy
         $tmp_groups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(true);
 
         $cpf_ids = array();
-        foreach ($custom_fields as $custom_field) {
+        foreach ($custom_fields as $cpf_title => $custom_field) {
             $cpf_id = intval($custom_field['FIELD_ID']);
             $cpf = $custom_field['RAW'];
 
-            // Look up the details for this field
-            $cpf_data = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array('id' => $cpf_id), '', 1);
-            if (!array_key_exists(0, $cpf_data)) {
-                continue;
-            }
-            if ($cpf_data[0]['cf_public_view'] == 0) {
-                continue;
-            }
-
-            $cpf_title = get_translated_text($cpf_data[0]['cf_name'], $GLOBALS['FORUM_DB']);
             if ((cms_preg_replace_safe('#^((\s)|(<br\s*/?' . '>)|(&nbsp;))*#', '', $cpf_title) === '') && (count($custom_fields) > 15)) {
                 continue; // If there are lots of CPFs, and this one seems to have a blank name, skip it (likely corrupt data)
             }
@@ -189,6 +173,9 @@ class Hook_profiles_tabs_edit_privacy
                 $groups->attach(form_input_list_entry('all', $view_by_groups == array('all'), do_lang_tempcode('_ALL')));
                 $probation_group = get_probation_group();
                 foreach ($tmp_groups as $gr_key => $group) {
+                    if ($gr_key == db_get_first_id()) {
+                        continue;
+                    }
                     if ($gr_key == $probation_group) {
                         continue;
                     }

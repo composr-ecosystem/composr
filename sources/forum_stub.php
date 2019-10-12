@@ -374,7 +374,7 @@ class Forum_driver_base
      * @param  boolean $only_permissive Whether to only grab permissive usergroups
      * @param  boolean $force_show_all Do not limit things even if there are huge numbers of usergroups
      * @param  array $force_find Usergroups that must be included in the results
-     * @param  ?MEMBER $for_member Always return usergroups of this member (null: current member)
+     * @param  ?MEMBER $for_member Always return usergroups of this member if otherwise there are too many to return in full (null: current member)
      * @param  boolean $skip_hidden Whether to completely skip hidden usergroups
      * @return array The map
      */

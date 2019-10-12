@@ -1048,6 +1048,9 @@ function composr_error_handler($errno, $errstr, $errfile, $errline)
             case E_COMPILE_ERROR:
             case E_ERROR:
             case E_PARSE:
+                if (function_exists('set_throw_errors')) {
+                    set_throw_errors(false);
+                }
                 $type = 'error';
                 $syslog_type = LOG_ERR;
                 $handling_method = 'FATAL';

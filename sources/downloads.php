@@ -599,7 +599,8 @@ function download_breadcrumbs($category_id, $root = null, $include_link = false,
         if (!$include_link) {
             return array();
         }
-        $title = get_translated_text($GLOBALS['SITE_DB']->query_select_value('download_categories', 'category', array('id' => $category_id)));
+        $_title = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'category', array('id' => $category_id));
+        $title = ($_title === null) ? do_lang('UNKNOWN') : get_translated_text($_title);
         return array(array($page_link, $title));
     }
 

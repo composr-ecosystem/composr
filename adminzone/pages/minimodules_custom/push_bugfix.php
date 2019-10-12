@@ -18,6 +18,12 @@ If you get git errors about missing username/email, you may need to set your git
 
 sudo git config --system user.name <user>
 sudo git config --system user.email <user>@<domain>
+
+If it is not pushing, you may need to tell git about your key directly (as it may not have access to environment settings)...
+sudo git config --system core.sshCommand "ssh -i /home/you/.ssh/id_rsa -F /dev/null"
+Your key will have to be not encrypted. A key can be decrypted with:
+openssl rsa -in /home/you/.ssh/id_rsa -out /home/you/.ssh/id_rsa
+Only do this if you have secure file permissions on the key file and are very confident nobody can get into your filesystem.
 */
 
 /*EXTRA FUNCTIONS: shell_exec*/
@@ -43,6 +49,7 @@ $_title->evaluate_echo();
 $type = isset($_GET['type']) ? $_GET['type'] : '0';
 
 require_code('version2');
+require_code('files2');
 
 global $REMOTE_BASE_URL;
 $REMOTE_BASE_URL = get_brand_base_url();
@@ -149,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($submit_to == 'live') {
             $git_commit_id = do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
             if ($git_commit_id !== null) {
+                echo '<!-- ' . $git_commit_command_data . ' -->';
                 $git_url = COMPOSR_REPOS_URL . '/commit/' . $git_commit_id;
                 $done['Committed to git'] = $git_url;
             } else {
@@ -164,11 +172,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Make tracker comment with fix link
+    $create_hotfix = (post_param_integer('create_hotfix', 0) == 1);
     $tracker_comment_message = '';
     if ($git_commit_id !== null) {
-        $tracker_comment_message .= 'Fixed in git commit ' . escape_html($git_commit_id) . ' (' . escape_html($git_url) . ' - link will become active once code pushed to GitLab)' . "\n\n";
+        $tracker_comment_message .= 'Fixed in git commit ' . escape_html($git_commit_id) . ' (' . escape_html($git_url) . ' - link will become active once code pushed to GitLab)';
+        if ($create_hotfix) {
+            $tracker_comment_message .= "\n\n";
+        }
     }
-    $tracker_comment_message .= 'A hotfix (a TAR of files to upload) have been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
+    if ($create_hotfix) {
+        $tracker_comment_message .= 'A hotfix (a TAR of files to upload) have been uploaded to this issue. These files are made to the latest intra-version state (i.e. may roll in earlier fixes too if made to the same files) - so only upload files newer than what you have already. Always take backups of files you are replacing or keep a copy of the manual installer for your version, and only apply fixes you need. These hotfixes are not necessarily reliable or well supported. Not sure how to extract TAR files to your Windows computer? Try 7-zip (http://www.7-zip.org/).';
+    }
     $update_post_id = create_tracker_post($tracker_id, $tracker_comment_message);
     if ($update_post_id !== null) {
         $done['Created update post on tracker'] = null;
@@ -176,18 +190,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $done['Failed to create update post on tracker'] = null;
     }
     // A TAR of fixed files is uploaded to the tracker issue (correct relative file paths intact)
-    $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
-    if ($file_id !== null) {
-        $done['Uploaded hotfix'] = null;
-    } else {
-        $done['Failed to upload hotfix'] = null;
+    if ($create_hotfix) {
+        $file_id = upload_to_tracker_issue($tracker_id, create_hotfix_tar($tracker_id, $fixed_files));
+        if ($file_id !== null) {
+            $done['Uploaded hotfix'] = null;
+        } else {
+            $done['Failed to upload hotfix'] = null;
+        }
     }
     // The tracker issue gets closed
-    $close_success = close_tracker_issue($tracker_id);
-    if ($close_success) {
-        $done['Closed tracker issue'] = null;
-    } else {
-        $done['Failed to close tracker issue'] = null;
+    $close_issue = (post_param_integer('close_issue', 0) == 1);
+    if ($close_issue) {
+        $close_success = close_tracker_issue($tracker_id);
+        if ($close_success) {
+            $done['Closed tracker issue'] = null;
+        } else {
+            $done['Failed to close tracker issue'] = null;
+        }
     }
 
     // If a forum post ID was given, an automatic reply is given pointing to the tracker issue
@@ -214,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (count($addons_involved) != 0) {
         $addons_involved = array_unique($addons_involved);
-        echo '<p><strong>This was for a non-bundled addon.</strong> Remember to run <a href="' . escape_html(get_base_url()) . '/adminzone/index.php?page=build_addons&amp;addon_limit=' . escape_html(urlencode(implode(',', $addons_involved))) . '">the addon update script</a>, and then upload the appropriate addon TARs and post the has-updated comments.</p>';
+        echo '<p><strong>This was for a non-bundled addon.</strong> Remember to run <a href="' . escape_html(get_base_url()) . '/adminzone/index.php?page=build_addons&amp;addon_limit=' . escape_html(urlencode(implode(',', $addons_involved))) . '">the addon update script</a>, and then upload the appropriate addon TARs and post the has-updated comments (or when the next patch release if this is what is currently preferred).</p>';
     }
 
     return;
@@ -227,10 +246,12 @@ require_code('version2');
 $on_disk_version = get_version_dotted();
 
 $git_found = git_find_uncommitted_files();
-if (@$_GET['full_scan'] == '1') {
+$do_full_scan = (get_param_integer('full_scan', 0) == 1);
+if (($do_full_scan) || (count($git_found) == 0)) {
     $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
     if (count($files) == 0) {
-        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * 14);
+        $days = min(14, round(time() - filemtime(get_file_base() . '/index.php')) / (60 * 60 * 24) - 1);
+        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
     }
 } else {
     $files = array_keys($git_found);
@@ -241,14 +262,10 @@ $git_status_2 = ' <span style="font-size: 0.8em">(if not entered a new one will 
 $git_status_3 = 'Git commit ID';
 $choose_files_label = 'Choose files';
 
-if ((count($files) == 0) && (@$_GET['full_scan'] != '1')) {
+if ((count($git_found) == 0) && (!$do_full_scan)) {
     echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on git). You can enter a git ID or select files.</p>';
-    $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
-    if (count($files) == 0) {
-        $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * 14);
-    }
-    $git_status_3 = '<strong>Git commit ID</strong>';
-    $choose_files_label = '<strong>Choose files</strong>';
+    $git_status_3 = 'Git commit ID';
+    $choose_files_label = 'Choose files';
 }
 
 $post_url = escape_html(static_evaluate_tempcode(get_self_url()));
@@ -288,9 +305,15 @@ echo <<<END
 <p>This script will push individual bug fixes to all the right places. Run it after you've developed a fix, and tell it how to link the fix in and what the fix is.</p>
 
 <style>
-#bugfix-form label {
+#bugfix-form>fieldset>div>label {
     float: left;
     width: 430px;
+}
+
+#bugfix-form>fieldset>div>div>label {
+    clear: both;
+    float: left;
+    margin-left: 430px;
 }
 </style>
 
@@ -322,8 +345,9 @@ if (count($files) != 0) {
     <fieldset>
         <legend>Fix</legend>
 
-        <label for="fixed_files">{$choose_files_label}</label>
-        <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
+        <div>
+            <label for="fixed_files">{$choose_files_label}</label>
+            <select size="15" required="required" multiple="multiple" name="fixed_files[]" id="fixed_files" onchange="update_automatic_category();">
 END;
     foreach ($files as $file) {
         $git_dirty = isset($git_found[$file]);
@@ -331,7 +355,8 @@ END;
     }
     $_git_found = json_encode($git_found);
     echo <<<END
-        </select>
+            </select>
+        </div>
     </fieldset>
 
     <script>
@@ -380,6 +405,12 @@ END;
         add_event_listener_abstract(window,'load',function() {
             update_automatic_category();
         });
+
+        function security_hole_radio()
+        {
+            var ob = document.getElementById('severity-95');
+            document.getElementById('security-process').style.display = ob.checked ? 'inline' : 'none';
+        }
     </script>
 END;
 }
@@ -411,11 +442,33 @@ echo <<<END
 
         <div>
             <label>Severity</label>
-            <label for="severity_10"><input type="radio" id="severity_10" name="severity" value="10" /> Feature-request</span>
-            <label for="severity_20"><input type="radio" id="severity_20" name="severity" value="20" checked="checked" /> Trivial-bug</span>
-            <label for="severity_50"><input type="radio" id="severity_50" name="severity" value="50" /> Minor-bug</span>
-            <label for="severity_60"><input type="radio" id="severity_60" name="severity" value="60" /> Major-bug</span>
-            <label for="severity_95"><input type="radio" id="severity_95" name="severity" value="95" /> Security-hole</span>
+
+            <div>
+                <label for="severity-10">
+                    <input type="radio" id="severity-10" name="severity" value="10" onchange="return security_hole_radio(this);" />
+                    Feature-request
+                </label>
+                <label for="severity-20">
+                    <input type="radio" id="severity-20" name="severity" value="20" onchange="return security_hole_radio(this);" checked="checked" />
+                    Trivial-bug
+                </label>
+                <label for="severity-50">
+                    <input type="radio" id="severity-50" name="severity" value="50" onchange="return security_hole_radio(this);" />
+                    Minor-bug
+                </label>
+                <label for="severity-60">
+                    <input type="radio" id="severity-60" name="severity" value="60" onchange="return security_hole_radio(this);" />
+                    Major-bug
+                </label>
+                <label for="severity-95">
+                    <input type="radio" id="severity-95" name="severity" value="95" onchange="return security_hole_radio(this);" />
+                    Security-hole
+
+                    <span style="display: none" id="security-process">
+                        &ndash; Follow the <a target="_blank" title="Security policy (this link will open in a new window)" href="{$REMOTE_BASE_URL}/docs/tut-software-feedback.htm#title__46">security policy</a>.
+                    </span>
+                </label>
+            </div>
         </div>
     </fieldset>
 
@@ -425,6 +478,18 @@ echo <<<END
         <div>
             <label for="tracker_id">Tracker ID to attach to <span style="font-size: 0.8em">(if not entered a new one will be made)</span></label>
             <input name="tracker_id" id="tracker_id" size="5" type="number" value="" placeholder="optional" />
+
+            <div style="float: right">
+                <div style="display: inline-block">
+                    <input name="close_issue" id="close_issue" type="checkbox" value="1" checked="checked" />
+                    <label for="close_issue">Close issue?</label>
+                </div>
+
+                <div style="display: inline-block">
+                    <input name="create_hotfix" id="create_hotfix" type="checkbox" value="1" checked="checked" />
+                    <label for="create_hotfix">Create hotfix?</label>
+                </div>
+            </div>
         </div>
 
         <div>
@@ -518,12 +583,22 @@ function do_git_commit($git_commit_message, $files, &$git_commit_command_data)
 
     chdir(get_file_base());
 
+    $git_commit_command_data = '';
+
+    // Add
+    $cmd = $GIT_PATH . ' add';
+    foreach ($files as $file) {
+        $cmd .= ' ' . escapeshellarg($file);
+    }
+    $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
+
+    // Commit
     $cmd = $GIT_PATH . ' commit';
     foreach ($files as $file) {
         $cmd .= ' ' . cms_escapeshellarg($file);
     }
     $cmd .= ' -m ' . cms_escapeshellarg($git_commit_message);
-    $git_commit_command_data = shell_exec($cmd . ' 2>&1');
+    $git_commit_command_data .= shell_exec($cmd . ' 2>&1');
 
     $matches = array();
     if (preg_match('# ([\da-z]+)\]#', $git_commit_command_data, $matches) != 0) {
@@ -602,7 +677,6 @@ function create_forum_post($replying_to_post, $post_reply_title, $post_reply_mes
 function create_hotfix_tar($tracker_id, $files)
 {
     require_code('make_release');
-    require_code('files2');
     require_code('tar');
 
     $builds_path = get_builds_path();
@@ -681,7 +755,7 @@ function push_bugfix_do_dir($git_found, $seconds_since, $subdir = '')
     $dh = @opendir($stub);
     if ($dh !== false) {
         while (($file = readdir($dh)) !== false) {
-            if (($file != 'push_bugfix.php') && (!should_ignore_file($stub . $file, IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_HIDDEN_FILES | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE))) {
+            if (!should_ignore_file($stub . $file, IGNORE_CUSTOM_DIR_FLOATING_CONTENTS | IGNORE_UPLOADS | IGNORE_CUSTOM_THEMES | IGNORE_CUSTOM_LANGS | IGNORE_HIDDEN_FILES | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE)) {
                 $full_path = $stub . $file;
                 $path = (($subdir == '') ? '' : ($subdir . '/')) . $file;
 
@@ -697,5 +771,6 @@ function push_bugfix_do_dir($git_found, $seconds_since, $subdir = '')
         }
         closedir($dh);
     }
+    sort($out);
     return $out;
 }

@@ -13,12 +13,46 @@
  * @package    composr_homesite_support_credits
  */
 
-function get_tracker_issue_titles($ids)
+function get_tracker_issue_titles($ids, $version = null)
 {
+    if ((count($ids) == 0) && ($version === null)) {
+        return array();
+    }
+
+    $sql = 'SELECT id,summary,view_state,(SELECT name FROM mantis_category_table c WHERE c.id=m.category_id) AS category FROM mantis_bug_table m WHERE ';
+
     $_ids = @implode(',', $ids);
-    $sql = 'SELECT id,summary FROM mantis_bug_table WHERE id IN (' . $_ids . ') AND view_state=10';
-    $issue_titles = collapse_2d_complexity('id', 'summary', $GLOBALS['SITE_DB']->query($sql));
-    return $issue_titles;
+    $where_ids = 'id IN (' . $_ids . ')';
+    $sql .= $where_ids;
+
+    if ($version !== null) {
+        $where_version = 'status=80 AND fixed_in_version=\'' . db_escape_string($version) . '\'';
+        $sql .= ' OR ' . $where_version;
+    }
+
+    $issue_titles = array();
+    $issues = $GLOBALS['SITE_DB']->query($sql);
+    foreach ($issues as $issue) {
+        $summary = $issue['summary'];
+        $summary .= ' [' . $issue['category'] . ']';
+        if ($issue['view_state'] != 10) {
+            $summary .= ' [*private issue*]';
+        }
+        if (!array_key_exists($issue['category'], $issue_titles)) {
+            $issue_titles[$issue['category']] = array();
+        }
+        $issue_titles[$issue['category']][$issue['id']] = $summary;
+    }
+    ksort($issue_titles);
+
+    $_issue_titles = array();
+    foreach ($issue_titles as $category_id => $issues) {
+        foreach ($issues as $issue_id => $summary) {
+            $_issue_titles['_' . strval($issue_id)] = $summary;
+        }
+    }
+
+    return $_issue_titles;
 }
 
 function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1')

@@ -598,9 +598,6 @@ function should_ignore_file($path, $bitmask = 0)
         if (preg_match('#^uploads/website_specific/compo.sr/demonstratr/servers(/|$)#i', $path) != 0) {
             return true; // Demonstrate site
         }
-        if (preg_match('#^data_custom/sitemaps(/|$)#i', $path) != 0) {
-            return true; // Sitemap files
-        }
         if (preg_match('#^exports/(static|builds|backups)(/|$)#i', $path) != 0) {
             return true; // Huge exported stuff
         }
@@ -623,6 +620,8 @@ function should_ignore_file($path, $bitmask = 0)
             // Import/Export files
             'tar' => '(imports|exports)/.*',
             'txt' => '(imports|exports)/.*',
+
+            'xml' => 'data_custom/sitemaps',
         ));
 
         $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, array(

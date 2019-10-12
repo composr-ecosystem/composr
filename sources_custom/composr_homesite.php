@@ -270,11 +270,11 @@ function recursive_unzip($zip_path, $unzip_path)
 // MAKING RELEASES AND BUG FIXES
 // -----------------------------
 
-function server__public__get_tracker_issue_titles($ids)
+function server__public__get_tracker_issue_titles($ids, $version = null)
 {
-    $_ids = array_map('intval', explode(',', $ids)); // Security to prevent SQL injection
+    $_ids = ($ids == '') ? array() : array_map('intval', explode(',', $ids)); // Security to prevent SQL injection
     require_code('mantis');
-    $issue_titles = get_tracker_issue_titles($_ids);
+    $issue_titles = get_tracker_issue_titles($_ids, $version);
     echo json_encode($issue_titles);
 }
 

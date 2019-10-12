@@ -66,39 +66,31 @@ class Block_main_friends_list
         $member_id = array_key_exists('member_id', $map) ? intval($map['member_id']) : get_member();
         $max = get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : 12);
         $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
-        $mutual = ((array_key_exists('mutual', $map) ? $map['mutual'] : '1') == '1');
+        $mutual_only = ((array_key_exists('mutual', $map) ? $map['mutual'] : '0') == '1');
 
         $text_id = do_lang_tempcode('FRIENDS', escape_html($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)));
 
         $blocked = collapse_1d_complexity('member_blocked', $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocked'), array('member_blocker' => $member_id)));
         $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
 
-        $where = '';
+        $msn = is_on_multi_site_network();
+
         $friends_search = get_param_string('friends_search', '');
+        if (($friends_search != '') && (!$msn)) {
+            $where = ' AND m.m_username LIKE \'' . db_encode_like('%' . $friends_search . '%') . '\'';
+            $join = ' LEFT JOIN ' . get_table_prefix() . 'f_members m ON m.id=member_likes';
+        } else {
+            $where = '';
+            $join = '';
+        }
 
         push_db_scope_check(false);
 
-        $msn = is_on_multi_site_network();
-
-        if (!$mutual) {
-            if (($friends_search != '') && (!$msn)) {
-                $where .= ' AND (m1.m_username LIKE \'' . db_encode_like('%' . $friends_search . '%') . '\' OR m2.m_username LIKE \'' . db_encode_like('%' . $friends_search . '%') . '\')';
-                $join = ' LEFT JOIN ' . get_table_prefix() . 'f_members m1 ON m1.id=a.member_likes LEFT JOIN ' . get_table_prefix() . 'f_members m2 ON m2.id=a.member_liked';
-            } else {
-                $join = '';
-            }
-
-            $query = get_table_prefix() . 'chat_friends a' . $join . ' LEFT JOIN ' . get_table_prefix() . 'chat_friends b ON a.member_liked=b.member_likes AND a.member_liked=' . strval($member_id) . ' WHERE (a.member_likes=' . strval($member_id) . ' OR a.member_liked=' . strval($member_id) . ') AND b.member_liked IS NULL' . $where;
+        if ($mutual_only) {
+            $query = get_table_prefix() . 'chat_friends a' . $join . ' JOIN ' . get_table_prefix() . 'chat_friends b ON a.member_liked=b.member_likes AND b.member_liked=a.member_likes WHERE a.member_likes=' . strval(intval($member_id)) . $where;
             $rows = $GLOBALS['SITE_DB']->query('SELECT a.* FROM ' . $query . ' ORDER BY date_and_time', $max, $start);
         } else {
-            if (($friends_search != '') && (!$msn)) {
-                $where .= ' AND m.m_username LIKE \'' . db_encode_like('%' . $friends_search . '%') . '\'';
-                $join = ' LEFT JOIN ' . get_table_prefix() . 'f_members m ON m.id=member_likes';
-            } else {
-                $join = '';
-            }
-
-            $query = $GLOBALS['SITE_DB']->get_table_prefix() . 'chat_friends' . $join . ' WHERE member_likes=' . strval($member_id) . $where;
+            $query = $GLOBALS['SITE_DB']->get_table_prefix() . 'chat_friends' . $join . ' WHERE (member_likes=' . strval(intval($member_id)) . ' OR member_liked=' . strval(intval($member_id)) . ')' . $where;
             $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $query . ' ORDER BY date_and_time', $max, $start);
         }
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $query);
@@ -107,10 +99,13 @@ class Block_main_friends_list
         $friends_nonmutual = array();
         $friends_forward = array();
         foreach ($rows as $i => $row) {
-            $f_id = ($row['member_liked'] == $member_id) ? $row['member_likes'] : $row['member_liked'];
+            if ($row['member_likes'] != $member_id) {
+                // This row just exists for seeing mutual friendships
+                continue;
+            }
 
-            if (($f_id == $row['member_likes']) || (!in_array($f_id, $blocked))) {
-                $friend_username = $GLOBALS['FORUM_DRIVER']->get_username($f_id, false, USERNAME_DEFAULT_NULL);
+            if (!in_array($row['member_liked'], $blocked)) {
+                $friend_username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_liked'], false, USERNAME_DEFAULT_NULL);
                 if ($friend_username === null) {
                     continue;
                 }
@@ -119,12 +114,15 @@ class Block_main_friends_list
                     continue;
                 }
 
-                $appears_twice = false;
-                foreach ($rows as $j => $row2) {
-                    $f_id_2 = ($row2['member_liked'] == $member_id) ? $row2['member_likes'] : $row2['member_liked'];
-                    if (($f_id_2 == $f_id) && ($i != $j)) {
-                        $appears_twice = true;
-                        break;
+                if ($mutual_only) {
+                    $is_mutual = true;
+                } else {
+                    $is_mutual = false;
+                    foreach ($rows as $j => $row2) {
+                        if ($row2['member_liked'] == $member_id) {
+                            $is_mutual = true;
+                            break;
+                        }
                     }
                 }
 
@@ -132,26 +130,26 @@ class Block_main_friends_list
                 require_code('cns_members2');
                 require_lang('cns');
 
-                $friend_usergroup_id = $GLOBALS['FORUM_DRIVER']->get_member_row_field($f_id, 'm_primary_group');
+                $friend_usergroup_id = $GLOBALS['FORUM_DRIVER']->get_member_row_field($row['member_liked'], 'm_primary_group');
                 $friend_usergroup = array_key_exists($friend_usergroup_id, $all_usergroups) ? $all_usergroups[$friend_usergroup_id] : do_lang_tempcode('UNKNOWN');
                 $mutual_label = do_lang('MUTUAL_FRIEND');
-                $box = render_member_box($f_id, true, true, ($f_id == get_member() || $member_id == get_member()) ? array($mutual_label => do_lang($appears_twice ? 'YES' : 'NO')) : array(), false, 'friends_list');
+                $box = render_member_box($row['member_liked'], true, true, ($row['member_liked'] == get_member() || $member_id == get_member()) ? array($mutual_label => do_lang($is_mutual ? 'YES' : 'NO')) : array(), false, 'friends_list');
                 if (!$box->is_empty_shell()) {
                     $friend_map = array(
-                        'APPEARS_TWICE' => $appears_twice,
+                        'APPEARS_TWICE' => $is_mutual,
                         'USERGROUP' => $friend_usergroup,
                         'USERNAME' => $friend_username,
-                        'URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($f_id, true),
-                        'F_ID' => strval($f_id),
+                        'URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($row['member_liked'], true),
+                        'F_ID' => strval($row['member_liked']),
                         'BOX' => $box,
                     );
 
-                    if ($appears_twice) { // Mutual friendship
+                    if ($is_mutual) {
                         $friends_mutual[] = $friend_map;
                     } else {
                         $friends_nonmutual[] = $friend_map;
                     }
-                    if (($member_id == $row['member_likes']) || ($appears_twice)) {
+                    if (($member_id == $row['member_likes']) || ($is_mutual)) {
                         $friends_forward[] = $friend_map;
                     }
                 }

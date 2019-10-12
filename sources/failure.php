@@ -1143,6 +1143,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'Unknown database') === false) &&
         (strpos($text, 'headers already sent') === false) &&
         (strpos($text, 'Your TaxCloud API trial period has expired') === false) &&
+        (strpos($text, 'Resource temporarily unavailable') === false) &&
         (strpos($text, 'Broken pipe') === false) &&
         (strpos($text, 'Interrupted system call') === false) &&
         (preg_match('#php\.net.*SSL3_GET_SERVER_CERTIFICATE:certificate #', $text) == 0) && // Missing certificates on server
