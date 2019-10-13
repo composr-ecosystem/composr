@@ -22,7 +22,7 @@ class ipstack_test_set extends cms_test_case
     {
         $key = '61b2798296ac2f610584042dae5fc813';
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode('8.8.8.8') . '?access_key=' . urlencode($key);
-        $_json = http_get_contents($ip_stack_url, array('trigger_error' => false));
+        $_json = http_get_contents($ip_stack_url, array('trigger_error' => false)); // TODO #3467
         $json = json_decode($_json, true);
         $this->assertTrue($json['country_name'] == 'United States');
     }

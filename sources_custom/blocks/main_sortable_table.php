@@ -176,7 +176,8 @@ class Block_main_sortable_table
             // Load data
             $i = 0;
             cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-            $myfile = fopen($path, 'rt');
+            $myfile = fopen($path, 'rb');
+            // TODO: #3467
             // TODO: #3032
             $full_header_row = null;
             while (($row = fgetcsv($myfile, 8192)) !== false) {

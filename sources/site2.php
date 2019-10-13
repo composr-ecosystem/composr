@@ -341,7 +341,7 @@ function _load_comcode_page_not_cached($string, $zone, $codename, $file_base, $c
     push_query_limiting(false);
 
     // Not cached :(
-    $comcode = cms_file_get_contents_safe($file_base . '/' . $string);
+    $comcode = cms_file_get_contents_safe($file_base . '/' . $string); // TODO #3467
     if (strpos($string, '_custom/') === false) {
         global $LANG_FILTER_OB;
         $comcode = $LANG_FILTER_OB->compile_time(null, $comcode);
@@ -515,7 +515,7 @@ function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $ne
 
     $_comcode_page_row = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('*'), array('the_zone' => $zone, 'the_page' => $codename), '', 1);
 
-    $comcode = cms_file_get_contents_safe($file_base . '/' . $string);
+    $comcode = cms_file_get_contents_safe($file_base . '/' . $string); // TODO #3467
     if ($GLOBALS['IS_TEMPLATE_PREVIEW_OP_CACHE']) {
         $preview_post_param_key = 'e_' . get_dynamic_file_parameter($zone . ':' . $codename);
         $test = post_param_string($preview_post_param_key, null);

@@ -1176,7 +1176,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             }
 
             if ($zone == '(template)') { // Special undocumented feature used by tutorial(s)
-                $temp_tpl = comcode_to_tempcode(cms_file_get_contents_safe(get_file_base() . '/data/modules/cms_comcode_pages/' . fallback_lang() . '/' . filter_naughty($codename) . '.txt'));
+                $temp_tpl = comcode_to_tempcode(cms_file_get_contents_safe(get_file_base() . '/data/modules/cms_comcode_pages/' . fallback_lang() . '/' . filter_naughty($codename) . '.txt')); // TODO #3467
                 break;
             }
 
@@ -1608,7 +1608,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 foreach ($pages as $pg_name => $pg_type) {
                     if (substr($pg_name, 0, strlen($prefix)) == $prefix) {
                         $i = count($STRUCTURE_LIST);
-                        $c = cms_file_get_contents_safe(zone_black_magic_filterer(get_file_base() . '/' . $s_zone . '/pages/' . $pg_type . '/' . $pg_name . '.txt'));
+                        $c = cms_file_get_contents_safe(zone_black_magic_filterer(get_file_base() . '/' . $s_zone . '/pages/' . $pg_type . '/' . $pg_name . '.txt')); // TODO #3467
                         __comcode_to_tempcode($c, $source_member, $as_admin, null, $db, COMCODE_STRUCTURE_SWEEP, array(), $on_behalf_of_member);
                         $page_url = build_url(array('page' => $pg_name), $s_zone);
                         foreach ($STRUCTURE_LIST as $struct) {

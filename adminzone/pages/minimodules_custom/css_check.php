@@ -58,7 +58,7 @@ function find_existing()
     $d = opendir(get_file_base() . '/themes/default/css');
     while (($e = readdir($d)) !== false) {
         if (substr($e, -4) == '.css') {
-            $contents = file_get_contents(get_file_base() . '/themes/default/css/' . $e);
+            $contents = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $e); // TODO #3467
             $matches = array();
             $found = preg_match_all('#\.([a-z][a-z_\d]*)[ ,:]#', $contents, $matches);
             for ($i = 0; $i < $found; $i++) {
@@ -78,7 +78,7 @@ function find_used()
     $d = opendir(get_file_base() . '/themes/default/templates');
     while (($e = readdir($d)) !== false) {
         if (substr($e, -4) == '.tpl') {
-            $contents = file_get_contents(get_file_base() . '/themes/default/templates/' . $e);
+            $contents = cms_file_get_contents_safe(get_file_base() . '/themes/default/templates/' . $e); // TODO #3467
             $matches = array();
             $found = preg_match_all('#class="([\w ]+)"#', $contents, $matches);
             for ($i = 0; $i < $found; $i++) {

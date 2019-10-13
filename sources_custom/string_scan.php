@@ -2267,8 +2267,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CMD_EDIT_HELP
         CMD_EDIT_HELP_PARAM_0
         CMD_EXIT_HELP
-        CMD_FEEDBACK_HELP
-        CMD_FEEDBACK_HELP_PARAM_0
         CMD_FEED_DISPLAY_HELP
         CMD_FEED_DISPLAY_HELP_M
         CMD_FEED_DISPLAY_HELP_PARAM_0
@@ -11172,7 +11170,7 @@ function find_strings($from)
     $out = array();
 
     foreach ($from as $file) {
-        $c = file_get_contents(get_file_base() . '/' . $file);
+        $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
         $matches = array();
 
         $num_matches = preg_match_all('#do_lang(_tempcode)?\(\'([^\']+)\'(?! \.)#', $c, $matches);

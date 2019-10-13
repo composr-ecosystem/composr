@@ -314,7 +314,7 @@ class Database_Static_xml extends DatabaseDriver
         require_code('files');
         fix_permissions($path);
         sync_file($path);
-        cms_file_put_contents_safe($path . '/index.html', '');
+        cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     }
 
     /**
@@ -389,7 +389,7 @@ class Database_Static_xml extends DatabaseDriver
             require_code('files');
             fix_permissions($db_name);
             sync_file($db_name);
-            cms_file_put_contents_safe($db_name . '/index.html', '');
+            cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
 
         return array($db_name);
@@ -928,7 +928,7 @@ class Database_Static_xml extends DatabaseDriver
                 require_code('files');
                 fix_permissions($db[0] . '/' . $table_name);
                 sync_file($db[0] . '/' . $table_name);
-                cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '');
+                cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
            }
             @chdir($db[0] . '/' . $table_name);
             $files = @glob('{,.}*.{xml,xml-volatile}', GLOB_NOSORT | GLOB_BRACE);
@@ -1237,7 +1237,7 @@ class Database_Static_xml extends DatabaseDriver
             require_code('files');
             fix_permissions($db[0] . '/' . $table_name);
             sync_file($db[0] . '/' . $table_name);
-            cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '');
+            cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
 
         $path = $db[0] . '/' . $table_name . '/' . $guid . $suffix;
@@ -1274,7 +1274,7 @@ class Database_Static_xml extends DatabaseDriver
             $contents .= "\t<" . $key . ">" . xmlentities($val) . "</" . $key . ">\n";
         }
         $contents .= "</composr>\n";
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         $schema = $this->_read_schema($db, preg_replace('#/sup$#', '', $table_name), $fail_ok);
         if ($schema !== null) {
@@ -1637,7 +1637,7 @@ class Database_Static_xml extends DatabaseDriver
         require_code('files');
         fix_permissions($path);
         sync_file($path);
-        cms_file_put_contents_safe($path . '/index.html', '');
+        cms_file_put_contents_safe($path . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
         return null;
     }

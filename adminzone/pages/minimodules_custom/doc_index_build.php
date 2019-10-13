@@ -175,19 +175,19 @@ $out .= '</ul>';
 
 // Write out
 $path = get_file_base() . '/docs/pages/comcode_custom/EN/tut_addon_index.txt';
-$addon_index_file = file_get_contents($path);
+$addon_index_file = cms_file_get_contents_safe($path); // TODO #3467
 $marker = '[staff_note]Automatic code inserts after this[/staff_note]';
 $pos = strpos($addon_index_file, $marker);
 $addon_index_file = substr($addon_index_file, 0, $pos + strlen($marker)) . '[semihtml]' . str_replace(get_custom_base_url(), get_brand_base_url(), $out) . '[/semihtml]';
 $addon_index_file .= "\n\n" . '{$SET,tutorial_tags,Addon,Introduction,novice}{$SET,tutorial_add_date,Oct 2013}{$SET,tutorial_summary,An index showing what addons are available, and linking to relevant tutorials.}[block]main_tutorial_rating[/block]' . "\n";
 require_code('files');
-cms_file_put_contents_safe($path, $addon_index_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+cms_file_put_contents_safe($path, $addon_index_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
 echo static_evaluate_tempcode(comcode_to_tempcode($addon_index_file));
 
 function get_tutorial_title($tutorial)
 {
-    $contents = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial . '.txt');
+    $contents = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial . '.txt'); // TODO #3467
     $matches = array();
     preg_match('#\[title[^\[\]]*\](?-U)(Composr (Tutorial|Supplementary): )?(?U)(.*)\[/title\]#Us', $contents, $matches);
     return $matches[3];

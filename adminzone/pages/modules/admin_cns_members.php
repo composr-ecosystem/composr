@@ -882,7 +882,7 @@ class Module_admin_cns_members
         if ((is_plupload(true)) || ((array_key_exists('file', $_FILES)) && (is_uploaded_file($_FILES['file']['tmp_name'])))) {
             // TODO: #3032
             if (filesize($_FILES['file']['tmp_name']) < 1024 * 1024 * 3) { // Cleanup possible line ending problems, but only if file not too big
-                $fixed_contents = unixify_line_format(file_get_contents($_FILES['file']['tmp_name']));
+                $fixed_contents = cms_file_get_contents_safe($_FILES['file']['tmp_name'], false, false, true); // TODO #3467
                 require_code('files');
                 cms_file_put_contents_safe($_FILES['file']['tmp_name'], $fixed_contents, FILE_WRITE_FAILURE_SILENT);
             }

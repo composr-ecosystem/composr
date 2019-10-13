@@ -55,11 +55,11 @@ class Hook_cron_dynamic_firewall
         if (cms_is_writable($rules_path)) {
             require_code('version2');
 
-            $new_contents = @http_get_contents('https://compo.sr/data_custom/firewall_rules.txt?version=' . urlencode(get_version_dotted()), array('trigger_error' => false));
+            $new_contents = @http_get_contents('https://compo.sr/data_custom/firewall_rules.txt?version=' . urlencode(get_version_dotted()), array('trigger_error' => false)); // TODO #3467
 
             if (!empty($new_contents)) {
                 require_code('files');
-                cms_file_put_contents_safe($rules_path, $new_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($rules_path, $new_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
             }
         }
     }

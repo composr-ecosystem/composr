@@ -28,7 +28,7 @@ class js_lang_references_test_set extends cms_test_case
             'lang_custom/EN/critical_error.ini',
         ) as $path) {
             if (is_file(get_file_base() . '/' . $path)) {
-                $core_ini_files_contents .= file_get_contents(get_file_base() . '/' . $path);
+                $core_ini_files_contents .= cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
             }
         }
 
@@ -37,7 +37,7 @@ class js_lang_references_test_set extends cms_test_case
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (strtolower(substr($file, -3)) == '.js') {
-                    $c = file_get_contents($path . '/' . $file);
+                    $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
 
                     $matches = array();
                     $num_matches = preg_match_all('#\{\!(\w+)[\},;^\*]#m', $c, $matches);

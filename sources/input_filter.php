@@ -654,7 +654,7 @@ class Field_restriction_loader
         xml_set_character_data_handler($xml_parser, 'startText');
 
         // Run the parser
-        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml'));
+        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml')); // TODO #3467
         if (trim($data) == '') {
             return;
         }

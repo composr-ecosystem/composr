@@ -32,7 +32,7 @@ class overused_globals_test_set extends cms_test_case
         foreach ($files as $path) {
             $done_for_file = array();
 
-            $c = @file_get_contents(get_file_base() . '/' . $path);
+            $c = @cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             if ($c === false) {
                 continue; // Probably a race condition between unit tests
             }

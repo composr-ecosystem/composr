@@ -22,7 +22,7 @@ class external_code_considerations_test_set extends cms_test_case
 {
     public function testConsistency()
     {
-        $a = file_get_contents(get_file_base() . '/.editorconfig');
+        $a = cms_file_get_contents_safe(get_file_base() . '/.editorconfig');
         $matches = array();
         $does_match = (preg_match('#git checkout -- (.*)\(ends\)#s', $a, $matches) != 0);
         $this->assertTrue($does_match);
@@ -30,7 +30,7 @@ class external_code_considerations_test_set extends cms_test_case
             $a = str_replace("\n#", '', str_replace("\\\n#", '', $matches[1]));
             $parts_editorconfig = preg_split('#\s+#', trim($a));
 
-            $b = file_get_contents(get_file_base() . '/line_count.sh');
+            $b = cms_file_get_contents_safe(get_file_base() . '/line_count.sh');
             $start = 'grep -v "\(';
             $start_pos = strpos($b, $start);
             $this->assertTrue($start_pos !== false);

@@ -98,11 +98,11 @@ class images_test_set extends cms_test_case
 
         require_code('images_cleanup_pipeline');
 
-        $this->assertTrue(is_animated_image(file_get_contents(get_file_base() . '/themes/default/images/under_construction_animated.gif'), 'gif'));
-        $this->assertTrue(!is_animated_image(file_get_contents(get_file_base() . '/themes/default/images/flags/ZM.gif'), 'gif'));
+        $this->assertTrue(is_animated_image(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/under_construction_animated.gif'), 'gif'));
+        $this->assertTrue(!is_animated_image(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/flags/ZM.gif'), 'gif'));
 
-        $this->assertTrue(is_animated_image(file_get_contents(get_file_base() . '/themes/default/images/cns_emoticons/rockon.gif.png'), 'png'));
-        $this->assertTrue(!is_animated_image(file_get_contents(get_file_base() . '/themes/default/images/video_thumb.png'), 'png'));
+        $this->assertTrue(is_animated_image(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/cns_emoticons/rockon.gif.png'), 'png'));
+        $this->assertTrue(!is_animated_image(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/video_thumb.png'), 'png'));
     }
 
     public function testConvertImage()
@@ -1346,7 +1346,7 @@ class images_test_set extends cms_test_case
             $additional_information = 'Image is old, likely filesystem permission issue.';
             return false;
         }
-        $file_contents = file_get_contents($path);
+        $file_contents = cms_file_get_contents_safe($path);
         if ($file_contents === false) {
             $additional_information = 'The contents of the generated image file could not be read.';
             return false;
@@ -1485,7 +1485,7 @@ class images_test_set extends cms_test_case
             echo '<br style="clear: both" /><br />';
             require_code('mime_types');
             if (is_file($out_path)) {
-                $value = 'data:' . get_mime_type(get_file_extension($out_path), false) . ';base64,' . base64_encode(file_get_contents($out_path));
+                $value = 'data:' . get_mime_type(get_file_extension($out_path), false) . ';base64,' . base64_encode(cms_file_get_contents_safe($out_path));
                 echo '<img style="float: left; width: 100px; padding-right: 1em;" src="' . escape_html($value) . '" />';
             } else {
                 echo '<span style="float: left; width: 100px; padding-right: 1em;">MISSING</span>';

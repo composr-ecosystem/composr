@@ -761,6 +761,7 @@ function newsletter_block_list()
     if (is_file($block_path)) {
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
         $myfile = fopen($block_path, 'rb');
+        // TODO: #3467
         // TODO: #3032
         while (($row = fgetcsv($myfile, 1024)) !== false) {
             if ($row[0] != '') {

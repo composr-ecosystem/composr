@@ -33,7 +33,7 @@ class override_notes_consistency_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
 
             if (strpos($c, 'CQC: No check') !== false) {
                 continue;

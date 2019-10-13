@@ -269,7 +269,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             $map_b = $map_a;
         }
         require_code('files');
-        $map = better_parse_ini_file($map_b);
+        $map = cms_parse_ini_file_better($map_b);
 
         $lang_name = user_lang();
         if (array_key_exists($lang_name, $map)) {
@@ -349,7 +349,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             $map_b = $map_a;
         }
         require_code('files');
-        $map = better_parse_ini_file($map_b);
+        $map = cms_parse_ini_file_better($map_b);
 
         $lang_name = user_lang();
         if (array_key_exists($lang_name, $map)) {
@@ -394,7 +394,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
                     if (!is_file($tmp_path)) {
                         $tmp_path = get_file_base() . '/lang_custom/' . fallback_lang() . '/' . $lang_file . '.ini';
                     }
-                    if ((is_file($tmp_path)) && (strpos(file_get_contents($tmp_path), "\n{$key}=") !== false)) {
+                    if ((is_file($tmp_path)) && (strpos(cms_file_get_contents_safe($tmp_path), "\n{$key}=") !== false)) { // TODO #3467
                         $key_extended .= ' (' . $lang_file . ')';
                         break;
                     }

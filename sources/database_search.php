@@ -808,8 +808,8 @@ function opensearch_script()
 
         // Provide details about the site search engine
         default:
-            //header('Content-Type: application/opensearchdescription+xml');
-            header('Content-Type: text/xml');
+            //header('Content-Type: application/opensearchdescription+xml; charset=' . get_charset());
+            header('Content-Type: text/xml; charset=' . get_charset());
             $tpl = do_template('OPENSEARCH', array('_GUID' => '1fe46743805ade5958dcba0d58c4b0f2', 'DESCRIPTION' => get_option('description')), null, false, null, '.xml', 'xml');
             $tpl->evaluate_echo();
             break;

@@ -87,9 +87,11 @@ function sitemap_xml_build($callback = null, $force = false)
  */
 function rebuild_sitemap_set($set_number, $last_time, $callback = null)
 {
+    require_code('files');
+
     // Open
     $sitemaps_out_temppath = cms_tempnam(); // We write to temporary path first to minimise the time our target file is invalid (during generation)
-    $sitemaps_out_file = fopen($sitemaps_out_temppath, 'wb');
+    $sitemaps_out_file = cms_fopen_wb_bom($sitemaps_out_temppath);
     $sitemaps_out_path = get_custom_file_base() . '/data_custom/sitemaps/set_' . strval($set_number) . '.xml';
     $blob = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
@@ -157,7 +159,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     // Gzip
     if (function_exists('gzencode')) {
         require_code('files');
-        cms_file_put_contents_safe($sitemaps_out_path . '.gz', gzencode(file_get_contents($sitemaps_out_path), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($sitemaps_out_path . '.gz', gzencode(cms_file_get_contents_safe($sitemaps_out_path), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     }
 }
 
@@ -166,9 +168,11 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
  */
 function rebuild_sitemap_index()
 {
+    require_code('files');
+
     // Open
     $sitemaps_out_temppath = cms_tempnam(); // We write to temporary path first to minimise the time our target file is invalid (during generation)
-    $sitemaps_out_file = fopen($sitemaps_out_temppath, 'wb');
+    $sitemaps_out_file = cms_fopen_wb_bom($sitemaps_out_temppath);
     $sitemaps_out_path = get_custom_file_base() . '/data_custom/sitemaps/index.xml';
     $blob = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -243,7 +247,7 @@ function ping_sitemap_xml($url, $trigger_error = false)
                 'http://www.bing.com/webmaster/ping.aspx?siteMap=',
             );
             foreach ($services as $service) {
-                $out .= http_get_contents($service . urlencode($url), array('trigger_error' => $trigger_error));
+                $out .= http_get_contents($service . urlencode($url), array('trigger_error' => $trigger_error)); // TODO #3467
             }
         }
     }

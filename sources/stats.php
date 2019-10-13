@@ -27,14 +27,14 @@ function stats_graph_script()
 {
     header('X-Robots-Tag: noindex');
 
-    header('Content-Type: image/svg+xml');
+    header('Content-Type: image/svg+xml; charset=' . get_charset());
 
     $file = filter_naughty(get_param_string('file'));
 
     $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . $file . '.xml';
 
     if (file_exists($path)) {
-        echo file_get_contents($path);
+        echo cms_file_get_contents_safe($path); // TODO #3467
     }
 }
 
@@ -52,7 +52,7 @@ function get_alexa_rank($url)
     }
 
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
-    $result = http_get_contents($_url, array('trigger_error' => false, 'timeout' => 2.0));
+    $result = http_get_contents($_url, array('trigger_error' => false, 'timeout' => 2.0)); // TODO #3467
     if ($result === null) {
         return array('', '');
     }

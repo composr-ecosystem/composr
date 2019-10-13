@@ -232,9 +232,12 @@ class Hook_translation_google_translate
             $_request = null;
         } else {
             $_request = json_encode($request);
+
+            require_code('character_sets');
+            $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
         }
 
-        $_result = http_get_contents($url, array('ignore_http_status' => true, 'trigger_error' => false, 'post_params' => ($_request === null) ? null : array($_request), 'timeout' => 0.5, 'raw_post' => ($request !== null), 'http_verb' => ($request === null) ? 'GET' : 'POST', 'raw_content_type' => 'application/json'));
+        $_result = http_get_contents($url, array('ignore_http_status' => true, 'trigger_error' => false, 'post_params' => ($_request === null) ? null : array($_request), 'timeout' => 0.5, 'raw_post' => ($request !== null), 'http_verb' => ($request === null) ? 'GET' : 'POST', 'raw_content_type' => 'application/json')); // TODO #3467
 
         $result = @json_decode($_result, true);
         if (($result === false) || (array_key_exists('error', $result))) {

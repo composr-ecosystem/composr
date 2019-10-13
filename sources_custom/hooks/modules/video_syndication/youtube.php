@@ -274,7 +274,7 @@ class Hook_video_syndication_youtube
         if (substr($url, 0, strlen(get_custom_base_url())) != get_custom_base_url()) {
             $temppath = cms_tempnam();
             $tempfile = fopen($temppath, 'wb');
-            http_get_contents($url, array('byte_limit' => 1024 * 1024 * 1024 * 5, 'write_to_file' => $tempfile));
+            http_get_contents($url, array('byte_limit' => 1024 * 1024 * 1024 * 5, 'write_to_file' => $tempfile)); // TODO #3467
 
             $is_temp_file = true;
 
@@ -376,7 +376,7 @@ class Hook_video_syndication_youtube
     protected function _generate_video_xml($video, $is_initial)
     {
         // Match to a category using remote list
-        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat');
+        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat'); // TODO #3467
         $remote_list_parsed = simplexml_load_string($remote_list_xml);
         $category = 'People';
         foreach ($remote_list_parsed->category as $c) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.
@@ -474,7 +474,12 @@ class Hook_video_syndication_youtube
             $files = array($mime_type => $file_to_upload);
         }
 
-        $http_result = cms_http_request($full_url, array('trigger_error' => false, 'post_params' => ($xml === null) ? null : array($xml), 'timeout' => $timeout, 'raw_post' => $xml !== null, 'files' => $files, 'extra_headers' => $extra_headers, 'http_verb' => $http_verb, 'raw_content_type' => $content_type));
+        if ($xml !== null) {
+            require_code('character_sets');
+            $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
+        }
+
+        $http_result = cms_http_request($full_url, array('trigger_error' => false, 'post_params' => ($xml === null) ? null : array($xml), 'timeout' => $timeout, 'raw_post' => $xml !== null, 'files' => $files, 'extra_headers' => $extra_headers, 'http_verb' => $http_verb, 'raw_content_type' => $content_type)); // TODO #3467 (with care)
 
         if ($http_result->data === null) {
             throw new Exception(($http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($http_result->message_b));

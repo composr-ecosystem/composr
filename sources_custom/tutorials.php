@@ -302,7 +302,7 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
         }
 
         $tutorial_path = get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial_name . '.txt';
-        $c = remove_code_block_contents(file_get_contents($tutorial_path));
+        $c = remove_code_block_contents(cms_file_get_contents_safe($tutorial_path)); // TODO #3467
         $matches = array();
 
         if (preg_match('#\[title sub="Written by ([^"]*)"\]([^\[\]]*)\[/title\]#', $c, $matches) != 0) {

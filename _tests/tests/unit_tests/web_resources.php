@@ -113,7 +113,7 @@ class web_resources_test_set extends cms_test_case
                 continue; // Empty file, so skipped
             }
 
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path); // TODO #3467
             $errors = check_js($c);
             if ($errors !== null) {
                 foreach ($errors['errors'] as $i => $e) {
@@ -190,7 +190,7 @@ class web_resources_test_set extends cms_test_case
                 }
             }
 
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path); // TODO #3467
             $errors = check_css($c);
             if (($errors !== null) && ($errors['errors'] == array())) {
                 $errors = null; // Normalise

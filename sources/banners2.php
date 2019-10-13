@@ -316,7 +316,7 @@ function check_banner($title_text = '', $direct_code = '', $b_type = '', $b_type
             // Check width, height, size
             $test_url = $url;
             if (url_is_local($test_url)) {
-                $data = file_get_contents(get_custom_file_base() . '/' . rawurldecode($test_url));
+                $data = cms_file_get_contents_safe(get_custom_file_base() . '/' . rawurldecode($test_url));
                 $test_url = get_custom_base_url() . '/' . $test_url;
             } else {
                 $data = http_get_contents($test_url);

@@ -54,6 +54,7 @@ function get_nested_csv_structure()
                 }
 
                 $myfile = @fopen(get_file_base() . '/private_data/' . $csv_filename, 'rb');
+                // TODO: #3467
                 // TODO: #3032
                 if ($myfile === false) {
                     warn_exit('The CSV file "' . $csv_filename . '" could not be opened.', false, true);

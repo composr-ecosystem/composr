@@ -97,7 +97,7 @@ class Hook_snippet_template_editor_load
             if ($path === null) {
                 $contents = '';
             } else {
-                $contents = unixify_line_format(cms_file_get_contents_safe($path));
+                $contents = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
 
                 // Revisions
                 if (addon_installed('actionlog')) {
@@ -157,7 +157,7 @@ class Hook_snippet_template_editor_load
             if ($path == '') {
                 $contents = '';
             } else {
-                $contents = unixify_line_format(cms_file_get_contents_safe($path));
+                $contents = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
 
                 // Revisions
                 if (addon_installed('actionlog')) {

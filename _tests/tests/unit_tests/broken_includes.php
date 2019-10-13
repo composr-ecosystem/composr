@@ -44,7 +44,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all('#require_code\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -71,7 +71,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all('#require_lang\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -89,7 +89,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all('#do_lang(_tempcode)?\(\'([^\']+):([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -107,7 +107,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
             $matches = array();
             $num_matches = preg_match_all('#\{\!(\w+):(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -125,7 +125,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all('#require_css\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -143,7 +143,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
             $matches = array();
             $num_matches = preg_match_all('#\{\$REQUIRE_CSS,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -161,7 +161,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all('#require_javascript\(\'([^\']+)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -179,7 +179,7 @@ class broken_includes_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
             $matches = array();
             $num_matches = preg_match_all('#\{\$REQUIRE_JAVASCRIPT,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {

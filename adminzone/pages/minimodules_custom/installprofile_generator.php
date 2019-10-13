@@ -37,7 +37,7 @@ function find_blocks_in_page($page)
         $page_path = get_custom_file_base() . '/pages/comcode/' . get_site_default_lang() . '/' . $page . '.txt';
     }
     if (is_file($page_path)) {
-        $page_contents = file_get_contents($page_path);
+        $page_contents = cms_file_get_contents_safe($page_path); // TODO #3467
         $matches = array();
         $num_matches = preg_match_all('#\[block.*\](.*)\[/block\]#U', $page_contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {

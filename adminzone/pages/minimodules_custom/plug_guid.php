@@ -66,7 +66,7 @@ foreach ($files as $i => $file) {
 
     echo 'Doing ' . escape_html($file) . '<br />';
 
-    $IN = file_get_contents(get_custom_file_base() . '/' . $file);
+    $IN = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file);
 
     $out = preg_replace_callback("#do_template\('([^']*)', array\((\s*)'([^']+)' => ('[^']+')#", 'callback', $IN);
     $out = preg_replace_callback("#do_template\('([^']*)', array\((\s*)'([^']+)' => #", 'callback', $IN);

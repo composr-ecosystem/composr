@@ -41,6 +41,10 @@ function parse_file($to_use, $verbose = false, $very_verbose = false, $i = null,
     }
     $TEXT = str_replace("\r", '', file_get_contents($to_use));
 
+    if (substr($TEXT, 0, 4) == hex2bin('efbbbf')) { // Strip a utf-8 BOM
+        $TEXT = substr($TEXT, 4);
+    }
+
     if ($verbose) {
         echo '<hr /><p>DOING ' . $to_use . '</p>';
     }

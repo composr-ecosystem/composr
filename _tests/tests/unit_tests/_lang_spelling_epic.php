@@ -3324,7 +3324,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                 }
 
                 // Load and pre-process into plain text
-                $c = file_get_contents(get_file_base() . '/' . $path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
                 switch ($ext) {
                     case 'ini':
                         $c = str_replace('\n', ' ', $c);

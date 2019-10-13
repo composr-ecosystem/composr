@@ -74,12 +74,15 @@ class AndroidPushNotifications
             'delay_while_idle' => ($priority == 5),
         );
 
+        $post_params = json_encode($fields);
+        require_code('character_sets');
+        $post_params = convert_to_internal_encoding($post_params, get_charset(), 'utf-8');
+
         $api_access_key = get_option('enable_notifications_instant_android');
         $extra_headers = array(
             'Authorization' => 'key=' . $api_access_key,
         );
         $url = 'https://android.googleapis.com/gcm/send';
-        $post_params = json_encode($fields);
         http_get_contents($url, array('trigger_error' => true, 'post_params' => array($post_params), 'raw_post' => true, 'extra_headers' => $extra_headers, 'raw_content_type' => 'application/json'));
     }
 }

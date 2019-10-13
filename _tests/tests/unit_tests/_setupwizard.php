@@ -100,7 +100,7 @@ class _setupwizard_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'admin_setupwizard', 'type' => 'step10', 'keep_fatalistic' => 1), 'adminzone');
 
-        $http = cms_http_request($url->evaluate(), array('ignore_http_status' => true, 'timeout' => 300.0, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $http = cms_http_request($url->evaluate(), array('ignore_http_status' => true, 'timeout' => 300.0, 'trigger_error' => false, 'post_params' => $post_params, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
 
         $ok = ($http->message == '200');
 

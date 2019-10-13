@@ -41,12 +41,7 @@ class Hook_ajax_tree_choose_composr_homesite_addon
         if ($default !== null) {
             $url .= '&default=' . urlencode($default);
         }
-        require_code('character_sets');
-        $http_result = cms_http_request($url);
-        $contents = $http_result->data;
-        $utf = ($http_result->charset == 'utf-8');
-        require_code('character_sets');
-        $contents = convert_to_internal_encoding($contents, $http_result->charset);
+        $contents = http_get_contents($url); // TODO #3467
         $contents = preg_replace('#^\s*<' . '\?xml version="1.0" encoding="[^"]*"\?' . '><request>#' . ($utf ? 'U' : ''), '', $contents);
         $contents = preg_replace('#</request>#' . ($utf ? 'U' : ''), '', $contents);
         $contents = preg_replace('#<category [^>]*has_children="false"[^>]*>[^>]*</category>#' . ($utf ? 'U' : ''), '', $contents);

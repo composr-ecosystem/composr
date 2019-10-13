@@ -216,7 +216,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
         tar_close($tar);
 
         if ($info_file !== null) {
-            $info = better_parse_ini_file(null, $info_file['data']);
+            $info = cms_parse_ini_file_better(null, $info_file['data']);
 
             if (!empty($info['copyright_attribution'])) {
                 $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
@@ -271,7 +271,7 @@ function find_remote_addons()
     $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'http://compo.sr';
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
-    $contents = http_get_contents($url, array('trigger_error' => false));
+    $contents = http_get_contents($url, array('trigger_error' => false)); // TODO #3467
     $matches = array();
     $num_matches = preg_match_all('#<entry id="(\d+)".* title="([^"]+)"#Us', $contents, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
@@ -407,7 +407,7 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
     if ($info_file === null) {
         warn_exit(do_lang_tempcode('NOT_ADDON'));
     }
-    $info = better_parse_ini_file(null, $info_file['data']);
+    $info = cms_parse_ini_file_better(null, $info_file['data']);
     if (!empty($info['copyright_attribution'])) {
         $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
     } else {
@@ -697,7 +697,7 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true)
     if ($info_file === null) {
         warn_exit(do_lang_tempcode('NOT_ADDON'));
     }
-    $info = better_parse_ini_file(null, $info_file['data']);
+    $info = cms_parse_ini_file_better(null, $info_file['data']);
 
     $addon = $info['name'];
 
@@ -955,7 +955,7 @@ function find_updated_addons()
     }
 
     require_code('http');
-    list($addon_data) = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false)), 5/*5 minute cache*/);
+    list($addon_data) = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false)), 5/*5 minute cache*/); // TODO #3467
     if (($addon_data === null) || ($addon_data == '')) {
         return array();
         //warn_exit(do_lang('INTERNAL_ERROR'));

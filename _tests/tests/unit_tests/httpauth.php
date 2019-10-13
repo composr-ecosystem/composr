@@ -34,7 +34,7 @@ class httpauth_test_set extends cms_test_case
 
         set_option('httpauth_is_enabled', '1');
 
-        $data = http_get_contents($url->evaluate(), array('auth' => array('admin', '')));
+        $data = http_get_contents($url->evaluate(), array('auth' => array('admin', ''))); // TODO #3467
 
         set_option('httpauth_is_enabled', '0');
 

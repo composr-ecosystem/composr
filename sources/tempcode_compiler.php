@@ -893,7 +893,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                             $full_path = get_file_base() . '/themes/' . $_theme . $found[1] . $eval . $found[2];
                                         }
                                         if (is_file($full_path)) {
-                                            $filecontents = cms_file_get_contents_safe($full_path);
+                                            $filecontents = cms_file_get_contents_safe($full_path); // TODO #3467
                                         } else {
                                             $filecontents = '';
                                         }
@@ -1119,10 +1119,10 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
 
     // Load file
     if (isset($FILE_ARRAY)) {
-        $template_contents = unixify_line_format(file_array_get('themes/' . $theme . $directory . $codename . $suffix));
+        $template_contents = unixify_line_format(file_array_get('themes/' . $theme . $directory . $codename . $suffix)); // TODO #3467
     } else {
         $_path = $base_dir . filter_naughty($theme . $directory . $codename) . $suffix;
-        $template_contents = unixify_line_format(cms_file_get_contents_safe($_path));
+        $template_contents = cms_file_get_contents_safe($_path, false, false, true); // TODO #3467
     }
 
     //$final_css_path = null;
@@ -1135,7 +1135,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
 
         // Stop parallel compilation of the same file by a little hack; without this it could knock out a server
         /*$final_css_path = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . $lang . '/' . $codename . '.css'; Actually this is architecturally messy, just let it happen - it's not as slow as it was
-        if ((is_file($final_css_path)) && (file_get_contents($final_css_path) === 'GENERATING')) {
+        if ((is_file($final_css_path)) && (cms_file_get_contents_safe($final_css_path) === 'GENERATING')) {
             header('Content-type: text/plain; charset=' . get_charset());
             exit('We are doing a code update. Please refresh in around 2 minutes.');
         }

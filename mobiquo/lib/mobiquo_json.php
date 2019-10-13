@@ -52,7 +52,7 @@ class MobiquoServerJSON extends MobiquoServer
      */
     public function dispatch_request()
     {
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=' . get_charset());
 
         $data = @file_get_contents('php://input');
 

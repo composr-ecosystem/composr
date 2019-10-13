@@ -770,12 +770,12 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
         foreach ($feed_urls_todo as $feed_url => $event_type) {
             $temp_file_path = cms_tempnam();
             require_code('files');
-            $write_to_file = fopen($temp_file_path, 'wb');
+            $write_to_file = cms_fopen_wb_bom($temp_file_path);
             // TODO: #3467 (must default charset to utf-8 though due to web standards)
-            $http_response = cms_http_request($feed_url, array('byte_limit' => 1024 * 512, 'trigger_error' => false, 'write_to_file' => $write_to_file));
+            $http_response = cms_http_request($feed_url, array('byte_limit' => 1024 * 512, 'trigger_error' => false, 'write_to_file' => $write_to_file)); // TODO #3467
 
             if (($http_response->download_mime_type == 'text/calendar') || ($http_response->download_mime_type == 'application/octet-stream')) {
-                $data = file_get_contents($temp_file_path);
+                $data = cms_file_get_contents_safe($temp_file_path); // TODO #3467
 
                 require_code('calendar_ical');
 

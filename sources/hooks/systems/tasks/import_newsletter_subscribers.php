@@ -50,13 +50,14 @@ class Hook_task_import_newsletter_subscribers
 
         // TODO: #3032
         if (filesize($path) < 1024 * 1024 * 3) { // Cleanup possible line ending problems, but only if file not too big
-            $fixed_contents = unixify_line_format(file_get_contents($path));
+            $fixed_contents = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
             require_code('files');
-            cms_file_put_contents_safe($path, $fixed_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
+            cms_file_put_contents_safe($path, $fixed_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         }
 
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
         $myfile = fopen($path, 'rb');
+        // TODO: #3467
         // TODO: #3032
         $del = ',';
         $csv_test_line = fgetcsv($myfile, 4096, $del);

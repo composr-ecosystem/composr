@@ -32,7 +32,7 @@ class _find_broken_screen_links_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
         $files[] = 'install.php';
         foreach ($files as $path) {
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all("#build_url\(array\('page'\s*=>\s*'(\w+)',\s*'type'\s*=>\s*'(\w+)'#", $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -57,7 +57,7 @@ class _find_broken_screen_links_test_set extends cms_test_case
                     //$this->assertTrue(false, 'Missing module ' . $zone . ':' . $page);    Maybe a forum module but CNS is not running, or a module in a non-installed zone
                     continue;
                 }
-                $c2 = file_get_contents($module_path);
+                $c2 = cms_file_get_contents_safe($module_path, false);
                 if (strpos($c2, "'{$type}'") === false) {
                     if ((strpos($c2, 'extends Standard_crud_module') !== false) && (in_array($type, array('add', '_add', 'edit', '_edit', '__edit', 'add_category', '_add_category', 'edit_category', '_edit_category', '__edit_category', 'add_other', '_add_other', 'edit_other', '_edit_other', '__edit_other')))) {
                         continue;

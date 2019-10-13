@@ -155,7 +155,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                 if ($root_tag == 'oembed') {
                     foreach ($this_children as $child) {
                         list($key, , $val) = $child;
-                        $data[$key] = convert_to_internal_encoding($val, 'utf-8');
+                        $data[$key] = convert_to_internal_encoding($val, $result->charset);
                     }
                 }
                 break;
@@ -174,7 +174,7 @@ class Hook_media_rendering_oembed extends Media_renderer_with_fallback
                     if ((is_array($val)) || (is_object($val))) {
                         continue;
                     }
-                    $data[$key] = is_string($val) ? convert_to_internal_encoding($val, 'utf-8') : strval($val);
+                    $data[$key] = is_string($val) ? convert_to_internal_encoding($val, $result->charset) : strval($val);
                 }
                 break;
             default:

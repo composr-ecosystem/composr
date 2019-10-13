@@ -378,5 +378,5 @@ function confluence_call_url($url, $trigger_error = true)
     }
 
     global $CONFLUENCE_CACHE_TIME;
-    return cache_and_carry('http_get_contents', array($url, array('auth' => $auth, 'trigger_error' => $trigger_error)), $CONFLUENCE_CACHE_TIME);
+    return cache_and_carry('http_get_contents', array($url, array('auth' => $auth, 'trigger_error' => $trigger_error)), $CONFLUENCE_CACHE_TIME); // TODO #3467 (but with care)
 }

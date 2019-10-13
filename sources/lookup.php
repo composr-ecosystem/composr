@@ -253,9 +253,7 @@ function save_user_metadata($include_referer = false, $member_id = null, $ip = n
     require_code('crypt');
     $path = get_custom_file_base() . '/temp/mail_' . get_secure_random_string() . '.txt';
 
-    file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT));
-    fix_permissions($path);
-    sync_file($path);
+    cms_file_put_contents_safe($path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
     return $path;
 }
@@ -306,7 +304,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     $got_geo_lookup = false;
     if (get_option('ipstack_api_key') != '') {
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode($ip) . '?access_key=' . urlencode(get_option('ipstack_api_key'));
-        $_json = http_get_contents($ip_stack_url, array('trigger_error' => false));
+        $_json = http_get_contents($ip_stack_url, array('trigger_error' => false)); // TODO #3467
         $json = @json_decode($_json, true);
         if (is_array($json)) {
             $useful_fields = array(

@@ -517,7 +517,7 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
             'secret' => get_option('recaptcha_server_key'),
             'response' => post_param_string('g-recaptcha-response'),
         );
-        $_response = http_get_contents($url, array('post_params' => $post_params));
+        $_response = http_get_contents($url, array('post_params' => $post_params)); // TODO #3467
         $response = json_decode($_response, true);
 
         if (!$response['success']) {

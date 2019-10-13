@@ -162,7 +162,7 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
         $file_path = '../' . $file_path;
     }
 
-    $existing = file_get_contents($file_path);
+    $existing = cms_file_get_contents_safe($file_path);
 
     switch ($type) {
         case 'ApachePlain':
@@ -186,7 +186,7 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
                     $rules_txt .= '
                         # Serve pre-compressed CSS/JS files if they exist and the client accepts gzip
                         <FilesMatch "\.js\.gz($|\?)">
-                        ForceType application/javascript
+                        ForceType text/javascript
                         Header set Content-Encoding: gzip
                         Header append Vary: Accept-Encoding
                         </FilesMatch>

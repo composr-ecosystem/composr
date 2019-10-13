@@ -56,7 +56,7 @@ class Hook_commandr_command_themewizard_compute_equation
             if (!file_exists($css_path)) {
                 $css_path = get_file_base() . '/themes/default/css/global.css';
             }
-            $css_file_contents = cms_file_get_contents_safe($css_path);
+            $css_file_contents = cms_file_get_contents_safe($css_path); // TODO #3467
 
             $seed = find_theme_seed($theme);
             $dark = (strpos($css_file_contents, ',#000000,WB,') !== false);

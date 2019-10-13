@@ -204,7 +204,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         @copy($old_base_path . '/data/files.bin', $wip_path . '/data/files_previous.bin');
         fix_permissions($wip_path . '/data/files_previous.bin');
     }
-    $log_file = fopen(get_file_base() . '/uploads/website_specific/compo.sr/upgrades/build.log', 'wb');
+    $log_file = cms_fopen_wb_bom(get_file_base() . '/uploads/website_specific/compo.sr/upgrades/build.log');
     flock($log_file, LOCK_EX);
     if (substr($filename, -3) == '.zip') {
         require_code('zip');
@@ -257,7 +257,7 @@ function make_upgrader_do_dir($build_path, $new_base_path, $old_base_path, $addo
             @rmdir($build_path . '/' . $pretend_dir . $file);
         } else {
             $contents = cms_file_get_contents_safe($new_base_path . '/' . $dir . $file);
-            if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || (unixify_line_format($contents) != unixify_line_format(cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file)))) {
+            if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || (unixify_line_format($contents) != cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file, false, false, true))) {
                 if ($addons_in_upgrader !== null) {
                     $addon = find_file_addon($new_base_path, $dir . $file);
                     if ((!isset($addons_in_upgrader[$addon])) && (substr($addon, 0, 5) != 'core_')) {

@@ -47,7 +47,7 @@ class extra_logging_test_set extends cms_test_case
 
         set_value('enable_profiler', '1');
         $url = build_url(array('page' => ''), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         set_value('enable_profiler', '0');
 
         clearstatcache();
@@ -76,10 +76,10 @@ class extra_logging_test_set extends cms_test_case
         set_value('monitor_slow_urls', '0.1');
 
         $log_path = get_custom_file_base() . '/data_custom/errorlog.php';
-        cms_file_put_contents_safe($log_path, '');
+        cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(array('page' => 'faq', 'cache' => 0), 'docs');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
-        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path), 'Over time limit @'));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
+        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path), 'Over time limit @')); // TODO #3467
 
         set_value('monitor_slow_urls', '0');
     }
@@ -93,10 +93,10 @@ class extra_logging_test_set extends cms_test_case
         set_value('memory_tracking', '1');
 
         $log_path = get_custom_file_base() . '/data_custom/errorlog.php';
-        cms_file_put_contents_safe($log_path, '');
+        cms_file_put_contents_safe($log_path, '', FILE_WRITE_BOM);
         $url = build_url(array('page' => ''), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
-        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path), 'Memory usage above memory_tracking'));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
+        $this->assertTrue(strpos(cms_file_get_contents_safe($log_path), 'Memory usage above memory_tracking')); // TODO #3467
 
         set_value('memory_tracking', '0');
     }
@@ -108,7 +108,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'memory'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'Memory usage:') !== false);
     }
 
@@ -119,7 +119,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'ide_linkage'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'txmt://') !== false);
     }
 
@@ -130,7 +130,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'query'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'View queries') !== false);
     }
 
@@ -141,7 +141,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'lang_EN'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'Translate/rephrase Composr into English') !== false || strpos($data, 'Translate/rephrase the software into English') !== false);
     }
 
@@ -152,7 +152,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'code'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'Standards checker notices') !== false);
     }
 
@@ -163,7 +163,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'theme_images'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'Theme image editing') !== false);
     }
 
@@ -174,7 +174,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'templates'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'Edit templates') !== false);
     }
 
@@ -185,7 +185,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'tree'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'Template tree') !== false);
     }
 
@@ -196,7 +196,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'keep_markers' => 1), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, '<!-- START-TEMPLATE=CSS_NEED') !== false);
     }
 
@@ -207,7 +207,7 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $url = build_url(array('page' => '', 'special_page_type' => 'show_edit_links'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(strpos($data, 'admin-themes') !== false);
     }
 
@@ -234,12 +234,12 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $path = get_custom_file_base() . '/data_custom/permission_checks.log';
-        cms_file_put_contents_safe($path, '');
+        cms_file_put_contents_safe($path, '', FILE_WRITE_BOM);
 
         clearstatcache();
         $size_before = filesize($path);
         $url = build_url(array('page' => '', 'keep_su' => 'Guest'), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         clearstatcache();
         $size_after = filesize($path);
         $this->assertTrue($size_after > $size_before);
@@ -254,12 +254,12 @@ class extra_logging_test_set extends cms_test_case
         }
 
         $path = get_custom_file_base() . '/data_custom/queries.log';
-        cms_file_put_contents_safe($path, '');
+        cms_file_put_contents_safe($path, '', FILE_WRITE_BOM);
 
         clearstatcache();
         $size_before = filesize($path);
         $url = build_url(array('page' => ''), '');
-        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('timeout' => 100.0, 'cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         clearstatcache();
         $size_after = filesize($path);
         $this->assertTrue($size_after > $size_before);

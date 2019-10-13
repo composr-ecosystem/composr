@@ -109,7 +109,7 @@ function activities_handler_script()
 
     prepare_for_known_ajax_response();
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
 
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
     $response .= '<response><content>';
@@ -206,7 +206,7 @@ function activities_updater_script()
 
     prepare_for_known_ajax_response();
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
 
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
 
@@ -277,7 +277,7 @@ function activities_removal_script()
 
     prepare_for_known_ajax_response();
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
 
     $response = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>';
     $response .= '<response>';
@@ -319,7 +319,7 @@ function log_newest_activity($id, $timeout = 1000, $force = false)
 {
     $file_path = get_custom_file_base() . '/data_custom/latest_activity.txt';
 
-    $old_id = @file_get_contents($file_path);
+    $old_id = @cms_file_get_contents_safe($file_path);
     if (($force) || ($old_id === false) || (intval($old_id) < $id)) {
         require_code('files');
         cms_file_put_contents_safe($file_path, strval($id), FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

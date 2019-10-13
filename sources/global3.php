@@ -315,7 +315,7 @@ function fix_permissions($path, $perms = null)
  * Get the contents of a file, with locking support.
  *
  * @param  PATH $path File path
- * @param  boolean $locking Handle locking
+ * @param  boolean $locking Handle locking; has a performance impact, so avoid if opening very large numbers of files
  * @param  boolean $handle_file_bom Do character set conversions indicated by a BOM
  * @param  boolean $unixify_line_format Convert line endings to Unix-style
  * @return ~string File contents (false: error)
@@ -345,6 +345,21 @@ function cms_file_get_contents_safe($path, $locking = true, $handle_file_bom = f
     return $contents;
 }
 
+/**
+ * Find available byte-order-marks we support.
+ *
+ * @return array A map between character sets and BOM byte strings
+ */
+function _get_boms()
+{
+    return array(
+        'utf-32' => hex2bin('fffe0000'),
+        'utf-16' => hex2bin('fffe'),
+        'utf-8' => hex2bin('efbbbf') ,
+        'GB-18030' => hex2bin('84319533'),
+    );
+}
+
 // TODO: #3467 Define cms_file_safe() as a front-end to cms_file_get_contents_safe, and change some file() calls to it, using boolean parameters as appropriate.
 
 /**
@@ -358,12 +373,7 @@ function handle_string_bom($contents)
     $file_charset = null;
     $bom_found = null;
 
-    $boms = array(
-        'utf-32' => hex2bin('fffe0000'),
-        'utf-16' => hex2bin('fffe'),
-        'utf-8' => hex2bin('efbbbf') ,
-        'GB-18030' => hex2bin('84319533'),
-    );
+    $boms = _get_boms();
 
     $magic_data = substr($contents, 0, 4);
 
@@ -399,12 +409,7 @@ function handle_file_bom($path, $handle_charset_conversion_automatically = true)
     $file_charset = null;
     $bom_found = null;
 
-    $boms = array(
-        'utf-32' => hex2bin('fffe0000'),
-        'utf-16' => hex2bin('fffe'),
-        'utf-8' => hex2bin('efbbbf') ,
-        'GB-18030' => hex2bin('84319533'),
-    );
+    $boms = _get_boms();
 
     $orig_file = fopen($path, 'rb');
     flock($orig_file, LOCK_SH);
@@ -429,7 +434,7 @@ function handle_file_bom($path, $handle_charset_conversion_automatically = true)
     if ($handle_charset_conversion_automatically) {
         // Automatic conversion, we simply read in the file, strip the BOM, convert, and re-save...
 
-        $contents = file_get_contents($path); // TODO: #3467 We can actually do this line-by-line, will be memory-conservative then
+        $contents = cms_file_get_contents_safe($path); // TODO: #3467 We can actually do this line-by-line, will be memory-conservative then
         $contents = substr($contents, strlen($bom));
         require_code('character_sets');
         $contents = convert_to_internal_encoding($contents, $file_charset);
@@ -1590,7 +1595,7 @@ function addon_installed($addon, $check_hookless = false)
                 // Check tables defined in db_meta.bin (bundled addons)
                 static $data = null;
                 if ($data === null) {
-                    $data = unserialize(file_get_contents(get_file_base() . '/data/db_meta.bin'));
+                    $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin'));
                 }
                 foreach ($data['tables'] as $table_name => $table) {
                     if ($table['addon'] == $addon) {
@@ -3201,7 +3206,7 @@ function is_mobile($user_agent = null, $truth = false)
 
     if (((!isset($SITE_INFO['no_extra_mobiles'])) || ($SITE_INFO['no_extra_mobiles'] != '1')) && (is_file(get_file_base() . '/text_custom/mobile_devices.txt'))) {
         require_code('files');
-        $mobile_devices = better_parse_ini_file((get_file_base() . '/text_custom/mobile_devices.txt'));
+        $mobile_devices = cms_parse_ini_file_better((get_file_base() . '/text_custom/mobile_devices.txt'));
         foreach ($mobile_devices as $key => $val) {
             if ($val == 1) {
                 $browsers[] = $key;
@@ -3261,7 +3266,7 @@ function get_bot_type($agent = null)
     if ($BOT_MAP_CACHE === null) {
         if (((!isset($SITE_INFO['no_extra_bots'])) || ($SITE_INFO['no_extra_bots'] != '1')) && (is_file(get_file_base() . '/text_custom/bots.txt'))) {
             require_code('files');
-            $BOT_MAP_CACHE = better_parse_ini_file(get_file_base() . '/text_custom/bots.txt');
+            $BOT_MAP_CACHE = cms_parse_ini_file_better(get_file_base() . '/text_custom/bots.txt');
         } else {
             $BOT_MAP_CACHE = array(
                 'zyborg' => 'Looksmart',
@@ -4294,6 +4299,7 @@ function is_maintained($code)
             }
         } else {
             $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
+            // TODO: #3467
             // TODO: #3032 (must default charset to utf-8 if no BOM though)
             fgetcsv($myfile); // Skip header row
             while (($row = fgetcsv($myfile)) !== false) {

@@ -69,7 +69,7 @@ class _backups_test_set extends cms_test_case
 
         global $SITE_INFO;
         $config_path = get_custom_file_base() . '/' . $temp_test_dir . '/_config.php';
-        $config_php = file_get_contents($config_path);
+        $config_php = cms_file_get_contents_safe($config_path);
         $config_php .= rtrim('
 unset($SITE_INFO[\'base_url\']); // Let it auto-detect
 unset($SITE_INFO[\'cns_table_prefix\']);
@@ -83,7 +83,7 @@ $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_con
         $GLOBALS['SITE_DB']->query('CREATE DATABASE cms_backup_test', null, 0, true); // Suppress errors in case already exists
 
         for ($i = 0; $i < 2; $i++) {
-            $test = cms_http_request(get_custom_base_url() . '/exports/backups/test/restore.php?time_limit=1000', array('trigger_error' => false, 'post_params' => array(), 'timeout' => 1000.0));
+            $test = cms_http_request(get_custom_base_url() . '/exports/backups/test/restore.php?time_limit=1000', array('trigger_error' => false, 'post_params' => array(), 'timeout' => 1000.0)); // TODO #3467
             $success = (strpos($test->data, do_lang('backups:BACKUP_RESTORE_SUCCESS')) !== false);
             $message = 'Failed to run restorer script on iteration ' . strval($i + 1) . ' [' . $test->data . ']; to debug manually run exports/backups/test/restore.php?time_limit=1000';
             if (strpos(get_db_type(), 'odbc') !== false) {

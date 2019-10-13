@@ -54,10 +54,9 @@ class _performance_test_set extends cms_test_case
 
         $this->establish_admin_session();
 
-        $this->log_file = fopen(get_custom_file_base() . '/data_custom/performance.log', 'wb');
-        flock($this->log_file, LOCK_EX);
-        $this->log_warnings_file = fopen(get_custom_file_base() . '/data_custom/performance_warnings.log', 'wb');
-        flock($this->log_warnings_file, LOCK_EX);
+        require_code('files');
+        $this->log_file = cms_fopen_wb_bom(get_custom_file_base() . '/data_custom/performance.log', true);
+        $this->log_warnings_file = cms_fopen_wb_bom(get_custom_file_base() . '/data_custom/performance_warnings.log', true);
     }
 
     public function testSitemapNodes()

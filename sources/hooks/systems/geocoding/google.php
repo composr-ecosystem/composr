@@ -193,7 +193,7 @@ class Hook_geocoding_google
         }
         $url .= $url_params;
 
-        $_result = http_get_contents($url, array('trigger_error' => false, 'ignore_http_status' => false));
+        $_result = http_get_contents($url, array('trigger_error' => false, 'ignore_http_status' => false)); // TODO #3467
 
         if (empty($_result)) {
             $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');

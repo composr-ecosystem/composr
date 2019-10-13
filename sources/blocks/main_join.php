@@ -172,8 +172,7 @@ class Block_main_join
                 require_code('character_sets');
                 $url = (url_is_local($map['path']) ? (get_custom_base_url() . '/') : '') . $map['path'];
                 $subject = empty($map['subject']) ? do_lang('_WELCOME') : $map['subject'];
-                $http_result = cms_http_request($url);
-                $body = convert_to_internal_encoding($http_result->data, $http_result->charset);
+                $body = http_get_contents($url); // TODO #3467
                 foreach ($_POST as $key => $val) {
                     if (is_string($val)) {
                         $body = str_replace('{' . $key . '}', $val, $body);

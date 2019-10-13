@@ -39,7 +39,7 @@ class missing_colour_equations_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path); // TODO #3467
             $matches = array();
             $count = preg_match_all('/^.+(\#[0-9A-Fa-f]{3,6})(.*)$/m', $c, $matches);
             for ($i = 0; $i < $count; $i++) {

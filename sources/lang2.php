@@ -157,7 +157,7 @@ function lang_string_translation($lang_from, $lang_to, $lang_string_changes, $te
         foreach ($lang_file_map_to as $key => $val) {
             $out .= $key . '=' . $val . "\n";
         }
-        cms_file_put_contents_safe($lang_to_dir . '/' . $lang_file . '.ini', $out);
+        cms_file_put_contents_safe($lang_to_dir . '/' . $lang_file . '.ini', $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
     }
 
     return $errors;
@@ -216,7 +216,7 @@ function inline_language_editing(&$codename, $lang)
         $has_terminating_line = true;
         $write_needed = true;
     } else {
-        $c = cms_file_get_contents_safe($save_path);
+        $c = cms_file_get_contents_safe($save_path); // TODO #3467
         $has_terminating_line = (substr($c, -1) == "\n");
         $write_needed = (strpos($c, "\n" . $codename . '=' . $value . "\n") === false);
 
@@ -241,11 +241,11 @@ function inline_language_editing(&$codename, $lang)
     // Go through all required files, doing a string replace if needed
     $included_files = get_included_files();
     foreach ($included_files as $inc) {
-        $orig_contents = cms_file_get_contents_safe($inc);
+        $orig_contents = cms_file_get_contents_safe($inc); // TODO #3467
         $contents = str_replace("'" . $codename . '=' . $value . "'", "'" . $codename . "'", $orig_contents);
         if ($orig_contents != $contents) {
             require_code('files');
-            cms_file_put_contents_safe($inc, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($inc, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
         }
     }
 }
@@ -453,7 +453,7 @@ function lookup_language_full_name($code)
         if (!is_file($map_file_b)) {
             $map_file_b = $map_file_a;
         }
-        $LANGS_MAP_CACHE = better_parse_ini_file($map_file_b);
+        $LANGS_MAP_CACHE = cms_parse_ini_file_better($map_file_b);
 
         persistent_cache_set('LANGS_MAP_CACHE', $LANGS_MAP_CACHE);
     }

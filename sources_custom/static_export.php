@@ -84,7 +84,7 @@ function _page_link_to_static($node)
             }
 
             $session_cookie_id = get_session_cookie();
-            $data = http_get_contents($url, array('trigger_error' => false, 'post_params' => array($session_cookie_id => get_secure_random_string())));
+            $data = http_get_contents($url, array('trigger_error' => false, 'post_params' => array($session_cookie_id => get_secure_random_string()))); // TODO #3467
             if ($data === null) {
                 continue;
             }

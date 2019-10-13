@@ -197,7 +197,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                 $struct['extra_meta']['db_row'] = $db_row[0] + (($row === null) ? array() : $struct['extra_meta']['db_row']);
             }
         }
-        $page_contents = file_get_contents($full_path);
+        $page_contents = cms_file_get_contents_safe($full_path); // TODO #3467
         if (!$got_title || strpos($page_contents, 'sub=') !== false) {
             require_code('zones2');
             $__title = get_comcode_page_title_from_disk($full_path, true, true);

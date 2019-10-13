@@ -180,7 +180,7 @@ class Hook_import_html_site
         $compare_file_contents = array();
         shuffle($content_files);
         for ($i = 0; $i < min(2 /* We would like this to be 5 so we can remove the problem of outliers, but performance is an issue */, count($content_files)); $i++) {
-            $file_contents = file_get_contents($file_base . '/' . $content_files[$i]);
+            $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_files[$i]); // TODO #3467
 
             $compare_file_contents[$content_files[$i]] = $this->_html_filter($file_contents, $fix_html, $base_url, $files, $file_base);
         }
@@ -189,12 +189,12 @@ class Hook_import_html_site
         if (count($compare_file_contents) > 1) {
             $to_find = array();
             if (file_exists($file_base . '/header.txt')) {
-                $cruft['HEADER'] = $this->_html_filter(file_get_contents($file_base . '/header.txt'), $fix_html, $base_url, $files, $file_base);
+                $cruft['HEADER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/header.txt'), $fix_html, $base_url, $files, $file_base); // TODO #3467
             } else {
                 $to_find[] = 'HEADER';
             }
             if (file_exists($file_base . '/footer.txt')) {
-                $cruft['FOOTER'] = $this->_html_filter(file_get_contents($file_base . '/footer.txt'), $fix_html, $base_url, $files, $file_base);
+                $cruft['FOOTER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/footer.txt'), $fix_html, $base_url, $files, $file_base); // TODO #3467
             } else {
                 $to_find[] = 'FOOTER';
             }
@@ -353,7 +353,7 @@ class Hook_import_html_site
             $global_to_write = $header_to_write . '{MIDDLE}' . $footer_to_write;
         }
         $path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/templates_custom/GLOBAL_HTML_WRAP.tpl';
-        cms_file_put_contents_safe($path, $global_to_write, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $global_to_write, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         // Extract site name from <title> tag, based on common consistency (largest common substring)
         $site_name = get_site_name();
@@ -398,7 +398,7 @@ class Hook_import_html_site
         disable_php_memory_limit();
 
         foreach ($content_files as $content_file) {
-            $file_contents = file_get_contents($file_base . '/' . $content_file);
+            $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_file); // TODO #3467
 
             // Find page-link for page
             $slash_count = substr_count($content_file, '/');
@@ -415,7 +415,7 @@ class Hook_import_html_site
 
             if (substr($content_file, -4) == '.php') {
                 $file_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/minimodules_custom/' . $page . '.php');
-                cms_file_put_contents_safe($file_path, $file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($file_path, $file_contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
             } else {
                 $filtered = $this->_html_filter($file_contents, $fix_html, $base_url, $files, $file_base);
 
@@ -456,7 +456,7 @@ class Hook_import_html_site
 
                     $file_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt');
 
-                    cms_file_put_contents_safe($file_path, '[semihtml]' . $filtered . '[/semihtml]', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                    cms_file_put_contents_safe($file_path, '[semihtml]' . $filtered . '[/semihtml]', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                 } else { // Or copy htm/html's as Comcode-converted instead, if the user chose this
                     // Insert an <h1> if the h1 is not there
                     if ((strpos($filtered, '[title') === false) && ($page_title !== null)) {
@@ -466,7 +466,7 @@ class Hook_import_html_site
                     require_code('comcode_from_html');
                     $comcode = semihtml_to_comcode($filtered);
                     $file_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . get_site_default_lang() . '/' . $page . '.txt');
-                    cms_file_put_contents_safe($file_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                    cms_file_put_contents_safe($file_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                 }
             }
         }
@@ -564,10 +564,10 @@ class Hook_import_html_site
                         @copy($file_base . '/' . $decoded_url, $target);
 
                         /*if (substr($decoded_url, -4) == '.css') { Not needed, as relative paths maintained
-                            $css_file = file_get_contents($target);
+                            $css_file = cms_file_get_contents_safe($target); // TODO #3467
                             $css_file = preg_replace('#(url\([\'"]?)(\.*' . '/)?#', '${1}{$BASE_URL;}/uploads/website_specific/', $css_file);
                             require_code('files');
-                            cms_file_put_contents_safe($target, $css_file);
+                            cms_file_put_contents_safe($target, $css_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                         }*/
 
                         fix_permissions($target);

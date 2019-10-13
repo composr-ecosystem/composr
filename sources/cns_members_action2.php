@@ -1903,7 +1903,7 @@ function cns_member_choose_avatar($avatar_url, $member_id = null)
         $stub = url_is_local($avatar_url) ? (get_complex_base_url($avatar_url) . '/') : '';
         $file_path_stub = convert_url_to_path($stub . $avatar_url);
         if ($file_path_stub !== null) {
-            $from_file = @strval(file_get_contents($file_path_stub));
+            $from_file = @strval(cms_file_get_contents_safe($file_path_stub));
         } else {
             $from_file = http_get_contents($stub . $avatar_url, array('byte_limit' => 1024 * 1024 * 4/*reasonable limit*/, 'triger_error' => false));
         }

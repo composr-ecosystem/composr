@@ -27,7 +27,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         parent::setUp();
 
         $path = get_file_base() . '/sources/mime_types.php';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
 
         $this->file_types = array();
         $matches = array();
@@ -44,7 +44,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         $cms_mime_types = get_mime_types(true);
 
         $url = 'https://raw.githubusercontent.com/microsoft/computerscience/f44092740662393051af0ed1c2fa3b2443660b79/Labs/Azure%20Services/Azure%20Storage/Solutions/Intellipix/.vs/config/applicationhost.config';
-        $c = http_get_contents($url);
+        $c = http_get_contents($url); // TODO #3467
 
         $found_bin = false;
 
@@ -142,7 +142,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         $php_files = get_directory_contents(get_file_base(), '', IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, array('php'));
         $exts = array();
         foreach ($php_files as $path) {
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path, false);
             $matches = array();
             $num_matches = preg_match_all('#\.(\w{3})\'#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -170,7 +170,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testTrackerValidTypes()
     {
         $path = get_file_base() . '/tracker/config/config_inc.php';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
 
         $file_types = array();
         $matches = array();
@@ -188,7 +188,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testConfigValidTypes()
     {
         $path = get_file_base() . '/sources/hooks/systems/config/valid_types.php';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
 
         $file_types = array();
         $matches = array();
@@ -206,7 +206,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testAppYaml()
     {
         $path = get_file_base() . '/app.yaml';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
 
         // --
 
@@ -242,7 +242,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testCodebookRef()
     {
         $path = get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path); // TODO #3467
 
         $file_types = array();
         $matches = array();
@@ -261,7 +261,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testHtaccess()
     {
         $path = get_file_base() . '/recommended.htaccess';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
 
         $file_types = array();
         $matches = array();
@@ -283,7 +283,7 @@ class file_type_whitelisting_test_set extends cms_test_case
 
         foreach (array('valid_images', 'valid_videos', 'valid_audios') as $f) {
             $path = get_file_base() . '/sources/hooks/systems/config/' . $f . '.php';
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path);
 
             $file_types = array();
             $matches = array();
@@ -308,7 +308,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testGitAttributes()
     {
         $path = get_file_base() . '/.gitattributes';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
 
         foreach ($this->file_types as $file_type) {
             $this->assertTrue(strpos($c, '*.' . $file_type . ' ') !== false, 'File type missing from .gitattributes, ' . $file_type);
@@ -342,7 +342,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testCSS()
     {
         $path = get_file_base() . '/themes/default/css/global.css';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path); // TODO #3467
 
         /*
         Not all will be here

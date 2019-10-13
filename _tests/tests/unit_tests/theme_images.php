@@ -35,7 +35,7 @@ class theme_images_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base() . '/themes/default/', get_file_base() . '/themes/default', 0, true, true, array('svg'));
 
         foreach ($files as $path) {
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path); // TODO #3467
             $_c = $c;
 
             $this->assertTrue(strpos($c, '<image') === false, 'Raster data in ' . $path);
@@ -55,7 +55,7 @@ class theme_images_test_set extends cms_test_case
             }
             if ($c != $_c) {
                 if (get_param_integer('auto_fix', 0) == 1) {
-                    cms_file_put_contents_safe($path, $c);
+                    cms_file_put_contents_safe($path, $c, FILE_WRITE_BOM);
                 }
             }
         }
@@ -87,7 +87,7 @@ class theme_images_test_set extends cms_test_case
                 }
 
                 if (substr($path, -4) == '.svg') {
-                    $c = file_get_contents($path);
+                    $c = cms_file_get_contents_safe($path); // TODO #3467
                     $matches = array();
                     $ok = (preg_match('#width="(\d+)px" height="(\d+)px"#', $c, $matches) != 0);
                     $this->assertTrue($ok, 'Cannot find SVG width/height in ' . $path);
@@ -198,7 +198,7 @@ class theme_images_test_set extends cms_test_case
                         $is_comcode_page = ((substr($file, -4) == '.txt') && ((count($themes) < 5) || (substr($file, 0, strlen($theme . '__')) == $theme . '__')));
 
                         if ($is_css_file || $is_tpl_file || $is_comcode_page) {
-                            $c = file_get_contents($dir . '/' . $file);
+                            $c = cms_file_get_contents_safe($dir . '/' . $file); // TODO #3467
 
                             // Find referenced images
                             $matches = array();

@@ -658,7 +658,7 @@ class Module_admin_redirects
         // Save...
 
         require_code('files');
-        cms_file_put_contents_safe(get_file_base() . '/.htaccess', $out);
+        cms_file_put_contents_safe(get_file_base() . '/.htaccess', $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
         // ---
 

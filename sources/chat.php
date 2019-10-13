@@ -628,7 +628,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
     $tracking_output = '<chat_tracking last_msg="' . (($last_msg === null) ? '' : strval($last_msg)) . '" last_event="' . (($last_event === null) ? '' : strval($last_event)) . '">' . strval($room_id) . '</chat_tracking>' . "\n";
 
     set_http_caching(null);
-    header('Content-Type: application/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
     $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 ' . get_xml_entities() . '
 <response>
@@ -711,7 +711,7 @@ function _chat_post_message_ajax($room_id, $message, $font, $colour, $first_mess
         ));
         $messages_output = '<div sender_id="' . strval($_message['member_id']) . '" room_id="' . strval($_message['room_id']) . '" id="123456789" timestamp="' . strval($_message['date_and_time']) . '">' . $template->evaluate() . '</div>';
 
-        header('Content-Type: application/xml');
+        header('Content-Type: text/xml; charset=' . get_charset());
         $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 <!DOCTYPE xc:content [
 <!ENTITY euro "&#8364;">
@@ -806,7 +806,7 @@ function _chat_post_message_ajax($room_id, $message, $font, $colour, $first_mess
 
     /*if ($return == '0') Flood control creates error, but we'd rather see it shown inline
     {
-        header('Content-Type: application/xml');
+        header('Content-Type: text/xml; charset=' . get_charset());
         $output = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '" ?' . '>
 <!DOCTYPE xc:content [
 <!ENTITY euro "&#8364;">

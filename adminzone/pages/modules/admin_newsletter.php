@@ -1322,6 +1322,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $__csv_data = array();
                 cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
                 $myfile = fopen($_FILES['file']['tmp_name'], 'rb');
+                // TODO: #3467
                 // TODO: #3032
                 $del = ',';
                 $csv_test_line = fgetcsv($myfile, 4096, $del);

@@ -82,7 +82,7 @@ function update_filedump_links($from, $to)
             } else {
                 list($zone, $page, $lang) = explode(':', $ref, 3);
                 $path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang . '/' . $page . '.txt';
-                $old_comcode = file_get_contents($path);
+                $old_comcode = cms_file_get_contents_safe($path); // TODO #3467
             }
 
             $new_comcode = $old_comcode;
@@ -94,7 +94,7 @@ function update_filedump_links($from, $to)
                 lang_remap_comcode($ref[1], $ref[0][$ref[1]], $new_comcode);
             } else {
                 require_code('files');
-                cms_file_put_contents_safe($path, $new_comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($path, $new_comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
             }
         }
     }
@@ -151,7 +151,7 @@ function find_filedump_links($focus = '')
             foreach ($langs as $lang) {
                 $path = get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/pages/comcode_custom/' . $lang . '/' . $page . '.txt';
                 if (is_file($path)) {
-                    $comcode = file_get_contents($path);
+                    $comcode = cms_file_get_contents_safe($path); // TODO #3467
                     extract_filedump_links($comcode, $zone . ':' . $page . ':' . $lang, $focus, $paths_used);
                 }
             }

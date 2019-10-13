@@ -164,7 +164,7 @@ function handle_self_referencing_embedment()
             if (!file_exists(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png')) {
                 $out = file_array_get('themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
             } else {
-                $out = file_get_contents(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
+                $out = cms_file_get_contents_safe(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
             }
 
             echo $out;

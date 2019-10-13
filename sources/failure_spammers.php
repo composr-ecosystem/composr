@@ -48,8 +48,10 @@ function syndicate_spammer_report($ip_addr, $username, $email, $reason, $trigger
         $password = get_option('tornevall_api_password');
 
         $payload = json_encode(array('ip' => array($ip_addr)));
+        require_code('character_sets');
+        $payload = convert_to_internal_encoding($payload, get_charset(), 'utf-8');
 
-        $_result = http_get_contents($torn_url, array('http_verb' => 'PUT', 'raw_post' => true, 'post_params' => array($payload), 'trigger_error' => false, 'raw_content_type' => 'application/json'));
+        $_result = http_get_contents($torn_url, array('http_verb' => 'PUT', 'raw_post' => true, 'post_params' => array($payload), 'trigger_error' => false, 'raw_content_type' => 'application/json')); // TODO #3467
 
         if ($trigger_error) {
             $result = @json_decode($_result);
@@ -84,7 +86,7 @@ function syndicate_spammer_report($ip_addr, $username, $email, $reason, $trigger
         if ($reason != '') {
             $url .= '&evidence=' . urlencode(convert_to_internal_encoding($reason, get_charset(), 'utf-8'));
         }
-        $result = http_get_contents($url, array('trigger_error' => $trigger_error));
+        $result = http_get_contents($url, array('trigger_error' => $trigger_error)); // TODO #3467
         if (($trigger_error) && ($result != '') && (strpos($result, 'data submitted successfull') === false)) {
             attach_message($result . ' [ ' . $url . ' ]', 'warn', false, true);
         }

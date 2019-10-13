@@ -177,6 +177,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
         $path = get_custom_file_base() . '/data_custom/errorlog.php';
         $myfile = fopen($path, 'rb');
+        // TODO: #3467
         if ($myfile !== false) {
             $filesize = filesize($path);
 

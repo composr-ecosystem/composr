@@ -554,7 +554,7 @@ function create_data_mash($url, $data = null, $extension = null, $direct_path = 
                     flock($myfile, LOCK_UN);
                     fclose($myfile);
                 } else {
-                    $data = file_get_contents($actual_path);
+                    $data = cms_file_get_contents_safe($actual_path);
                 }
             } else {
                 $data = '';

@@ -125,9 +125,12 @@ class Hook_health_check_security extends Hook_Health_Check
                 'threatEntries' => $urls,
             ),
         );
+        $_data = json_encode($data);
+        require_code('character_sets');
+        $_data = convert_to_internal_encoding($_data, get_charset(), 'utf-8');
 
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
-            $http_result = cms_http_request($url, array('trigger_error' => false, 'post_params' => array(json_encode($data)), 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json'));
+            $http_result = cms_http_request($url, array('trigger_error' => false, 'post_params' => array($_data), 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json')); // TODO #3467
 
             if ($http_result->data !== null) {
                 break;
@@ -324,7 +327,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, array('php'))); // common uploads location
 
         foreach ($files as $file) {
-            $c = @file_get_contents($fb . '/' . $file);
+            $c = @cms_file_get_contents_safe($fb . '/' . $file, false);
             if ($c !== false) {
                 $trigger = $this->isLikelyWebShell($file, $c);
                 if ($trigger !== null) {
@@ -548,8 +551,8 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $ok = !file_exists($et_path);
         if (!$ok) {
-            $c = file_get_contents($et_path);
-            $ok = (is_file($et_orig_path)) && (unixify_line_format($c) == unixify_line_format(file_get_contents($et_orig_path)));
+            $c = cms_file_get_contents_safe($et_path, false, false, true); // TODO #3467
+            $ok = (is_file($et_orig_path)) && ($c == cms_file_get_contents_safe($et_orig_path, false, false, true)); // TODO #3467
             if (!$ok) {
                 $ok = (preg_match('#function execute_temp\(\)\s*\{\s*\}#', $c) != 0);
             }

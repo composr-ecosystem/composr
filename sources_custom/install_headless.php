@@ -27,7 +27,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
 
     if ($success && $do_index_test) {
         $url = get_base_url() . '/index.php?keep_no_query_limit=1';
-        $http_result = cms_http_request($url, array('trigger_error' => false, 'timeout' => 20.0));
+        $http_result = cms_http_request($url, array('trigger_error' => false, 'timeout' => 20.0)); // TODO #3467
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 
@@ -180,7 +180,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (count($get) > 0) {
             $url .= '&' . http_build_query($get);
         }
-        $http_result = cms_http_request($url, array('post_params' => $post, 'timeout' => 60.0));
+        $http_result = cms_http_request($url, array('post_params' => $post, 'timeout' => 60.0)); // TODO #3467
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 

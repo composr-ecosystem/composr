@@ -229,11 +229,13 @@ function send_trackbacks($_urls, $title, $excerpt)
         return true;
     }
 
-    $urls = explode(',', $_urls);
+    $post_params = array('url' => get_custom_base_url(), 'title' => $title, 'blog_name' => convert_to_internal_encoding(get_site_name(), get_charset(), 'utf-8'), 'excerpt' => $excerpt);
 
+    $urls = explode(',', $_urls);
     foreach ($urls as $url) {
         $url = trim($url);
-        http_get_contents($url, array('trigger_error' => false, 'post_params' => array('url' => get_custom_base_url(), 'title' => $title, 'blog_name' => get_site_name(), 'excerpt' => $excerpt)));
+        require_code('character_sets');
+        http_get_contents($url, array('trigger_error' => false, 'post_params' => $post_params));
     }
 
     return true;

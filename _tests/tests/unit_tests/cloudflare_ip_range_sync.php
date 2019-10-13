@@ -20,9 +20,9 @@ class cloudflare_ip_range_sync_test_set extends cms_test_case
 {
     public function testInSync()
     {
-        $current = trim(http_get_contents('https://www.cloudflare.com/ips-v4')) . "\n" . trim(http_get_contents('https://www.cloudflare.com/ips-v6'));
+        $current = trim(http_get_contents('https://www.cloudflare.com/ips-v4')) . "\n" . trim(http_get_contents('https://www.cloudflare.com/ips-v6')); // TODO #3467
 
-        $c = file_get_contents(get_file_base() . '/sources/global.php');
+        $c = cms_file_get_contents_safe(get_file_base() . '/sources/global.php');
         $matches = array();
         preg_match('#\$trusted_proxies = \'([^\']*)\';#', $c, $matches);
         $in_code = str_replace(',', "\n", $matches[1]);

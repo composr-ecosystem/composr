@@ -21,6 +21,7 @@ class maintenance_codes_test_set extends cms_test_case
     public function testMaintenanceSheetStructure()
     {
         $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
+        // TODO: #3467
         // TODO: #3032 (must default charset to utf-8 if no BOM though)
 
         $line = 1;
@@ -41,6 +42,7 @@ class maintenance_codes_test_set extends cms_test_case
     public function testMaintenanceCodeReferences()
     {
         $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
+        // TODO: #3467
         // TODO: #3032 (must default charset to utf-8 if no BOM though)
 
         $header_row = fgetcsv($myfile); // Header row
@@ -59,7 +61,7 @@ class maintenance_codes_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
         $files[] = 'install.php';
         foreach ($files as $path) {
-            $_c = file_get_contents(get_file_base() . '/' . $path);
+            $_c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $matches = array();
             $num_matches = preg_match_all('#is_maintained\(\'([^\']*)\'\)#', $_c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -87,7 +89,7 @@ class maintenance_codes_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
-                $c = file_get_contents($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
 
                 $matches = array();
                 $num_matches = preg_match_all('#\{\$IS_MAINTAINED,(\w+),#', $c, $matches);
@@ -105,6 +107,7 @@ class maintenance_codes_test_set extends cms_test_case
         // Test maintenance sheet...
 
         $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
+        // TODO: #3467
         // TODO: #3032 (must default charset to utf-8 if no BOM though)
 
         $header_row = fgetcsv($myfile); // Header row
@@ -124,7 +127,7 @@ class maintenance_codes_test_set extends cms_test_case
 
         // Test coding standards tutorial...
 
-        $c = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt');
+        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt'); // TODO #3467
 
         $matches = array();
         $num_matches = preg_match_all('#Automated test \(\[tt\](\w+)\[/tt\]\)#i', $c, $matches);

@@ -122,8 +122,10 @@ function dispatch_sms($message, $to_sms)
     </sendMsg>
 </clickAPI>
 END;
+        require_code('character_sets');
+        $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
 
-        $result = http_get_contents('http://api.clickatell.com/xml/xml', array('trigger_error' => false, 'post_params' => array('data' => $xml)));
+        $result = http_get_contents('http://api.clickatell.com/xml/xml', array('trigger_error' => false, 'post_params' => array('data' => $xml))); // TODO #3467
         if (strpos($result, 'fault') !== false) {
             attach_message($result, 'warn', false, true);
             continue;

@@ -69,7 +69,7 @@ class Hook_health_check_network extends Hook_Health_Check
 
         $url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=http_status_check&url=' . urlencode($this->get_page_url());
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or compo.sr issue
-            $data = http_get_contents($url, array('trigger_error' => false));
+            $data = http_get_contents($url, array('trigger_error' => false)); // TODO #3467
 
             if ($data !== null) {
                 break;
@@ -195,7 +195,7 @@ class Hook_health_check_network extends Hook_Health_Check
 
         $test_file_path = get_file_base() . '/data/curl-ca-bundle.crt';
 
-        $data_to_send = str_repeat(file_get_contents($test_file_path), 5);
+        $data_to_send = str_repeat(cms_file_get_contents_safe($test_file_path), 5);
         $post_params = array('test_data' => $data_to_send);
 
         $ok = false;
@@ -204,7 +204,7 @@ class Hook_health_check_network extends Hook_Health_Check
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or compo.sr issue
             $time_before = microtime(true);
 
-            $data = http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=test_upload', array('trigger_error' => false, 'post_params' => $post_params));
+            $data = http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/testing.php?type=test_upload', array('trigger_error' => false, 'post_params' => $post_params)); // TODO #3467
 
             if ($data === null) {
                 $ok = false;

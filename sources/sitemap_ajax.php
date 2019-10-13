@@ -60,7 +60,7 @@ function sitemap_script_loading()
 
     $default = get_param_string('default', null, INPUT_FILTER_GET_COMPLEX);
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
     $permissions_needed = (get_param_integer('get_perms', 0) == 1); // Whether we are limiting our tree to permission-supporting
     cms_ini_set('ocproducts.xss_detect', '0');
 

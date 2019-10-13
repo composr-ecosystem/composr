@@ -433,7 +433,7 @@ function erase_cached_templates($preserve_some = false, $only_templates = null, 
                             if (!isset($all_template_data[$file])) {
                                 $all_template_data[$file] = array();
                             }
-                            $contents = @file_get_contents($dir_path . '/' . $file);
+                            $contents = @cms_file_get_contents_safe($dir_path . '/' . $file, false);
                             if ($contents !== false) {
                                 $all_template_data[$file][] = $contents;
                             }

@@ -331,7 +331,7 @@ function step_1()
                 $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER'))));
             }
         } else {
-            $files = @unserialize(file_get_contents(get_file_base() . '/data/files.bin'));
+            $files = @unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin'));
             if ($files !== false) {
                 $missing = array();
                 $corrupt = array();
@@ -374,7 +374,7 @@ function step_1()
                             continue;
                         }
 
-                        $contents = @strval(file_get_contents(get_file_base() . '/' . $file));
+                        $contents = @strval(cms_file_get_contents_safe(get_file_base() . '/' . $file, false));
                         if (sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', $contents))) != $file_info[0]) {
                             $corrupt[] = $file;
                         }
@@ -443,9 +443,9 @@ function step_1()
     // Language selection...
 
     if (file_exists('lang_custom/langs.ini')) {
-        $lookup = better_parse_ini_file(get_custom_file_base() . '/lang_custom/langs.ini');
+        $lookup = cms_parse_ini_file_better(get_custom_file_base() . '/lang_custom/langs.ini');
     } else {
-        $lookup = better_parse_ini_file(get_file_base() . '/lang/langs.ini');
+        $lookup = cms_parse_ini_file_better(get_file_base() . '/lang/langs.ini');
     }
 
     $lang_count = array();
@@ -459,7 +459,7 @@ function step_1()
             $files = get_dir_contents('lang/' . $lang);
             foreach (array_keys($files) as $file) {
                 if ((substr($file, -4) == '.ini') && (($lang == fallback_lang()) || (is_file(get_file_base() . '/lang/' . fallback_lang() . '/' . $file)))) {
-                    $lang_count[$lang] += count(better_parse_ini_file(get_file_base() . '/lang/' . $lang . '/' . $file));
+                    $lang_count[$lang] += count(cms_parse_ini_file_better(get_file_base() . '/lang/' . $lang . '/' . $file));
                 }
             }
         }
@@ -474,7 +474,7 @@ function step_1()
             $files = get_dir_contents('lang_custom/' . $lang);
             foreach (array_keys($files) as $file) {
                 if ((substr($file, -4) == '.ini') && (is_file(get_file_base() . '/lang/' . fallback_lang() . '/' . $file))) {
-                    $lang_count[$lang] += count(better_parse_ini_file(get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file));
+                    $lang_count[$lang] += count(cms_parse_ini_file_better(get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file));
                 }
             }
         }
@@ -531,9 +531,9 @@ function step_2()
             $licence = file_array_get('text/EN/licence.txt');
         }
     } else {
-        $licence = @file_get_contents(get_file_base() . '/text/' . filter_naughty($_POST['default_lang']) . '/licence.txt');
+        $licence = @cms_file_get_contents_safe(get_file_base() . '/text/' . filter_naughty($_POST['default_lang']) . '/licence.txt'); // TODO #3467
         if ($licence == '') {
-            $licence = file_get_contents(get_file_base() . '/text/EN/licence.txt');
+            $licence = cms_file_get_contents_safe(get_file_base() . '/text/EN/licence.txt'); // TODO #3467
         }
     }
 
@@ -577,7 +577,7 @@ function step_3()
     unset($forums['none']);
     ksort($forums);
     $forums = array_merge(array('none' => 'sources/forum'), $forums);
-    $forum_info = better_parse_ini_file(get_file_base() . '/sources/forum/forums.ini');
+    $forum_info = cms_parse_ini_file_better(get_file_base() . '/sources/forum/forums.ini');
     $tforums = new Tempcode();
     $classes = array();
     foreach (array_keys($forums) as $forum) {
@@ -636,7 +636,7 @@ function step_3()
     // Database chooser
     $databases = array_merge(get_dir_contents('sources/database', true), get_dir_contents('sources_custom/database', true));
     ksort($databases);
-    $database_names = better_parse_ini_file(get_file_base() . '/sources/database/database.ini');
+    $database_names = cms_parse_ini_file_better(get_file_base() . '/sources/database/database.ini');
     $tdatabase = new Tempcode();
     $dbs_found = 0;
     foreach (array_keys($databases) as $database) {
@@ -1920,7 +1920,7 @@ if (appengine_is_live()) {
         require_code('files');
 
         // Customise .user.ini file
-        $php_ini = file_get_contents(get_file_base() . '/.user.ini');
+        $php_ini = cms_file_get_contents_safe(get_file_base() . '/.user.ini');
         $php_ini = str_replace('<application>', post_param_string('gae_application'), $php_ini);
         cms_file_put_contents_safe(get_file_base() . '/.user.ini', $php_ini, FILE_WRITE_FIX_PERMISSIONS);
 
@@ -1934,7 +1934,7 @@ if (appengine_is_live()) {
         }
 
         // Customise app.yaml file
-        $app_yaml = file_get_contents(get_file_base() . '/app.yaml');
+        $app_yaml = cms_file_get_contents_safe(get_file_base() . '/app.yaml');
         $app_yaml = preg_replace('#^application: .*$#m', 'application: ' . post_param_string('gae_application'), $app_yaml);
         cms_file_put_contents_safe(get_file_base() . '/app.yaml', $app_yaml | FILE_WRITE_FIX_PERMISSIONS);
     }
@@ -2633,7 +2633,7 @@ function handle_self_referencing_embedment()
                 exit();
 
             case 'ajax_ftp_details':
-                header('Content-Type: text/plain');
+                header('Content-Type: text/plain; charset=' . get_charset());
 
                 if (!function_exists('ftp_connect')) {
                     echo do_lang('NO_PHP_FTP');
@@ -2692,7 +2692,7 @@ function handle_self_referencing_embedment()
                 exit();
 
             case 'ajax_db_details':
-                header('Content-Type: text/plain');
+                header('Content-Type: text/plain; charset=' . get_charset());
                 global $SITE_INFO;
                 if (!isset($SITE_INFO)) {
                     $SITE_INFO = array();
@@ -2713,7 +2713,7 @@ function handle_self_referencing_embedment()
                     $out = file_array_get('themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png');
                     echo $out;
                 } else {
-                    print(file_get_contents(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png'));
+                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png'));
                     exit();
                 }
                 exit();
@@ -2725,23 +2725,23 @@ function handle_self_referencing_embedment()
                     $out = file_array_get('themes/default/images/icons/trays/' . $type . '.svg');
                     echo $out;
                 } else {
-                    print(file_get_contents(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg'));
+                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg'));
                     exit();
                 }
                 exit();
 
             case 'css':
             case 'css_2'/*Chained together so that colours are parsed initially*/:
-                header('Content-Type: text/css');
+                header('Content-Type: text/css; charset=' . get_charset());
 
                 $output = '';
 
                 $css_files = array('global', 'forms');
                 foreach ($css_files as $css_file) {
                     if (!file_exists(get_file_base() . '/themes/default/css/' . $css_file . '.css')) {
-                        $file = file_array_get('themes/default/css/' . $css_file . '.css');
+                        $file = file_array_get('themes/default/css/' . $css_file . '.css'); // TODO #3467
                     } else {
-                        $file = file_get_contents(get_file_base() . '/themes/default/css/' . $css_file . '.css');
+                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $css_file . '.css'); // TODO #3467
                     }
                     $file = preg_replace('#\{\$IMG;?,([^,\}\']+)\}#', 'install.php?type=themes/default/images/${1}.svg', $file);
 
@@ -2754,11 +2754,11 @@ function handle_self_referencing_embedment()
                     print($output);
                     exit();
                 } else {
-                    header('Content-Type: text/css');
+                    header('Content-Type: text/css; charset=' . get_charset());
                     if (!file_exists(get_file_base() . '/themes/default/css/install.css')) {
-                        $file = file_array_get('themes/default/css/install.css');
+                        $file = file_array_get('themes/default/css/install.css'); // TODO #3467
                     } else {
-                        $file = file_get_contents(get_file_base() . '/themes/default/css/install.css');
+                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/install.css'); // TODO #3467
                     }
                     $file = preg_replace('#\{\$IMG,([^,\}\']+)\}#', 'themes/default/images/${1}.svg', $file);
 
@@ -2773,12 +2773,12 @@ function handle_self_referencing_embedment()
         }
 
         if (substr($type, 0, 15) == 'themes/default/') {
-            header('Content-type: image/svg+xml');
+            header('Content-type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $out = file_array_get(filter_naughty($type));
+                $out = file_array_get(filter_naughty($type)); // TODO #3467
                 echo $out;
             } else {
-                print(file_get_contents(get_file_base() . '/' . filter_naughty($type)));
+                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type))); // TODO #3467
                 exit();
             }
 
@@ -3101,7 +3101,7 @@ END;
 # Compress some static resources
 <IfModule mod_deflate.c>
 <IfModule mod_filter.c>
-AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
 </IfModule>
 </IfModule>
 
@@ -3219,7 +3219,7 @@ require all granted
 </RequireAll>
 END;
 
-    if ((cms_is_writable(get_file_base() . '/exports/addons')) && ((!file_exists(get_file_base() . '/.htaccess')) || (trim(file_get_contents(get_file_base() . '/.htaccess')) == ''))) {
+    if ((cms_is_writable(get_file_base() . '/exports/addons')) && ((!file_exists(get_file_base() . '/.htaccess')) || (trim(cms_file_get_contents_safe(get_file_base() . '/.htaccess')) == ''))) {
         $base_url = post_param_string('base_url', get_base_url(), INPUT_FILTER_URL_GENERAL);
 
         foreach ($clauses as $i => $clause) {
@@ -3266,7 +3266,7 @@ END;
             @copy(get_file_base() . '/.user.ini', get_file_base() . '/' . $user_ini);
             fix_permissions(get_file_base() . '/' . $user_ini);
         } else {
-            file_put_contents(get_file_base() . '/cms_inst_tmp/tmp', file_get_contents(get_file_base() . '/.user.ini'));
+            file_put_contents(get_file_base() . '/cms_inst_tmp/tmp', cms_file_get_contents_safe(get_file_base() . '/.user.ini'));
             @ftp_put($conn, $user_ini, get_file_base() . '/cms_inst_tmp/tmp', FTP_TEXT);
             @ftp_site($conn, 'CHMOD 644 ' . $user_ini);
         }

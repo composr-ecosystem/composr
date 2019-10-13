@@ -40,7 +40,7 @@ function init__zones2()
  */
 function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_tempcode = false)
 {
-    $page_contents = trim(file_get_contents($path));
+    $page_contents = trim(cms_file_get_contents_safe($path)); // TODO #3467
 
     $fallback_title = titleify(basename($path, '.txt'));
 
@@ -281,7 +281,7 @@ function make_zone_directory($zone)
             afm_make_directory($zone . '/pages/html_custom/' . $lang, true, true);
             afm_make_directory($zone . '/pages/html/' . $lang, false, true);
         }
-        afm_make_file($zone . '/index.php', file_get_contents(get_file_base() . '/adminzone/index.php'), false);
+        afm_make_file($zone . '/index.php', cms_file_get_contents_safe(get_file_base() . '/adminzone/index.php'), false);
         if (file_exists(get_file_base() . '/pages/modules/.htaccess')) {
             $index_php = array(
                 'pages/comcode/EN', 'pages/comcode_custom/EN',
@@ -289,7 +289,7 @@ function make_zone_directory($zone)
                 'pages/modules', 'pages/modules_custom', 'pages',
             );
             foreach ($index_php as $i) {
-                afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', file_get_contents(get_file_base() . '/pages/modules/.htaccess'), false);
+                afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', cms_file_get_contents_safe(get_file_base() . '/pages/modules/.htaccess'), false);
             }
         }
         $index_php = array(
@@ -570,7 +570,7 @@ function get_block_parameters($block, $include_standard_parameters = false)
     if ($info === null) {
         $params = array();
 
-        $contents = file_get_contents($block_path);
+        $contents = cms_file_get_contents_safe($block_path);
         $matches = array();
         $num_matches = preg_match_all('#\$map\[\'(\w+)\'\]#', $contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {

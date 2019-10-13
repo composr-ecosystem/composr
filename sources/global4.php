@@ -111,7 +111,7 @@ function _save_web_resource_merging($resources, $type, $write_path)
         }
         if ($merge_from != '') {
             if (is_file($merge_from)) {
-                $extra_data = unixify_line_format(cms_file_get_contents_safe($merge_from)) . "\n\n";
+                $extra_data = cms_file_get_contents_safe($merge_from, false, false, true) . "\n\n"; // TODO #3467
                 $data .= $extra_data;
                 if ((strpos($extra_data, '"use strict";') === false) && (strpos($extra_data, "'use strict';") === false)) {
                     $all_strict = false;
@@ -129,7 +129,7 @@ function _save_web_resource_merging($resources, $type, $write_path)
         }
 
         require_code('files');
-        cms_file_put_contents_safe($write_path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($write_path, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         require_code('web_resources2');
         compress_cms_stub_file($write_path);

@@ -133,7 +133,7 @@ function semi_dev_mode_startup()
     }
 
     if (($_SERVER['SCRIPT_NAME'] != '') && (empty($GLOBALS['EXTERNAL_CALL'])) && ($DEV_MODE) && (strpos($_SERVER['SCRIPT_NAME'], 'data_custom') === false)) {
-        if (@strlen(file_get_contents($_SERVER['SCRIPT_NAME'])) > 4500) {
+        if (@strlen(cms_file_get_contents_safe($_SERVER['SCRIPT_NAME'])) > 4500) {
             fatal_exit('Entry scripts (front controllers) should not be shoved full of code.');
         }
     }

@@ -85,7 +85,7 @@ class _config_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php') {
-                $c = file_get_contents(get_file_base() . '/' . $path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
 
                 $num_matches = preg_match_all('#get_option\(\'([^\']+)\'\)#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -102,7 +102,7 @@ class _config_test_set extends cms_test_case
             }
 
             if ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
-                $c = file_get_contents(get_file_base() . '/' . $path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
 
                 $num_matches = preg_match_all('#\{\$CONFIG_OPTION[^\w,]*,(\w+)\}#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -182,7 +182,7 @@ class _config_test_set extends cms_test_case
             if (!is_file($path)) {
                 $path = get_file_base() . '/sources_custom/hooks/systems/config/' . $hook . '.php';
             }
-            $c = file_get_contents($path);
+            $c = cms_file_get_contents_safe($path);
 
             $expected_addon = preg_replace('#^.*@package\s+(\w+).*$#s', '$1', $c);
             $this->assertTrue($details['addon'] == $expected_addon, 'Addon mismatch for ' . $hook);
@@ -196,7 +196,7 @@ class _config_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php' || $file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
-                $c = file_get_contents(get_file_base() . '/' . $path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
 
                 foreach (array_keys($hooks) as $hook) {
                     if ($hook == 'description') {

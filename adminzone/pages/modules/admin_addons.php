@@ -874,7 +874,7 @@ class Module_admin_addons
         $tar = tar_open($full, 'rb');
         $info_file = tar_get_file($tar, 'addon.inf');
         if ($info_file !== null) {
-            $info = better_parse_ini_file(null, $info_file['data']);
+            $info = cms_parse_ini_file_better(null, $info_file['data']);
             if (!empty($info['description'])) {
                 $text = $info['description'];
             }
@@ -1008,7 +1008,7 @@ class Module_admin_addons
         if (!file_exists($_lang_file_map)) {
             $_lang_file_map = get_file_base() . '/lang/langs.ini';
         }
-        $lang_file_map = better_parse_ini_file($_lang_file_map);
+        $lang_file_map = cms_parse_ini_file_better($_lang_file_map);
         foreach ($all_langs as $lang => $dir) {
             if ($dir == 'lang_custom') {
                 if ($lang != fallback_lang() || get_param_integer('test', 0) == 1) {
@@ -1141,7 +1141,7 @@ class Module_admin_addons
                 $ini_file = get_file_base() . '/lang/langs.ini';
             }
             if (file_exists($ini_file)) {
-                $details = better_parse_ini_file($ini_file);
+                $details = cms_parse_ini_file_better($ini_file);
                 if (array_key_exists($lang, $details)) {
                     $name = $details[$lang];
                     $description = $details[$lang];

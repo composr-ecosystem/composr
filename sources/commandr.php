@@ -243,7 +243,7 @@ class Virtual_shell
             return false;
         }
 
-        header('Content-Type: text/xml');
+        header('Content-Type: text/xml; charset=' . get_charset());
         http_response_code(200);
 
         if (is_object($this->output[STREAM_STDCOMMAND])) {
@@ -960,7 +960,7 @@ class Virtual_shell
                 if (($script_file !== false) && (is_readable($script_file))) {
                     // It *is* a script, so let's run it :)
                     $this->parse_runtime['commandr_command'] = COMMAND_SCRIPT;
-                    $script_contents = unixify_line_format(file_get_contents($script_file));
+                    $script_contents = cms_file_get_contents_safe($script_file, false, false, true);
                     $script_lines = explode("\n", $script_contents);
 
                     foreach ($script_lines as $script_line) {

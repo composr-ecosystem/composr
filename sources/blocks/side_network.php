@@ -73,11 +73,11 @@ class Block_side_network
         if (strlen($netlinks) > 0) {
             require_code('character_sets');
 
-            $http_result = cms_http_request($netlinks, array('trigger_error' => false));
+            $http_result = cms_http_request($netlinks, array('trigger_error' => false)); // TODO #3467
             if ($http_result->data === null) {
                 $if_network = ($http_result->message_b === null) ? $http_result->message : $http_result->message_b;
             } else {
-                $if_network = convert_to_internal_encoding($http_result->data, $http_result->charset);
+                $if_network = $http_result->data;
             }
             return do_template('BLOCK_SIDE_NETWORK', array(
                 '_GUID' => '5fe8867b9f69670ad61e6c78b956fab2',

@@ -45,7 +45,7 @@ class lang_html_safe_test_set extends cms_test_case
         if (($dh = opendir(get_file_base() . '/lang/EN')) !== false) {
             while (($FILE = readdir($dh)) !== false) {
                 if ($FILE[0] != '.') {
-                    $map = better_parse_ini_file(get_file_base() . '/lang/EN/' . $FILE);
+                    $map = cms_parse_ini_file_better(get_file_base() . '/lang/EN/' . $FILE);
                     foreach ($map as $string => $val) {
                         if ((trim($string) != '') && ($string[0] != '[')) {
                             if (preg_match('/[<>&]/', $val) != 0) {
@@ -161,7 +161,7 @@ class lang_html_safe_test_set extends cms_test_case
     protected function do_file($exp)
     {
         global $FILE2;
-        preg_replace_callback($exp, array($this, 'find_php_use_match'), file_get_contents($FILE2));
+        preg_replace_callback($exp, array($this, 'find_php_use_match'), cms_file_get_contents_safe($FILE2, false));
     }
 
     protected function find_php_use_match($matches)

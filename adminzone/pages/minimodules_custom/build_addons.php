@@ -108,7 +108,7 @@ foreach ($addons as $name => $place) {
         if (substr($_file, -9) != '.editfrom') { // This would have been added back in automatically
             if (isset($directory[$_file])) {
                 $file_info = tar_get_file($tar_file, $_file);
-                if ($file_info['data'] == file_get_contents(get_file_base() . '/' . $_file)) {
+                if ($file_info['data'] == cms_file_get_contents_safe(get_file_base() . '/' . $_file)) {
                     $mtimes[$_file] = $directory[$_file]['mtime'];
                 }
             }

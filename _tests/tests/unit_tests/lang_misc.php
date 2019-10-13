@@ -93,12 +93,12 @@ class lang_misc_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $this->process_file_for_references($c, $path);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('tpl'));
         foreach ($files as $path) {
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $this->process_file_for_references($c, $path);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('js'));
@@ -107,7 +107,7 @@ class lang_misc_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             if (strpos($c, '/*{$,parser hint: pure}*/') === false) {
                 $this->process_file_for_references($c, $path);
             }
@@ -126,16 +126,16 @@ class lang_misc_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $this->process_file_for_references($c, $path);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('xml'));
         foreach ($files as $path) {
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $this->process_file_for_references($c, $path);
         }
 
-        $c = file_get_contents(get_file_base() . '/install.php');
+        $c = cms_file_get_contents_safe(get_file_base() . '/install.php');
         $this->process_file_for_references($c, get_file_base() . '/install.php');
     }
 

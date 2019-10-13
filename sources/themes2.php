@@ -49,7 +49,7 @@ function find_theme_seed($theme)
         if (!is_file($css_path)) {
             $css_path = get_file_base() . '/themes/default/css/global.css';
         }
-        $css_file_contents = cms_file_get_contents_safe($css_path);
+        $css_file_contents = cms_file_get_contents_safe($css_path); // TODO #3467
         $matches = array();
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),seed,.*\}#', $css_file_contents, $matches) != 0) {
             $THEME_SEED_CACHE[$theme] = $matches[1];
@@ -106,7 +106,7 @@ function autoprobe_cdns()
     );
 
     $detected_cdns = '';
-    $expected = file_get_contents(get_file_base() . '/themes/default/images/icons/editor/comcode.svg');
+    $expected = cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/editor/comcode.svg'); // TODO #3467
     foreach ($try as $t) {
         if ($t === null) {
             continue;
@@ -115,7 +115,7 @@ function autoprobe_cdns()
         if (preg_match('#^' . preg_quote($t, '#') . '($|\.|/|:)#', $domain_name) == 0) { // Don't use it if it is in the base URL
             $test_url = (tacit_https() ? 'https://' : 'http://') . $t . $parsed['path'] . '/themes/default/images/icons/editor/comcode.svg';
 
-            $test_result = http_get_contents($test_url, array('trigger_error' => false, 'timeout' => 0.25));
+            $test_result = http_get_contents($test_url, array('trigger_error' => false, 'timeout' => 0.25)); // TODO #3467
 
             if (($test_result !== null) && ($test_result == $expected)) {
                 if ($detected_cdns != '') {
@@ -349,7 +349,7 @@ function find_template_guids($file, $active_guid = null)
     $clean_file = basename($file, $suffix);
 
     $guids = array();
-    $_guids = @unserialize(@file_get_contents(get_file_base() . '/data/guids.bin'));
+    $_guids = @unserialize(@cms_file_get_contents_safe(get_file_base() . '/data/guids.bin'));
     if (($_guids !== false) && (array_key_exists($clean_file, $_guids))) {
         foreach ($_guids[$clean_file] as $_guid) {
             $guids[] = array(
@@ -396,7 +396,7 @@ function find_template_parameters($file)
     }
 
     $matches = array();
-    $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path), $matches);
+    $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path), $matches); // TODO #3467
     $p_done = array();
     for ($j = 0; $j < $cnt; $j++) {
         $parameters[] = $matches[1][$j];
@@ -491,7 +491,7 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
         @mkdir(get_custom_file_base() . '/' . $upload_to, 0777);
         if (file_exists(get_custom_file_base() . '/' . $upload_to)) {
             fix_permissions(get_custom_file_base() . '/' . $upload_to);
-            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '');
+            cms_file_put_contents_safe(get_custom_file_base() . '/' . $upload_to . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         } else {
             $upload_to = 'themes/default/images_custom';
         }

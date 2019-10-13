@@ -56,7 +56,7 @@ class Hook_snippet_template_editor_save
             $custom_path = get_custom_file_base() . '/themes/' . $theme . '/' . $subdir . '_custom/' . $_file;
             $original_path = get_file_base() . '/themes/default/' . $subdir . '/' . $_file;
 
-            if (is_file($original_path) && cms_file_get_contents_safe($original_path) == $contents) {
+            if (is_file($original_path) && cms_file_get_contents_safe($original_path) == $contents) { // TODO #3467
                 // Delete
                 if (file_exists($custom_path)) {
                     unlink($custom_path);
@@ -68,12 +68,12 @@ class Hook_snippet_template_editor_save
                 }
             } else {
                 // Save
-                cms_file_put_contents_safe($custom_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($custom_path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
                 // Make base-hash-thingy
                 if (is_file($original_path) && !is_file($custom_path . '.editfrom')) {
-                    $hash = cms_file_get_contents_safe($original_path);
-                    cms_file_put_contents_safe($custom_path . '.editfrom', $hash, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                    $hash = cms_file_get_contents_safe($original_path); // TODO #3467
+                    cms_file_put_contents_safe($custom_path . '.editfrom', $hash, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                 }
             }
 
@@ -87,7 +87,7 @@ class Hook_snippet_template_editor_save
                         dirname($custom_path),
                         $clean_file,
                         ltrim($suffix, '.'),
-                        cms_file_get_contents_safe($existing_path),
+                        cms_file_get_contents_safe($existing_path), // TODO #3467
                         filemtime($existing_path)
                     );
                 }

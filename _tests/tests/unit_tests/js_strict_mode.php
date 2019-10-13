@@ -40,7 +40,7 @@ class js_strict_mode_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = file_get_contents($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
 
                 $this->assertTrue(strpos($c, 'use strict') !== false, 'Strict mode not enabled for ' . $file);
             }

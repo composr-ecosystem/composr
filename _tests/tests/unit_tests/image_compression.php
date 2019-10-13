@@ -47,7 +47,7 @@ class image_compression_test_set extends cms_test_case
                     if (substr($path, -4) == '.gif') {
                         $filesize -= 800; // For the palette (not in all gifs, but needed for non-trivial ones)
                         $min_ratio = 0.8;
-                        if (is_animated_image(file_get_contents($base . '/' . $path), get_file_extension($path))) {
+                        if (is_animated_image(cms_file_get_contents_safe($base . '/' . $path), get_file_extension($path))) {
                             continue; // Can't do animated gifs
                         }
                     } else {

@@ -79,7 +79,7 @@ class Hook_task_privacy_download
 
         require_code('files2');
         $outfile_path = cms_tempnam();
-        file_put_contents($outfile_path, json_encode($data, JSON_PRETTY_PRINT));
+        cms_file_put_contents_safe($outfile_path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_BOM);
         return array('application/json', array($filename, $outfile_path), $headers, $ini_set);
     }
 }

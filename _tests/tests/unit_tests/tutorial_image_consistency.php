@@ -59,7 +59,7 @@ class tutorial_image_consistency_test_set extends cms_test_case
             if (substr($file, -4) == '.txt') {
                 $tutorial = basename($file, '.txt');
 
-                $c = remove_code_block_contents(file_get_contents($path . '/' . $file));
+                $c = remove_code_block_contents(cms_file_get_contents_safe($path . '/' . $file)); // TODO #3467
 
                 $matches = array();
                 $num_matches = preg_match_all('#data_custom/images/docs/([^"\'\s]*\.(gif|jpg|jpeg|png))#', $c, $matches);

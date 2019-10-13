@@ -26,7 +26,7 @@ class comment_encapsulation_test_set extends cms_test_case
             $path = get_file_base() . '/themes/default/' . $subdir;
             $files = get_directory_contents($path, '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array($suffix));
             foreach ($files as $file) {
-                $c = file_get_contents($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
 
                 if (strpos($c, '/*{$,parser hint: pure}*/') !== false) {
                     continue;

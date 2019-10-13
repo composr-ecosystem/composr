@@ -177,9 +177,9 @@ function _get_zone_pages($installprofileblocks, $block_options, $collapse_zones,
         require_lang('menus');
         if ($installprofile == '') {
             if (($zone == '') && (!$collapse_zones)) {
-                $comcode .= unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . fallback_lang() . '/panel_left.txt'));
+                $comcode .= cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . fallback_lang() . '/panel_left.txt', false, false, true); // TODO #3467
             } else {
-                $comcode .= unixify_line_format(cms_file_get_contents_safe(get_file_base() . '/site/pages/comcode/' . fallback_lang() . '/panel_left.txt'));
+                $comcode .= cms_file_get_contents_safe(get_file_base() . '/site/pages/comcode/' . fallback_lang() . '/panel_left.txt', false, false, true); // TODO #3467
             }
         }
         $comcode .= $left;

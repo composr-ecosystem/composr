@@ -407,8 +407,11 @@ function _render_google_search_console_keywords($id, $days, $under_tab)
     );
     $json = json_encode($_json);
 
+    require_code('character_sets');
+    $json = convert_to_internal_encoding($json, get_charset(), 'utf-8');
+
     $trigger_error = (!$under_tab) && (get_page_name() == 'admin_stats');
-    $_result = http_get_contents($url, array('trigger_error' => $trigger_error, 'post_params' => array($json), 'raw_post' => true, 'raw_content_type' => 'application/json'));
+    $_result = http_get_contents($url, array('trigger_error' => $trigger_error, 'post_params' => array($json), 'raw_post' => true, 'raw_content_type' => 'application/json')); // TODO #3467
     if ($_result === null) {
         $msg = 'Failed to query the Google Search Console API';
         return paragraph(make_string_tempcode($msg), 'red-alert');

@@ -166,6 +166,7 @@ class Module_admin_errorlog
             if (is_readable(get_custom_file_base() . '/data_custom/errorlog.php')) {
                 if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > 1024 * 1024) {
                     $myfile = fopen(get_custom_file_base() . '/data_custom/errorlog.php', 'rb');
+                    // TODO: #3467
                     flock($myfile, LOCK_SH);
                     fseek($myfile, -1024 * 500, SEEK_END);
                     $lines = explode("\n", fread($myfile, 1024 * 500));
@@ -267,6 +268,7 @@ class Module_admin_errorlog
         while (($filename = readdir($dh)) !== false) {
             if (substr($filename, -4) == '.log') {
                 $myfile = @fopen(get_custom_file_base() . '/data_custom/' . $filename, 'rb');
+                // TODO: #3467
                 if ($myfile !== false) {
                     // Get last 40000 bytes of log
                     flock($myfile, LOCK_SH);
@@ -602,9 +604,9 @@ class Module_admin_errorlog
 
         cms_ini_set('ocproducts.xss_detect', '0');
 
-        header('Content-Type: text/plain');
+        header('Content-Type: text/plain; charset=' . get_charset());
 
-        echo file_get_contents(get_custom_file_base() . '/data_custom/' . $log_file);
+        echo cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/' . $log_file); // TODO #3467
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();

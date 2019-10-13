@@ -35,7 +35,7 @@ class search_test_set extends cms_test_case
         $this->assertTrue(strpos($data->download_mime_type, 'text/xml') !== false);
 
         $url = find_script('opensearch') . '?type=suggest&request=abc';
-        $data = cms_http_request($url, array('cookies' => array(get_session_cookie() => get_session_id())));
+        $data = cms_http_request($url, array('cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
         $this->assertTrue(is_array(json_decode($data->data)));
         $this->assertTrue(strpos($data->download_mime_type, 'application/x-suggestions+json') !== false);
     }

@@ -20,7 +20,7 @@ class cms_merge_test_set extends cms_test_case
 {
     public function testFullTableCoverage()
     {
-        $c = file_get_contents(get_file_base() . '/sources/hooks/modules/admin_import/cms_merge.php');
+        $c = cms_file_get_contents_safe(get_file_base() . '/sources/hooks/modules/admin_import/cms_merge.php');
 
         require_code('database_relations');
 

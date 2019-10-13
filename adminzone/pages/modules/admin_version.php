@@ -1162,7 +1162,7 @@ class Module_admin_version
     {
         $level = get_param_integer('level', 50);
 
-        $data = cms_http_request('https://compo.sr/data_custom/patreon_patrons.php?level=' . strval($level));
+        $data = cms_http_request('https://compo.sr/data_custom/patreon_patrons.php?level=' . strval($level)); // TODO #3467
         $_patreon_patrons = json_decode($data->data);
 
         $patreon_patrons = array();
@@ -1178,6 +1178,7 @@ class Module_admin_version
             'ocProducts' => array('AREAS' => array('Primary sponsor')),
         );
         $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
+        // TODO: #3467
         // TODO: #3032 (must default charset to utf-8 if no BOM though)
         fgetcsv($myfile);
         while (($row = fgetcsv($myfile)) !== false) {

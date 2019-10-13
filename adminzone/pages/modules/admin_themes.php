@@ -614,7 +614,7 @@ class Module_admin_themes
 
         // Mapping
         if (method_exists($GLOBALS['FORUM_DRIVER'], 'get_skin_list')) {
-            $map = file_exists(get_file_base() . '/themes/map.ini') ? better_parse_ini_file(get_file_base() . '/themes/map.ini') : array();
+            $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_better(get_file_base() . '/themes/map.ini') : array();
             $default_selection = array();
             $mapping = new Tempcode();
             $all_skins = $GLOBALS['FORUM_DRIVER']->get_skin_list();
@@ -828,7 +828,7 @@ class Module_admin_themes
         if (!file_exists($ini_file)) {
             $ini_file = get_file_base() . '/themes/default/theme.ini';
         }
-        $before = better_parse_ini_file($ini_file);
+        $before = cms_parse_ini_file_better($ini_file);
         $contents = '';
         $themeonly_options = array('title', 'description', 'author');
         foreach ($themeonly_options as $themeonly_option) {
@@ -851,14 +851,14 @@ class Module_admin_themes
             }
             unset($before[$key]);
         }
-        cms_file_put_contents_safe($ini_file, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($ini_file, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         // Save permissions
         require_code('permissions2');
         set_category_permissions_from_environment('theme', $theme);
 
         // Update map file
-        $map = file_exists(get_file_base() . '/themes/map.ini') ? better_parse_ini_file(get_file_base() . '/themes/map.ini') : array();
+        $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_better(get_file_base() . '/themes/map.ini') : array();
         $new_map = array();
         foreach ($map as $key => $val) {
             if ($val != $theme) {
@@ -875,7 +875,7 @@ class Module_admin_themes
         foreach ($new_map as $key => $val) {
             $contents .= $key . '=' . $val . "\n";
         }
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         // Empty caching
         erase_persistent_cache();

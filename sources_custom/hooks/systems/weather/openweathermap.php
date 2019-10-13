@@ -240,7 +240,7 @@ class Hook_weather_openweathermap
         $url .= '&units=' . urlencode($units);
         $url .= '&format=json';
 
-        $response = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false, 'ignore_http_status' => true)), 30);
+        $response = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false, 'ignore_http_status' => true)), 30); // TODO #3467
         list($data, , , , $http_message) = $response;
 
         if ($http_message != '200') {

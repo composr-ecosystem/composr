@@ -571,7 +571,7 @@ function afm_make_file($basic_path, $contents, $world_access)
     $conn = _ftp_info();
     if ($conn !== false) {
         $path2 = cms_tempnam();
-        cms_file_put_contents_safe($path2, $contents);
+        cms_file_put_contents_safe($path2, $contents, FILE_WRITE_BOM); // TODO #3467 (new param needed to this function!)
 
         $h = fopen($path2, 'rb');
         $success = @ftp_fput($conn, $path, $h, FTP_BINARY);
@@ -592,7 +592,7 @@ function afm_make_file($basic_path, $contents, $world_access)
 
         sync_file(get_custom_file_base() . '/' . $basic_path);
     } else {
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM); // TODO #3467 (new param needed to this function!)
         @chmod($path, $access);
     }
 }
@@ -605,7 +605,7 @@ function afm_make_file($basic_path, $contents, $world_access)
  */
 function afm_read_file($path)
 {
-    return file_get_contents(get_custom_file_base() . '/' . $path);
+    return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path); // TODO #3467 (new param needed!)
 }
 
 /**
@@ -621,7 +621,7 @@ function afm_copy($old_path, $new_path, $world_access)
     if (!file_exists($a)) {
         $a = get_file_base() . '/' . $old_path;
     }
-    $contents = file_get_contents($a);
+    $contents = cms_file_get_contents_safe($a);
     afm_make_file($new_path, $contents, $world_access);
 }
 

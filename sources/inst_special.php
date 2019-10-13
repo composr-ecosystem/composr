@@ -48,7 +48,7 @@ function get_chmod_array($lang, $runtime = false)
                 $path = get_file_base() . '/sources/hooks/systems/addon_registry/' . filter_naughty_harsh($hook) . '.php';
             }
             $matches = array();
-            if (preg_match('#function get_chmod_array\(\)\s*\{([^\}]*)\}#', file_get_contents($path), $matches) != 0) {
+            if (preg_match('#function get_chmod_array\(\)\s*\{([^\}]*)\}#', cms_file_get_contents_safe($path), $matches) != 0) {
                 $extra_files = array_merge($extra_files, cms_eval($matches[1], $path));
             }
         }

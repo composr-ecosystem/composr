@@ -63,7 +63,7 @@ function css_inherit($css_file, $theme, $destination_theme, $seed, $dark, $algor
     }
 
     // Read a raw
-    $sheet = cms_file_get_contents_safe($full_path);
+    $sheet = cms_file_get_contents_safe($full_path); // TODO #3467
 
     // Re-seed
     if (addon_installed('themewizard')) {
@@ -145,7 +145,7 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
         $contents = '/* DO NOT EDIT. THIS IS A CACHE FILE AND WILL GET OVERWRITTEN RANDOMLY.' . "\n" . 'INSTEAD EDIT THE TEMPLATE FROM WITHIN THE ADMIN ZONE, OR BY MANUALLY EDITING A JAVASCRIPT_CUSTOM OVERRIDE. */' . "\n\n" . $out;
     }
     require_code('files');
-    $success_status = cms_file_put_contents_safe($js_cache_path, $contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    $success_status = cms_file_put_contents_safe($js_cache_path, $contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
     if (!$success_status) {
         @touch($js_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
     } else {
@@ -165,7 +165,7 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
 function compress_cms_stub_file($stub_file)
 {
     if (function_exists('gzencode')) {
-        $data = @cms_file_get_contents_safe($stub_file);
+        $data = @cms_file_get_contents_safe($stub_file); // TODO #3467
 
         if ($data === false) {
             return;
@@ -194,16 +194,16 @@ function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $mi
         require_code('themes2');
         $global_full_path = find_template_path('global.css', 'css', $active_theme);
 
-        if (strpos(cms_file_get_contents_safe($global_full_path), '{$THEMEWIZARD_COLOR,') !== false) {
+        if (strpos(cms_file_get_contents_safe($global_full_path), '{$THEMEWIZARD_COLOR,') !== false) { // TODO #3467
             require_code('tempcode_compiler');
-            $temp = template_to_tempcode(cms_file_get_contents_safe($global_full_path), 0, false, $c, $active_theme, user_lang());
+            $temp = template_to_tempcode(cms_file_get_contents_safe($global_full_path), 0, false, $c, $active_theme, user_lang()); // TODO #3467
             $temp->evaluate(); // We just need it to evaluate, not do anything with it
         }
     }
 
     list($success_status, $out) = _css_compile($active_theme, $theme, $c, $full_path, $minify);
     require_code('files');
-    $success_status = cms_file_put_contents_safe($css_cache_path, $out, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    $success_status = cms_file_put_contents_safe($css_cache_path, $out, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
     if (!$success_status) {
         @touch($css_cache_path, time() - 60 * 60 * 24); // Fudge it so it's going to auto expire. We do have to write the file as it's referenced, but we want it to expire instantly so that any errors will reshow.
     } else {

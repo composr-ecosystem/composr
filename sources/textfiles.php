@@ -84,7 +84,7 @@ function read_text_file($codename, $lang = null, $missing_blank = false)
         }
         warn_exit(do_lang_tempcode('MISSING_TEXT_FILE', escape_html($codename), escape_html('text/' . (($lang === null) ? '' : ($lang . '/')) . $codename . '.txt')), false, true);
     }
-    $in = unixify_line_format(cms_file_get_contents_safe($path));
+    $in = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
 
     if (strpos($path, '_custom/') === false) {
         global $LANG_FILTER_OB;
@@ -111,9 +111,9 @@ function write_text_file($codename, $lang, $out)
 
     require_code('files');
 
-    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
     // Backup with a timestamp (useful if for example an addon update replaces changes)
     $path .= '.' . strval(time());
-    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($path, $out, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 }

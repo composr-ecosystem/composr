@@ -94,7 +94,7 @@ class css_file_test_set extends cms_test_case
                             continue;
                         }
 
-                        $c = file_get_contents($dir . '/' . $e);
+                        $c = cms_file_get_contents_safe($dir . '/' . $e); // TODO #3467
                         $matches = array();
                         $found = preg_match_all('#\.([a-z][\w\-]*)[ ,:]#i', $c, $matches);
                         for ($i = 0; $i < $found; $i++) {
@@ -127,7 +127,7 @@ class css_file_test_set extends cms_test_case
             if ($d !== false) {
                 while (($e = readdir($d)) !== false) {
                     if (substr($e, -4) == '.tpl' || substr($e, -3) == '.js') {
-                        $c = file_get_contents($dir . '/' . $e);
+                        $c = cms_file_get_contents_safe($dir . '/' . $e); // TODO #3467
                         $matches = array();
                         $found = preg_match_all('#class="([\w\- ]+)"#', $c, $matches);
                         for ($i = 0; $i < $found; $i++) {
@@ -199,7 +199,7 @@ class css_file_test_set extends cms_test_case
                             continue;
                         }
 
-                        $c = file_get_contents($dir . '/' . $file);
+                        $c = cms_file_get_contents_safe($dir . '/' . $file); // TODO #3467
 
                         $is_css_file = (substr($file, -4) == '.css');
 

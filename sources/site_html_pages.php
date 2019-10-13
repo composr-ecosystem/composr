@@ -39,7 +39,7 @@ function load_html_page($string, $file_base = null, &$out = null)
         $PAGE_STRING = $string;
     }
 
-    $html = file_get_contents($file_base . '/' . $string);
+    $html = cms_file_get_contents_safe($file_base . '/' . $string);
 
     // Post-processing
     if (stripos($html, '<html') !== false) {

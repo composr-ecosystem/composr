@@ -27,7 +27,7 @@ class clean_reinstall_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
         $files[] = 'install.php';
         foreach ($files as $i => $path) {
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $files[$i] = $c;
         }
 
@@ -39,8 +39,8 @@ class clean_reinstall_test_set extends cms_test_case
                 }
             }
 
-            $c1 = file_get_contents(get_file_base() . '/sources/permissions3.php');
-            $c2 = file_get_contents(get_file_base() . '/sources/cns_install.php');
+            $c1 = cms_file_get_contents_safe(get_file_base() . '/sources/permissions3.php');
+            $c2 = cms_file_get_contents_safe(get_file_base() . '/sources/cns_install.php');
             $_c2 = substr($c2, 0, strpos($c2, 'Uninstall Conversr'));
             $is_listed = (strpos($c1, '\'' . $privilege['the_name'] . '\'') !== false) || (strpos($_c2, '\'' . $privilege['the_name'] . '\'') !== false);
             $this->assertTrue($is_listed, 'Could not find uninstall for privilege: ' . $privilege['the_name']);
@@ -54,7 +54,7 @@ class clean_reinstall_test_set extends cms_test_case
                 }
             }
 
-            $is_installer = (strpos(file_get_contents(get_file_base() . '/install.php'), '\'' . $table['m_table'] . '\'') !== false);
+            $is_installer = (strpos(cms_file_get_contents_safe(get_file_base() . '/install.php'), '\'' . $table['m_table'] . '\'') !== false);
             $this->assertTrue($is_installer, 'Could not find uninstall for table: ' . $table['m_table']);
         }
     }

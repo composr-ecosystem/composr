@@ -170,7 +170,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
         $template = get_file_base() . '/data/modules/admin_backup/restore.php.pre';
     }
 
-    $_install_php_file = file_get_contents($template);
+    $_install_php_file = cms_file_get_contents_safe($template);
 
     $look_for = '//{!!DB!!}';
     $place = strpos($_install_php_file, $look_for);
@@ -230,7 +230,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
 
     if ($b_type == 'full') {
         set_value('last_backup', strval(time()));
-        $avoid_backing_up = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(file_get_contents(get_file_base() . '/data/files.bin')) : array();
+        $avoid_backing_up = (get_param_integer('keep_backup_alien', 0) == 1) ? unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin')) : array();
         $root_only_dirs = directories_to_backup();
         tar_add_folder($backup_file, $log_file, get_custom_file_base(), $max_size, '', $avoid_backing_up, $root_only_dirs, !running_script('cron_bridge'), IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, $callback);
     } elseif ($b_type == 'incremental') {

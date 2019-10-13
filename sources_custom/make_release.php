@@ -124,7 +124,7 @@ function make_installers($skip_file_grab = false)
         $archive_size = filesize($builds_path . '/builds/' . $version_dotted . '/data.cms');
         // The installer does an md5 check to check integrity - prepare for it
         $md5_test_path = 'data/images/advertise_here.png';
-        $md5 = md5(file_get_contents($builds_path . '/builds/build/' . $version_branch . '/' . $md5_test_path));
+        $md5 = md5(cms_file_get_contents_safe($builds_path . '/builds/build/' . $version_branch . '/' . $md5_test_path));
 
         // Write out our PHP installer file
         $file_count = count($MAKE_INSTALLERS__FILE_ARRAY);
@@ -139,7 +139,7 @@ function make_installers($skip_file_grab = false)
         }
 
         // Build install.php, which has to have all our data.cms file offsets put into it (data.cms is an uncompressed ZIP, but the quick installer cheats - it can't truly read arbitrary ZIPs)
-        $code = file_get_contents(get_file_base() . '/install.php');
+        $code = cms_file_get_contents_safe(get_file_base() . '/install.php');
         $installer_start = "<" . "?php
             /* QUICK INSTALLER CODE starts */
 
@@ -378,7 +378,7 @@ function make_installers($skip_file_grab = false)
         /* Prepare changelog for APP-META.xml*/
         // Load the template APP-META.xml
         $app_meta_doc = new DOMDocument();
-        $app_meta_doc->loadXML(file_get_contents(get_file_base() . '/aps/APP-META.xml'));
+        $app_meta_doc->loadXML(cms_file_get_contents_safe(get_file_base() . '/aps/APP-META.xml')); // TODO #3467
 
         $xpath = new DOMXPath($app_meta_doc);
         $xpath->registerNamespace('x', 'http://apstandard.com/ns/1');
@@ -413,7 +413,7 @@ function make_installers($skip_file_grab = false)
         /* Prepare APP-LIST.xml */
         // Load the template APP-LIST.xml
         $app_list_doc = new DOMDocument();
-        $app_list_doc->loadXML(file_get_contents(get_file_base() . '/aps/APP-LIST.xml'));
+        $app_list_doc->loadXML(cms_file_get_contents_safe(get_file_base() . '/aps/APP-LIST.xml')); // TODO #3467
 
         $files_el = $app_list_doc->getElementsByTagName('files')->item(0);
 
@@ -653,7 +653,7 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
         $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . '_config.php'] = '';
     }
     if ($pretend_dir == 'data_custom/') {
-        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = file_get_contents(get_file_base() . '/data_custom/execute_temp.php.bundle');
+        $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . 'execute_temp.php'] = cms_file_get_contents_safe(get_file_base() . '/data_custom/execute_temp.php.bundle');
     }
 
     // Go over files in the directory
@@ -694,9 +694,9 @@ function populate_build_files_list($dir = '', $pretend_dir = '')
                 continue; // We'll add this back in later
             } // Update time of version in version.php
             elseif ($pretend_dir . $file == 'sources/version.php') {
-                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = preg_replace('/\d{10}/', strval(time()), file_get_contents(get_file_base() . '/' . $dir . $file), 1); // Copy file as-is
+                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = preg_replace('/\d{10}/', strval(time()), cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file, false), 1); // Copy file as-is
             } else {
-                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = file_get_contents(get_file_base() . '/' . $dir . $file);
+                $MAKE_INSTALLERS__FILE_ARRAY[$pretend_dir . $file] = cms_file_get_contents_safe(get_file_base() . '/' . $dir . $file, false);
             }
 
             // Write the file out
@@ -773,7 +773,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             continue;
         }
 
-        $contents = file_get_contents(get_file_base() . '/' . $file);
+        $contents = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
         $matches = array();
         if (preg_match('#@package\s+(\w+)\r?\n#', $contents, $matches) != 0) {
             $addon = $matches[1];
@@ -957,8 +957,9 @@ function make_install_sql()
     global $HAS_MULTI_LANG_CONTENT;
     $bak = $HAS_MULTI_LANG_CONTENT;
     $HAS_MULTI_LANG_CONTENT = false;
+    require_code('files');
     $out_path = get_file_base() . '/install.sql';
-    $out_file = fopen($out_path, 'wb');
+    $out_file = cms_fopen_wb_bom($out_path);
     get_sql_dump($out_file, true, false, array(), null, $db);
     fclose($out_file);
     fix_permissions($out_path);
@@ -967,7 +968,7 @@ function make_install_sql()
 
     // Run some checks to make sure our process is not buggy...
 
-    $contents = cms_file_get_contents_safe(get_file_base() . '/install.sql');
+    $contents = cms_file_get_contents_safe(get_file_base() . '/install.sql'); // TODO #3467
 
     // Not with forced charsets or other contextual noise
     if (strpos($contents, "\n" . 'SET') !== false) {
@@ -1020,7 +1021,7 @@ function make_install_sql()
     );
 
     // Check we can find split points
-    $contents = cms_file_get_contents_safe(get_file_base() . '/install.sql');
+    $contents = cms_file_get_contents_safe(get_file_base() . '/install.sql'); // TODO #3467
     foreach ($split_points as $p) {
         if ($p != '') {
             if (strpos($contents, $p) === false) {
@@ -1061,11 +1062,11 @@ function download_latest_data_files()
 
 function _download_latest_data_cert()
 {
-    $data = http_get_contents('https://curl.haxx.se/ca/cacert.pem');
+    $data = http_get_contents('https://curl.haxx.se/ca/cacert.pem'); // TODO #3467
     if (strpos($data, 'BEGIN CERTIFICATE') === false) {
         fatal_exit('Error with certificates');
     }
-    cms_file_put_contents_safe(get_file_base() . '/data/curl-ca-bundle.crt', $data);
+    cms_file_put_contents_safe(get_file_base() . '/data/curl-ca-bundle.crt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
 
 function _download_latest_data_ip_country()
@@ -1076,14 +1077,14 @@ function _download_latest_data_ip_country()
 
     $tmp_name_gzip = cms_tempnam();
     $myfile = fopen($tmp_name_gzip, 'wb');
-    cms_http_request('http://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', array('write_to_file' => $myfile, 'timeout' => 30.0));
+    cms_http_request('http://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', array('write_to_file' => $myfile, 'timeout' => 30.0)); // TODO #3467
     fclose($myfile);
 
     $tmp_name_tar = cms_tempnam();
     $cmd = 'gzip -d -c ' . cms_escapeshellarg($tmp_name_gzip) . ' > ' . cms_escapeshellarg($tmp_name_tar);
     _shell_exec_bin($cmd);
 
-    $lines = explode("\n", unixify_line_format(file_get_contents($tmp_name_tar)));
+    $lines = explode("\n", cms_file_get_contents_safe($tmp_name_tar, false, false, true));
     foreach ($lines as $line) {
         $x = str_getcsv($line);
 
@@ -1117,7 +1118,7 @@ function _download_latest_data_ip_country()
         fatal_exit('Failed to extract MaxMind IP address data');
     }
 
-    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $csv_data);
+    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $csv_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
     @unlink($tmp_name_gzip);
     @unlink($tmp_name_tar);
@@ -1135,10 +1136,10 @@ function _download_latest_data_no_banning()
 
     $data = '';
     foreach ($urls as $url) {
-        $data .= http_get_contents($url);
+        $data .= http_get_contents($url); // TODO #3467
     }
 
-    cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data);
+    cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 }
 
 // See phpdoc_parser.php for functions.bin manifest building

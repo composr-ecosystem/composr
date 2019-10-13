@@ -115,7 +115,7 @@ function namelike_script()
 
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
     echo '<?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
     echo '<request><result>';
 
@@ -383,7 +383,7 @@ function ajax_tree_script()
 
     require_code('xml');
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
     $hook = filter_naughty_harsh(get_param_string('hook'));
     require_code('hooks/systems/ajax_tree/' . $hook, true);
     $object = object_factory('Hook_ajax_tree_' . $hook, true);
@@ -466,7 +466,7 @@ function load_template_script()
     }
 
     if (file_exists($x)) {
-        echo cms_file_get_contents_safe($x);
+        echo cms_file_get_contents_safe($x); // TODO #3467
     }
 
     exit(); // So auto_append_file cannot run and corrupt our output
@@ -481,14 +481,14 @@ function sheet_script()
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    @header('Content-Type: text/css');
+    @header('Content-Type: text/css; charset=' . get_charset());
     prepare_for_known_ajax_response();
 
     $sheet = get_param_string('sheet');
     if ($sheet != '') {
         $path = css_enforce(filter_naughty($sheet), get_param_string('theme', null));
         if ($path != '') {
-            echo @str_replace('../../../', '', cms_file_get_contents_safe($path));
+            echo @str_replace('../../../', '', cms_file_get_contents_safe($path)); // TODO #3467
         }
     }
 
@@ -504,14 +504,14 @@ function script_script()
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    @header('Content-Type: application/javascript');
+    @header('Content-Type: text/javascript; charset=' . get_charset());
     prepare_for_known_ajax_response();
 
     $script = get_param_string('script');
     if ($script != '') {
         $path = javascript_enforce(filter_naughty($script), get_param_string('theme', null));
         if ($path != '') {
-            echo @str_replace('../../../', '', cms_file_get_contents_safe($path));
+            echo @str_replace('../../../', '', cms_file_get_contents_safe($path)); // TODO #3467
         }
     }
 

@@ -143,7 +143,7 @@ function build_news_sitemap()
 
     if (function_exists('gzencode')) {
         require_code('files');
-        cms_file_put_contents_safe($path . '.gz', gzencode(file_get_contents($path), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path . '.gz', gzencode(cms_file_get_contents_safe($path), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         $path .= '.gz';
         $target_url .= '.gz';
     }

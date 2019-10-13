@@ -111,7 +111,7 @@ class chmod_consistency_test_set extends cms_test_case
             $this->assertTrue($place_path_exists, $place . ' is missing, cannot check it');
 
             if ($place_path_exists) {
-                $place_files[$place_path] = file_get_contents($place_path);
+                $place_files[$place_path] = cms_file_get_contents_safe($place_path); // TODO #3467
                 $place_files_stripped[$place_path] = $place_files[$place_path];
 
                 // Special checks
@@ -119,7 +119,7 @@ class chmod_consistency_test_set extends cms_test_case
                     case 'parameters.xml':
                         $matches = array();
                         $found = array();
-                        $num_matches = preg_match_all('#SetAclParameter(\d+)#', file_get_contents($place_path), $matches);
+                        $num_matches = preg_match_all('#SetAclParameter(\d+)#', cms_file_get_contents_safe($place_path), $matches); // TODO #3467
                         for ($i = 0; $i < $num_matches; $i++) {
                             $x = $matches[1][$i];
                             $this->assertTrue(!in_array($x, $found), 'Multiple defined parameters.xml parameters: ' . $matches[0][$i]);

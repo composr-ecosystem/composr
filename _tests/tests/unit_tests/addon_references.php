@@ -37,8 +37,8 @@ class addon_references_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
-            $matches = array();
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $matches = arraycms_file_get_contents_safe
             $num_matches = preg_match_all('#addon_installed\(\'([^\']*)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $addon = $matches[1][$i];
@@ -54,7 +54,7 @@ class addon_references_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $matches = array();
             $num_matches = preg_match_all('#\{\$ADDON_INSTALLED,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {

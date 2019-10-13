@@ -130,19 +130,19 @@ class Module_admin_debrand
         if ($company_name === null) {
             $company_name = 'ocProducts';
         }
-        $keyboard_map = file_exists(get_file_base() . '/pages/comcode/' . get_site_default_lang() . '/keymap.txt') ? cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . get_site_default_lang() . '/keymap.txt') : cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . fallback_lang() . '/keymap.txt');
+        $keyboard_map = file_exists(get_file_base() . '/pages/comcode/' . get_site_default_lang() . '/keymap.txt') ? cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . get_site_default_lang() . '/keymap.txt') : cms_file_get_contents_safe(get_file_base() . '/pages/comcode/' . fallback_lang() . '/keymap.txt'); // TODO #3467
         if (file_exists(get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/keymap.txt')) {
             $keyboard_map = cms_file_get_contents_safe(get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/keymap.txt');
         }
         if (file_exists(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt')) {
-            $adminguide = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt');
+            $adminguide = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt'); // TODO #3467
         } else {
             $adminguide = do_lang('ADMINGUIDE_DEFAULT_TRAINING');
         }
         if (file_exists(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt')) {
-            $dashboard = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt');
+            $dashboard = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt'); // TODO #3467
         } elseif (file_exists(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt')) {
-            $dashboard = file_exists(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt') ? cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt') : cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode/' . fallback_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt');
+            $dashboard = file_exists(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt') ? cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt') : cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/comcode/' . fallback_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt'); // TODO #3467
         } else {
             $dashboard = do_lang('REBRAND_DASHBOARD');
         }
@@ -200,17 +200,17 @@ class Module_admin_debrand
 
         $keyboard_map_path = get_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/keymap.txt';
         $km = post_param_string('keyboard_map');
-        cms_file_put_contents_safe($keyboard_map_path, $km, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($keyboard_map_path, $km, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         $adminguide_path = get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/website.txt';
         $adminguide = post_param_string('adminguide');
         $adminguide = str_replace('__company__', post_param_string('company_name'), $adminguide);
-        cms_file_put_contents_safe($adminguide_path, $adminguide, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($adminguide_path, $adminguide, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         $start_path = get_file_base() . '/adminzone/pages/comcode_custom/' . get_site_default_lang() . '/' . DEFAULT_ZONE_PAGE_NAME . '.txt';
         if (!file_exists($start_path)) {
             $start = post_param_string('start_page');
-            cms_file_put_contents_safe($start_path, $start, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($start_path, $start, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
         }
 
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
@@ -228,9 +228,9 @@ class Module_admin_debrand
         if (!file_exists($global_tpl_path)) {
             $global_tpl_path = get_file_base() . '/themes/default/templates/GLOBAL_HTML_WRAP.tpl';
         }
-        $global_tpl = cms_file_get_contents_safe($global_tpl_path);
+        $global_tpl = cms_file_get_contents_safe($global_tpl_path); // TODO #3467
         $global_tpl = str_replace('Copyright ocProducts Limited', '', $global_tpl);
-        cms_file_put_contents_safe($save_global_tpl_path, $global_tpl, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($save_global_tpl_path, $global_tpl, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         if (post_param_integer('churchy', 0) == 1) {
             $db = get_db_for('f_emoticons');

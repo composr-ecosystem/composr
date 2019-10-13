@@ -294,7 +294,7 @@ function handle_self_referencing_embedment()
             if (!file_exists(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png')) {
                 $out = file_array_get('themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
             } else {
-                $out = file_get_contents(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
+                $out = cms_file_get_contents_safe(get_file_base() . '/themes/default/images/' . get_site_default_lang() . '/logo/standalone-logo.png');
             }
 
             echo $out;
@@ -307,13 +307,13 @@ function handle_self_referencing_embedment()
             $output = '';
 
             $path = get_file_base() . '/themes/default/css/install.css';
-            $file = file_get_contents($path);
+            $file = cms_file_get_contents_safe($path);
             require_code('tempcode_compiler');
             $css = template_to_tempcode($file, 0, false, '');
             $output .= $css->evaluate();
 
             $path = get_file_base() . '/themes/default/css/global.css';
-            $file = file_get_contents($path);
+            $file = cms_file_get_contents_safe($path);
             require_code('tempcode_compiler');
             $css = template_to_tempcode($file, 0, false, '');
             $output .= $css->evaluate();

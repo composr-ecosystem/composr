@@ -651,7 +651,7 @@ class Module_admin_lang
             $map_b = $map_a;
         }
         require_code('files');
-        $map = better_parse_ini_file($map_b);
+        $map = cms_parse_ini_file_better($map_b);
 
         // Upgrade to custom if not there yet (or maybe we are creating a new lang - same difference)
         $custom_dir = get_custom_file_base() . '/lang_custom/' . $lang;
@@ -810,7 +810,7 @@ class Module_admin_lang
             }
         }
         require_code('files');
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
         $path_backup2 = $path . '.latest_in_cms_edit';
         @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
         fix_permissions($path_backup2);
@@ -889,7 +889,7 @@ class Module_admin_lang
                 $contents .= "[strings]\n";
                 $contents .= $out;
                 require_code('files');
-                cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                 $path_backup2 = $path . '.latest_in_cms_edit';
                 @copy($path, $path_backup2) or intelligent_write_error($path_backup2);
                 fix_permissions($path_backup2);

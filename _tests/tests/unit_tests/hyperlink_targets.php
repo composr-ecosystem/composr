@@ -30,7 +30,7 @@ class hyperlink_targets_test_set extends cms_test_case
         foreach ($dirs as $path) {
             $files = get_directory_contents(get_file_base() . '/' . $path, get_file_base() . '/' . $path, IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES);
             foreach ($files as $_path) {
-                $c = file_get_contents($_path);
+                $c = cms_file_get_contents_safe($_path); // TODO #3467
                 $this->assertTrue(strpos($c, ' target="blank"') === false, 'Uses a "blank" target rather than a "_blank" target');
             }
         }

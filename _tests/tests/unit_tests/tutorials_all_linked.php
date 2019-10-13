@@ -89,7 +89,7 @@ class tutorials_all_linked_test_set extends cms_test_case
                     continue;
                 }
 
-                $this->assertTrue(strpos(file_get_contents($path . '/' . $file), '"_SEARCH:' . $file . '"') === false, $file . ' is self linking');
+                $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file), '"_SEARCH:' . $file . '"') === false, $file . ' is self linking'); // TODO #3467
             }
         }
         closedir($dh);
@@ -134,7 +134,7 @@ class tutorials_all_linked_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.txt') {
-                $c = file_get_contents($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
 
                 if (get_param_integer('full', 0) == 1) {
                     $see_also_pos = 0;
@@ -155,7 +155,7 @@ class tutorials_all_linked_test_set extends cms_test_case
                         $page_name = $matches[1][$i];
                         $title = $matches[2][$i];
 
-                        $c2 = file_get_contents($path . '/' . $page_name . '.txt');
+                        $c2 = cms_file_get_contents_safe($path . '/' . $page_name . '.txt'); // TODO #3467
                         $regexp = '\[title sub="[^"]*"\]([^:]*: )?([^\[\]]*)\[/title\]';
                         $matches2 = array();
                         if (preg_match('#' . $regexp . '#', $c2, $matches2) != 0) {

@@ -31,7 +31,7 @@ class csrf_tags_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = file_get_contents($dir . '/' . $file);
+                $c = cms_file_get_contents_safe($dir . '/' . $file); // TODO #3467
                 if (strpos($c, '<form') !== false) {
                     if (strpos($c, 'button-hyperlink') !== false) {
                         continue;

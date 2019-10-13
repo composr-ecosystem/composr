@@ -105,9 +105,9 @@ class Hook_task_export_members
             $group_filter_2 = '1=1';
         }
 
+        require_code('files');
         $outfile_path = cms_tempnam();
-        $outfile = fopen($outfile_path, 'wb');
-        // TODO: #3032
+        $outfile = cms_fopen_wb_bom($outfile_path);
 
         $fields = array('id', 'm_username', 'm_email_address', 'm_last_visit_time', 'm_cache_num_posts', 'm_pass_hash_salted', 'm_pass_salt', 'm_password_compat_scheme', 'm_signature', 'm_validated', 'm_join_time', 'm_primary_group', 'm_is_perm_banned', 'm_dob_day', 'm_dob_month', 'm_dob_year', 'm_reveal_age', 'm_language', 'm_allow_emails', 'm_allow_emails_from_staff');
         if (addon_installed('cns_member_avatars')) {
@@ -191,6 +191,7 @@ class Hook_task_export_members
             // Load data
             $data = array();
             $outfile = fopen($outfile_path, 'rb');
+            // TODO: #3467
             // TODO: #3032
             fgetcsv($outfile); // Skip header
             $heading_values = array_keys($headings);

@@ -1125,7 +1125,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
         // Load in remapper
         require_code('files');
-        $map = file_exists(get_file_base() . '/themes/map.ini') ? better_parse_ini_file(get_file_base() . '/themes/map.ini') : array();
+        $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_better(get_file_base() . '/themes/map.ini') : array();
 
         // Work out
         if (!$skip_member_specific) {

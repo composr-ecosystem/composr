@@ -141,7 +141,7 @@ class _broken_links_test_set extends cms_test_case
             $path = get_file_base() . '/themes/default/' . $subdir;
             $files = get_directory_contents($path, '', 0, true, true, array('tpl'));
             foreach ($files as $file) {
-                $c = file_get_contents($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
                 $this->scan_html($c, $file);
             }
         }

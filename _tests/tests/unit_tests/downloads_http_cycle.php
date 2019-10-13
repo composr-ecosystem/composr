@@ -61,7 +61,7 @@ class downloads_http_cycle_test_set extends cms_test_case
         }
         $url = find_script('dload') . '?id=' . strval($max_download_id);
         $result = cms_http_request($url, array('cookies' => array(get_session_cookie() => get_session_id())));
-        $this->assertTrue($result->data == file_get_contents(get_file_base() . '/data/images/donate.png'));
+        $this->assertTrue($result->data == cms_file_get_contents_safe(get_file_base() . '/data/images/donate.png'));
         $this->assertTrue($result->download_mime_type == 'application/octet-stream', 'Wrong mime type, ' . $result->download_mime_type);
         $this->assertTrue($result->filename == 'donate.png', 'Wrong filename, ' . $result->filename);
     }

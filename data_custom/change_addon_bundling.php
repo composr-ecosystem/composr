@@ -123,7 +123,7 @@ if ($mode == 'unbundle') {
                 sync_file_move(get_file_base() . '/' . $file, get_file_base() . '/' . $new_file);
 
                 require_code('files');
-                $data = file_get_contents(get_file_base() . '/' . $file);
+                $data = cms_file_get_contents_safe(get_file_base() . '/' . $file);
                 $data = str_replace('
 
 NOTE TO PROGRAMMERS:

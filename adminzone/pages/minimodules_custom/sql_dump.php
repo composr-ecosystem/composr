@@ -48,8 +48,8 @@ if ((php_function_allowed('shell_exec')) && (strpos(get_db_type(), 'mysql') !== 
 if (!$done) {
     require_code('database_relations');
 
-    $out_file = fopen($out_file_path, 'wb');
-    // TODO: #3467
+    require_code('files');
+    $out_file = cms_fopen_wb_bom($out_file_path);
     get_sql_dump($out_file, true, false, array(), null, null, $intended_db_type);
     fclose($out_file);
 }

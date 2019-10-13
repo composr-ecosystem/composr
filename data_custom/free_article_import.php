@@ -69,7 +69,7 @@ if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
 
 // Create default news categories
 $categories_path = get_custom_file_base() . '/data_custom/free_article_import__categories.txt';
-$categories_default = is_file($categories_path) ? explode("\n", file_get_contents($categories_path)) : array();
+$categories_default = is_file($categories_path) ? explode("\n", cms_file_get_contents_safe($categories_path)) : array(); // TODO #3467
 $categories_existing = collapse_2d_complexity('id', 'nc_title', $GLOBALS['SITE_DB']->query_select('news_categories', array('id', 'nc_title')));
 foreach ($categories_existing as $id => $nc_title) {
     $categories_existing[$id] = get_translated_text($nc_title);
@@ -92,6 +92,7 @@ foreach ($categories_default as $category) {
 // Import news
 $done = 0;
 $csvfile = fopen(get_custom_file_base() . '/data_custom/free_article_import__articles.csv', 'rb');
+// TODO: #3467
 // TODO: #3032
 fgetcsv($csvfile, 1024000); // Skip header row
 while (($r = fgetcsv($csvfile, 1024000)) !== false) {
@@ -308,14 +309,14 @@ function http_get_contents_cached($url, $referer = '', $cookies = array())
     }
     $cache_file = get_custom_file_base() . '/data_custom/free_article_import_cache/' . md5($url) . '.htm';
     if (is_file($cache_file)) {
-        $data = file_get_contents($cache_file);
+        $data = cms_file_get_contents_safe($cache_file);
     } else {
         if (php_function_allowed('usleep')) {
             usleep(3000000);
         }
 
         require_code('files');
-        $data = http_get_contents($url, array('ua' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36', 'cookies' => $cookies, 'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'accept_language' => 'en-US,en;q=0.8', 'referer' => $referer));
+        $data = http_get_contents($url, array('ua' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36', 'cookies' => $cookies, 'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'accept_language' => 'en-US,en;q=0.8', 'referer' => $referer)); // TODO #3467
         cms_file_put_contents_safe($cache_file, $data, FILE_WRITE_FIX_PERMISSIONS);
     }
     return $data;

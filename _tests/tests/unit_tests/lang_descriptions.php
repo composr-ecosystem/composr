@@ -61,7 +61,7 @@ class lang_descriptions_test_set extends cms_test_case
             $path_b = get_file_base() . '/lang/' . fallback_lang() . '/' . $file . '.ini';
             foreach (array($path_a, $path_b) as $path) {
                 if (is_file($path)) {
-                    $c = file_get_contents($path);
+                    $c = cms_file_get_contents_safe($path); // TODO #3467
                     $matches = array();
                     $num_matches = preg_match_all('#^\[(\w+)\]$#m', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {

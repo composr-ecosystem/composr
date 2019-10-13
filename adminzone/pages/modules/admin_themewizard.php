@@ -371,7 +371,7 @@ class Module_admin_themewizard
         if (($algorithm === 'equations') && (get_theme_option('supports_themewizard_equations', null, $source_theme) === '1')) {
             $contents .= 'supports_themewizard_equations=1' . "\n";
         }
-        cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($themename) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe(get_custom_file_base() . '/themes/' . filter_naughty($themename) . '/theme.ini', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         // We're done
         $message = do_lang_tempcode('THEMEWIZARD_4_DESCRIBE', escape_html('#' . $seed), escape_html($themename));

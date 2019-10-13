@@ -92,8 +92,7 @@ class Hook_cron_calendar
                     $job_text = get_translated_text($job['e_content']);
                     if (substr($job_text, 0, 7) == 'http://' || substr($job_text, 0, 8) == 'https://') { // It's a URL
                         require_code('character_sets');
-                        $http_result = cms_http_request($job_text);
-                        echo convert_to_internal_encoding($http_result->data, $http_result->charset);
+                        $echo http_get_contents($job_text); // TODO #3467
                     } elseif (addon_installed('commandr')) { // It's code
                         if ($GLOBALS['CURRENT_SHARE_USER'] === null) {
                             // Backwards-compatibility for pure PHP code (if its creation date was before the time of writing this comment [Wednesday 22nd Match, 14:58])

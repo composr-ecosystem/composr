@@ -41,7 +41,7 @@ class standard_dir_files_test_set extends cms_test_case
             }
 
             if (basename($path) == '.htaccess') {
-                $md5 = md5(file_get_contents(get_file_base() . '/' . $path));
+                $md5 = md5(cms_file_get_contents_safe(get_file_base() . '/' . $path));
                 if (!array_key_exists($md5, $types)) {
                     $types[$md5] = array();
                 }

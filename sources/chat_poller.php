@@ -32,8 +32,8 @@ function chat_poller()
 
     if (
         ((file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_full_check.bin')) && (filemtime(get_custom_file_base() . '/data_custom/modules/chat/chat_last_full_check.bin') >= time() - intval(floatval(CHAT_ACTIVITY_PRUNE) / 2.0))) && // If we've done a check within CHAT_ACTIVITY_PRUNE/2 seconds don't try again unless something is new (we do need to allow pruning to happen sometimes)
-        (($message_id != -1) && (file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/file_get_contents(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin')) <= $message_id)) &&
-        (($event_id != -1) && (file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/file_get_contents(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin')) <= $event_id))
+        (($message_id != -1) && (file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/modules/chat/chat_last_msg.bin')) <= $message_id)) &&
+        (($event_id != -1) && (file_exists(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin')) && (intval(/*cms_file_get_contents_safe not available yet*/cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/modules/chat/chat_last_event.bin')) <= $event_id))
     ) {
         /*
         We do let the main code to run this at CHAT_ACTIVITY_PRUNE intervals, so no need to run the commented code below

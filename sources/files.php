@@ -48,9 +48,37 @@ function init__files()
         define('FILE_WRITE_FAILURE_SOFT', 2);
         define('FILE_WRITE_SYNC_FILE', 4);
         define('FILE_WRITE_FIX_PERMISSIONS', 8);
+        define('FILE_WRITE_BOM', 16);
 
         define('NON_CNS_QUOTA', 5); // A hard-coded default for non-Conversr forums
     }
+}
+
+/**
+ * Open a file for writing, with a BOM.
+ *
+ * @param  PATH $path File path
+ * @param  boolean $lock File lock
+ * @return ~resource The file handle (false: could not be opened)
+ */
+function cms_fopen_wb_bom($path, $lock = false)
+{
+    $boms = _get_boms();
+    $charset = get_charset();
+
+    $myfile = fopen($path, 'wb');
+
+    if ($myfile !== false) {
+        if ($lock) {
+            flock($myfile, LOCK_EX);
+        }
+
+        if (array_key_exists($charset, $boms)) {
+            fwrite($myfile, $boms[$charset]);
+        }
+    }
+
+    return $myfile;
 }
 
 /**
@@ -64,6 +92,8 @@ function init__files()
  */
 function cms_file_put_contents_safe($path, $contents, $flags = 4, $retry_depth = 0)
 {
+    // TODO #3467  Add BOM if requested by FILE_WRITE_BOM IFF is not already there
+
     $num_bytes_to_save = strlen($contents);
 
     $error_message = mixed();
@@ -318,7 +348,7 @@ function clean_file_size($bytes)
  * @param  ?string $file The contents of the file (null: the file needs opening)
  * @return array A map of the contents of the ini files
  */
-function better_parse_ini_file($filename, $file = null)
+function cms_parse_ini_file_better($filename, $file = null)
 {
     // NB: 'file()' function not used due to slowness compared to file_get_contents then explode
 
@@ -327,7 +357,7 @@ function better_parse_ini_file($filename, $file = null)
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get($filename);
         } else {
-            $file = function_exists('cms_file_get_contents_safe') ? cms_file_get_contents_safe($filename) : file_get_contents($filename);
+            $file = function_exists('cms_file_get_contents_safe') ? cms_file_get_contents_safe($filename) : file_get_contents($filename); // TODO #3467
         }
     }
 

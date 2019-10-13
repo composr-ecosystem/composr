@@ -34,7 +34,7 @@ class basic_code_formatting_test_set extends cms_test_case
 
         $this->text_formats = array();
         $path = get_file_base() . '/.gitattributes';
-        $c = file_get_contents($path);
+        $c = cms_file_get_contents_safe($path);
         $matches = array();
         $num_matches = preg_match_all('#^\*\.(\w+) text#m', $c, $matches);
         $found = array();
@@ -50,12 +50,7 @@ class basic_code_formatting_test_set extends cms_test_case
             return;
         }
 
-        $boms = array(
-            'utf-32' => hex2bin('fffe0000'),
-            'utf-16' => hex2bin('fffe'),
-            'utf-8' => hex2bin('efbbbf') ,
-            'GB-18030' => hex2bin('84319533'),
-        );
+        $boms = _get_boms();
 
         foreach ($this->files as $path) {
             $myfile = fopen(get_file_base() . '/' . $path, 'rb');
@@ -131,7 +126,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if ((in_array($ext, $file_types_spaces)) || (in_array($ext, $file_types_tabs))) {
-                $c = file_get_contents($path);
+                $c = cms_file_get_contents_safe($path, false);
 
                 $contains_tabs = strpos($c, "\t");
                 $contains_spaced_tabs = strpos($c, '    ');
@@ -194,7 +189,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if ((isset($this->text_formats[$ext])) && ($ext != 'svg') && ($ext != 'ini')) {
-                $c = file_get_contents($path);
+                $c = cms_file_get_contents_safe($path, false);
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
                 $this->assertTrue($ok, 'Has trailing whitespace in ' . $path);
@@ -247,7 +242,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = file_get_contents($path);
+                $c = cms_file_get_contents_safe($path, false);
 
                 if ($ext == 'php' || $ext == 'css' || $ext == 'js') {
                     // Strip comments, which often contain people's non-English names
@@ -302,7 +297,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = file_get_contents($path);
+                $c = cms_file_get_contents_safe($path, false);
 
                 $this->assertTrue(strpos($c, "\r") === false, 'Windows text format detected for ' . $path);
 

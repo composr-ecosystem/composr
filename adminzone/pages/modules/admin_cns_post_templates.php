@@ -290,7 +290,7 @@ class Module_admin_cns_post_templates extends Standard_crud_module
                     break;
                 default:
                     if (strtolower(substr($file, -4)) == '.txt') {
-                        $this->_import_stock_response($file, file_get_contents($tmp_name), $target_forum);
+                        $this->_import_stock_response($file, cms_file_get_contents_safe($tmp_name), $target_forum); // TODO #3467
                     } else {
                         attach_message(do_lang_tempcode('BAD_ARCHIVE_FORMAT'), 'warn');
                     }

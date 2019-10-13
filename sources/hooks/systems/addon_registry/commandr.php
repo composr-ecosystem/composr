@@ -185,7 +185,6 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/echo.php',
             'sources/hooks/systems/commandr_commands/edit.php',
             'sources/hooks/systems/commandr_commands/exit.php',
-            'sources/hooks/systems/commandr_commands/feedback.php',
             'sources/hooks/systems/commandr_commands/find.php',
             'sources/hooks/systems/commandr_commands/find_codes.php',
             'sources/hooks/systems/commandr_commands/find_entry_points.php',

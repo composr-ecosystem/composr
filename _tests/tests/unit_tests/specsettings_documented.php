@@ -30,9 +30,9 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testDirectives()
     {
-        $directives_file = file_get_contents(get_file_base() . '/sources/symbols.php');
+        $directives_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php');
 
-        $tempcode_tutorial = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt');
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt'); // TODO #3467
 
         $matches = array();
         $num_matches = preg_match_all('#^            case \'([A-Z_]+)\':#m', $directives_file, $matches);
@@ -45,9 +45,9 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testSymbols()
     {
-        $symbols_file = file_get_contents(get_file_base() . '/sources/symbols.php') . file_get_contents(get_file_base() . '/sources/symbols2.php');
+        $symbols_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php') . cms_file_get_contents_safe(get_file_base() . '/sources/symbols2.php');
 
-        $tempcode_tutorial = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt');
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt'); // TODO #3467
 
         $matches = array();
         $num_matches = preg_match_all('#^function ecv2?_(\w+)\(\$lang, \$escaped, \$param\)#m', $symbols_file, $matches);
@@ -66,7 +66,7 @@ class specsettings_documented_test_set extends cms_test_case
     {
         require_code('symbols2');
 
-        $tempcode_tutorial = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt');
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt'); // TODO #3467
 
         $matches = array();
         $num_matches = preg_match_all('#\{\$(\w+)#', $tempcode_tutorial, $matches);
@@ -83,7 +83,7 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testInstallOptions()
     {
-        $config_editor_code = file_get_contents(get_file_base() . '/config_editor.php');
+        $config_editor_code = cms_file_get_contents_safe(get_file_base() . '/config_editor.php');
 
         $found = array();
 
@@ -95,7 +95,7 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $all_code .= $c;
         }
 
@@ -154,7 +154,7 @@ class specsettings_documented_test_set extends cms_test_case
             $config .= '$SITE_INFO[\'' . $key . '\'] = \'\';' . "\n";
         }
         $config .= '?' . '>';
-        $old_config = file_get_contents(get_file_base() . '/_config.php');
+        $old_config = cms_file_get_contents_safe(get_file_base() . '/_config.php');
         $config .= $old_config;
         file_put_contents(get_file_base() . '/_config.php', $config);
         $this->assertTrue(is_string(http_get_contents(get_base_url() . '/index.php')));
@@ -165,7 +165,7 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testValueOptions()
     {
-        $codebook_text = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt');
+        $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt'); // TODO #3467
 
         $found = array();
 
@@ -174,11 +174,11 @@ class specsettings_documented_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('php', 'tpl', 'js'));
         $files[] = 'install.php';
         foreach ($files as $path) {
-            if (($path == 'sources/upgrade.php') || (basename($path) == 'shared_installs.php') || (basename($path) == 'phpstub.php')) {
+            if (($path == 'sources/upgrade.php') || ($path == 'sources/shared_installs.php') || ($path == 'sources_custom/phpstub.php')) {
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $all_code .= $c;
         }
 
@@ -222,7 +222,7 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testKeepSettings()
     {
-        $codebook_text = file_get_contents(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt');
+        $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt'); // TODO #3467
 
         $found = array();
 
@@ -235,7 +235,7 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
             $all_code .= $c;
         }
 

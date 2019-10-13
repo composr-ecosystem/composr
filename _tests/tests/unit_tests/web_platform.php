@@ -20,19 +20,19 @@ class web_platform_test_set extends cms_test_case
 {
     public function testNoBadRegexp()
     {
-        $c = file_get_contents(get_file_base() . '/web.config');
+        $c = cms_file_get_contents_safe(get_file_base() . '/web.config'); // TODO #3467
         $this->assertTrue(strpos($c, '\\_') === false, 'Apache allows any character to be escaped, IIS only allows ones that must be');
     }
 
     public function testNoBadComments()
     {
-        $c = file_get_contents(get_file_base() . '/web.config');
+        $c = cms_file_get_contents_safe(get_file_base() . '/web.config'); // TODO #3467
         $this->assertTrue(strpos($c, '<--') === false, 'Comments must be <!-- in web.config');
     }
 
     public function testNoDuplicateNames()
     {
-        $c = file_get_contents(get_file_base() . '/web.config');
+        $c = cms_file_get_contents_safe(get_file_base() . '/web.config'); // TODO #3467
         $matches = array();
         $names = array();
         $num_matches = preg_match_all('#name="([^"]*)"#', $c, $matches);

@@ -34,7 +34,7 @@ class lang_inline_editing_test_set extends cms_test_case
         $this->assertTrue($ok);
 
         if ($ok) {
-            $this->assertTrue(strpos(file_get_contents($expected_path), "[strings]\nFOOBAR=Test\n") !== false);
+            $this->assertTrue(strpos(cms_file_get_contents_safe($expected_path), "[strings]\nFOOBAR=Test\n") !== false); // TODO #3467
 
             unlink($expected_path);
         }

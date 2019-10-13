@@ -92,9 +92,8 @@ function reprocess_url($url, $operation_base_url)
             }
         }
     }
-    require_code('character_sets');
-    $http_result = cms_http_request($url, array('ua' => $ua, 'post_params' => $post_relayed, 'cookies' => $cookies_relayed, 'accept' => $accept, 'accept_charset' => $accept_charset, 'accept_language' => $accept_language));
-    $document = convert_to_internal_encoding($http_result->data, $http_result->charset);
+    $http_result = cms_http_request($url, array('ua' => $ua, 'post_params' => $post_relayed, 'cookies' => $cookies_relayed, 'accept' => $accept, 'accept_charset' => $accept_charset, 'accept_language' => $accept_language)); // TODO #3467
+    $document = $http_result->data;
 
     if (($http_result->download_mime_type != 'text/html') && ($http_result->download_mime_type != 'application/xhtml+xml')) {
         header('Location: ' . escape_header($url)); // assign_refresh not used, as no UI here

@@ -45,17 +45,19 @@ function do_user_import()
     if (!USER_IMPORT_TEST_MODE) {
         require_code('files');
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-        $infile = fopen(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, 'wb');
-        $test = http_get_contents(USER_IMPORT_URL, array('trigger_error' => false, 'write_to_file' => $infile));
+        $infile = cms_fopen_wb_bom(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH);
+        $test = http_get_contents(USER_IMPORT_URL, array('trigger_error' => false, 'write_to_file' => $infile)); // TODO #3467
         fclose($infile);
         if ($test === null) {
             return;
         }
         $infile = fopen(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, 'rb');
+        // TODO: #3467
         // TODO: #3032
     } else {
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-        $infile = fopen(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, 'rt');
+        $infile = fopen(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, 'rb');
+        // TODO: #3467
         // TODO: #3032
     }
 

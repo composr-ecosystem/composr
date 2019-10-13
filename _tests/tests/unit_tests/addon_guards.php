@@ -89,7 +89,7 @@ class addon_guards_test_set extends cms_test_case
                 }
             }
 
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
 
             $matches = array();
             if (preg_match('#@package\s+(\w+)#', $c, $matches) == 0) {
@@ -139,14 +139,8 @@ class addon_guards_test_set extends cms_test_case
                     continue;
                 }
 
-                if (substr($path, -4) == '.ini') {
-                    $c = file_get_contents(get_file_base() . '/' . $path);
-
-                    $this->assertTrue(strpos($c, 'require_lang(\'' . basename($path, '.ini') . '\')') === false, 'Unnecessary require_lang call for ' . $path . ' in ' . $addon);
-                }
-
                 if ((substr($path, -4) == '.php') && (preg_match('#(^_tests/|^data_custom/stress_test_loader\.php$|^sources/hooks/modules/admin_import/)#', $path) == 0)) {
-                    $c = file_get_contents(get_file_base() . '/' . $path);
+                    $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
 
                     $matches = array();
                     $num_matches = preg_match_all('#(require_lang|require_code|require_css|require_javascript|do_template)\(\'([^\']*)\'[\),]#', $c, $matches);

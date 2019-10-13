@@ -34,15 +34,15 @@ class _lang_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $all_code .= file_get_contents(get_file_base() . '/' . $path);
+            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('tpl'));
         foreach ($files as $path) {
-            $all_code .= file_get_contents(get_file_base() . '/' . $path);
+            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('js'));
         foreach ($files as $path) {
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             if (strpos($c, '/*{$,parser hint: pure}*/') === false) {
                 $all_code .= $c;
             }
@@ -53,13 +53,13 @@ class _lang_no_unused_test_set extends cms_test_case
                 continue;
             }
 
-            $all_code .= file_get_contents(get_file_base() . '/' . $path);
+            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('xml'));
         foreach ($files as $path) {
-            $all_code .= file_get_contents(get_file_base() . '/' . $path);
+            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path);
         }
-        $all_code .= file_get_contents(get_file_base() . '/install.php');
+        $all_code .= cms_file_get_contents_safe(get_file_base() . '/install.php');
 
         $skip_prefixes = array(
             'BLOCK_',

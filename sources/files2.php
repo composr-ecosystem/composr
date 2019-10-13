@@ -432,6 +432,7 @@ function delete_csv_column($in_path, $column_name)
 
     // Find which field index this named column is
     $in_file = fopen($in_path, 'rb');
+    // TODO: #3467
     // TODO: #3032
     flock($in_file, LOCK_SH);
     $header_row = fgetcsv($in_file);

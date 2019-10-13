@@ -69,7 +69,7 @@ foreach ($files as $file) {
 
         // Find override data
         $matches = array();
-        $file_data = file_get_contents($file);
+        $file_data = cms_file_get_contents_safe($file);
         $true_file_data = $file_data;
         if (preg_match('#\#PRIOR TO COMPILED>>>(.*)\#<<<PRIOR TO COMPILED#s', $file_data, $matches) != 0) { // Must work back to what it was before compilation
             $file_data = $matches[1];
@@ -100,7 +100,7 @@ foreach ($files as $file) {
             }
 
             if (file_exists($file_orig)) {
-                $true_orig = file_get_contents($file_orig);
+                $true_orig = cms_file_get_contents_safe($file_orig);
                 $orig = str_replace(array('?' . '>', '<' . '?php'), array('', ''), $true_orig);
 
                 $codename = $file;

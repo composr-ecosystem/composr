@@ -281,7 +281,7 @@ class BrokenURLScanner
                 $COMCODE_URLS = array();
 
                 $file_path = zone_black_magic_filterer(((strpos($type, '_custom') !== false) ? get_custom_file_base() : get_file_base()) . '/' . $zone . '/pages/' . $type . '/' . $page . '.txt');
-                $comcode = file_get_contents($file_path);
+                $comcode = cms_file_get_contents_safe($file_path); // TODO #3467
 
                 if (strpos($comcode, '/') === false) {
                     continue; // Doesn't appear to contain any URLs
@@ -361,7 +361,7 @@ class BrokenURLScanner
                 $api_url .= '&Expires=' . strval($expires);
                 $api_url .= '&Signature=' . urlencode($url_safe_signature);
 
-                $_result = http_get_contents($api_url, array('trigger_error' => false));
+                $_result = http_get_contents($api_url, array('trigger_error' => false)); // TODO #3467
                 if ($_result !== null) {
                     $result = json_decode($_result, true);
                     foreach ($result as $_url) {
@@ -486,7 +486,7 @@ class BrokenURLScanner
             $api_url = 'https://www.googleapis.com/webmasters/v3/sites/' . urlencode($live_base_url) . '/urlCrawlErrorsSamples?category=' . urlencode($category) . '&platform=web';
             $api_url .= '&access_token=' . urlencode(refresh_oauth2_token('google_search_console'));
 
-            $_result = http_get_contents($api_url, array('trigger_error' => false));
+            $_result = http_get_contents($api_url, array('trigger_error' => false)); // TODO #3467
             if ($_result !== null) {
                 $result = json_decode($_result, true);
                 if (!isset($result['urlCrawlErrorSample'])) {

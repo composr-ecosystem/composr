@@ -164,7 +164,7 @@ function comcode_convert_script()
             $out = static_evaluate_tempcode(put_in_standard_box(make_string_tempcode($out), $box_title));
         }
 
-        header('Content-Type: text/xml');
+        header('Content-Type: text/xml; charset=' . get_charset());
         echo '<?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
         echo '<request><result>';
         echo xmlentities($out);

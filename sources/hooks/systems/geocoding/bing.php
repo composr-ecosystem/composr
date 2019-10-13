@@ -145,7 +145,7 @@ class Hook_geocoding_bing
         $url .= '?o=json';
         $url .= '&key=' . urlencode(get_option('bing_geocoding_api_key'));
 
-        $_result = cms_http_request($url, array('trigger_error' => false, 'ignore_http_status' => false));
+        $_result = cms_http_request($url, array('trigger_error' => false, 'ignore_http_status' => false)); // TODO #3467
 
         if (empty($_result->data)) {
             $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');

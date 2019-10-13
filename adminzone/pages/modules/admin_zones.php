@@ -357,7 +357,7 @@ class Module_admin_zones
                     $full_path = zone_black_magic_filterer(get_file_base() . '/' . $current_zone . '/pages/' . strtolower($page_info[0]) . '/' . $page_info[3] . '/' . $current_for . '.txt');
                 }
                 if (file_exists($full_path)) {
-                    $comcode = cms_file_get_contents_safe($full_path);
+                    $comcode = cms_file_get_contents_safe($full_path); // TODO #3467
 
                     if (strpos($full_path, '_custom/') === false) {
                         global $LANG_FILTER_OB;
@@ -546,13 +546,13 @@ class Module_admin_zones
                     $revision_engine = new RevisionEngineFiles();
                     list(, , $existing_path) = find_comcode_page($lang, $for, $id);
                     if ($existing_path != '') {
-                        $revision_engine->add_revision(dirname($existing_path), $for, 'txt', cms_file_get_contents_safe($existing_path), filemtime($existing_path));
+                        $revision_engine->add_revision(dirname($existing_path), $for, 'txt', cms_file_get_contents_safe($existing_path), filemtime($existing_path)); // TODO #3467
                     }
                 }
 
                 // Save
                 require_code('files');
-                cms_file_put_contents_safe($full_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                cms_file_put_contents_safe($full_path, $comcode, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
                 // De-cache
                 $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', array('string_index'), array('the_zone' => ($redirect === null) ? $id : $redirect, 'the_page' => $for));

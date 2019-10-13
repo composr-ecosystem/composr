@@ -43,7 +43,7 @@ function output_ical($headers_and_exit = true)
     cms_ini_set('ocproducts.xss_detect', '0');
 
     if ($headers_and_exit) {
-        header('Content-Type: text/calendar');
+        header('Content-Type: text/calendar; charset=' . get_charset());
         header('Content-Disposition: inline; filename="export.ics"');
     }
 
@@ -341,7 +341,7 @@ function output_ical($headers_and_exit = true)
  */
 function ical_import($file_path)
 {
-    $data = unixify_line_format(file_get_contents($file_path));
+    $data = cms_file_get_contents_safe($file_path, false, false, true); // TODO #3467
 
     $calendars = explode('BEGIN:VCALENDAR', $data);
     $calendar = end($calendars);

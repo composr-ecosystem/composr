@@ -412,7 +412,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
             '_GUID' => '2303459e94b959d2edf8444188bbeea9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml'),
+            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml'), // TODO #3467
         ));
     }
 
@@ -426,7 +426,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
         require_code('files');
         $path = get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml';
         $xml = post_param_string('xml');
-        cms_file_put_contents_safe($path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($path, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
         log_it('EDIT_AGGREGATE_TYPES');
 

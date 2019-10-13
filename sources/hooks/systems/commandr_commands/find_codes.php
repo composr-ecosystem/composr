@@ -48,7 +48,7 @@ class Hook_commandr_command_find_codes
                 while (($file = readdir($dh)) !== false) {
                     if (($file != '.') && ($file != '..')) {
                         if (!is_dir($path . $file)) {
-                            $contents = file_get_contents($path . $file);
+                            $contents = cms_file_get_contents_safe($path . $file);
                             if (strpos($contents, $parameters[0]) !== false) {
                                 $files[] = $path . $file;
                             }

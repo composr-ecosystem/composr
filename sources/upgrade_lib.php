@@ -61,10 +61,8 @@ function rebuild_zone_files()
     $zones = find_all_zones();
     foreach ($zones as $zone) {
         if (!in_array($zone, array('', 'cms', 'adminzone', 'site', 'forum', 'collaboration'/*LEGACY*/))) {
-            if (strpos(file_get_contents(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'index.php'), 'core') !== false) {
-                @file_put_contents(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php', file_get_contents(get_custom_file_base() . '/site/index.php'));
-                fix_permissions(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php');
-                sync_file(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php');
+            if (strpos(cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'index.php'), 'core') !== false) {
+                @cms_file_put_contents_safe(get_custom_file_base() . (($zone == '') ? '' : '/') . $zone . '/index.php', cms_file_get_contents_safe(get_custom_file_base() . '/site/index.php'), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
             }
         }
     }
@@ -138,12 +136,12 @@ function perform_search_replace($reps)
             if ($dh !== false) {
                 while (($f = readdir($dh)) !== false) {
                     $path = $dir . '/' . $f;
-                    $contents = file_get_contents($path);
+                    $contents = cms_file_get_contents_safe($path);
                     $contents_orig = $contents;
                     $contents = preg_replace(array_keys($reps), array_values($reps), $contents);
                     if ($contents != $contents_orig) {
                         require_code('files');
-                        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+                        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                     }
                 }
                 closedir($dh);

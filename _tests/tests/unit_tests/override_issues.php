@@ -33,7 +33,7 @@ class override_issues_test_set extends cms_test_case
                 continue;
             }
 
-            $_c = file_get_contents(get_file_base() . '/' . $path);
+            $_c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
 
             $this->assertTrue((strpos($_c, 'function  ') === false) && (strpos($_c, "function\t") === false), 'Problematic function definition will cause Composr override system issues: ' . $path);
 

@@ -31,6 +31,7 @@ function init__transifex()
     require_code('lang2');
     require_code('files');
     require_code('files2');
+    require_code('character_sets');
 
     global $OVERRIDE_PRIORITY_LANGUAGE_FILES;
     $OVERRIDE_PRIORITY_LANGUAGE_FILES = array(
@@ -189,10 +190,12 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
         'homepage' => 'http://compo.sr',
         'trans_instructions' => 'See https://compo.sr/docs/tut_intl.htm',
     );
-    $test = _transifex('/projects/', 'POST', json_encode($args), false);
+    $_args = json_encode($args);
+    $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
+    $test = _transifex('/projects/', 'POST', $_args, false);
     if ($test[1] == '201') { // If creation happened
         // Create translations for all defined languages
-        $langs = better_parse_ini_file(get_file_base() . '/lang/langs.ini');
+        $langs = cms_parse_ini_file_better(get_file_base() . '/lang/langs.ini');
         $failed_langs = array();
         foreach (array_keys($langs) as $lang) {
             if ($lang == fallback_lang()) {
@@ -213,7 +216,9 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
                     'language_code' => convert_lang_code_to_transifex($lang),
                     'coordinators' => $coordinators,
                 );
-                $test = _transifex('/project/' . $project_slug . '/languages/?skip_invalid_username', 'POST', json_encode($args));
+                $_args = json_encode($args);
+                $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
+                $test = _transifex('/project/' . $project_slug . '/languages/?skip_invalid_username', 'POST', $_args);
 
                 // May not fail, not all languages supported (https://www.transifex.com/languages/)
                 if ($test[1] == '400') {
@@ -288,7 +293,7 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
     global $LANGUAGE_FILES_ADDON;
 
     $full_path = get_file_base() . '/' . $path;
-    $c = file_get_contents($full_path);
+    $c = cms_file_get_contents_safe($full_path); // TODO #3467
 
     // Upload
     $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/', 'GET', null, false);
@@ -306,11 +311,19 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
     );
     if ($test[1] == '200') {
         // Edit
-        $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/', 'PUT', json_encode($args));
-        $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/content/', 'PUT', json_encode(array('content' => $c)));
+        $_args = json_encode($args);
+        $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
+        $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/', 'PUT', $_args);
+        $args2 = array('content' => $c);
+        $_args2 = json_encode($args2);
+        $_args2 = convert_to_internal_encoding($_args2, get_charset(), 'utf-8');
+        $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/content/', 'PUT', $_args2);
     } else {
         // Add
-        $test = _transifex('/project/' . $project_slug . '/resources/', 'POST', json_encode($args + array('i18n_type' => 'TXT', 'content' => $c)));
+        $args2 = $args + array('i18n_type' => 'TXT', 'content' => $c);
+        $_args2 = json_encode($args2);
+        $_args2 = convert_to_internal_encoding($_args2, get_charset(), 'utf-8');
+        $test = _transifex('/project/' . $project_slug . '/resources/', 'POST', $_args2);
     }
 
     // Upload existing translated files for this language file
@@ -319,7 +332,7 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
             if ($lang != fallback_lang()) {
                 $trans_full_path = str_replace('/' . fallback_lang() . '/', '/' . $lang . '/', $full_path);
                 if (is_file($trans_full_path)) {
-                    $c2 = file_get_contents($trans_full_path);
+                    $c2 = cms_file_get_contents_safe($trans_full_path); // TODO #3467
 
                     $args = array('content' => $c2);
                     _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/translation/' . convert_lang_code_to_transifex($lang) . '/', 'PUT', json_encode($args));
@@ -408,7 +421,9 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
         }
 
         // Edit
-        $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/', 'PUT', json_encode($args));
+        $_args = json_encode($args);
+        $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
+        $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/', 'PUT', $_args);
         $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/content/', 'PUT', json_encode(array('content' => $c)));
     } else {
         if ($c == '') {
@@ -416,7 +431,10 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
         }
 
         // Add
-        $test = _transifex('/project/' . $project_slug . '/resources/', 'POST', json_encode($args + array('i18n_type' => 'INI', 'content' => $c)));
+        $args2 = $args + array('i18n_type' => 'INI', 'content' => $c);
+        $_args2 = json_encode($args2);
+        $_args2 = convert_to_internal_encoding($_args2, get_charset(), 'utf-8');
+        $test = _transifex('/project/' . $project_slug . '/resources/', 'POST', $_args2);
     }
 
     // Set metadata
@@ -425,7 +443,9 @@ function _push_ini_file_to_transifex($f, $project_slug, $custom, $administrative
             $descrip = $LANGUAGE_STRING_DESCRIPTIONS[$key];
             $hash = md5($key . ':');
             $args = array('comment' => $descrip);
-            $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/source/' . $hash . '/', 'PUT', json_encode($args), false/*getting errors recently*/);
+            $_args = json_encode($args);
+            $_args = convert_to_internal_encoding($_args, get_charset(), 'utf-8');
+            $test = _transifex('/project/' . $project_slug . '/resource/' . $_f_extended . '/source/' . $hash . '/', 'PUT', $_args, false/*getting errors recently*/);
         }
     }
 
@@ -484,7 +504,7 @@ function transifex_pull_script()
     }
 
     if ($output) {
-        header('Content-Type: application/octet-stream' . '; authoritative=true;');
+        header('Content-Type: application/octet-stream');
         require_code('version2');
         if ($lang === null) {
             $filename = 'languages-' . get_version_branch(floatval(cms_version_number())) . '.tar';
@@ -520,7 +540,7 @@ function pull_from_transifex($version, $tar_file, $lang, $core_only)
     cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
     if ($lang === null) {
-        $langs = array_keys(better_parse_ini_file(get_file_base() . '/lang/langs.ini'));
+        $langs = array_keys(cms_parse_ini_file_better(get_file_base() . '/lang/langs.ini'));
         foreach ($langs as $lang) {
             if ($lang != fallback_lang()) {
                 pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, false);
@@ -579,7 +599,7 @@ function pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, $
                 $translators = do_lang('UNKNOWN');
 
                 if (is_file($full_path)) {
-                    $c = file_get_contents(($full_path));
+                    $c = cms_file_get_contents_safe(($full_path)); // TODO #3467
 
                     $matches = array();
                     if (preg_match('#function get_author\(\)\s*\{\s*return \'([^\']*)\';#', $c, $matches) != 0) {
@@ -810,12 +830,12 @@ function _pull_cms_file_from_transifex($project_slug, $tar_file, $lang, $path, $
         $c = _transifex_decode_content($c);
         $c .= "\n";
 
-        if (is_file($default_path) && trim($c) == trim(file_get_contents($default_path))) {
+        if (is_file($default_path) && trim($c) == trim(cms_file_get_contents_safe($default_path))) { // TODO #3467
             return; // Not changed
         }
 
         if ($tar_file === null) {
-            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
         } else {
             tar_add_file($tar_file, $trans_path, $c);
         }
@@ -864,7 +884,7 @@ function _pull_ini_file_from_transifex($project_slug, $tar_file, $lang, $_f, &$f
         $c = "[strings]\n" . trim($write_out) . "\n";
 
         if ($tar_file === null) {
-            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($trans_full_path, $c, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
         } else {
             tar_add_file($tar_file, $trans_path, $c);
         }
@@ -888,6 +908,8 @@ function _transifex($call, $http_verb, $params = array(), $trigger_error = true)
         $raw_content_type = 'multipart/form-data';
         $raw_post = false;
     } else {
+        $params = convert_to_internal_encoding($params, get_charset(), 'utf-8');
+
         $raw_content_type = 'application/json';
         $raw_post = true;
         $params = array($params);
@@ -904,7 +926,7 @@ function _transifex($call, $http_verb, $params = array(), $trigger_error = true)
         'http_verb' => $http_verb,
         'raw_content_type' => $raw_content_type,
     );
-    $http_result = cms_http_request($url, $options);
+    $http_result = cms_http_request($url, $options); // TODO #3467 (with care)
     $result = $http_result->data;
 
     if (is_cli()) {

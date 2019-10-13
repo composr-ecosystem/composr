@@ -583,7 +583,7 @@ abstract class HttpDownloader
                         }
                         @fclose($myfile);
                     } else {
-                        $raw_payload2 .= file_get_contents($file_path);
+                        $raw_payload2 .= cms_file_get_contents_safe($file_path);
                     }
                     if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 1)) {
                         $raw_payload2 .= "\r\n";
@@ -1796,7 +1796,7 @@ class HttpDownloaderFileWrapper extends HttpDownloader
             cms_ini_set('default_socket_timeout', strval($this->timeout));
 
             if ($this->put !== null) {
-                $this->raw_payload .= file_get_contents($this->put_path);
+                $this->raw_payload .= cms_file_get_contents_safe($this->put_path);
             }
 
             $crt_path = get_file_base() . '/data/curl-ca-bundle.crt';
@@ -1973,9 +1973,9 @@ class HttpDownloaderFilesystem extends HttpDownloader
             }
         } else {
             if ($this->trigger_error) {
-                $contents = file_get_contents($file_path);
+                $contents = cms_file_get_contents_safe($file_path);
             } else {
-                $contents = @file_get_contents($file_path);
+                $contents = @cms_file_get_contents_safe($file_path);
             }
 
             require_code('mime_types');

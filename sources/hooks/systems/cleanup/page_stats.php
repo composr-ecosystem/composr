@@ -95,7 +95,7 @@ class Hook_cleanup_page_stats
         if (!file_exists($template)) {
             $template = get_file_base() . '/data/modules/admin_cleanup/page_stats.php.pre';
         }
-        $_install_php_file = file_get_contents($template);
+        $_install_php_file = cms_file_get_contents_safe($template);
         $look_for = '//{!!DB!!}';
         $place = strpos($_install_php_file, $look_for);
 

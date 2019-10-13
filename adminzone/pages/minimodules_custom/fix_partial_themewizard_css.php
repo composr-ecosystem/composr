@@ -87,7 +87,7 @@ while (($sheet = readdir($dh)) !== false) {
             sync_file($saveat);
         }
 
-        $output = file_get_contents($saveat);
+        $output = cms_file_get_contents_safe($saveat); // TODO #3467
         $before = $output;
 
         foreach ($canonical_theme_landscape as $peak) {
@@ -107,7 +107,7 @@ while (($sheet = readdir($dh)) !== false) {
 
         if ($output != $before) {
             require_code('files');
-            cms_file_put_contents_safe($saveat, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            cms_file_put_contents_safe($saveat, $output, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
             echo '<li>' . escape_html($sheet) . '</li>';
         }

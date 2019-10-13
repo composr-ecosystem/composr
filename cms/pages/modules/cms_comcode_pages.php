@@ -581,7 +581,7 @@ class Module_cms_comcode_pages
                     }
                 }
 
-                if (($row['page_path'] !== null) && (stripos(file_get_contents($row['page_path']), $filter) !== false)) {
+                if (($row['page_path'] !== null) && (stripos(cms_file_get_contents_safe($row['page_path'], false), $filter) !== false)) {
                     continue;
                 }
 
@@ -855,7 +855,7 @@ class Module_cms_comcode_pages
         $parsed = null;
         if ($contents == '') {
             if (is_file($file_base . '/' . $file_path)) {
-                $contents = cms_file_get_contents_safe($file_base . '/' . $file_path);
+                $contents = cms_file_get_contents_safe($file_base . '/' . $file_path); // TODO #3467
 
                 if (strpos($file_path, '_custom/') === false) {
                     global $LANG_FILTER_OB;
@@ -1333,7 +1333,7 @@ class Module_cms_comcode_pages
                     'p_parent_page' => isset($___pages[$page_link]) ? $___pages[$page_link]['p_parent_page'] : '',
                     'p_validated' => isset($___pages[$page_link]) ? $___pages[$page_link]['p_validated'] : 1,
                     'cc_page_title' => get_comcode_page_title_from_disk($path_bits[0]),
-                    'string_index' => file_get_contents($path_bits[0]),
+                    'string_index' => cms_file_get_contents_safe($path_bits[0], false),
                 );
             }
         } else {
@@ -1467,7 +1467,7 @@ class Module_cms_comcode_pages
                     if (!is_file($page_path)) {
                         $page_path = get_file_base() . (($_zone == '') ? '' : '/') . $_zone;
                     }
-                    $page_contents = cms_file_get_contents_safe($page_path);
+                    $page_contents = cms_file_get_contents_safe($page_path); // TODO #3467
                 } else {
                     $page_contents = '';
                 }

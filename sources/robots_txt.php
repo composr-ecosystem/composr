@@ -113,7 +113,7 @@ function create_robots_txt($robots_txt = null, &$msg = '', $overwrite = false)
  */
 function get_robots_txt()
 {
-    $default = file_get_contents(get_file_base() . '/data/robots.txt.template');
+    $default = cms_file_get_contents_safe(get_file_base() . '/data/robots.txt.template');
 
     $base_url = get_base_url();
     $base_url_path = get_base_url_path();

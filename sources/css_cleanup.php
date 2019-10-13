@@ -51,7 +51,7 @@ abstract class CSSCleanup
     abstract public function work_out_changes();
 
     /**
-     * Save The changes.
+     * Save the changes.
      */
     public function save_changes()
     {
@@ -61,7 +61,7 @@ abstract class CSSCleanup
 
         foreach ($this->css_files as $path => $c) {
             $old_path = $this->css_files_old_names[$path];
-            if (file_get_contents($old_path) != $c) {
+            if (cms_file_get_contents_safe($old_path) != $c) { // TODO #3467
                 if (is_file($path)) {
                     $revision_path = $path . '.' . strval(time());
                     copy($old_path, $revision_path);
@@ -74,9 +74,7 @@ abstract class CSSCleanup
                     sync_file($editfrom_path);
                 }
 
-                file_put_contents($path, $c);
-                fix_permissions($path);
-                sync_file($path);
+                cms_file_put_contents_safe($path, $c, FILE_WRITE_BOM);
             }
         }
     }
@@ -104,7 +102,7 @@ abstract class CSSCleanup
                 while (($f = readdir($dh)) !== false) {
                     if (substr($f, -4) == '.css') {
                         $path = $dir . '/' . $f;
-                        $c = file_get_contents($path);
+                        $c = cms_file_get_contents_safe($path); // TODO #3467
 
                         $new_path = $path;
                         $new_path = str_replace('/themes/default/', '/themes/' . $this->theme . '/', $new_path);

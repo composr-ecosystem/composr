@@ -1628,7 +1628,7 @@ function get_insecure_functions()
          'file_get_contents', 'fpassthru', 'mkdir', 'move_uploaded_file', 'popen', 'readfile', 'rename',
          'imagepng', 'imagejpeg', 'imagegif', 'imagebmp', 'imagewebp',
          'mail', 'header',
-         'better_parse_ini_file', 'deldir_contents',
+         'cms_parse_ini_file_better', 'deldir_contents',
          'include', 'include_once', 'require', 'require_once',
          'escapeshellarg', 'escapeshellcmd', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system',
          'DatabaseConnector.query', 'DatabaseConnector._query', 'DatabaseConnector.query_value_if_there',

@@ -20,7 +20,7 @@ if (!addon_installed__messaged('composr_homesite', $error_msg)) {
     return $error_msg;
 }
 
-$text = file_get_contents(get_file_base() . '/text/EN/licence.txt');
+$text = cms_file_get_contents_safe(get_file_base() . '/text/EN/licence.txt'); // TODO #3467
 
 $text = preg_replace('#(^|\n)(.*)\n=+\r?\n#', '${1}[title]${2}[/title]' . "\n", $text);
 $text = preg_replace('#(^|\n)(.*)\n\-+\r?\n#', '${1}[title="2"]${2}[/title]' . "\n", $text);

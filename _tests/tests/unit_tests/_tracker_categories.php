@@ -22,7 +22,7 @@ class _tracker_categories_test_set extends cms_test_case
     {
         $brand_base_url = get_brand_base_url();
         $post = array();
-        $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', array('ua' => 'Composr Test Platform', 'post_params' => $post));
+        $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', array('ua' => 'Composr Test Platform', 'post_params' => $post)); // TODO #3467
         $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
         foreach ($addons as $addon => $place) {
@@ -36,7 +36,7 @@ class _tracker_categories_test_set extends cms_test_case
     {
         $brand_base_url = get_brand_base_url();
         $post = array();
-        $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', array('ua' => 'Composr Test Platform', 'post_params' => $post));
+        $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', array('ua' => 'Composr Test Platform', 'post_params' => $post)); // TODO #3467
         $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
         foreach ($categories as $category) {

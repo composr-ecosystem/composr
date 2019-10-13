@@ -41,7 +41,7 @@ class forum_drivers_test_set extends cms_test_case
         $functions = array();
 
         foreach ($files as $file => $path) {
-            $c = file_get_contents(get_file_base() . '/' . $path);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $functions[$file] = array();
             $matches = array();
             $num_matches = preg_match_all('#^\s*((protected|public) )?function (\w+)\(#m', $c, $matches);

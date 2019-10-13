@@ -66,7 +66,7 @@ function retrieve_autosave_script()
 
     require_code('xml');
 
-    header('Content-Type: text/xml');
+    header('Content-Type: text/xml; charset=' . get_charset());
 
     cms_ini_set('ocproducts.xss_detect', '0');
 

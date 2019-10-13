@@ -84,7 +84,7 @@ function crc32_file($filename)
         return hexdec(substr($crc, 6, 2) . substr($crc, 4, 2) . substr($crc, 2, 2) . substr($crc, 0, 2));
     }
 
-    return crc32(file_get_contents($filename));
+    return crc32(cms_file_get_contents_safe($filename));
 }
 
 /**
@@ -127,7 +127,7 @@ function create_zip_file($file_array, $stream = false, $outfile_path = null)
             if ($outfile_path !== null) {
                 return '';
             } else {
-                $out = file_get_contents($tmp_path);
+                $out = cms_file_get_contents_safe($tmp_path);
                 unlink($tmp_path);
                 return $out;
             }
@@ -225,7 +225,7 @@ function create_zip_file($file_array, $stream = false, $outfile_path = null)
                 }
             } else {
                 if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
-                    $out .= file_get_contents($file['full_path']);
+                    $out .= cms_file_get_contents_safe($file['full_path']);
                 } else {
                     $out .= $file['data'];
                 }

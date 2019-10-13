@@ -81,7 +81,7 @@ class CMS_RSS
         }
 
         if ($is_filesystem_path) {
-            $data = @file_get_contents($url);
+            $data = @cms_file_get_contents_safe($url); // TODO #3467
             $charset = '';
             $http_message = '';
         } else {

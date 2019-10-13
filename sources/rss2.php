@@ -107,7 +107,7 @@ function rss_backend_script()
 
     if ($type == 'xslt-rss') {
         // Feed stylesheet for RSS
-        header('Content-Type: text/xsl');
+        header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
         $echo = do_template('RSS_XSLT', array('_GUID' => 'c443e0195c935117cf0d9a7bc2730d7a', 'XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
@@ -116,7 +116,7 @@ function rss_backend_script()
     }
     if ($type == 'xslt-atom') {
         // Feed stylesheet for Atom
-        header('Content-Type: text/xsl');
+        header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
         $echo = do_template('ATOM_XSLT', array('_GUID' => '27fec456a6b3144aa847130e74463d99', 'XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
@@ -125,7 +125,7 @@ function rss_backend_script()
     }
     if ($type == 'xslt-opml') {
         // Feed stylesheet for Atom
-        header('Content-Type: text/xsl');
+        header('Content-Type: text/xsl; charset=' . get_charset());
         require_css('rss');
         $js = get_custom_base_url() . substr(javascript_enforce('xsl_mopup'), strlen(get_custom_file_base()));
         $echo = do_template('OPML_XSLT', array('_GUID' => 'c0c6bd1d7a0e263768a2208061f799f5', 'JAVASCRIPT_XSL_MOPUP' => $js), null, false, null, '.xml', 'xml');
@@ -176,7 +176,7 @@ function rss_backend_script()
     }
 
     if ($mode == 'opml') {
-        header('Content-Type: text/xml');
+        header('Content-Type: text/xml; charset=' . get_charset());
 
         $_feeds = find_all_hook_obs('systems', 'rss', 'Hook_rss_');
         $feeds = array();
@@ -208,7 +208,7 @@ function rss_backend_script()
     }
 
     // Firefox (and probably other browsers, but I didn't test) doesn't want to display Atom feeds inline if they're sent as text/xml+atom, even if the Content-Disposition is sent to inline :(
-    header('Content-Type: text/xml'); // application/rss+xml ?
+    header('Content-Type: text/xml; charset=' . get_charset()); // application/rss+xml ?
 
     if ((!file_exists(get_file_base() . '/sources/hooks/systems/rss/' . $mode . '.php')) && (!file_exists(get_file_base() . '/sources_custom/hooks/systems/rss/' . $mode . '.php'))) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));

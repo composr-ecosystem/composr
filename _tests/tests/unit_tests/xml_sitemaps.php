@@ -45,7 +45,7 @@ class xml_sitemaps_test_set extends cms_test_case
     {
         $files = array('index.xml', 'set_0.xml');
         foreach ($files as $file) {
-            $c = file_get_contents(get_custom_file_base() . '/data_custom/sitemaps/' . $file);
+            $c = cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/sitemaps/' . $file); // TODO #3467
 
             // Simple XML validation
             require_code('xml');
@@ -66,7 +66,7 @@ class xml_sitemaps_test_set extends cms_test_case
             $files = array(
                 'xmlfile' => $tmp_file,
             );
-            $result = http_get_contents($url, array('post_params' => $post_params, 'files' => $files));
+            $result = http_get_contents($url, array('post_params' => $post_params, 'files' => $files)); // TODO #3467
 
             unlink($tmp_file);
 

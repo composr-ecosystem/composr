@@ -59,9 +59,8 @@ class Hook_commandr_command_sql_dump
 
             // Generate dump
             require_code('database_relations');
-            $out_file = fopen($out_file_path, 'wb');
-            // TODO: #3467
-            fwrite($out_file, hex2bin('efbbbf')); // TODO: Can remove after #3467
+            require_code('files');
+            $out_file = cms_fopen_wb_bom($out_file_path);
             get_sql_dump($out_file, true, false, array(), $only, null, $intended_db_type);
             fclose($out_file);
             sync_file($out_file_path);
