@@ -238,7 +238,7 @@ if ($type == 'go') {
                         if ($old === false) {
                             $old = '';
                         }
-                        $new = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK); // TODO #3467
+                        $new = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                         if (($probe_dir == '') || ($old !== $new)) {
                             $new_filename = $file;
                             if (((preg_match('#^(lang)_custom/#', $file) != 0) || (strpos($old, 'CUSTOMISED FOR PROJECT') !== false)) && (($probe_dir == '') || ($old != ''))) {

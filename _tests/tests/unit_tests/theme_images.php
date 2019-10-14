@@ -87,7 +87,7 @@ class theme_images_test_set extends cms_test_case
                 }
 
                 if (substr($path, -4) == '.svg') {
-                    $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                    $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
                     $matches = array();
                     $ok = (preg_match('#width="(\d+)px" height="(\d+)px"#', $c, $matches) != 0);
                     $this->assertTrue($ok, 'Cannot find SVG width/height in ' . $path);
@@ -198,7 +198,7 @@ class theme_images_test_set extends cms_test_case
                         $is_comcode_page = ((substr($file, -4) == '.txt') && ((count($themes) < 5) || (substr($file, 0, strlen($theme . '__')) == $theme . '__')));
 
                         if ($is_css_file || $is_tpl_file || $is_comcode_page) {
-                            $c = cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                            $c = cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
                             // Find referenced images
                             $matches = array();

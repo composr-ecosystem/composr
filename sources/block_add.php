@@ -83,7 +83,7 @@ function block_helper_script()
             foreach ($pages as $filename => $type) {
                 if (strtolower(substr($filename, -4)) == '.txt') {
                     $matches = array();
-                    $contents = cms_file_get_contents_safe(zone_black_magic_filterer(((substr($type, 0, 15) == 'comcode_custom/') ? get_custom_file_base() : get_file_base()) . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/' . $type . '/' . $filename), FILE_READ_LOCK | FILE_READ_BOM);
+                    $contents = cms_file_get_contents_safe(zone_black_magic_filterer(((substr($type, 0, 15) == 'comcode_custom/') ? get_custom_file_base() : get_file_base()) . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/' . $type . '/' . $filename), FILE_READ_LOCK);
                     $num_matches = preg_match_all('#\[block[^\]]*\](.*)\[/block\]#U', $contents, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $block_used = $matches[1][$i];

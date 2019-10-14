@@ -89,7 +89,7 @@ class maintenance_codes_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
                 $matches = array();
                 $num_matches = preg_match_all('#\{\$IS_MAINTAINED,(\w+),#', $c, $matches);
@@ -127,7 +127,7 @@ class maintenance_codes_test_set extends cms_test_case
 
         // Test coding standards tutorial...
 
-        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
         $matches = array();
         $num_matches = preg_match_all('#Automated test \(\[tt\](\w+)\[/tt\]\)#i', $c, $matches);

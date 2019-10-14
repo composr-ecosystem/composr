@@ -37,10 +37,10 @@ class js_lang_references_test_set extends cms_test_case
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (strtolower(substr($file, -3)) == '.js') {
-                    $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                    $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
                     $matches = array();
-                    $num_matches = preg_match_all('#\{\!(\w+)[\},;^\*]#m', $c, $matches);
+                    $num_matches = preg_match_all('#\{\!(\w+)[\},;^\*]#', $c, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $str = $matches[1][$i];
                         $this->assertTrue(strpos($core_ini_files_contents, "\n" . $str . '=') !== false, $file . '/' . $str . ' needs to have explicit file referencing');

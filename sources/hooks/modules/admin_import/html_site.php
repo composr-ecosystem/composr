@@ -564,7 +564,7 @@ class Hook_import_html_site
                         @copy($file_base . '/' . $decoded_url, $target);
 
                         /*if (substr($decoded_url, -4) == '.css') { Not needed, as relative paths maintained
-                            $css_file = cms_file_get_contents_safe($target, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                            $css_file = cms_file_get_contents_safe($target, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
                             $css_file = preg_replace('#(url\([\'"]?)(\.*' . '/)?#', '${1}{$BASE_URL;}/uploads/website_specific/', $css_file);
                             require_code('files');
                             cms_file_put_contents_safe($target, $css_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);

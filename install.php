@@ -2739,7 +2739,7 @@ function handle_self_referencing_embedment()
                 $css_files = array('global', 'forms');
                 foreach ($css_files as $css_file) {
                     if (!file_exists(get_file_base() . '/themes/default/css/' . $css_file . '.css')) {
-                        $file = file_array_get('themes/default/css/' . $css_file . '.css'); // TODO #3467
+                        $file = unixify_line_format(handle_string_bom(file_array_get('themes/default/css/' . $css_file . '.css')));
                     } else {
                         $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $css_file . '.css', FILE_READ_LOCK | FILE_READ_BOM);
                     }
@@ -2756,7 +2756,7 @@ function handle_self_referencing_embedment()
                 } else {
                     header('Content-Type: text/css; charset=' . get_charset());
                     if (!file_exists(get_file_base() . '/themes/default/css/install.css')) {
-                        $file = file_array_get('themes/default/css/install.css'); // TODO #3467
+                        $file = unixify_line_format(handle_string_bom(file_array_get('themes/default/css/install.css')));
                     } else {
                         $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/install.css', FILE_READ_LOCK | FILE_READ_BOM);
                     }
@@ -2775,10 +2775,10 @@ function handle_self_referencing_embedment()
         if (substr($type, 0, 15) == 'themes/default/') {
             header('Content-type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $out = file_array_get(filter_naughty($type)); // TODO #3467
+                $out = file_array_get(filter_naughty($type));
                 echo $out;
             } else {
-                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type), FILE_READ_LOCK | FILE_READ_BOM));
+                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type), FILE_READ_LOCK));
                 exit();
             }
 

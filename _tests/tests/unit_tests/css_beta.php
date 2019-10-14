@@ -60,7 +60,7 @@ class css_beta_test_set extends cms_test_case
                 if ($d !== false) {
                     while (($e = readdir($d)) !== false) {
                         if (substr($e, -4) == '.css') {
-                            $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                            $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
                             $matches = array();
                             $found = preg_match_all('#\{\$BETA_CSS_PROPERTY,(.*)\}#i', $c, $matches);

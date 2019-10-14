@@ -1119,7 +1119,7 @@ function _do_template($theme, $directory, $codename, $_codename, $lang, $suffix,
 
     // Load file
     if (isset($FILE_ARRAY)) {
-        $template_contents = unixify_line_format(file_array_get('themes/' . $theme . $directory . $codename . $suffix)); // TODO #3467
+        $template_contents = unixify_line_format(handle_string_bom(file_array_get('themes/' . $theme . $directory . $codename . $suffix)));
     } else {
         $_path = $base_dir . filter_naughty($theme . $directory . $codename) . $suffix;
         $template_contents = cms_file_get_contents_safe($_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);

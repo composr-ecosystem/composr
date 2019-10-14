@@ -242,7 +242,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testCodebookRef()
     {
         $path = get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt';
-        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK); // TODO #3467
+        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
         $file_types = array();
         $matches = array();
@@ -342,7 +342,7 @@ class file_type_whitelisting_test_set extends cms_test_case
     public function testCSS()
     {
         $path = get_file_base() . '/themes/default/css/global.css';
-        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK); // TODO #3467
+        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
         /*
         Not all will be here
@@ -352,7 +352,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         */
 
         $matches = array();
-        $num_matches = preg_match_all('#^\[href\$="\.(\w+)"\]#m', $c, $matches);
+        $num_matches = preg_match_all('#^\[href\$="\.(\w+)"\]#', $c, $matches);
         $found = array();
         for ($i = 0; $i < $num_matches; $i++) {
             $ext = $matches[1][$i];

@@ -47,7 +47,7 @@ class specsettings_documented_test_set extends cms_test_case
     {
         $symbols_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php') . cms_file_get_contents_safe(get_file_base() . '/sources/symbols2.php', FILE_READ_LOCK);
 
-        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
         $matches = array();
         $num_matches = preg_match_all('#^function ecv2?_(\w+)\(\$lang, \$escaped, \$param\)#m', $symbols_file, $matches);
@@ -66,7 +66,7 @@ class specsettings_documented_test_set extends cms_test_case
     {
         require_code('symbols2');
 
-        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
         $matches = array();
         $num_matches = preg_match_all('#\{\$(\w+)#', $tempcode_tutorial, $matches);

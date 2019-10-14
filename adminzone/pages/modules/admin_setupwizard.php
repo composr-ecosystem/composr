@@ -399,7 +399,7 @@ class Module_admin_setupwizard
         if (get_theme_option('setupwizard__provide_cms_advert_choice', null, post_param_string('source_theme', 'default')) == '1') {
             $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
             if (file_exists($panel_path)) {
-                $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path, FILE_READ_LOCK | FILE_READ_BOM), 'logos/') !== false;
+                $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path, FILE_READ_LOCK), 'logos/') !== false;
             } else {
                 $include_cms_advert = false;
             }

@@ -155,7 +155,7 @@ class tutorials_all_linked_test_set extends cms_test_case
                         $page_name = $matches[1][$i];
                         $title = $matches[2][$i];
 
-                        $c2 = cms_file_get_contents_safe($path . '/' . $page_name . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+                        $c2 = cms_file_get_contents_safe($path . '/' . $page_name . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
                         $regexp = '\[title sub="[^"]*"\]([^:]*: )?([^\[\]]*)\[/title\]';
                         $matches2 = array();
                         if (preg_match('#' . $regexp . '#', $c2, $matches2) != 0) {

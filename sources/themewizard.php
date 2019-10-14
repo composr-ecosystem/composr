@@ -130,7 +130,7 @@ function find_theme_dark($theme)
     if (!is_file($css_path)) {
         return false;
     }
-    $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+    $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
     $matches = array();
     if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),WB,.*\}#', $css_file_contents, $matches) != 0) {
         $THEME_DARK_CACHE[$theme] = (strtoupper($matches[1]) != 'FFFFFF');
@@ -313,9 +313,9 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
     if ($logo_type !== 'small_white') {
         // Override user configured color with $THEMEWIZARD_COLOR "box_title_background" if available
         if (file_exists(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css')) {
-            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         } else {
-            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         }
         $matches = array();
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9]),site_name_text_color,#i', $css_file, $matches) != 0) {
@@ -866,7 +866,7 @@ function calculate_dynamic_css_colours($colours, $source_theme)
     while (($sheet = readdir($dh)) !== false) {
         if (substr($sheet, -4) == '.css') {
             $path = get_file_base() . '/themes/' . $theme . '/' . $css_dir . '/' . $sheet;
-            $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
 
             $matches = array();
             $num_matches = preg_match_all('#\{\$THEMEWIZARD_COLOR,(.*),(.*),(.*)\}#', $contents, $matches);

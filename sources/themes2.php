@@ -49,7 +49,7 @@ function find_theme_seed($theme)
         if (!is_file($css_path)) {
             $css_path = get_file_base() . '/themes/default/css/global.css';
         }
-        $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+        $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
         $matches = array();
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),seed,.*\}#', $css_file_contents, $matches) != 0) {
             $THEME_SEED_CACHE[$theme] = $matches[1];
@@ -396,7 +396,7 @@ function find_template_parameters($file)
     }
 
     $matches = array();
-    $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path, FILE_READ_LOCK | FILE_READ_BOM), $matches);
+    $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path, FILE_READ_LOCK), $matches);
     $p_done = array();
     for ($j = 0; $j < $cnt; $j++) {
         $parameters[] = $matches[1][$j];

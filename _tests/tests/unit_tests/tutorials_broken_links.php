@@ -74,7 +74,7 @@ class tutorials_broken_links_test_set extends cms_test_case
     public function testTutorialBrokenLinks()
     {
         foreach (array_keys($this->pages) as $f) {
-            $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
             $matches = array();
             $num_matches = preg_match_all('#\[page="(_SEARCH|_SELF|docs):([^"]+)"\]#', $c, $matches);

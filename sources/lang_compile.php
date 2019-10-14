@@ -250,12 +250,7 @@ function _get_lang_file_map($b, &$entries, $section = 'strings', $given_whole_fi
             return;
         }
 
-        $tmp = fopen($b, 'rb');
-        // TODO: #3467
-        flock($tmp, LOCK_SH);
         $lines = cms_file_safe($b);
-        flock($tmp, LOCK_UN);
-        fclose($tmp);
     } else {
         $lines = explode("\n", unixify_line_format($b));
     }

@@ -26,13 +26,13 @@ class web_platform_test_set extends cms_test_case
 
     public function testNoBadComments()
     {
-        $c = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK | FILE_READ_BOM);
+        $c = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK);
         $this->assertTrue(strpos($c, '<--') === false, 'Comments must be <!-- in web.config');
     }
 
     public function testNoDuplicateNames()
     {
-        $c = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK | FILE_READ_BOM);
+        $c = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK);
         $matches = array();
         $names = array();
         $num_matches = preg_match_all('#name="([^"]*)"#', $c, $matches);
