@@ -101,7 +101,7 @@ class Hook_task_download_gallery
                 if (file_exists($full_path)) {
                     $time = filemtime($full_path);
                     $name = $path;
-                    $data = cms_file_get_contents_safe($full_path);
+                    $data = cms_file_get_contents_safe($full_path, FILE_READ_LOCK);
                 }
             } else {
                 $time = $gallery_row['add_date'];

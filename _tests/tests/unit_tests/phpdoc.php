@@ -86,7 +86,7 @@ class phpdoc_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $c = preg_replace('#\n\/\*\*.*\n \*\/\n\n#Us', '', $c);
 

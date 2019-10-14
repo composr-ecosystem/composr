@@ -92,7 +92,7 @@ function reprocess_url($url, $operation_base_url)
             }
         }
     }
-    $http_result = cms_http_request($url, array('ua' => $ua, 'post_params' => $post_relayed, 'cookies' => $cookies_relayed, 'accept' => $accept, 'accept_charset' => $accept_charset, 'accept_language' => $accept_language)); // TODO #3467
+    $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'ua' => $ua, 'post_params' => $post_relayed, 'cookies' => $cookies_relayed, 'accept' => $accept, 'accept_charset' => $accept_charset, 'accept_language' => $accept_language));
     $document = $http_result->data;
 
     if (($http_result->download_mime_type != 'text/html') && ($http_result->download_mime_type != 'application/xhtml+xml')) {

@@ -293,7 +293,7 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
     global $LANGUAGE_FILES_ADDON;
 
     $full_path = get_file_base() . '/' . $path;
-    $c = cms_file_get_contents_safe($full_path); // TODO #3467
+    $c = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     // Upload
     $test = _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/', 'GET', null, false);
@@ -332,7 +332,7 @@ function _push_cms_file_to_transifex($path, $resource_path, $project_slug, $prio
             if ($lang != fallback_lang()) {
                 $trans_full_path = str_replace('/' . fallback_lang() . '/', '/' . $lang . '/', $full_path);
                 if (is_file($trans_full_path)) {
-                    $c2 = cms_file_get_contents_safe($trans_full_path); // TODO #3467
+                    $c2 = cms_file_get_contents_safe($trans_full_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                     $args = array('content' => $c2);
                     _transifex('/project/' . $project_slug . '/resource/' . $resource_path . '/translation/' . convert_lang_code_to_transifex($lang) . '/', 'PUT', json_encode($args));
@@ -599,7 +599,7 @@ function pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, $
                 $translators = do_lang('UNKNOWN');
 
                 if (is_file($full_path)) {
-                    $c = cms_file_get_contents_safe(($full_path)); // TODO #3467
+                    $c = cms_file_get_contents_safe(($full_path), FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                     $matches = array();
                     if (preg_match('#function get_author\(\)\s*\{\s*return \'([^\']*)\';#', $c, $matches) != 0) {
@@ -830,7 +830,7 @@ function _pull_cms_file_from_transifex($project_slug, $tar_file, $lang, $path, $
         $c = _transifex_decode_content($c);
         $c .= "\n";
 
-        if (is_file($default_path) && trim($c) == trim(cms_file_get_contents_safe($default_path))) { // TODO #3467
+        if (is_file($default_path) && trim($c) == trim(cms_file_get_contents_safe($default_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM))) {
             return; // Not changed
         }
 
@@ -1033,5 +1033,5 @@ function _transifex_decode_content($in)
     $out = $in;
     $out = str_replace('&quot;', '"', $out); // Transifex uses non-standard escaping within JSON
     $out = str_replace('\\\\', '\\', $out); // Transifex adds slashes around slashes
-    return $out;
+    return unixify_line_format($out);
 }

@@ -461,7 +461,7 @@ function _check_stopforumspam($user_ip, $username = null, $email = null)
     if ($key != '') {
         $url .= '&api_key=' . urlencode($key); // Key not needed for read requests, but give it as a courtesy
     }
-    $_result = http_get_contents($url, array('trigger_error' => false)); // TODO #3467
+    $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
 
     $result = @json_decode($_result, true);
     if ($result !== false) {

@@ -157,7 +157,7 @@ class Hook_commandr_fs_bin
         }
 
         if ((is_dir($path)) && (file_exists($path . '/' . $file_name)) && (is_readable($path . '/' . $file_name))) {
-            return cms_file_get_contents_safe($path . '/' . $file_name);
+            return cms_file_get_contents_safe($path . '/' . $file_name, FILE_READ_LOCK);
         } else {
             return false; // File doesn't exist
         }

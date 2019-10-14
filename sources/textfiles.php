@@ -84,7 +84,7 @@ function read_text_file($codename, $lang = null, $missing_blank = false)
         }
         warn_exit(do_lang_tempcode('MISSING_TEXT_FILE', escape_html($codename), escape_html('text/' . (($lang === null) ? '' : ($lang . '/')) . $codename . '.txt')), false, true);
     }
-    $in = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
+    $in = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     if (strpos($path, '_custom/') === false) {
         global $LANG_FILTER_OB;

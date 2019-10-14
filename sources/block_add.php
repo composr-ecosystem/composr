@@ -58,7 +58,7 @@ function block_helper_script()
         $addon_icons = array();
         $addons_blocks = array();
         foreach ($hook_files as $addon_name => $hook_path) {
-            $hook_file = cms_file_get_contents_safe($hook_path);
+            $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
             $matches = array();
             if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) {
                 $addon_files = cms_eval($matches[1], $hook_path);
@@ -83,7 +83,7 @@ function block_helper_script()
             foreach ($pages as $filename => $type) {
                 if (strtolower(substr($filename, -4)) == '.txt') {
                     $matches = array();
-                    $contents = cms_file_get_contents_safe(zone_black_magic_filterer(((substr($type, 0, 15) == 'comcode_custom/') ? get_custom_file_base() : get_file_base()) . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/' . $type . '/' . $filename)); // TODO #3467
+                    $contents = cms_file_get_contents_safe(zone_black_magic_filterer(((substr($type, 0, 15) == 'comcode_custom/') ? get_custom_file_base() : get_file_base()) . '/' . (($zone == '') ? '' : ($zone . '/')) . 'pages/' . $type . '/' . $filename), FILE_READ_LOCK | FILE_READ_BOM);
                     $num_matches = preg_match_all('#\[block[^\]]*\](.*)\[/block\]#U', $contents, $matches);
                     for ($i = 0; $i < $num_matches; $i++) {
                         $block_used = $matches[1][$i];

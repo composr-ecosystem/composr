@@ -256,8 +256,8 @@ function make_upgrader_do_dir($build_path, $new_base_path, $old_base_path, $addo
             // If it's empty still, delete it
             @rmdir($build_path . '/' . $pretend_dir . $file);
         } else {
-            $contents = cms_file_get_contents_safe($new_base_path . '/' . $dir . $file);
-            if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || (unixify_line_format($contents) != cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file, false, false, true))) {
+            $contents = cms_file_get_contents_safe($new_base_path . '/' . $dir . $file, FILE_READ_UNIXIFIED_TEXT);
+            if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || ($contents != cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file, FILE_READ_UNIXIFIED_TEXT))) {
                 if ($addons_in_upgrader !== null) {
                     $addon = find_file_addon($new_base_path, $dir . $file);
                     if ((!isset($addons_in_upgrader[$addon])) && (substr($addon, 0, 5) != 'core_')) {

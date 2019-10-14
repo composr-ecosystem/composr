@@ -212,7 +212,7 @@ class Module_admin_svg_sprites
             warn_exit(do_lang('PLEASE_GENERATE_SPRITE', $theme));
         }
 
-        $svg_xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($sprite_path)); // TODO #3467
+        $svg_xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($sprite_path, FILE_READ_LOCK | FILE_READ_BOM));
         $svg_xml_children = $svg_xml->gleamed[3];
         $sprite_url = find_theme_image('icons' . (($monochrome === 1) ? '_monochrome' : '') . '_sprite', true, false, $theme);
         $sprite_url .= '?t=' . microtime(true);
@@ -327,7 +327,7 @@ class Module_admin_svg_sprites
         $output .= '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' . "\n";
 
         foreach ($icon_paths as $icon_name => $icon_path) {
-            $xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($icon_path)); // TODO #3467
+            $xml = new CMS_simple_xml_reader(cms_file_get_contents_safe($icon_path, FILE_READ_LOCK | FILE_READ_BOM));
             $output .= '<symbol viewBox="' . $xml->gleamed[1]['viewBox'] . '" id="icon_' . str_replace('/', '__', $icon_name) . '">' . "\n";
             foreach ($xml->gleamed[3] as $child) {
                 if (!is_array($child)) {

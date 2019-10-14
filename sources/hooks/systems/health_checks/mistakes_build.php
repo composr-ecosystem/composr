@@ -459,7 +459,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         }
 
         foreach ($all_files as $path) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $text = clean_comcode_for_spellcheck($c);
 
             $misspellings = run_spellcheck($text, null, true, false);
@@ -895,7 +895,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         if (!is_file($pattern_path)) {
             $pattern_path = get_file_base() . '/data/xml_config/page_errors.xml';
         }
-        $parsed = new CMS_simple_xml_reader(cms_file_get_contents_safe($pattern_path)); // TODO #3467
+        $parsed = new CMS_simple_xml_reader(cms_file_get_contents_safe($pattern_path, FILE_READ_LOCK | FILE_READ_BOM));
 
         list($root_tag, $root_attributes, , $this_children) = $parsed->gleamed;
         if ($root_tag == 'pageErrors') {

@@ -166,7 +166,6 @@ class Module_admin_errorlog
             if (is_readable(get_custom_file_base() . '/data_custom/errorlog.php')) {
                 if (filesize(get_custom_file_base() . '/data_custom/errorlog.php') > 1024 * 1024) {
                     $myfile = fopen(get_custom_file_base() . '/data_custom/errorlog.php', 'rb');
-                    // TODO: #3467
                     flock($myfile, LOCK_SH);
                     fseek($myfile, -1024 * 500, SEEK_END);
                     $lines = explode("\n", fread($myfile, 1024 * 500));
@@ -175,7 +174,7 @@ class Module_admin_errorlog
                     unset($lines[0]);
                     $lines[] = '...';
                 } else {
-                    $lines = file(get_custom_file_base() . '/data_custom/errorlog.php');
+                    $lines = cms_file_safe(get_custom_file_base() . '/data_custom/errorlog.php');
                 }
             } else {
                 $lines = array();
@@ -606,7 +605,7 @@ class Module_admin_errorlog
 
         header('Content-Type: text/plain; charset=' . get_charset());
 
-        echo cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/' . $log_file); // TODO #3467
+        echo cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/' . $log_file, FILE_READ_LOCK | FILE_READ_BOM);
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();

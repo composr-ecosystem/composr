@@ -61,7 +61,7 @@ class maintenance_codes_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
         $files[] = 'install.php';
         foreach ($files as $path) {
-            $_c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $_c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $matches = array();
             $num_matches = preg_match_all('#is_maintained\(\'([^\']*)\'\)#', $_c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
@@ -89,7 +89,7 @@ class maintenance_codes_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $matches = array();
                 $num_matches = preg_match_all('#\{\$IS_MAINTAINED,(\w+),#', $c, $matches);
@@ -127,7 +127,7 @@ class maintenance_codes_test_set extends cms_test_case
 
         // Test coding standards tutorial...
 
-        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt'); // TODO #3467
+        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_standards.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $matches = array();
         $num_matches = preg_match_all('#Automated test \(\[tt\](\w+)\[/tt\]\)#i', $c, $matches);

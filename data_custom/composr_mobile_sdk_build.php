@@ -167,7 +167,7 @@ class Composr_mobile_sdk_tools
             fwrite($android_file, '<resources>' . "\n");
 
             $processing = false;
-            $lines = file($ini_path);
+            $lines = cms_file_safe($ini_path);
             foreach ($lines as $line) {
                 if (rtrim($line) == '[strings]') {
                     $processing = true;

@@ -577,7 +577,7 @@ $feature_tree = array(
                 (!is_maintained('multi_lang_content')) ? false : array('Translate content into multiple languages'),
                 array('Custom time and date formatting'),
                 array('Timezone support', 'Members may choose their own timezones'),
-                array('Full Unicode support'),
+                array('Full utf-8 support'),
                 array('Serve different theme images for different languages'),
                 (!is_maintained('theme_rtl')) ? false : array('Support for right-to-left languages'),
             ),

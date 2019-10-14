@@ -89,7 +89,7 @@ class addon_guards_test_set extends cms_test_case
                 }
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
             $matches = array();
             if (preg_match('#@package\s+(\w+)#', $c, $matches) == 0) {
@@ -140,7 +140,7 @@ class addon_guards_test_set extends cms_test_case
                 }
 
                 if ((substr($path, -4) == '.php') && (preg_match('#(^_tests/|^data_custom/stress_test_loader\.php$|^sources/hooks/modules/admin_import/)#', $path) == 0)) {
-                    $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+                    $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                     $matches = array();
                     $num_matches = preg_match_all('#(require_lang|require_code|require_css|require_javascript|do_template)\(\'([^\']*)\'[\),]#', $c, $matches);

@@ -37,7 +37,7 @@ class notifications_all_coded_test_set extends cms_test_case
             }
 
             foreach (array_keys($hooks) as $hook) {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
                 if (preg_match('#dispatch_notification\(\s*\'' . $hook . '\'#', $c) != 0) {
                     unset($hooks[$hook]);
                 }

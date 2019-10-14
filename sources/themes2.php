@@ -49,7 +49,7 @@ function find_theme_seed($theme)
         if (!is_file($css_path)) {
             $css_path = get_file_base() . '/themes/default/css/global.css';
         }
-        $css_file_contents = cms_file_get_contents_safe($css_path); // TODO #3467
+        $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         $matches = array();
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),seed,.*\}#', $css_file_contents, $matches) != 0) {
             $THEME_SEED_CACHE[$theme] = $matches[1];
@@ -106,7 +106,7 @@ function autoprobe_cdns()
     );
 
     $detected_cdns = '';
-    $expected = cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/editor/comcode.svg'); // TODO #3467
+    $expected = cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/editor/comcode.svg', FILE_READ_LOCK | FILE_READ_BOM);
     foreach ($try as $t) {
         if ($t === null) {
             continue;
@@ -115,7 +115,7 @@ function autoprobe_cdns()
         if (preg_match('#^' . preg_quote($t, '#') . '($|\.|/|:)#', $domain_name) == 0) { // Don't use it if it is in the base URL
             $test_url = (tacit_https() ? 'https://' : 'http://') . $t . $parsed['path'] . '/themes/default/images/icons/editor/comcode.svg';
 
-            $test_result = http_get_contents($test_url, array('trigger_error' => false, 'timeout' => 0.25)); // TODO #3467
+            $test_result = http_get_contents($test_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 0.25));
 
             if (($test_result !== null) && ($test_result == $expected)) {
                 if ($detected_cdns != '') {
@@ -349,7 +349,7 @@ function find_template_guids($file, $active_guid = null)
     $clean_file = basename($file, $suffix);
 
     $guids = array();
-    $_guids = @unserialize(@cms_file_get_contents_safe(get_file_base() . '/data/guids.bin'));
+    $_guids = @unserialize(@cms_file_get_contents_safe(get_file_base() . '/data/guids.bin', FILE_READ_LOCK));
     if (($_guids !== false) && (array_key_exists($clean_file, $_guids))) {
         foreach ($_guids[$clean_file] as $_guid) {
             $guids[] = array(
@@ -396,7 +396,7 @@ function find_template_parameters($file)
     }
 
     $matches = array();
-    $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path), $matches); // TODO #3467
+    $cnt = preg_match_all('#\{([\w]\w*)[\*;%\#]?\}#', cms_file_get_contents_safe($template_path, FILE_READ_LOCK | FILE_READ_BOM), $matches);
     $p_done = array();
     for ($j = 0; $j < $cnt; $j++) {
         $parameters[] = $matches[1][$j];

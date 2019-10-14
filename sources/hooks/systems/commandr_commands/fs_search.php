@@ -61,7 +61,7 @@ class Hook_commandr_command_fs_search
             require_code('files2');
             $files = get_directory_contents(get_custom_file_base(), '', null, true, true, $extensions);
             foreach ($files as $file) {
-                $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file);
+                $c = cms_file_get_contents_safe(get_custom_file_base() . '/' . $file, FILE_READ_LOCK);
                 if (stripos($c, $search) !== false) {
                     $out .= '<p><kbd>' . $file . '</kbd></p>';
                     $matched_files[] = $file;

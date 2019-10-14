@@ -161,7 +161,7 @@ class lang_html_safe_test_set extends cms_test_case
     protected function do_file($exp)
     {
         global $FILE2;
-        preg_replace_callback($exp, array($this, 'find_php_use_match'), cms_file_get_contents_safe($FILE2, false));
+        preg_replace_callback($exp, array($this, 'find_php_use_match'), cms_file_get_contents_safe($FILE2));
     }
 
     protected function find_php_use_match($matches)

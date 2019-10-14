@@ -34,7 +34,7 @@ class Hook_comcode_self_destruct
             'tag_description' => 'The contents will not appear in notifications, and, for private topic and support ticket posts, will self-destruct after 30 days.',
             'tag_example' => '[self_destruct]Text to self-destruct[/self_destruct]',
             'tag_tag' => 'self_destruct',
-            'tag_replace' => cms_file_get_contents_safe(get_file_base() . '/themes/default/templates_custom/COMCODE_SELF_DESTRUCT.tpl'), // TODO #3467
+            'tag_replace' => cms_file_get_contents_safe(get_file_base() . '/themes/default/templates_custom/COMCODE_SELF_DESTRUCT.tpl', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM),
             'tag_parameters' => '',
             'tag_block_tag' => 1,
             'tag_textual_tag' => 1,

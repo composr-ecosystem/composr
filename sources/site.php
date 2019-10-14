@@ -1307,7 +1307,7 @@ function save_static_caching($out, $mime_type = 'text/html')
                 } else {
                     $rewritemap_file = get_custom_file_base() . '/data_custom/failover_rewritemap.txt';
                 }
-                $rewritemap_file_contents = cms_file_get_contents_safe($rewritemap_file);
+                $rewritemap_file_contents = cms_file_get_contents_safe($rewritemap_file, FILE_READ_LOCK);
                 if (strpos($rewritemap_file_contents, "\n" . $url_stem . ' ') === false) {
                     require_code('files');
                     $rewritemap_file_contents .= "\n" . $url_stem . ' ' . $fast_cache_path . '__failover_mode' . $file_extension;

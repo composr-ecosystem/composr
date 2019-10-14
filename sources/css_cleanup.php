@@ -61,7 +61,7 @@ abstract class CSSCleanup
 
         foreach ($this->css_files as $path => $c) {
             $old_path = $this->css_files_old_names[$path];
-            if (cms_file_get_contents_safe($old_path) != $c) { // TODO #3467
+            if (cms_file_get_contents_safe($old_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM) != $c) {
                 if (is_file($path)) {
                     $revision_path = $path . '.' . strval(time());
                     copy($old_path, $revision_path);
@@ -102,7 +102,7 @@ abstract class CSSCleanup
                 while (($f = readdir($dh)) !== false) {
                     if (substr($f, -4) == '.css') {
                         $path = $dir . '/' . $f;
-                        $c = cms_file_get_contents_safe($path); // TODO #3467
+                        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                         $new_path = $path;
                         $new_path = str_replace('/themes/default/', '/themes/' . $this->theme . '/', $new_path);

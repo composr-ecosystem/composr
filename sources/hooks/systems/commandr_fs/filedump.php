@@ -237,7 +237,7 @@ class Hook_commandr_fs_filedump
         }
 
         if ((is_dir($path)) && (file_exists($path . '/' . $file_name)) && (is_readable($path . '/' . $file_name))) {
-            $data = cms_file_get_contents_safe($path . '/' . $file_name);
+            $data = cms_file_get_contents_safe($path . '/' . $file_name, FILE_READ_LOCK);
 
             $output = array('data' => base64_encode($data));
             $rows = table_to_portable_rows('filedump', array('id'), array('name' => cms_mb_substr($file_name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));

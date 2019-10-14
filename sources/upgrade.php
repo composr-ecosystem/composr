@@ -367,7 +367,7 @@ function upgrader_output_header()
 
         <style>/*<![CDATA[*/
 END;
-    @print(cms_file_get_contents_safe(css_enforce('global', 'default'))); // TODO #3467
+    @print(cms_file_get_contents_safe(css_enforce('global', 'default'), FILE_READ_LOCK | FILE_READ_BOM));
     echo <<<END
             .screen-title { text-decoration: underline; display: block; background: url('themes/default/images/icons/menu/adminzone/tools/upgrade.svg') top left no-repeat; background-size: 48px 48px; min-height: 42px; padding: 10px 0 0 60px; }
             a[target="_blank"], a[onclick$="window.open"] { padding-right: 0; }
@@ -453,7 +453,7 @@ function upgrader_menu_screen()
     if ($news_id !== null) {
         require_code('files');
         $fetch_url = 'https://compo.sr/uploads/website_specific/compo.sr/scripts/fetch_release_details.php?format=json&news_id=' . strval($news_id) . '&from_version=' . urlencode($from_version);
-        $news = http_get_contents($fetch_url, array('timeout' => 30.0)); // TODO #3467
+        $news = http_get_contents($fetch_url, array('convert_to_internal_encoding' => true, 'timeout' => 30.0));
 
         $details = json_decode($news, true);
         if ($details[0] != '') {

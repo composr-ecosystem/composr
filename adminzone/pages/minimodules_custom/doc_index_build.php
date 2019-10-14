@@ -175,7 +175,7 @@ $out .= '</ul>';
 
 // Write out
 $path = get_file_base() . '/docs/pages/comcode_custom/EN/tut_addon_index.txt';
-$addon_index_file = cms_file_get_contents_safe($path); // TODO #3467
+$addon_index_file = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
 $marker = '[staff_note]Automatic code inserts after this[/staff_note]';
 $pos = strpos($addon_index_file, $marker);
 $addon_index_file = substr($addon_index_file, 0, $pos + strlen($marker)) . '[semihtml]' . str_replace(get_custom_base_url(), get_brand_base_url(), $out) . '[/semihtml]';
@@ -187,7 +187,7 @@ echo static_evaluate_tempcode(comcode_to_tempcode($addon_index_file));
 
 function get_tutorial_title($tutorial)
 {
-    $contents = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial . '.txt'); // TODO #3467
+    $contents = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial . '.txt', FILE_READ_LOCK | FILE_READ_BOM);
     $matches = array();
     preg_match('#\[title[^\[\]]*\](?-U)(Composr (Tutorial|Supplementary): )?(?U)(.*)\[/title\]#Us', $contents, $matches);
     return $matches[3];

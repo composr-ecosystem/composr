@@ -360,7 +360,7 @@ class _template_previews_test_set extends cms_test_case
             }
             $used = array_unique($ob->tpl_previews());
 
-            $code = cms_file_get_contents_safe(get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . $hook . '.php', false);
+            $code = cms_file_get_contents_safe(get_file_base() . '/' . $place . '/hooks/systems/addon_registry/' . $hook . '.php');
 
             $matches = array();
             $num_matches = preg_match_all('#function tpl_preview__(.*)\(#U', $code, $matches);

@@ -100,7 +100,7 @@ foreach (array_keys($themes) as $theme) {
                         (substr($f, -4) == '.tpl') ||
                         ((substr($f, -4) == '.txt') && ((count($themes) < 5) || (substr($f, 0, strlen($theme . '__')) == $theme . '__')))
                     ) {
-                        $contents = cms_file_get_contents_safe($dir . '/' . $f); // TODO #3467
+                        $contents = cms_file_get_contents_safe($dir . '/' . $f, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                         if (substr($f, -4) != '.css' || !$do_checks) {
                             $non_css_contents .= $contents;

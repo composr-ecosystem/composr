@@ -94,7 +94,7 @@ class _cqc_nonbundled_test_set extends cms_test_case
                 }
                 $url .= urlencode($to_scan[$j]);
             }
-            $result = http_get_contents($url, array('timeout' => 10000.0)); // TODO #3467
+            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 10000.0));
             foreach (explode('<br />', $result) as $line) {
                 // Exceptions
                 if (strpos($line, 'Could not find function') !== false) {

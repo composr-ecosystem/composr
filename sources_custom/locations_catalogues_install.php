@@ -316,7 +316,7 @@ function transcode_remaining_locations()
                 $from = $location['id'];
             }
 
-            $_result = http_get_contents($url); // TODO #3467
+            $_result = http_get_contents($url, array('convert_to_internal_encoding' => true));
 
             $matches = array();
             if (strpos($_result, '<lat>') !== false) {

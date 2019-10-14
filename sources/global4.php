@@ -111,7 +111,7 @@ function _save_web_resource_merging($resources, $type, $write_path)
         }
         if ($merge_from != '') {
             if (is_file($merge_from)) {
-                $extra_data = cms_file_get_contents_safe($merge_from, false, false, true) . "\n\n"; // TODO #3467
+                $extra_data = cms_file_get_contents_safe($merge_from, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM) . "\n\n";
                 $data .= $extra_data;
                 if ((strpos($extra_data, '"use strict";') === false) && (strpos($extra_data, "'use strict';") === false)) {
                     $all_strict = false;

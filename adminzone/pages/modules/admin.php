@@ -1008,7 +1008,7 @@ class Module_admin
         if (($this->_section_match($section_limitations, $current_results_type)) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
             $content[$current_results_type] = new Tempcode();
             if (file_exists(get_file_base() . '/config_editor.php')) {
-                $file_contents = cms_file_get_contents_safe(get_file_base() . '/config_editor.php');
+                $file_contents = cms_file_get_contents_safe(get_file_base() . '/config_editor.php', FILE_READ_LOCK);
                 $matches = array();
                 $num_matches = preg_match_all('#case \'([^\']+)\':\n\s*\$notes=\'([^\']+)\';#', $file_contents, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -1051,9 +1051,9 @@ class Module_admin
                         while (($file = readdir($dh)) !== false) {
                             if (strtolower(substr($file, -4)) == '.ini') {
                                 if (!array_key_exists($file, $lang_file_contents)) {
-                                    $lang_file_contents[$file] = cms_file_get_contents_safe(get_file_base() . '/' . $lang_dir . '/' . fallback_lang() . '/' . $file); // TODO #3467
+                                    $lang_file_contents[$file] = cms_file_get_contents_safe(get_file_base() . '/' . $lang_dir . '/' . fallback_lang() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                                 }
-                                if ((preg_match('#^' . preg_quote($n, '#') . '=#m', $lang_file_contents[$file]) != 0) || ((file_exists(get_custom_file_base() . '/lang_custom/' . user_lang() . '/' . $file)) && (preg_match('#^' . preg_quote($n, '#') . '=#m', cms_file_get_contents_safe(get_custom_file_base() . '/lang_custom/' . user_lang() . '/' . $file)) != 0))) { // TODO #3467
+                                if ((preg_match('#^' . preg_quote($n, '#') . '=#m', $lang_file_contents[$file]) != 0) || ((file_exists(get_custom_file_base() . '/lang_custom/' . user_lang() . '/' . $file)) && (preg_match('#^' . preg_quote($n, '#') . '=#m', cms_file_get_contents_safe(get_custom_file_base() . '/lang_custom/' . user_lang() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM)) != 0))) {
                                     $lang_file = basename($file, '.ini');
                                     break;
                                 }
@@ -1127,7 +1127,7 @@ class Module_admin
                 while (($file = readdir($dh)) !== false) {
                     if (((strtolower(substr($file, -4)) == '.tpl') || (strtolower(substr($file, -4)) == '.xml') || (strtolower(substr($file, -4)) == '.txt') || (strtolower(substr($file, -3)) == '.js')) && (!array_key_exists($file, $tpl_found))) {
                         $n = $file;
-                        if (($this->_keyword_match(basename($n, '.' . get_file_extension($n)))) || ($this->_keyword_match($n)) || (($template_dir == 'templates_custom') && ($this->_keyword_match(cms_file_get_contents_safe(get_file_base() . '/themes/default/' . $template_dir . '/' . $n))))) { // TODO #3467
+                        if (($this->_keyword_match(basename($n, '.' . get_file_extension($n)))) || ($this->_keyword_match($n)) || (($template_dir == 'templates_custom') && ($this->_keyword_match(cms_file_get_contents_safe(get_file_base() . '/themes/default/' . $template_dir . '/' . $n, FILE_READ_LOCK | FILE_READ_BOM))))) {
                             $_url = build_url(array('page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $default_theme, 'f0file' => $template_dir . '/' . $file), get_module_zone('admin_themes'));
                             $breadcrumbs = new Tempcode();
                             $breadcrumbs->attach(hyperlink(build_url(array('page' => 'admin', 'type' => 'style'), 'adminzone'), do_lang_tempcode('STYLE'), false, false));
@@ -1154,7 +1154,7 @@ class Module_admin
             while (($file = readdir($dh)) !== false) {
                 if (strtolower(substr($file, -4)) == '.css') {
                     $n = $file;
-                    if ($this->_keyword_match(cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $n))) { // TODO #3467
+                    if ($this->_keyword_match(cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $n, FILE_READ_LOCK | FILE_READ_BOM))) {
                         $_url = build_url(array('page' => 'admin_themes', 'type' => 'edit_templates', 'theme' => $default_theme, 'f0file' => 'css/' . $file), get_module_zone('admin_themes'));
                         $url = $_url->evaluate();
                         if (isset($keywords[0])) {

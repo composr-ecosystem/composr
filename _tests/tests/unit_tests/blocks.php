@@ -47,7 +47,7 @@ class blocks_test_set extends cms_test_case
         $blocks = find_all_blocks();
         foreach (array_keys($blocks) as $block) {
             $path = _get_block_path($block);
-            $c = cms_file_get_contents_safe($path); // TODO #3467
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
             $this->assertTrue(strpos($c, 'warn_exit(') === false, 'warn_exit in ' . $path);
         }
     }

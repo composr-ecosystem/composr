@@ -49,7 +49,7 @@ function upgrader_integrity_scan_screen()
 function load_integrity_manifest($previous = false)
 {
     $path = get_file_base() . '/data/' . ($previous ? 'files_previous.bin' : 'files.bin');
-    $manifest = @unserialize(cms_file_get_contents_safe($path));
+    $manifest = @unserialize(cms_file_get_contents_safe($path, FILE_READ_LOCK));
     if ($manifest === false) {
         $manifest = array();
     }
@@ -94,7 +94,7 @@ function load_files_list_of_installed_addons($manifest)
     }
     $files_to_check = array();
     foreach ($hook_files as $addon_name => $hook_path) {
-        $hook_file = cms_file_get_contents_safe($hook_path);
+        $hook_file = cms_file_get_contents_safe($hook_path, FILE_READ_LOCK);
         $matches = array();
         if (preg_match('#function get_file_list\(\)\s*\{([^\}]*)\}#', $hook_file, $matches) != 0) { // A bit of a hack, but saves a lot of RAM
             $files_to_check = array_merge($files_to_check, cms_eval($matches[1], $hook_path));
@@ -179,7 +179,7 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
                 continue; // Too big, so special exception
             }
 
-            $file_contents = @cms_file_get_contents_safe(get_file_base() . '/' . $file);
+            $file_contents = @cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK);
             if ($file_contents === false) {
                 continue;
             }
@@ -421,13 +421,13 @@ function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files,
                 if (file_exists($equiv_file)) {
                     if ($allow_merging) {
                         if (file_exists($dir . $file . '.editfrom')) { // If we edited-from, then we use that to do the compare
-                            $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file . '.editfrom'))));
+                            $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file . '.editfrom', FILE_READ_LOCK))));
                             $only_if_noncustom = false;
                         } else {
-                            $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file))));
+                            $hash_on_disk = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK))));
                             $only_if_noncustom = true;
                         }
-                        $_true_hash = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($equiv_file))));
+                        $_true_hash = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK))));
                         if (array_key_exists($file, $manifest)) { // Get hash from perfection table
                             $true_hash = $manifest[$rela . $file][0];
                             if ($true_hash != $_true_hash) {
@@ -446,10 +446,10 @@ function check_outdated__handle_overrides($dir, $rela, &$manifest, &$hook_files,
                         if (($true_hash !== null) && ($hash_on_disk != $true_hash)) {
                             if ((function_exists('diff_compute_new')) && (substr($file, -4) == '.css') && ($true_hash !== 2) && (file_exists($dir . $file . '.editfrom')) && (cms_is_writable($dir . $file))) {
                                 $new = diff_compute_new($equiv_file, $dir . $file . '.editfrom', $dir . $file);
-                                cms_file_put_contents_safe($dir . $file . '.' . strval(time()), cms_file_get_contents_safe($dir . $file), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                                cms_file_put_contents_safe($dir . $file . '.' . strval(time()), cms_file_get_contents_safe($dir . $file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                                 cms_file_put_contents_safe($dir . $file, $new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                                 $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd> ' . do_lang('AUTO_MERGED') . '</li>';
-                                cms_file_put_contents_safe($dir . $file . '.editfrom', cms_file_get_contents_safe($equiv_file), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+                                cms_file_put_contents_safe($dir . $file . '.editfrom', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                             } else {
                                 $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
                             }

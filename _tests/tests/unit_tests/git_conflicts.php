@@ -31,7 +31,7 @@ class git_conflicts_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $this->assertTrue(strpos($c, '<<<' . '<') === false, $path);
         }
     }

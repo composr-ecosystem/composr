@@ -26,7 +26,7 @@ class missing_block_params_test_set extends cms_test_case
 
         $files = get_directory_contents(get_file_base() . '/sources/blocks', get_file_base() . '/sources/blocks', null, false, true, array('php'));
         foreach ($files as $path) {
-            $c = cms_file_get_contents_safe($path, false);
+            $c = cms_file_get_contents_safe($path);
             $matches = array();
             $count = preg_match_all('/\$map\[\'([^\']+)\'\]/', $c, $matches);
             for ($i = 0; $i < $count; $i++) {
@@ -61,7 +61,7 @@ class missing_block_params_test_set extends cms_test_case
 
         $files = get_directory_contents(get_file_base() . '/lang/EN', get_file_base() . '/lang/EN', null, false, true, array('ini'));
         foreach ($files as $path) {
-            $c = cms_file_get_contents_safe($path); // TODO #3467
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
 
             foreach ($need as $i => $x) {
                 if (strpos($c, $x . '=') !== false) {

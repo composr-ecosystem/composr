@@ -79,7 +79,7 @@ class RevisionEngineFiles
             }
 
             if ($original_text === null) {
-                $original_text = cms_file_get_contents_safe($existing_path); // TODO #3467
+                $original_text = cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM);
             }
 
             if ($original_timestamp === null) {
@@ -183,7 +183,7 @@ class RevisionEngineFiles
                 continue;
             }
 
-            $original_text = cms_file_get_contents_safe($full_path); // TODO #3467
+            $original_text = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
 
             $ret[$time] = array(
                 'id' => $mtime,
@@ -449,7 +449,7 @@ class RevisionEngineFiles
             $full_path = get_custom_file_base() . '/' . filter_naughty($restore_from_path);
             $exists = file_exists($full_path);
             if ($has_access && $exists) {
-                $text = cms_file_get_contents_safe($full_path); // TODO #3467
+                $text = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM);
                 $revision_loaded = true;
 
                 if (substr($full_path, -4) == '.txt') {

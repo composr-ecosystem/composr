@@ -1662,7 +1662,7 @@ function make_previewable_url_absolute($url)
             }
 
             $htaccess_path = $image_path . '/.htaccess';
-            if ((is_file($htaccess_path)) && (stripos(cms_file_get_contents_safe($htaccess_path), 'Require not ip') !== false)) {
+            if ((is_file($htaccess_path)) && (stripos(cms_file_get_contents_safe($htaccess_path, FILE_READ_LOCK), 'Require not ip') !== false)) {
                 return array($_url, $is_image);
             }
 

@@ -134,7 +134,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
         switch ($details[0]) {
             case 'HTML':
             case 'HTML_CUSTOM':
-                $page_contents = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
+                $page_contents = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_BOM);
                 $matches = array();
                 if (preg_match('#<title[^>]*>#', $page_contents, $matches) != 0) {
                     $start = strpos($page_contents, $matches[0]) + strlen($matches[0]);
@@ -167,7 +167,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                     if (!is_file($normal_path)) {
                         $normal_path = $path;
                     }
-                    if (preg_match('#@package\s+(\w+)#', cms_file_get_contents_safe(zone_black_magic_filterer(get_file_base() . '/' . $normal_path)), $matches) != 0) {
+                    if (preg_match('#@package\s+(\w+)#', cms_file_get_contents_safe(zone_black_magic_filterer(get_file_base() . '/' . $normal_path), FILE_READ_LOCK), $matches) != 0) {
                         $package = $matches[1];
                         $path_addon = get_file_base() . '/sources/hooks/systems/addon_registry/' . $package . '.php';
                         if (!file_exists($path_addon)) {

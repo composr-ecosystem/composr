@@ -960,8 +960,7 @@ class Virtual_shell
                 if (($script_file !== false) && (is_readable($script_file))) {
                     // It *is* a script, so let's run it :)
                     $this->parse_runtime['commandr_command'] = COMMAND_SCRIPT;
-                    $script_contents = cms_file_get_contents_safe($script_file, false, false, true);
-                    $script_lines = explode("\n", $script_contents);
+                    $script_lines = cms_file_safe($script_file);
 
                     foreach ($script_lines as $script_line) {
                         if (strlen($script_line) > 0) {

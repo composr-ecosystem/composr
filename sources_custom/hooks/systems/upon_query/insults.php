@@ -86,8 +86,7 @@ class Hook_upon_query_insults
             if ($insult != '') {
                 $get_reply = '';
                 if (is_file(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt')) {
-                    // TODO: #3467
-                    $insults = file(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt');
+                    $insults = cms_file_safe(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt');
                     $insults_array = array();
                     foreach ($insults as $insult_item) {
                         $x = explode('=', $insult_item);

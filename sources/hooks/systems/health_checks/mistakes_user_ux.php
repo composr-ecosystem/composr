@@ -66,7 +66,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
         }
 
         $url = get_base_url() . '/testing-for-404.html';
-        $data = http_get_contents($url, array('trigger_error' => false, 'ignore_http_status' => true)); // TODO #3467
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true));
         $this->assertTrue(($data === null) || (strpos($data, '<link') !== false) || (strpos($data, '<a ') !== false), '[tt]404[/tt] status page is too basic looking, probably not helpful, suggest to display a sitemap');
     }
 
@@ -177,7 +177,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             $ok = ($http_result->download_url == $url);
             $this->assertTrue($ok, 'Protocol [tt]' . $wrong_protocol . '[/tt] is not redirecting to deep URLs of [tt]' . $protocol . '[/tt] protocol');
 
-            http_get_contents($wrong_url, array('trigger_error' => false, 'no_redirect' => true)); // TODO #3467
+            http_get_contents($wrong_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'no_redirect' => true));
             $ok = ($http_result->message == '301');
             $this->assertTrue($ok, 'Protocol [tt]' . $wrong_protocol . '[/tt] is not redirecting to [tt]' . $protocol . '[/tt] protocol with a [tt]301[/tt] code ([tt]' . $http_result->message . '[/tt] code used)');
         }

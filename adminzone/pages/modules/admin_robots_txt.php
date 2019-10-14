@@ -125,7 +125,7 @@ class Module_admin_robots_txt
             '_GUID' => '656f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'TEXT' => file_exists($path) ? cms_file_get_contents_safe($path) : '',
+            'TEXT' => file_exists($path) ? cms_file_get_contents_safe($path, FILE_READ_LOCK) : '',
             'DEFAULT' => get_robots_txt(),
         ));
     }

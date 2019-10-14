@@ -87,7 +87,7 @@ while (($sheet = readdir($dh)) !== false) {
             sync_file($saveat);
         }
 
-        $output = cms_file_get_contents_safe($saveat); // TODO #3467
+        $output = cms_file_get_contents_safe($saveat, FILE_READ_LOCK | FILE_READ_BOM);
         $before = $output;
 
         foreach ($canonical_theme_landscape as $peak) {

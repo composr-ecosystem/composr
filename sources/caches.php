@@ -192,7 +192,7 @@ class Self_learning_cache
         if ($data !== null) {
             $this->data = $data;
         } elseif (is_file($this->path)) {
-            $_data = cms_file_get_contents_safe($this->path);
+            $_data = cms_file_get_contents_safe($this->path, FILE_READ_LOCK);
             if ($_data !== false) {
                 $this->data = @unserialize($_data);
                 if ($this->data === false) {

@@ -162,7 +162,7 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
         $file_path = '../' . $file_path;
     }
 
-    $existing = cms_file_get_contents_safe($file_path);
+    $existing = cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
 
     switch ($type) {
         case 'ApachePlain':

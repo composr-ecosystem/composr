@@ -304,7 +304,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
     $got_geo_lookup = false;
     if (get_option('ipstack_api_key') != '') {
         $ip_stack_url = 'http://api.ipstack.com/' . rawurlencode($ip) . '?access_key=' . urlencode(get_option('ipstack_api_key'));
-        $_json = http_get_contents($ip_stack_url, array('trigger_error' => false)); // TODO #3467
+        $_json = http_get_contents($ip_stack_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
         $json = @json_decode($_json, true);
         if (is_array($json)) {
             $useful_fields = array(

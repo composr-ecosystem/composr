@@ -227,8 +227,8 @@ foreach (array_keys($releases) as $version) {
 
         foreach ($files as $f) {
             if ((in_array($f, $files_to_show)) && (is_file($path_old . '/' . $f))) {
-                $contents_old = cms_file_get_contents_safe($path_old . '/' . $f, false);
-                $contents_new = cms_file_get_contents_safe($path_new . '/' . $f, false);
+                $contents_old = cms_file_get_contents_safe($path_old . '/' . $f);
+                $contents_new = cms_file_get_contents_safe($path_new . '/' . $f);
                 if ($contents_old != $contents_new) {
                     if (preg_match('#([\x00-\x08\x0B-\x0C\x0E-\x1F])#', $contents_old) != 0) {
                         $diff = null;

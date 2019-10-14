@@ -33,7 +33,7 @@ class api_classes_documented_test_set extends cms_test_case
                         continue;
                     }
 
-                    $c = cms_file_get_contents_safe($path . '/' . $file, false);
+                    $c = cms_file_get_contents_safe($path . '/' . $file);
 
                     if (strpos($c, 'CQC: No check') !== false) {
                         continue;

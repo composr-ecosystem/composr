@@ -152,7 +152,7 @@ class resource_closing_test_set extends cms_test_case
 
     protected function check_matching($path, $open_code, $close_code, $strict_order_exception)
     {
-        $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+        $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
         $c = preg_replace('#' . preg_quote($open_code, '#') . '.*' . preg_quote($close_code, '#') . '#Us', '', $c);
 

@@ -1333,7 +1333,7 @@ function ecv_IMG_INLINE($lang, $escaped, $param)
         if ($value != '') {
             $file_path = ((substr($value, 0, 22) == 'themes/default/images/') ? get_file_base() : get_custom_file_base()) . '/' . $value;
             require_code('mime_types');
-            $value = 'data:' . get_mime_type(get_file_extension($file_path), true) . ';base64,' . base64_encode(cms_file_get_contents_safe($file_path));
+            $value = 'data:' . get_mime_type(get_file_extension($file_path), true) . ';base64,' . base64_encode(cms_file_get_contents_safe($file_path, FILE_READ_LOCK));
         } else {
             return ecv_IMG($lang, $escaped, $param);
         }
@@ -6861,7 +6861,7 @@ function ecv_IS_ICON_IN_SVG_SPRITE($lang, $escaped, $param)
         }
 
         if (file_exists($path)) {
-            $sprite = cms_file_get_contents_safe($path);
+            $sprite = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         }
     }
 

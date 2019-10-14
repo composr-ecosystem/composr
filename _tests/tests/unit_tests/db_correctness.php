@@ -102,7 +102,7 @@ class db_correctness_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
             $this->assertTrue(strpos($c, ". get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
             $this->assertTrue(strpos($c, ". \$GLOBALS['SITE_DB']->get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
@@ -120,7 +120,7 @@ class db_correctness_test_set extends cms_test_case
     public function testGetTranslatedTempcodeMatchingFieldsAndTables()
     {
         foreach ($this->files as $path) {
-            $c = cms_file_get_contents_safe($path, false);
+            $c = cms_file_get_contents_safe($path);
 
             $matches = array();
             $num_matches = preg_match_all('#get_translated_tempcode\(\'(\w+)\', [^,]*, \'(\w+)\'\)#', $c, $matches);
@@ -137,7 +137,7 @@ class db_correctness_test_set extends cms_test_case
     public function testGetTranslatedRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['forum_regexp'] . ')\', [^,]*, [^,]*' . preg_quote(", \$GLOBALS['SITE_DB']", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -153,7 +153,7 @@ class db_correctness_test_set extends cms_test_case
     public function testTranslateFieldRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->translate_field_ref('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -166,7 +166,7 @@ class db_correctness_test_set extends cms_test_case
     public function testTableIsLockedRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->table_is_locked('", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -179,7 +179,7 @@ class db_correctness_test_set extends cms_test_case
     public function testPreferIndexLockedRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->prefer_index('", '#') . "[^']+" . preg_quote("', '", '#') . '(' . $this->indexes['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -192,7 +192,7 @@ class db_correctness_test_set extends cms_test_case
     public function testInsertLangRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'SITE_DB\'\]' . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -208,7 +208,7 @@ class db_correctness_test_set extends cms_test_case
     public function testUpdateLangRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'SITE_DB\'\]' . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -231,7 +231,7 @@ class db_correctness_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -256,7 +256,7 @@ class db_correctness_test_set extends cms_test_case
     public function testInsertRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_insert(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -269,7 +269,7 @@ class db_correctness_test_set extends cms_test_case
     public function testUpdateRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_update(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -282,7 +282,7 @@ class db_correctness_test_set extends cms_test_case
     public function testDeleteRef()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_delete(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -303,7 +303,7 @@ class db_correctness_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->create_table(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -324,7 +324,7 @@ class db_correctness_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->drop_table_if_exists(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -345,7 +345,7 @@ class db_correctness_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->create_index(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -366,7 +366,7 @@ class db_correctness_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->delete_index_if_exists(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
             $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
@@ -379,7 +379,7 @@ class db_correctness_test_set extends cms_test_case
     public function testJoinConsistency()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             if ($file == '_tests/tests/unit_tests/db_correctness.php') {
                 continue;
@@ -398,7 +398,7 @@ class db_correctness_test_set extends cms_test_case
     public function testForumDbForumDriverMixup()
     {
         foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
 
             $driver_funcs = array(
                 'cns_flood_control',

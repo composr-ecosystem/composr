@@ -46,7 +46,7 @@ function do_user_import()
         require_code('files');
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
         $infile = cms_fopen_wb_bom(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH);
-        $test = http_get_contents(USER_IMPORT_URL, array('trigger_error' => false, 'write_to_file' => $infile)); // TODO #3467
+        $test = http_get_contents(USER_IMPORT_URL, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $infile));
         fclose($infile);
         if ($test === null) {
             return;

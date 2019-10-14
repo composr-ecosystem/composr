@@ -455,7 +455,7 @@ function send_rss_ping($show_errors = false)
     foreach ($ping_urls as $ping_url) {
         $ping_url = trim($ping_url);
         if ($ping_url != '') {
-            $out .= http_get_contents($ping_url, array('trigger_error' => $show_errors, 'timeout' => 1.0)); // TODO #3467
+            $out .= http_get_contents($ping_url, array('convert_to_internal_encoding' => true, 'trigger_error' => $show_errors, 'timeout' => 1.0));
         }
     }
 
@@ -937,7 +937,7 @@ function _news_import_grab_image(&$data, $url)
 
     $target_handle = fopen($target_path, 'wb') or intelligent_write_error($target_path);
     flock($target_handle, LOCK_EX);
-    $result = http_get_contents($url, array('trigger_error' => false, 'write_to_file' => $target_handle)); // TODO #3467
+    $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'write_to_file' => $target_handle));
     flock($target_handle, LOCK_UN);
     fclose($target_handle);
     sync_file($target_path);

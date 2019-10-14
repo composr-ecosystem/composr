@@ -270,7 +270,7 @@ function hard_filter_input_data__dynamic_firewall($name, &$val)
 {
     $rules_path = get_custom_file_base() . '/data_custom/firewall_rules.txt';
     if (is_file($rules_path)) {
-        $rules = file($rules_path);
+        $rules = cms_file_safe($rules_path);
         foreach ($rules as $rule) {
             $parts = explode('=', $rule, 2);
             if (count($parts) == 2) {
@@ -654,7 +654,7 @@ class Field_restriction_loader
         xml_set_character_data_handler($xml_parser, 'startText');
 
         // Run the parser
-        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml')); // TODO #3467
+        $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml'), FILE_READ_LOCK | FILE_READ_BOM);
         if (trim($data) == '') {
             return;
         }

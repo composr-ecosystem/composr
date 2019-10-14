@@ -704,18 +704,6 @@ function fgets($handle, $length = null)
 }
 
 /**
- * Reads entire file into an array.
- *
- * @param  PATH $filename The file name
- * @param  integer $flags Flags
- * @return ~array The array (each line being an entry in the array, and newlines still attached) (false: error)
- */
-function file($filename, $flags = 0)
-{
-    return array();
-}
-
-/**
  * Checks whether a file or directory exists.
  *
  * @param  PATH $filename The path

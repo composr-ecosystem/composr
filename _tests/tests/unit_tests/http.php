@@ -20,61 +20,61 @@ class http_test_set extends cms_test_case
 {
     public function testSimple()
     {
-        $result = cms_http_request('http://example.com/'); // TODO #3467
+        $result = cms_http_request('http://example.com/');
         $this->assertTrue(strpos($result->data, 'Example Domain') !== false);
     }
 
     public function testSimpleHttps()
     {
-        $result = cms_http_request('https://example.com/'); // TODO #3467
+        $result = cms_http_request('https://example.com/');
         $this->assertTrue(strpos($result->data, 'Example Domain') !== false);
     }
 
     public function testHead()
     {
-        $result = cms_http_request('http://example.com/', array('byte_limit' => 0)); // TODO #3467
+        $result = cms_http_request('http://example.com/', array('byte_limit' => 0));
         $this->assertTrue($result->data !== null);
     }
 
     public function testHeadHttps()
     {
-        $result = cms_http_request('https://example.com/', array('byte_limit' => 0)); // TODO #3467
+        $result = cms_http_request('https://example.com/', array('byte_limit' => 0));
         $this->assertTrue($result->data !== null);
     }
 
     public function testFail()
     {
-        $result = cms_http_request('http://fdsdsfdsjfdsfdgfdgdf.com/', array('trigger_error' => false)); // TODO #3467
+        $result = cms_http_request('http://fdsdsfdsjfdsfdgfdgdf.com/', array('trigger_error' => false));
         $this->assertTrue($result->data === null, 'Invalid domain producing a result; maybe your ISPs DNS mucks about and you need to disable that in their preferences somehow');
     }
 
     public function testFailHttps()
     {
-        $result = cms_http_request('https://fdsdsfdsjfdsfdgfdgdf.com/', array('trigger_error' => false)); // TODO #3467
+        $result = cms_http_request('https://fdsdsfdsjfdsfdgfdgdf.com/', array('trigger_error' => false));
         $this->assertTrue($result->data === null);
     }
 
     public function testRedirect()
     {
-        $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html'); // TODO #3467
+        $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', array('convert_to_internal_encoding' => true));
         $this->assertTrue(strpos($result->data, 'Redirect test page') !== false);
     }
 
     public function testRedirectHttps()
     {
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html'); // TODO #3467
+        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', array('convert_to_internal_encoding' => true));
         $this->assertTrue(strpos($result->data, 'Redirect test page') !== false);
     }
 
     public function testRedirectDisabled()
     {
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', array('no_redirect' => true)); // TODO #3467
+        $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', array('convert_to_internal_encoding' => true, 'no_redirect' => true));
         $this->assertTrue(strpos($result->data, 'Redirect test page') === false);
     }
 
     public function testHttpAuth()
     {
-        $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', array('auth' => array('guest', 'guest'))); // TODO #3467
+        $result = cms_http_request('https://jigsaw.w3.org/HTTP/Basic/', array('convert_to_internal_encoding' => true, 'auth' => array('guest', 'guest')));
         $this->assertTrue(strpos($result->data, 'Your browser made it!') !== false);
     }
 
@@ -82,8 +82,8 @@ class http_test_set extends cms_test_case
     {
         $write_path = cms_tempnam();
         $write = fopen($write_path, 'wb');
-        $result = cms_http_request('http://example.com/', array('write_to_file' => $write)); // TODO #3467
-        $this->assertTrue(strpos(cms_file_get_contents_safe($write_path), 'Example Domain') !== false);
+        $result = cms_http_request('http://example.com/', array('convert_to_internal_encoding' => true, 'write_to_file' => $write));
+        $this->assertTrue(strpos(cms_file_get_contents_safe($write_path, FILE_READ_LOCK), 'Example Domain') !== false);
         fclose($write);
         unlink($write_path);
     }
@@ -92,8 +92,8 @@ class http_test_set extends cms_test_case
     {
         $write_path = cms_tempnam();
         $write = fopen($write_path, 'wb');
-        $result = cms_http_request('https://example.com/', array('write_to_file' => $write)); // TODO #3467
-        $this->assertTrue(strpos(cms_file_get_contents_safe($write_path), 'Example Domain') !== false);
+        $result = cms_http_request('https://example.com/', array('convert_to_internal_encoding' => true, 'write_to_file' => $write));
+        $this->assertTrue(strpos(cms_file_get_contents_safe($write_path, FILE_READ_LOCK), 'Example Domain') !== false);
         fclose($write);
         unlink($write_path);
     }

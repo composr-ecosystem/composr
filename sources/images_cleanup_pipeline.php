@@ -128,7 +128,7 @@ function handle_images_cleanup_pipeline($path, $filename = null, $recompress_mod
         return;
     }
 
-    $c = @cms_file_get_contents_safe($path);
+    $c = @cms_file_get_contents_safe($path, FILE_READ_LOCK);
     if ($c === false) {
         return;
     }
@@ -505,7 +505,7 @@ function copy_exif_data($src_path, $dest_path, $reorientated = false)
         $iptc_data = chr(0xFF) . chr(0xED) . chr(($iptc_length >> 8) & 0xFF) . chr($iptc_length & 0xFF) . $iptc_data;
     }
 
-    $existing_content = @cms_file_get_contents_safe($dest_path);
+    $existing_content = @cms_file_get_contents_safe($dest_path, FILE_READ_LOCK);
     if ($existing_content === false) {
         return false;
     }

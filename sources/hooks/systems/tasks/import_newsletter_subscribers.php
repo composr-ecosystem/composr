@@ -50,7 +50,7 @@ class Hook_task_import_newsletter_subscribers
 
         // TODO: #3032
         if (filesize($path) < 1024 * 1024 * 3) { // Cleanup possible line ending problems, but only if file not too big
-            $fixed_contents = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
+            $fixed_contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
             require_code('files');
             cms_file_put_contents_safe($path, $fixed_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
         }

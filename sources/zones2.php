@@ -40,7 +40,7 @@ function init__zones2()
  */
 function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_tempcode = false)
 {
-    $page_contents = trim(cms_file_get_contents_safe($path)); // TODO #3467
+    $page_contents = trim(cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
 
     $fallback_title = titleify(basename($path, '.txt'));
 
@@ -281,7 +281,7 @@ function make_zone_directory($zone)
             afm_make_directory($zone . '/pages/html_custom/' . $lang, true, true);
             afm_make_directory($zone . '/pages/html/' . $lang, false, true);
         }
-        afm_make_file($zone . '/index.php', cms_file_get_contents_safe(get_file_base() . '/adminzone/index.php'), false);
+        afm_make_file($zone . '/index.php', cms_file_get_contents_safe(get_file_base() . '/adminzone/index.php', FILE_READ_LOCK), false);
         if (file_exists(get_file_base() . '/pages/modules/.htaccess')) {
             $index_php = array(
                 'pages/comcode/EN', 'pages/comcode_custom/EN',
@@ -289,7 +289,7 @@ function make_zone_directory($zone)
                 'pages/modules', 'pages/modules_custom', 'pages',
             );
             foreach ($index_php as $i) {
-                afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', cms_file_get_contents_safe(get_file_base() . '/pages/modules/.htaccess'), false);
+                afm_make_file($zone . (($zone == '') ? '' : '/') . $i . '/.htaccess', cms_file_get_contents_safe(get_file_base() . '/pages/modules/.htaccess', FILE_READ_LOCK), false);
             }
         }
         $index_php = array(
@@ -316,7 +316,7 @@ function save_zone_base_url($zone, $base_url)
     }
 
     $config_path = get_file_base() . '/_config.php';
-    $config_file = cms_file_get_contents_safe($config_path);
+    $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
     $config_file_before = $config_file;
 
     $regexp = '#\n?\$SITE_INFO\[\'ZONE_MAPPING_' . preg_quote($zone, '#') . '\'\] = array\(\'[^\']+\', \'[^\']+\'\);\n?#';
@@ -570,7 +570,7 @@ function get_block_parameters($block, $include_standard_parameters = false)
     if ($info === null) {
         $params = array();
 
-        $contents = cms_file_get_contents_safe($block_path);
+        $contents = cms_file_get_contents_safe($block_path, FILE_READ_LOCK);
         $matches = array();
         $num_matches = preg_match_all('#\$map\[\'(\w+)\'\]#', $contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
@@ -971,7 +971,7 @@ function sync_htaccess_with_zones()
     if (($change_htaccess) && (file_exists($htaccess_path)) && (cms_is_writable($htaccess_path))) {
         $zones = find_all_zones();
 
-        $htaccess = cms_file_get_contents_safe($htaccess_path);
+        $htaccess = cms_file_get_contents_safe($htaccess_path, FILE_READ_LOCK);
         $htaccess = preg_replace('#\(site[^\)]*#', '(' . implode('|', $zones), $htaccess);
         require_code('files');
         cms_file_put_contents_safe($htaccess_path, $htaccess, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

@@ -180,7 +180,7 @@ class Hook_import_html_site
         $compare_file_contents = array();
         shuffle($content_files);
         for ($i = 0; $i < min(2 /* We would like this to be 5 so we can remove the problem of outliers, but performance is an issue */, count($content_files)); $i++) {
-            $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_files[$i]); // TODO #3467
+            $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_files[$i], FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             $compare_file_contents[$content_files[$i]] = $this->_html_filter($file_contents, $fix_html, $base_url, $files, $file_base);
         }
@@ -189,12 +189,12 @@ class Hook_import_html_site
         if (count($compare_file_contents) > 1) {
             $to_find = array();
             if (file_exists($file_base . '/header.txt')) {
-                $cruft['HEADER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/header.txt'), $fix_html, $base_url, $files, $file_base); // TODO #3467
+                $cruft['HEADER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/header.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), $fix_html, $base_url, $files, $file_base);
             } else {
                 $to_find[] = 'HEADER';
             }
             if (file_exists($file_base . '/footer.txt')) {
-                $cruft['FOOTER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/footer.txt'), $fix_html, $base_url, $files, $file_base); // TODO #3467
+                $cruft['FOOTER'] = $this->_html_filter(cms_file_get_contents_safe($file_base . '/footer.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), $fix_html, $base_url, $files, $file_base);
             } else {
                 $to_find[] = 'FOOTER';
             }
@@ -398,7 +398,7 @@ class Hook_import_html_site
         disable_php_memory_limit();
 
         foreach ($content_files as $content_file) {
-            $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_file); // TODO #3467
+            $file_contents = cms_file_get_contents_safe($file_base . '/' . $content_file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             // Find page-link for page
             $slash_count = substr_count($content_file, '/');
@@ -564,7 +564,7 @@ class Hook_import_html_site
                         @copy($file_base . '/' . $decoded_url, $target);
 
                         /*if (substr($decoded_url, -4) == '.css') { Not needed, as relative paths maintained
-                            $css_file = cms_file_get_contents_safe($target); // TODO #3467
+                            $css_file = cms_file_get_contents_safe($target, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                             $css_file = preg_replace('#(url\([\'"]?)(\.*' . '/)?#', '${1}{$BASE_URL;}/uploads/website_specific/', $css_file);
                             require_code('files');
                             cms_file_put_contents_safe($target, $css_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);

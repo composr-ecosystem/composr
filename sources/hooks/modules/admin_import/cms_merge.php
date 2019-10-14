@@ -1712,7 +1712,7 @@ class Hook_import_cms_merge
                 if (is_file($file_path_from)) {
                     $found_one = true;
 
-                    $comcode = cms_file_get_contents_safe($file_path_from); // TODO #3467
+                    $comcode = cms_file_get_contents_safe($file_path_from, FILE_READ_LOCK | FILE_READ_BOM);
                     $comcode_new = $this->update_comcode($comcode, $the_zone . ':' . $the_page);
 
                     cms_file_put_contents_safe($file_path_to, $comcode_new, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);

@@ -97,7 +97,7 @@ function adjust_htaccess()
 {
     $path = get_file_base() . '/.htaccess';
 
-    $contents = cms_file_get_contents_safe($path);
+    $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
     $lines = array(
         '<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor)\.php)$>',

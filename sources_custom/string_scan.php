@@ -11170,7 +11170,7 @@ function find_strings($from)
     $out = array();
 
     foreach ($from as $file) {
-        $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, false);
+        $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
         $matches = array();
 
         $num_matches = preg_match_all('#do_lang(_tempcode)?\(\'([^\']+)\'(?! \.)#', $c, $matches);

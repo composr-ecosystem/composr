@@ -46,7 +46,7 @@ class comcode_pages_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file); // TODO #3467
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
             try {
                 check_comcode($c);

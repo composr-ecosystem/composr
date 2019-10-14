@@ -263,7 +263,7 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
     $data_extended = $data;
     foreach ($attachments as $file_path => $filename) {
         if ($filename == 'user_metadata.txt') {
-            $metadata = json_decode(cms_file_get_contents_safe($file_path), true); // TODO #3467
+            $metadata = json_decode(cms_file_get_contents_safe($file_path, FILE_READ_LOCK | FILE_READ_BOM), true);
             foreach ($metadata as $key => $val) {
                 if (is_array($val)) {
                     if (!isset($val[0])) { // Not a list
@@ -469,8 +469,8 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
                 array_values($sugarcrm_data)
             );
             $note_id = $response['id'];
-            sugarcrm_log_action('set_note_attachment', array($note_id, base64_encode(cms_file_get_contents_safe($file_path)), $filename));
-            $SUGARCRM->set_note_attachment($note_id, base64_encode(cms_file_get_contents_safe($file_path)), $filename);
+            sugarcrm_log_action('set_note_attachment', array($note_id, base64_encode(cms_file_get_contents_safe($file_path, FILE_READ_LOCK)), $filename));
+            $SUGARCRM->set_note_attachment($note_id, base64_encode(cms_file_get_contents_safe($file_path, FILE_READ_LOCK)), $filename);
         }
     }
 

@@ -412,7 +412,7 @@ There are a number of different functions we use for encoding/decoding URLs:
  - [tt]cms_rawurlrecode[/tt] -- Shortens URLs that are too long for the database (255 character limit) by intelligently cheating in our encoding. The URLs are technically non-compliant but will work.
  - [tt]HarmlessURLCoder[/tt] -- Simplifies/desimplifies URLs, trading human-readability for non-compliance, and handling Punycode (if the [tt]intl[/tt] PHP extension is available). Similar to what browsers do in their address bars. It is a non-destructive operation that doesn't allow for double encoding or double decoding. Non-latin characters in URLs encoded with HarmlessURLCoder are much easier to understand.
 
-[title="4"]Unicode[/title]
+[title="4"]Unicode (utf-8)[/title]
 
 Here is our Unicode-support status on various kinds of URL-related ID:
  - Domain name: Composr has no explicit [url="Punycode"]https://en.wikipedia.org/wiki/Punycode[/url] support, although Composr won't break it

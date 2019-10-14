@@ -274,7 +274,7 @@ class Hook_video_syndication_youtube
         if (substr($url, 0, strlen(get_custom_base_url())) != get_custom_base_url()) {
             $temppath = cms_tempnam();
             $tempfile = fopen($temppath, 'wb');
-            http_get_contents($url, array('byte_limit' => 1024 * 1024 * 1024 * 5, 'write_to_file' => $tempfile)); // TODO #3467
+            http_get_contents($url, array('convert_to_internal_encoding' => true, 'byte_limit' => 1024 * 1024 * 1024 * 5, 'write_to_file' => $tempfile));
 
             $is_temp_file = true;
 
@@ -376,7 +376,7 @@ class Hook_video_syndication_youtube
     protected function _generate_video_xml($video, $is_initial)
     {
         // Match to a category using remote list
-        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat'); // TODO #3467
+        $remote_list_xml = http_get_contents('http://gdata.youtube.com/schemas/2007/categories.cat', array('convert_to_internal_encoding' => true));
         $remote_list_parsed = simplexml_load_string($remote_list_xml);
         $category = 'People';
         foreach ($remote_list_parsed->category as $c) { // Try to bind to one of our tags. Already-bound-remote-category intentionally will be on start of tags list, so automatically maintained through precedence.

@@ -648,7 +648,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         $VALIDATED_ALREADY[$attributes['href']] = 1;
         $url = qualify_url($attributes['href'], $GLOBALS['URL_BASE']);
         if ($url != '') {
-            $sheet = http_get_contents($url, array('trigger_error' => false)); // TODO #3467
+            $sheet = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
             if ($sheet !== null) {
                 $css_conformance = _webstandards_css_sheet($sheet);
                 if (is_array($css_conformance)) {
@@ -662,7 +662,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         $VALIDATED_ALREADY[$attributes['src']] = 1;
         $url = qualify_url($attributes['src'], $GLOBALS['URL_BASE']);
         if (!empty($url)) {
-            $js = http_get_contents($url, array('trigger_error' => false)); // TODO #3467
+            $js = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
             if ($js !== null) {
                 $VALIDATED_ALREADY[$attributes['src']] = 1;
 
@@ -681,7 +681,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         $VALIDATED_ALREADY[$attributes['src']] = 1;
         $url = qualify_url($attributes['src'], $GLOBALS['URL_BASE']);
         if ($url != '') {
-            $iframe = http_get_contents($url, array('trigger_error' => false)); // Sometimes disabled due to my iframe producing a weird PHP exception, that was stopping me working
+            $iframe = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)); // Sometimes disabled due to my iframe producing a weird PHP exception, that was stopping me working
             if (!empty($iframe)) {
                 if (($http_result->download_mime_type == 'text/html') || ($http_result->download_mime_type == 'application/xhtml+xml')) {
                     global $EXTRA_CHECK;
@@ -893,7 +893,7 @@ function _webstandards_css_sheet($data)
                         if (!isset($VALIDATED_ALREADY[$at_file])) {
                             $at_file = qualify_url($at_file, $GLOBALS['URL_BASE']);
                             if ($at_file != '') {
-                                $data2 = http_get_contents($at_file, array('trigger_error' => false)); // TODO #3467
+                                $data2 = http_get_contents($at_file, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
                                 if ($data2 !== null) {
                                     $css_tag_ranges_backup = $CSS_TAG_RANGES;
                                     $css_value_ranges_backup = $CSS_VALUE_RANGES;

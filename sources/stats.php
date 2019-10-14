@@ -34,7 +34,7 @@ function stats_graph_script()
     $path = get_custom_file_base() . '/data_custom/modules/admin_stats/' . $file . '.xml';
 
     if (file_exists($path)) {
-        echo cms_file_get_contents_safe($path); // TODO #3467
+        echo cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
     }
 }
 
@@ -52,7 +52,7 @@ function get_alexa_rank($url)
     }
 
     $_url = 'https://www.alexa.com/minisiteinfo/' . urlencode($url);
-    $result = http_get_contents($_url, array('trigger_error' => false, 'timeout' => 2.0)); // TODO #3467
+    $result = http_get_contents($_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 2.0));
     if ($result === null) {
         return array('', '');
     }

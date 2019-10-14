@@ -136,7 +136,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             return;
         }
 
-        $cpu_info = @cms_file_get_contents_safe('/proc/cpuinfo', false);
+        $cpu_info = @cms_file_get_contents_safe('/proc/cpuinfo');
 
         if (!empty($cpu_info)) {
             $this->assertTrue(strpos($cpu_info, 'AArch64') === false, 'Using a server with an ARM processor may have severely degraded performance: these processors are designed for simple workloads at scale, not powering complex applications');

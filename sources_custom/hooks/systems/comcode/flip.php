@@ -34,7 +34,7 @@ class Hook_comcode_flip
             'tag_description' => 'Provide two-sided square flip spots.',
             'tag_example' => '[flip="Back"]Front[/flip]',
             'tag_tag' => 'flip',
-            'tag_replace' => cms_file_get_contents_safe(get_file_base() . '/themes/default/templates_custom/COMCODE_FLIP.tpl'), // TODO #3467
+            'tag_replace' => cms_file_get_contents_safe(get_file_base() . '/themes/default/templates_custom/COMCODE_FLIP.tpl', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM),
             'tag_parameters' => 'param,final_color=DDDDDD,speed=1000',
             'tag_block_tag' => 0,
             'tag_textual_tag' => 1,

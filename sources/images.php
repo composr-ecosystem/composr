@@ -109,7 +109,7 @@ function cms_getimagesize($path, $ext = null)
     }
 
     if ($ext == 'gif') {
-        $data = @cms_file_get_contents_safe($path);
+        $data = @cms_file_get_contents_safe($path, FILE_READ_LOCK);
         if ($data === false) {
             return false;
         }
@@ -629,7 +629,7 @@ function cms_imagecreatefrom($path, $ext = null)
     } elseif ($ext == 'bmp') {
         $image = @imagecreatefrombmp($path);
     } else {
-        return cms_imagecreatefromstring(cms_file_get_contents_safe($path), null); // Maybe it can be autodetected
+        return cms_imagecreatefromstring(cms_file_get_contents_safe($path, FILE_READ_LOCK), null); // Maybe it can be autodetected
     }
 
     if ($image !== false) {

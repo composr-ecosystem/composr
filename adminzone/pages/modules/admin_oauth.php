@@ -232,7 +232,7 @@ class Module_admin_oauth
             'grant_type' => 'authorization_code',
         );
 
-        $result = http_get_contents($endpoint . '/token', array('post_params' => $post_params)); // TODO #3467
+        $result = http_get_contents($endpoint . '/token', array('convert_to_internal_encoding' => true, 'post_params' => $post_params));
         $parsed_result = json_decode($result, true);
         $refresh_token_key = $service_info['saved_data']['refresh_token_key'];
         set_value($refresh_token_key, $parsed_result['refresh_token'], true);

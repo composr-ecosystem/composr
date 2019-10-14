@@ -213,7 +213,7 @@ class Module_admin_cmsusers
             if ($i < 100) {
                 $active = get_value_newer_than('testing__' . $r['website_url'] . '/_config.php', time() - 60 * 60 * 10, true);
                 if ($active === null) {
-                    $test = cms_http_request($r['website_url'] . '/_config.php', array('trigger_error' => false, 'byte_limit' => 0, 'ua' => 'Simple install stats', 'timeout' => 2.0)); // TODO #3467
+                    $test = cms_http_request($r['website_url'] . '/_config.php', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 0, 'ua' => 'Simple install stats', 'timeout' => 2.0));
                     if ($test->data !== null) {
                         $active = do_lang('YES');
                     } else {

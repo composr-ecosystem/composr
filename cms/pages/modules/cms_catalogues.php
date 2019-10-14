@@ -1107,7 +1107,7 @@ class Module_cms_catalogues extends Standard_crud_module
 
         // Fix up the CSV file to have unix style line endings
         // TODO: #3032
-        $fixed_contents = cms_file_get_contents_safe($csv_path, false, false, true); // TODO #3467
+        $fixed_contents = cms_file_get_contents_safe($csv_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         require_code('files');
         cms_file_put_contents_safe($csv_path, $fixed_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_BOM);
 

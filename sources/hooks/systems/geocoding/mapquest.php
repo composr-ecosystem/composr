@@ -168,7 +168,7 @@ class Hook_geocoding_mapquest
         $url .= '&outFormat=json';
         $url .= '&key=' . urlencode(get_option('mapquest_geocoding_api_key'));
 
-        $_result = http_get_contents($url, array('trigger_error' => false, 'ignore_http_status' => false)); // TODO #3467
+        $_result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => false));
 
         if (empty($_result)) {
             $error_msg = do_lang_tempcode('GEOCODE_COULD_NOT_CONNECT');

@@ -399,7 +399,7 @@ class Module_admin_setupwizard
         if (get_theme_option('setupwizard__provide_cms_advert_choice', null, post_param_string('source_theme', 'default')) == '1') {
             $panel_path = get_custom_file_base() . '/pages/comcode_custom/' . get_site_default_lang() . '/panel_left.txt';
             if (file_exists($panel_path)) {
-                $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path), 'logos/') !== false; // TODO #3467
+                $include_cms_advert = strpos(cms_file_get_contents_safe($panel_path, FILE_READ_LOCK | FILE_READ_BOM), 'logos/') !== false;
             } else {
                 $include_cms_advert = false;
             }
@@ -722,7 +722,7 @@ class Module_admin_setupwizard
                 if (!file_exists($path)) {
                     $path = get_file_base() . '/sources/hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook) . '.php';
                 }
-                if (strpos(cms_file_get_contents_safe($path), 'get_fields') !== false) { // Memory optimisation
+                if (strpos(cms_file_get_contents_safe($path, FILE_READ_LOCK), 'get_fields') !== false) { // Memory optimisation
                     require_code('hooks/modules/admin_setupwizard/' . filter_naughty_harsh($hook));
                     $hook = object_factory('Hook_sw_' . filter_naughty_harsh($hook), true);
                     if ($hook === null) {
@@ -1481,7 +1481,7 @@ class Module_admin_setupwizard
                     $regexp = '#^\_' . preg_quote($source_theme, '#') . '__([\w\-]+)\.txt$#';
                     if (preg_match($regexp, $file, $matches) != 0) {
                         $page_name = $matches[1];
-                        cms_file_put_contents_safe($dir . '/' . $page_name . '.txt', cms_file_get_contents_safe($dir . '/' . $file), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM); // TODO #3467
+                        cms_file_put_contents_safe($dir . '/' . $page_name . '.txt', cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
                     }
                 }
             }

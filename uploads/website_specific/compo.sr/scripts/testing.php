@@ -56,7 +56,7 @@ switch (get_param_string('type')) {
     case 'http_status_check':
         $url = get_param_string('url', false, INPUT_FILTER_URL_GENERAL);
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
-            $http_result = cms_http_request($url, array('bytes_limit' => 0, 'trigger_error' => false)); // TODO #3467
+            $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'bytes_limit' => 0, 'trigger_error' => false));
             $result = @strval($http_result->message);
 
             if ($result === '200') {

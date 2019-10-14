@@ -412,7 +412,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
             '_GUID' => '2303459e94b959d2edf8444188bbeea9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
-            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml'), // TODO #3467
+            'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml', FILE_READ_LOCK | FILE_READ_BOM),
         ));
     }
 

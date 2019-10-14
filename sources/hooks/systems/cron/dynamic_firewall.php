@@ -55,7 +55,7 @@ class Hook_cron_dynamic_firewall
         if (cms_is_writable($rules_path)) {
             require_code('version2');
 
-            $new_contents = @http_get_contents('https://compo.sr/data_custom/firewall_rules.txt?version=' . urlencode(get_version_dotted()), array('trigger_error' => false)); // TODO #3467
+            $new_contents = @http_get_contents('https://compo.sr/data_custom/firewall_rules.txt?version=' . urlencode(get_version_dotted()), array('convert_to_internal_encoding' => true, 'trigger_error' => false));
 
             if (!empty($new_contents)) {
                 require_code('files');

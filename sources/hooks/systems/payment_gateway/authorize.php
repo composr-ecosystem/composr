@@ -439,7 +439,7 @@ class Hook_payment_gateway_authorize
 
         $this->_set_cancellation_api_parameters($authorize_subscription_id);
 
-        $response = http_get_contents($this->url, array('trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0)); // TODO #3467
+        $response = http_get_contents($this->url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0));
 
         if ($response !== null) {
             list($result_code, $code, $text, $subscription_id) = $this->_parse_arb_return($response);
@@ -531,7 +531,7 @@ class Hook_payment_gateway_authorize
 
             $this->_set_aim_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
 
-            $response_data = http_get_contents($this->url, array('trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0)); // TODO #3467
+            $response_data = http_get_contents($this->url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 12.0));
 
             if ($response_data !== null) {
                 $response_result = explode($this->api_parameters['x_delim_char'], $response_data);
@@ -585,7 +585,7 @@ class Hook_payment_gateway_authorize
 
             $this->_set_arb_parameters($card_type, $card_number, $card_start_date, $card_expiry_date, $card_issue_number, $card_cv2, $start_date, $length, $length_units, $trans_expecting_id, $amount, $billing_firstname, $billing_lastname, $billing_street_address, $billing_city, $billing_state, $billing_post_code, $billing_country, $shipping_firstname, $shipping_lastname, $shipping_street_address, $shipping_city, $shipping_state, $shipping_post_code, $shipping_country, $shipping_email, $shipping_phone);
 
-            $response_data = http_get_contents($this->url, array('trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 30.0)); // TODO #3467
+            $response_data = http_get_contents($this->url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $this->api_parameters, 'timeout' => 30.0));
 
             if ($response_data !== null) {
                 list($result_code, $code, $text, $authorizedotnet_subscription_id) = $this->_parse_arb_return($response_data);

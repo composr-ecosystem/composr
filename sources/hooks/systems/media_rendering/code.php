@@ -92,7 +92,7 @@ class Hook_media_rendering_code
         if (url_is_local($url)) {
             $url = get_custom_base_url() . '/' . $url;
         }
-        $file_contents = http_get_contents($url, array('trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/*reasonable limit*/)); // TODO #3467
+        $file_contents = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/*reasonable limit*/));
 
         require_code('files');
         require_code('comcode_renderer');

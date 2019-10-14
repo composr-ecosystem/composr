@@ -219,6 +219,7 @@ class Hook_translation_bing_translator
         }
 
         $options = array(
+            'convert_to_internal_encoding' => true,
             'ignore_http_status' => true,
             'trigger_error' => false,
             'post_params' => ($_request === null) ? null : array($_request),
@@ -228,7 +229,7 @@ class Hook_translation_bing_translator
             'raw_content_type' => 'application/json',
             'extra_headers' => array('Ocp-Apim-Subscription-Key' => $key),
         );
-        $_result = http_get_contents($url, $options); // TODO #3467
+        $_result = http_get_contents($url, $options);
 
         $result = @json_decode($_result, true);
         if (($result === false) || (array_key_exists('error', $result))) {

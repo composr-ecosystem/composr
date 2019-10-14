@@ -628,7 +628,7 @@ function get_template_contents($name)
         return '';
     }
 
-    $ret = cms_file_get_contents_safe($template_path); // TODO #3467
+    $ret = cms_file_get_contents_safe($template_path, FILE_READ_LOCK | FILE_READ_BOM);
 
     return $ret;
 }
@@ -758,7 +758,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
 
     // Find file
     $full_path = zone_black_magic_filterer(get_custom_file_base() . (($zone == '') ? '' : '/') . filter_naughty($zone) . '/pages/comcode_custom/' . filter_naughty($lang) . '/' . filter_naughty($new_file) . '.txt');
-    $file_changed = ((!file_exists($full_path)) || ($text != cms_file_get_contents_safe($full_path))); // TODO #3467
+    $file_changed = ((!file_exists($full_path)) || ($text != cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_BOM)));
 
     // Save revision
     if ($file_changed) {
@@ -767,7 +767,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
             $revision_engine = new RevisionEngineFiles();
             list(, , $existing_path) = find_comcode_page($lang, $file, $zone);
             if ($existing_path != '') {
-                $revision_engine->add_revision(dirname($full_path), $new_file, 'txt', cms_file_get_contents_safe($existing_path), filemtime($existing_path)); // TODO #3467
+                $revision_engine->add_revision(dirname($full_path), $new_file, 'txt', cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM), filemtime($existing_path));
             }
         }
     }
@@ -898,7 +898,7 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
                 $revision_engine = new RevisionEngineFiles();
                 list(, , $existing_path) = find_comcode_page(user_lang(), $page, $zone);
                 if ($existing_path != '') {
-                    $revision_engine->add_revision(dirname($existing_path), $page, 'txt', cms_file_get_contents_safe($existing_path), filemtime($existing_path)); // TODO #3467
+                    $revision_engine->add_revision(dirname($existing_path), $page, 'txt', cms_file_get_contents_safe($existing_path, FILE_READ_LOCK | FILE_READ_BOM), filemtime($existing_path));
                 }
             }
         }

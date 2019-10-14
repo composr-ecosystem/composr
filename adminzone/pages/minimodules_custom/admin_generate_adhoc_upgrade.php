@@ -101,8 +101,8 @@ if ($type == 'auto_probe') {
             $latest_time = @filemtime(get_file_base() . '/' . $file);
             if ($latest_time !== false) {
                 if ($time != $latest_time) {
-                    $old = cms_file_get_contents_safe($probe_dir . '/' . $file);
-                    $new = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+                    $old = cms_file_get_contents_safe($probe_dir . '/' . $file, FILE_READ_LOCK);
+                    $new = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK);
 
                     if ($old != $new) {
                         if ($time < $latest_time) {
@@ -139,7 +139,7 @@ if ($type == 'auto_probe') {
                                 ) . '.editfrom';
 
                                 if (file_exists($probe_dir . '/' . $override_file)) {
-                                    $theme_file_old = cms_file_get_contents_safe($probe_dir . '/' . $override_file); // TODO #3467
+                                    $theme_file_old = cms_file_get_contents_safe($probe_dir . '/' . $override_file, FILE_READ_LOCK | FILE_READ_BOM);
                                     $theme_file_new = $new;
                                     $theme_file_old = preg_replace('#/\*.*\*/#sU', '', $theme_file_old);
                                     $theme_file_new = preg_replace('#/\*.*\*/#sU', '', $theme_file_new);
@@ -234,11 +234,11 @@ if ($type == 'go') {
             foreach ($files as $file) {
                 if (preg_match('#^_config.php$#', $file) == 0) {
                     if (filemtime(get_file_base() . '/' . $file) > $cutoff_point) {
-                        $old = @cms_file_get_contents_safe($probe_dir . '/' . $file); // TODO #3467
+                        $old = @cms_file_get_contents_safe($probe_dir . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                         if ($old === false) {
                             $old = '';
                         }
-                        $new = cms_file_get_contents_safe(get_file_base() . '/' . $file); // TODO #3467
+                        $new = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK); // TODO #3467
                         if (($probe_dir == '') || ($old !== $new)) {
                             $new_filename = $file;
                             if (((preg_match('#^(lang)_custom/#', $file) != 0) || (strpos($old, 'CUSTOMISED FOR PROJECT') !== false)) && (($probe_dir == '') || ($old != ''))) {

@@ -30,9 +30,9 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testDirectives()
     {
-        $directives_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php');
+        $directives_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php', FILE_READ_LOCK);
 
-        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt'); // TODO #3467
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $matches = array();
         $num_matches = preg_match_all('#^            case \'([A-Z_]+)\':#m', $directives_file, $matches);
@@ -45,9 +45,9 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testSymbols()
     {
-        $symbols_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php') . cms_file_get_contents_safe(get_file_base() . '/sources/symbols2.php');
+        $symbols_file = cms_file_get_contents_safe(get_file_base() . '/sources/symbols.php') . cms_file_get_contents_safe(get_file_base() . '/sources/symbols2.php', FILE_READ_LOCK);
 
-        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt'); // TODO #3467
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $matches = array();
         $num_matches = preg_match_all('#^function ecv2?_(\w+)\(\$lang, \$escaped, \$param\)#m', $symbols_file, $matches);
@@ -66,7 +66,7 @@ class specsettings_documented_test_set extends cms_test_case
     {
         require_code('symbols2');
 
-        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt'); // TODO #3467
+        $tempcode_tutorial = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/tut_tempcode.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $matches = array();
         $num_matches = preg_match_all('#\{\$(\w+)#', $tempcode_tutorial, $matches);
@@ -83,7 +83,7 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testInstallOptions()
     {
-        $config_editor_code = cms_file_get_contents_safe(get_file_base() . '/config_editor.php');
+        $config_editor_code = cms_file_get_contents_safe(get_file_base() . '/config_editor.php', FILE_READ_LOCK);
 
         $found = array();
 
@@ -95,7 +95,7 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $all_code .= $c;
         }
 
@@ -154,7 +154,7 @@ class specsettings_documented_test_set extends cms_test_case
             $config .= '$SITE_INFO[\'' . $key . '\'] = \'\';' . "\n";
         }
         $config .= '?' . '>';
-        $old_config = cms_file_get_contents_safe(get_file_base() . '/_config.php');
+        $old_config = cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK);
         $config .= $old_config;
         file_put_contents(get_file_base() . '/_config.php', $config);
         $this->assertTrue(is_string(http_get_contents(get_base_url() . '/index.php')));
@@ -165,7 +165,7 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testValueOptions()
     {
-        $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt'); // TODO #3467
+        $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $found = array();
 
@@ -178,7 +178,7 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $all_code .= $c;
         }
 
@@ -222,7 +222,7 @@ class specsettings_documented_test_set extends cms_test_case
 
     public function testKeepSettings()
     {
-        $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt'); // TODO #3467
+        $codebook_text = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $found = array();
 
@@ -235,7 +235,7 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
             $all_code .= $c;
         }
 

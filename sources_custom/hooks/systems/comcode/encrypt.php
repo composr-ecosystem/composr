@@ -34,7 +34,7 @@ class Hook_comcode_encrypt
             'tag_description' => 'Store the contents of the tag as encrypted in the database.',
             'tag_example' => '[encrypt]Text to encrypt[/encrypt]',
             'tag_tag' => 'encrypt',
-            'tag_replace' => cms_file_get_contents_safe(get_file_base() . '/themes/default/templates_custom/COMCODE_ENCRYPT.tpl'), // TODO #3467
+            'tag_replace' => cms_file_get_contents_safe(get_file_base() . '/themes/default/templates_custom/COMCODE_ENCRYPT.tpl', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM),
             'tag_parameters' => '',
             'tag_block_tag' => 1,
             'tag_textual_tag' => 1,

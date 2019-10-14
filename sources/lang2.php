@@ -216,7 +216,7 @@ function inline_language_editing(&$codename, $lang)
         $has_terminating_line = true;
         $write_needed = true;
     } else {
-        $c = cms_file_get_contents_safe($save_path); // TODO #3467
+        $c = cms_file_get_contents_safe($save_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         $has_terminating_line = (substr($c, -1) == "\n");
         $write_needed = (strpos($c, "\n" . $codename . '=' . $value . "\n") === false);
 
@@ -241,7 +241,7 @@ function inline_language_editing(&$codename, $lang)
     // Go through all required files, doing a string replace if needed
     $included_files = get_included_files();
     foreach ($included_files as $inc) {
-        $orig_contents = cms_file_get_contents_safe($inc); // TODO #3467
+        $orig_contents = cms_file_get_contents_safe($inc, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         $contents = str_replace("'" . $codename . '=' . $value . "'", "'" . $codename . "'", $orig_contents);
         if ($orig_contents != $contents) {
             require_code('files');

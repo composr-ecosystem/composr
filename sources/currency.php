@@ -252,7 +252,7 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
     }
 
     $conv_api_url = 'https://free.currencyconverterapi.com/api/v5/convert?q=' . $rate_key . '&compact=y&apiKey=' . urlencode($api_key);
-    $result = http_get_contents($conv_api_url, array('trigger_error' => false)); // TODO #3467
+    $result = http_get_contents($conv_api_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
     if (is_string($result)) {
         $data = json_decode($result, true);
         if (isset($data[$rate_key]['val'])) {

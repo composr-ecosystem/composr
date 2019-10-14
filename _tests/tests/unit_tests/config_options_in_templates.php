@@ -45,7 +45,7 @@ class config_options_in_templates_test_set extends cms_test_case
                     }
 
                     $path = get_file_base() . '/' . $path;
-                    $c = cms_file_get_contents_safe($path, false);
+                    $c = cms_file_get_contents_safe($path);
 
                     $matches = array();
                     $num_matches = preg_match_all('#\{\$CONFIG_OPTION,([^\{\},]*)\}#', $c, $matches);

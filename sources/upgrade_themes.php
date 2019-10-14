@@ -164,7 +164,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
                 continue;
             }
 
-            $css_file_contents = cms_file_get_contents_safe($css_dir . $css_file); // TODO #3467
+            $css_file_contents = cms_file_get_contents_safe($css_dir . $css_file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
             $orig_css_file_contents = $css_file_contents;
             if (strpos($css_file_contents, $css_recognition_string) === false) {
                 $errors[] = do_lang_tempcode('NON_RECOGNISED_CSS_FILE', escape_html($css_file), escape_html(float_to_raw_string($from_version)));
@@ -176,7 +176,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
                 foreach ($rule_set as $target_file => $_rule_set) {
                     // If people have moved CSS into global.css, to optimise page load times
                     if (($target_file != '*') && ($target_file != 'global.css') && ($css_file == 'global.css')) {
-                        if ((file_exists($css_dir . $target_file)) && (strlen(trim(cms_file_get_contents_safe($css_dir . $target_file))) == 0)) { // TODO #3467
+                        if ((file_exists($css_dir . $target_file)) && (strlen(trim(cms_file_get_contents_safe($css_dir . $target_file, FILE_READ_LOCK | FILE_READ_BOM))) == 0)) {
                             $target_file = 'global.css';
                         }
                     }
@@ -385,7 +385,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
                     continue;
                 }
 
-                $templates_file_contents = cms_file_get_contents_safe($templates_dir . $templates_file); // TODO #3467
+                $templates_file_contents = cms_file_get_contents_safe($templates_dir . $templates_file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                 $orig_templates_file_contents = $templates_file_contents;
 
                 foreach ($templates_replace as $target_file => $rule_set) {

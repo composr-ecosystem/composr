@@ -33,7 +33,7 @@ class download_indexing_test_set extends cms_test_case
         tar_add_file($tar, 'test.txt', 'foobar blah', 0666, time());
         tar_close($tar);
 
-        $data_mash = create_data_mash('foo.tar', cms_file_get_contents_safe($temp_name));
+        $data_mash = create_data_mash('foo.tar', cms_file_get_contents_safe($temp_name, FILE_READ_LOCK));
 
         $this->assertTrue(strpos($data_mash, 'foobar') !== false);
 

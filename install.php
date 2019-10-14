@@ -331,7 +331,7 @@ function step_1()
                 $warnings->attach(do_template('INSTALLER_WARNING', array('MESSAGE' => do_lang_tempcode('INSTALL_SLOW_SERVER'))));
             }
         } else {
-            $files = @unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin'));
+            $files = @unserialize(cms_file_get_contents_safe(get_file_base() . '/data/files.bin', FILE_READ_LOCK));
             if ($files !== false) {
                 $missing = array();
                 $corrupt = array();
@@ -374,7 +374,7 @@ function step_1()
                             continue;
                         }
 
-                        $contents = @strval(cms_file_get_contents_safe(get_file_base() . '/' . $file, false));
+                        $contents = @strval(cms_file_get_contents_safe(get_file_base() . '/' . $file));
                         if (sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', $contents))) != $file_info[0]) {
                             $corrupt[] = $file;
                         }
@@ -531,9 +531,9 @@ function step_2()
             $licence = file_array_get('text/EN/licence.txt');
         }
     } else {
-        $licence = @cms_file_get_contents_safe(get_file_base() . '/text/' . filter_naughty($_POST['default_lang']) . '/licence.txt'); // TODO #3467
+        $licence = @cms_file_get_contents_safe(get_file_base() . '/text/' . filter_naughty($_POST['default_lang']) . '/licence.txt', FILE_READ_LOCK | FILE_READ_BOM);
         if ($licence == '') {
-            $licence = cms_file_get_contents_safe(get_file_base() . '/text/EN/licence.txt'); // TODO #3467
+            $licence = cms_file_get_contents_safe(get_file_base() . '/text/EN/licence.txt', FILE_READ_LOCK | FILE_READ_BOM);
         }
     }
 
@@ -1920,7 +1920,7 @@ if (appengine_is_live()) {
         require_code('files');
 
         // Customise .user.ini file
-        $php_ini = cms_file_get_contents_safe(get_file_base() . '/.user.ini');
+        $php_ini = cms_file_get_contents_safe(get_file_base() . '/.user.ini', FILE_READ_LOCK);
         $php_ini = str_replace('<application>', post_param_string('gae_application'), $php_ini);
         cms_file_put_contents_safe(get_file_base() . '/.user.ini', $php_ini, FILE_WRITE_FIX_PERMISSIONS);
 
@@ -1934,7 +1934,7 @@ if (appengine_is_live()) {
         }
 
         // Customise app.yaml file
-        $app_yaml = cms_file_get_contents_safe(get_file_base() . '/app.yaml');
+        $app_yaml = cms_file_get_contents_safe(get_file_base() . '/app.yaml', FILE_READ_LOCK);
         $app_yaml = preg_replace('#^application: .*$#m', 'application: ' . post_param_string('gae_application'), $app_yaml);
         cms_file_put_contents_safe(get_file_base() . '/app.yaml', $app_yaml | FILE_WRITE_FIX_PERMISSIONS);
     }
@@ -2713,7 +2713,7 @@ function handle_self_referencing_embedment()
                     $out = file_array_get('themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png');
                     echo $out;
                 } else {
-                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png'));
+                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/' . fallback_lang() . '/logo/standalone_logo.png', FILE_READ_LOCK));
                     exit();
                 }
                 exit();
@@ -2725,7 +2725,7 @@ function handle_self_referencing_embedment()
                     $out = file_array_get('themes/default/images/icons/trays/' . $type . '.svg');
                     echo $out;
                 } else {
-                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg'));
+                    print(cms_file_get_contents_safe(get_file_base() . '/themes/default/images/icons/trays/' . $type . '.svg', FILE_READ_LOCK));
                     exit();
                 }
                 exit();
@@ -2741,7 +2741,7 @@ function handle_self_referencing_embedment()
                     if (!file_exists(get_file_base() . '/themes/default/css/' . $css_file . '.css')) {
                         $file = file_array_get('themes/default/css/' . $css_file . '.css'); // TODO #3467
                     } else {
-                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $css_file . '.css'); // TODO #3467
+                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/' . $css_file . '.css', FILE_READ_LOCK | FILE_READ_BOM);
                     }
                     $file = preg_replace('#\{\$IMG;?,([^,\}\']+)\}#', 'install.php?type=themes/default/images/${1}.svg', $file);
 
@@ -2758,7 +2758,7 @@ function handle_self_referencing_embedment()
                     if (!file_exists(get_file_base() . '/themes/default/css/install.css')) {
                         $file = file_array_get('themes/default/css/install.css'); // TODO #3467
                     } else {
-                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/install.css'); // TODO #3467
+                        $file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/install.css', FILE_READ_LOCK | FILE_READ_BOM);
                     }
                     $file = preg_replace('#\{\$IMG,([^,\}\']+)\}#', 'themes/default/images/${1}.svg', $file);
 
@@ -2778,7 +2778,7 @@ function handle_self_referencing_embedment()
                 $out = file_array_get(filter_naughty($type)); // TODO #3467
                 echo $out;
             } else {
-                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type))); // TODO #3467
+                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type), FILE_READ_LOCK | FILE_READ_BOM));
                 exit();
             }
 
@@ -3219,7 +3219,7 @@ require all granted
 </RequireAll>
 END;
 
-    if ((cms_is_writable(get_file_base() . '/exports/addons')) && ((!file_exists(get_file_base() . '/.htaccess')) || (trim(cms_file_get_contents_safe(get_file_base() . '/.htaccess')) == ''))) {
+    if ((cms_is_writable(get_file_base() . '/exports/addons')) && ((!file_exists(get_file_base() . '/.htaccess')) || (trim(cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK)) == ''))) {
         $base_url = post_param_string('base_url', get_base_url(), INPUT_FILTER_URL_GENERAL);
 
         foreach ($clauses as $i => $clause) {
@@ -3266,7 +3266,7 @@ END;
             @copy(get_file_base() . '/.user.ini', get_file_base() . '/' . $user_ini);
             fix_permissions(get_file_base() . '/' . $user_ini);
         } else {
-            file_put_contents(get_file_base() . '/cms_inst_tmp/tmp', cms_file_get_contents_safe(get_file_base() . '/.user.ini'));
+            file_put_contents(get_file_base() . '/cms_inst_tmp/tmp', cms_file_get_contents_safe(get_file_base() . '/.user.ini', FILE_READ_LOCK));
             @ftp_put($conn, $user_ini, get_file_base() . '/cms_inst_tmp/tmp', FTP_TEXT);
             @ftp_site($conn, 'CHMOD 644 ' . $user_ini);
         }

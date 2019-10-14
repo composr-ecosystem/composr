@@ -81,7 +81,7 @@ foreach ($zones as $zone) {
         $pages = array_keys(find_all_pages($zone, $page_type, $ext));
         foreach ($pages as $page) {
             $page_path = get_custom_file_base() . (($zone == '') ? '' : ('/' . $zone)) . '/pages/' . $page_type . '/' . $page . '.' . $ext;
-            $page_contents = cms_file_get_contents_safe($page_path); // TODO #3467
+            $page_contents = cms_file_get_contents_safe($page_path, FILE_READ_LOCK | FILE_READ_BOM);
             foreach ($search as $s) {
                 if (strpos($page_contents, $s) !== false) {
                     if (has_actual_page_access(get_member(), $page, $zone)) {

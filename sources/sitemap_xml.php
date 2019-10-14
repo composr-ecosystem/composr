@@ -159,7 +159,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     // Gzip
     if (function_exists('gzencode')) {
         require_code('files');
-        cms_file_put_contents_safe($sitemaps_out_path . '.gz', gzencode(cms_file_get_contents_safe($sitemaps_out_path), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+        cms_file_put_contents_safe($sitemaps_out_path . '.gz', gzencode(cms_file_get_contents_safe($sitemaps_out_path, FILE_READ_LOCK), -1), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     }
 }
 
@@ -247,7 +247,7 @@ function ping_sitemap_xml($url, $trigger_error = false)
                 'http://www.bing.com/webmaster/ping.aspx?siteMap=',
             );
             foreach ($services as $service) {
-                $out .= http_get_contents($service . urlencode($url), array('trigger_error' => $trigger_error)); // TODO #3467
+                $out .= http_get_contents($service . urlencode($url), array('convert_to_internal_encoding' => true, 'trigger_error' => $trigger_error));
             }
         }
     }

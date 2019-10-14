@@ -815,8 +815,7 @@ function is_unbannable_bot_dns($ip)
 
         foreach ($dns_lists as $dns_list) {
             if (is_file($dns_list)) {
-                $dns_list_file = cms_file_get_contents_safe($dns_list); // TODO #3467
-                $dns_list_array = explode("\n", $dns_list_file);
+                $dns_list_array = cms_file_safe($dns_list);
                 foreach ($dns_list_array as $_dns_suffix) {
                     if (trim($_dns_suffix) === '') {
                         continue;
@@ -861,8 +860,7 @@ function is_unbannable_bot_ip($ip)
 
     foreach ($ip_lists as $ip_list) {
         if (is_file($ip_list)) {
-            $ip_list_file = cms_file_get_contents_safe($ip_list); // TODO #3467
-            $ip_list_array = explode("\n", $ip_list_file);
+            $ip_list_array = cms_file_safe($ip_list);
             foreach ($ip_stack as $ip_s) {
                 foreach ($ip_list_array as $_ip_list_array) {
                     if (trim($_ip_list_array) === '') {
@@ -907,7 +905,7 @@ function add_ip_ban($ip, $descrip = '', $ban_until = null, $ban_positive = true)
     $GLOBALS['SITE_DB']->query_insert('banned_ip', array('ip' => $ip, 'i_descrip' => $descrip, 'i_ban_until' => $ban_until, 'i_ban_positive' => $ban_positive ? 1 : 0), false, true); // To stop weird race-like conditions
     persistent_cache_delete('IP_BANS');
     if ((cms_is_writable(get_file_base() . '/.htaccess')) && ($ban_until === null)) {
-        $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', false, false, true);
+        $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_UNIXIFIED_TEXT);
         $ip_cleaned = str_replace('*', '', $ip);
         $ip_cleaned = str_replace('..', '.', $ip_cleaned);
         $ip_cleaned = str_replace('..', '.', $ip_cleaned);
@@ -937,7 +935,7 @@ function remove_ip_ban($ip)
     $GLOBALS['SITE_DB']->query_delete('banned_ip', array('ip' => $ip), '', 1);
     persistent_cache_delete('IP_BANS');
     if (cms_is_writable(get_file_base() . '/.htaccess')) {
-        $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', false, false, true);
+        $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_UNIXIFIED_TEXT);
         $ip_cleaned = str_replace('*', '', $ip);
         $ip_cleaned = str_replace('..', '.', $ip_cleaned);
         $ip_cleaned = str_replace('..', '.', $ip_cleaned);
@@ -1023,7 +1021,7 @@ function get_webservice_result($error_message)
     require_code('version2');
     require_code('http');
     $url = 'http://compo.sr/uploads/website_specific/compo.sr/scripts/errorservice.php?version=' . urlencode(get_version_dotted()) . '&error_message=' . urlencode($error_message) . '&product=' . urlencode($brand);
-    list($http_result) = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false)), 60 * 24 * 31/*once a month*/); // TODO #3467
+    list($http_result) = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 60 * 24 * 31/*once a month*/);
 
     if (!is_object($http_result)) {
         return null;

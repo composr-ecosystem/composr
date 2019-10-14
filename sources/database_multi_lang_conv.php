@@ -250,7 +250,7 @@ function enable_content_translation()
 function _update_base_config_for_content_translation($new_setting)
 {
     $config_path = get_file_base() . '/_config.php';
-    $config_file = cms_file_get_contents_safe($config_path);
+    $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
     $has = '$SITE_INFO[\'multi_lang_content\'] = \'' . ($new_setting ? '0' : '1') . '\';';
     $wants = '$SITE_INFO[\'multi_lang_content\'] = \'' . ($new_setting ? '1' : '0') . '\';';
     if (strpos($config_file, $has) !== false || strpos($config_file, $wants) !== false) {

@@ -772,10 +772,10 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
             require_code('files');
             $write_to_file = cms_fopen_wb_bom($temp_file_path);
             // TODO: #3467 (must default charset to utf-8 though due to web standards)
-            $http_response = cms_http_request($feed_url, array('byte_limit' => 1024 * 512, 'trigger_error' => false, 'write_to_file' => $write_to_file)); // TODO #3467
+            $http_response = cms_http_request($feed_url, array('convert_to_internal_encoding' => true, 'byte_limit' => 1024 * 512, 'trigger_error' => false, 'write_to_file' => $write_to_file));
 
             if (($http_response->download_mime_type == 'text/calendar') || ($http_response->download_mime_type == 'application/octet-stream')) {
-                $data = cms_file_get_contents_safe($temp_file_path); // TODO #3467
+                $data = cms_file_get_contents_safe($temp_file_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 require_code('calendar_ical');
 

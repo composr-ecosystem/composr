@@ -14,7 +14,7 @@
 
 function diff_simple($old_file, $new_file, $unified = false)
 {
-    return _diff_simple(file($old_file), file($new_file), $unified);
+    return _diff_simple(cms_file_safe($old_file), cms_file_safe($new_file), $unified);
 }
 
 function diff_simple_2($old_contents, $new_contents, $unified = false)
@@ -56,9 +56,9 @@ function _diff_simple($old, $new, $unified = false)
 function diff_compute_new($file_1, $file_2, $file_3)
 {
     /* Load the lines of each file. */
-    $lines1 = file($file_1);
-    $lines2 = file($file_2);
-    $lines3 = file($file_3);
+    $lines1 = cms_file_safe($file_1);
+    $lines2 = cms_file_safe($file_2);
+    $lines3 = cms_file_safe($file_3);
 
     /* Create the Diff object. */
     $diff = new Text_Diff3($lines1, $lines2, $lines3);

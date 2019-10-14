@@ -73,6 +73,7 @@ class Hook_cron_log_purging
         $lines = array();
 
         $myfile = fopen($path, 'a+b');
+        // TODO: #3467
         flock($myfile, LOCK_SH);
         rewind($myfile);
         $matches = array();
@@ -83,6 +84,8 @@ class Hook_cron_log_purging
             if ($line === false) {
                 break;
             }
+
+            $line = trim($line);
 
             if ($found_pivot) {
                 $lines[] = $line;

@@ -231,7 +231,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                         if (!$this->_handle_date_check_runtime($cutoff, filemtime($path))) {
                             continue;
                         }
-                        $contents = cms_file_get_contents_safe($path); // TODO #3467
+                        $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                         if ($only_titles) {
                             $contents = preg_replace('#^.*\[title(="1")?\](.*)\[/title\].*$#Us', '${2}', $contents);
                         }
@@ -310,7 +310,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             if (file_exists($comcode_file)) {
                 push_lax_comcode(true);
                 /* Tempcode compiler slowed things down so easier just to show full thing
-                $temp_summary = comcode_to_tempcode(cms_file_get_contents_safe($comcode_file), null, true); // TODO #3467
+                $temp_summary = comcode_to_tempcode(cms_file_get_contents_safe($comcode_file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM), null, true);
                 $_temp_summary = $temp_summary->evaluate();
                 if (strlen($_temp_summary) < 500) {
                     $summary = $_temp_summary;

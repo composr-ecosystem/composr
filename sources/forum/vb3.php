@@ -1038,7 +1038,7 @@ class Forum_driver_vb3 extends Forum_driver_base
             }
 
             $PROBED_FORUM_CONFIG['board_url'] = '';
-            $file_contents = cms_file_get_contents_safe($path . '/includes/config.php');
+            $file_contents = cms_file_get_contents_safe($path . '/includes/config.php', FILE_READ_LOCK);
             $matches = array();
             if (preg_match('#Licence Number (.*)#', $file_contents, $matches) != 0) {
                 $PROBED_FORUM_CONFIG['vb_unique_id'] = $matches[1];

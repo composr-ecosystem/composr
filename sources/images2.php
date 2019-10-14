@@ -309,7 +309,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
             cms_set_time_limit($old_limit);
             return $from;
         }
-        $from_file = @cms_file_get_contents_safe($from);
+        $from_file = @cms_file_get_contents_safe($from, FILE_READ_LOCK);
         $exif = function_exists('exif_read_data') ? @exif_read_data($from) : false;
     } else {
         $file_path_stub = convert_url_to_path($from);
@@ -318,7 +318,7 @@ function _convert_image($from, &$to, $width, $height, $box_size = null, $exit_on
                 cms_set_time_limit($old_limit);
                 return $from;
             }
-            $from_file = @cms_file_get_contents_safe($file_path_stub);
+            $from_file = @cms_file_get_contents_safe($file_path_stub, FILE_READ_LOCK);
             $exif = function_exists('exif_read_data') ? @exif_read_data($file_path_stub) : false;
         } else {
             $from_file = http_get_contents($from, array('trigger_error' => false, 'byte_limit' => 1024 * 1024 * 20/* reasonable limit */));

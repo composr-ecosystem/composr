@@ -668,7 +668,7 @@ function get_charset()
     fclose($file);
     $matches = array();
     if (preg_match('#charset=([\w\-]+)\r?\n#', $contents, $matches) != 0) {
-        return strtolower($matches[1]);
+        return $matches[1];
     }
     return 'utf-8';
 }

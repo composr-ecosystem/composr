@@ -43,7 +43,7 @@ class Hook_snippet_themewizard_equation
         if (!file_exists($css_path)) {
             $css_path = get_file_base() . '/themes/default/css/global.css';
         }
-        $css_file_contents = cms_file_get_contents_safe($css_path); // TODO #3467
+        $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
         $seed = find_theme_seed($theme);
         $dark = (strpos($css_file_contents, ',#000000,WB,') !== false);

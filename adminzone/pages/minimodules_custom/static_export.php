@@ -399,7 +399,7 @@ foreach ($_FILES as $f) {
     $mime_message .= "Content-Type: application/octet-stream; name=\"" . addslashes($f["name"]) . "\"\n";
     $mime_message .= "Content-Transfer-Encoding: base64\n";
     $mime_message .= "Content-Disposition: attachment\n\n";
-    $mime_message .= base64_encode(cms_file_get_contents_safe($f["tmp_name"]));
+    $mime_message .= base64_encode(cms_file_get_contents_safe($f["tmp_name"], FILE_READ_LOCK));
 }
 $mime_message .= "--PHP-mixed-{$random_hash}--\n\n";
 if (trim($post) != "") {
@@ -415,7 +415,7 @@ if (trim($post) != "") {
         $mailer_path = get_custom_file_base() . '/pages/html_custom/' . $lang . '/mailer_temp.htm';
         cms_file_put_contents_safe($mailer_path, $mailer_script, FILE_WRITE_FIX_PERMISSIONS);
         $session_cookie_id = get_session_cookie();
-        $data = http_get_contents(static_evaluate_tempcode(build_url(array('page' => 'mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null), '', array(), false, false, true)), array('trigger_error' => false, 'cookies' => array($session_cookie_id => get_secure_random_string()))); // TODO #3467
+        $data = http_get_contents(static_evaluate_tempcode(build_url(array('page' => 'mailer_temp', 'keep_lang' => (count($langs) != 1) ? $lang : null), '', array(), false, false, true)), array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'cookies' => array($session_cookie_id => get_secure_random_string())));
         unlink($mailer_path);
         $data = preg_replace('#<title>.*</title>#', '<title>' . escape_html(get_site_name()) . '</title>', $data);
         $relative_root = (count($langs) != 1) ? '../' : '';

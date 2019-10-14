@@ -341,7 +341,7 @@ function output_ical($headers_and_exit = true)
  */
 function ical_import($file_path)
 {
-    $data = cms_file_get_contents_safe($file_path, false, false, true); // TODO #3467
+    $data = cms_file_get_contents_safe($file_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     $calendars = explode('BEGIN:VCALENDAR', $data);
     $calendar = end($calendars);

@@ -882,7 +882,7 @@ class Hook_import_mybb
         $file_path = $attachments_dir . $filename;
         if ($data == '') {
             if (file_exists($file_path)) {
-                $data = cms_file_get_contents_safe($file_path);
+                $data = cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
             }
         }
 

@@ -54,7 +54,7 @@ class _tutorial_quality_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                 check_comcode($c); // This is quite slow
             }
         }
@@ -95,11 +95,11 @@ class _tutorial_quality_test_set extends cms_test_case
             }
 
             if (substr($file, 0, 4) == 'sup_') {
-                $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file), 'Composr Supplementary: ') !== false, $file . ' has wrong title stub'); // TODO #3467
+                $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), 'Composr Supplementary: ') !== false, $file . ' has wrong title stub');
             }
 
             elseif (substr($file, 0, 4) == 'tut_') {
-                $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file), 'Composr Tutorial: ') !== false, $file . ' has wrong title stub'); // TODO #3467
+                $this->assertTrue(strpos(cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM), 'Composr Tutorial: ') !== false, $file . ' has wrong title stub');
             }
         }
         closedir($dh);
@@ -122,7 +122,7 @@ class _tutorial_quality_test_set extends cms_test_case
                 continue;
             }
 
-            $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+            $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
             $c = str_replace('[page="docs:"]', '', $c);
             $c = str_replace('[page="docs:tutorials"]', '', $c);
@@ -169,7 +169,7 @@ class _tutorial_quality_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
                 $has_image = (strpos($c, '[media') !== false) || (strpos($c, '[img') !== false) || (strpos($c, '[code') !== false);
 
@@ -203,7 +203,7 @@ class _tutorial_quality_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
                 $image_count = (substr_count($c, '[media')) + (substr_count($c, '[img')) + (substr_count($c, '[concepts')) + (substr_count($c, '[code')) + (substr_count($c, '[box')) + (substr_count($c, '{|')) + (substr_count($c, '<table'));
                 $size = strlen($c);
@@ -253,7 +253,7 @@ class _tutorial_quality_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = remove_code_block_contents(cms_file_get_contents_safe($path . '/' . $file)); // TODO #3467
+                $c = remove_code_block_contents(cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
 
                 $this->assertTrue(strpos($c, '{$SET,tutorial_add_date,') !== false, $file . ' has no defined add date');
                 $this->assertTrue(strpos($c, '[block]main_tutorial_rating[/block]') !== false, $file . ' has no rating block');

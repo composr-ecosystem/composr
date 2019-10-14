@@ -57,6 +57,8 @@ class Hook_task_install_geolocation_data
                 continue;
             }
 
+            $data = trim($data);
+
             task_log($this, 'Preprocessing geolocation data row', $i);
 
             $_data = explode(',', $data);

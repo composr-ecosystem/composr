@@ -80,7 +80,7 @@ function load_themewizard_params_from_theme($theme, $guess_images_if_needed = fa
                 if (!file_exists($css_path)) {
                     $css_path = get_file_base() . '/themes/default/css/' . $sheet;
                 }
-                $css_file = cms_file_get_contents_safe($css_path); // TODO #3467
+                $css_file = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                 $matches = array();
                 $num_matches = preg_match_all('#\{\$IMG[;\#]?,([\w\-]+)\}#', $css_file, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -130,7 +130,7 @@ function find_theme_dark($theme)
     if (!is_file($css_path)) {
         return false;
     }
-    $css_file_contents = cms_file_get_contents_safe($css_path); // TODO #3467
+    $css_file_contents = cms_file_get_contents_safe($css_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
     $matches = array();
     if (preg_match('#\{\$THEMEWIZARD_COLOR,\#(.{6}),WB,.*\}#', $css_file_contents, $matches) != 0) {
         $THEME_DARK_CACHE[$theme] = (strtoupper($matches[1]) != 'FFFFFF');
@@ -313,9 +313,9 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
     if ($logo_type !== 'small_white') {
         // Override user configured color with $THEMEWIZARD_COLOR "box_title_background" if available
         if (file_exists(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css')) {
-            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css'); // TODO #3467
+            $css_file = cms_file_get_contents_safe(get_custom_file_base() . '/themes/' . $theme . '/css_custom/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         } else {
-            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/global.css'); // TODO #3467
+            $css_file = cms_file_get_contents_safe(get_file_base() . '/themes/default/css/global.css', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         }
         $matches = array();
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9]),site_name_text_color,#i', $css_file, $matches) != 0) {
@@ -395,7 +395,7 @@ function _generate_logo_get_image($image_codename, $theme)
             // Exceptional situation. Maybe theme got corrupted?
             $file_path_stub = get_file_base() . '/themes/default/images/EN/logo/' . filter_naughty($image_codename) . '.png';
         }
-        $data = cms_file_get_contents_safe($file_path_stub);
+        $data = cms_file_get_contents_safe($file_path_stub, FILE_READ_LOCK);
     } else {
         $data = http_get_contents($url);
     }
@@ -545,8 +545,8 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
                     }
                     $default_version_path = get_file_base() . '/themes/default/css/' . $sheet;
                     if (is_file($default_version_path)) {
-                        $default_version = cms_file_get_contents_safe($default_version_path); // TODO #3467
-                        $changed_from_default_theme = cms_file_get_contents_safe(unixify_line_format($default_version_path)) != $output; // TODO #3467
+                        $default_version = cms_file_get_contents_safe($default_version_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK | FILE_READ_BOM);
+                        $changed_from_default_theme = (cms_file_get_contents_safe($default_version_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK | FILE_READ_BOM) != $output);
                     } else {
                         $changed_from_default_theme = true;
                     }
@@ -866,7 +866,7 @@ function calculate_dynamic_css_colours($colours, $source_theme)
     while (($sheet = readdir($dh)) !== false) {
         if (substr($sheet, -4) == '.css') {
             $path = get_file_base() . '/themes/' . $theme . '/' . $css_dir . '/' . $sheet;
-            $contents = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
+            $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             $matches = array();
             $num_matches = preg_match_all('#\{\$THEMEWIZARD_COLOR,(.*),(.*),(.*)\}#', $contents, $matches);
@@ -1329,7 +1329,7 @@ function themewizard_colours_to_sheet($sheet, $landscape, $source_theme, $algori
         return ''; // Probably a dynamic theme wizard call after an addon was removed
     }
 
-    $contents = cms_file_get_contents_safe($path, false, false, true); // TODO #3467
+    $contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     return themewizard_colours_to_css($contents, $landscape, $source_theme, $algorithm, $seed);
 }

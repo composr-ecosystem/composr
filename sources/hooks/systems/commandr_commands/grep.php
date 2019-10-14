@@ -56,7 +56,7 @@ class Hook_commandr_command_grep
                     foreach ($zones as $zone) {
                         $pages = find_all_pages_wrap($zone, true, false, FIND_ALL_PAGES__ALL, 'comcode');
                         foreach ($pages as $page => $type) {
-                            $contents = cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $page);
+                            $contents = cms_file_get_contents_safe(get_custom_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $page, FILE_READ_LOCK);
                             if (preg_match('#' . $parameters[0] . '#', $contents) != 0) {
                                 $output .= $zone . ':' . basename($page, '.txt') . "\n";
                             }

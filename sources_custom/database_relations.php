@@ -175,7 +175,7 @@ function get_innodb_tables_by_addon()
                     continue;
                 }
 
-                $file_contents = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+                $file_contents = cms_file_get_contents_safe(get_file_base() . '/' . $file, FILE_READ_LOCK);
 
                 $matches = array();
                 $num_matches = preg_match_all("#create_table\('([^']+)'#", $file_contents, $matches);

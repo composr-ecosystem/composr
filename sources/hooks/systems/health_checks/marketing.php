@@ -120,7 +120,7 @@ class Hook_health_check_marketing extends Hook_Health_Check
             require_code('caches3');
             erase_cached_templates(false, array('global', 'CMS'));
 
-            $data = cms_file_get_contents_safe(javascript_enforce('global')); // TODO #3467
+            $data = cms_file_get_contents_safe(javascript_enforce('global'), FILE_READ_LOCK | FILE_READ_BOM);
             $this->assertTrue(strpos($data, $ga) !== false, 'Google Analytics enabled (' . $ga . ') but not in page output (themeing issue?)');
         }
 

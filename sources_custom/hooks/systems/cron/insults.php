@@ -73,8 +73,7 @@ class Hook_cron_insults
         if ($selected_member1 != 0 && $selected_member2 != 0) {
             $get_insult = '';
             if (is_file(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt')) {
-                $insults = file(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt');
-                // TODO: #3467
+                $insults = cms_file_safe(get_file_base() . '/text_custom/' . user_lang() . '/insults.txt');
                 $insults_array = array();
                 foreach ($insults as $insult) {
                     $x = explode('=', $insult);

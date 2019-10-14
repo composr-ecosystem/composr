@@ -1686,7 +1686,7 @@ function extract_module_functions($path, $functions, $params = array(), $prefer_
                     if ((running_script('install')) && (file_exists(preg_replace('#(sources|modules|minimodules)_custom#', '${1}', $path)))) {
                         $path = preg_replace('#(sources|modules|minimodules)_custom#', '${1}', $path);
                     }
-                    if (preg_match('#^\s*class (\w+)#m', cms_file_get_contents_safe($path, false), $matches) !== 0) {
+                    if (preg_match('#^\s*class (\w+)#m', cms_file_get_contents_safe($path), $matches) !== 0) {
                         $new_classes = array($matches[1]);
                     }
                 }
@@ -1726,11 +1726,11 @@ function extract_module_functions($path, $functions, $params = array(), $prefer_
         return $ret;
     }
 
-    $file = unixify_line_format(cms_file_get_contents_safe($path, false));
+    $file = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
     if ((strpos($path, '/modules_custom/') !== false) && (is_file(str_replace('/modules_custom/', '/modules/', $path))) && (strpos($file, "\nclass ") === false)) {
         // Customised file is not a full class, so go to default file
         $path = str_replace('/modules_custom/', '/modules/', $path);
-        $file = unixify_line_format(cms_file_get_contents_safe($path, false));
+        $file = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT);
     }
 
     if (strpos($file, 'class Mx_') !== false) {

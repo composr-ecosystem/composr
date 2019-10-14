@@ -132,7 +132,7 @@ function execute_task_background($task_row)
                 if ($mime_type == 'text/html') {
                     if (is_array($content_result)) {
                         $path = $content_result[1];
-                        $content_result = cms_file_get_contents_safe($path); // TODO #3467
+                        $content_result = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
                         @unlink($path);
                         sync_file($path);
                     }
@@ -269,7 +269,7 @@ function call_user_func_array__long_task($plain_title, $title, $hook, $args = ar
         if ($mime_type == 'text/html') {
             if (is_array($content_result)) {
                 $path = $content_result[1];
-                $content_result = cms_file_get_contents_safe($path); // TODO #3467
+                $content_result = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
                 @unlink($path);
                 sync_file($path);
             }

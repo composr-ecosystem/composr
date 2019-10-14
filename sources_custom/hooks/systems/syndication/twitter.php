@@ -141,7 +141,7 @@ class Hook_syndication_twitter
         $max_length = 255;
         $shortened_link = null;
         if ($link != '') {
-            $shortened_link = http_get_contents('http://is.gd/api.php?longurl=' . urlencode($link)); // TODO #3467
+            $shortened_link = http_get_contents('http://is.gd/api.php?longurl=' . urlencode($link), array('convert_to_internal_encoding' => true));
             $max_length -= strlen($shortened_link) + 1;
         }
         if (cms_mb_strlen($chopped_message) > $max_length) {

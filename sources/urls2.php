@@ -1044,7 +1044,7 @@ function find_unique_path($subdir, $filename = null, $lock_in = false, $conflict
         $i++;
 
         if ((is_file($path)) && ($conflict_okay_if_matching !== null)) {
-            if (cms_file_get_contents_safe($path) == $conflict_okay_if_matching) {
+            if (cms_file_get_contents_safe($path, FILE_READ_LOCK) == $conflict_okay_if_matching) {
                 break;
             }
         }

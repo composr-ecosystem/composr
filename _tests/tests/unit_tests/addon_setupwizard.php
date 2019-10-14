@@ -20,7 +20,7 @@ class addon_setupwizard_test_set extends cms_test_case
 {
     public function testPresenceDefinedForAllAddons()
     {
-        $admin_setupwizard = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/modules/admin_setupwizard.php');
+        $admin_setupwizard = cms_file_get_contents_safe(get_file_base() . '/adminzone/pages/modules/admin_setupwizard.php', FILE_READ_LOCK);
 
         $hooks = find_all_hooks('systems', 'addon_registry');
         foreach ($hooks as $hook => $type) {

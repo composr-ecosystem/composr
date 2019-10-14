@@ -605,7 +605,7 @@ function afm_make_file($basic_path, $contents, $world_access)
  */
 function afm_read_file($path)
 {
-    return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path); // TODO #3467 (new param needed!)
+    return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK); // TODO #3467 (new param needed!)
 }
 
 /**
@@ -621,7 +621,7 @@ function afm_copy($old_path, $new_path, $world_access)
     if (!file_exists($a)) {
         $a = get_file_base() . '/' . $old_path;
     }
-    $contents = cms_file_get_contents_safe($a);
+    $contents = cms_file_get_contents_safe($a, FILE_READ_LOCK);
     afm_make_file($new_path, $contents, $world_access);
 }
 

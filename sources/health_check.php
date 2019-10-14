@@ -540,7 +540,7 @@ abstract class Hook_Health_Check
     {
         global $HEALTH_CHECK_PAGE_RESPONSE_CACHE;
         if (!array_key_exists($page_link, $HEALTH_CHECK_PAGE_RESPONSE_CACHE)) {
-            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = cms_http_request($this->get_page_url($page_link), array('timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true)); // TODO #3467
+            $HEALTH_CHECK_PAGE_RESPONSE_CACHE[$page_link] = cms_http_request($this->get_page_url($page_link), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'trigger_error' => false, 'no_redirect' => true));
 
             // Server blocked to access itself
             if ($page_link == ':') {
@@ -566,7 +566,7 @@ abstract class Hook_Health_Check
             $page = $attributes['page'];
             $path_details = find_comcode_page(user_lang(), $page, $zone);
             if ($path_details[2] != '') {
-                $comcode = cms_file_get_contents_safe($path_details[2]); // TODO #3467
+                $comcode = cms_file_get_contents_safe($path_details[2], FILE_READ_LOCK | FILE_READ_BOM);
                 $html = load_comcode_page($path_details[1], $zone, $page, $path_details[0], true);
                 $ret = array($comcode, $html->evaluate(), $zone, $page);
                 $HEALTH_CHECK_COMCODE_PAGE_CONTENT_CACHE[$page_link] = $ret;
@@ -696,7 +696,7 @@ abstract class Hook_Health_Check
 
             $url .= '&' . $key . '=' . urlencode($val);
         }
-        return @json_decode(http_get_contents($url, array('trigger_error' => false)), true); // TODO #3467
+        return @json_decode(http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), true);
     }
 }
 

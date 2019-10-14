@@ -148,7 +148,7 @@ class Block_youtube_channel
             //Determine if name is username or channel id.
             if (strtolower(substr($channel_name_param, 0, 9)) == 'username=') {
                 $channel_name =  substr($channel_name_param, 9);
-                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key)); // TODO #3467
+                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
 
                 // Check if we got a user upload playlist and assign it to a variable. If not, set an error.
                 if (isset($channel->items[0]->contentDetails->relatedPlaylists->uploads)) {
@@ -161,7 +161,7 @@ class Block_youtube_channel
                 $channel_url = 'http://www.youtube.com/user/' . $channel_name;
             } elseif (strtolower(substr($channel_name_param, 0, 3)) == 'id=') {
                 $channel_id =  substr($channel_name_param, 3);
-                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=' . $channel_id . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key)); // TODO #3467
+                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=' . $channel_id . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
 
                 // Get channel title (channel name)
                 if (isset($channel->items[0]->items->snippet->title)) {
@@ -179,7 +179,7 @@ class Block_youtube_channel
                 $channel_url = 'http://www.youtube.com/channel/' . $channel_id;
             } else {
                 $channel_name = $channel_name_param;
-                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key)); // TODO #3467
+                $channel = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=' . $channel_name . '&fields=items(contentDetails(relatedPlaylists(uploads)))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
 
                 // Check if we got a user upload playlist and assign it to a variable. If not, set an error.
                 if (isset($channel->items[0]->contentDetails->relatedPlaylists->uploads)) {
@@ -197,7 +197,7 @@ class Block_youtube_channel
         }
 
         // Get playlist video list from YouTube API v3
-        $playlist_items = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&maxResults=' . strval($channel_maxvideos) . '&playlistId=' . $playlist_id . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . $youtube_api_key)); // TODO #3467
+        $playlist_items = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2Cstatus&maxResults=' . strval($channel_maxvideos) . '&playlistId=' . $playlist_id . '&fields=items(snippet(title%2CchannelId%2CchannelTitle%2Cdescription%2Cthumbnails%2CpublishedAt%2CresourceId(videoId))%2Cstatus(privacyStatus))%2CpageInfo(totalResults)&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
         if (isset($playlist_items->pageInfo->totalResults)) {
             $total_playlist_items = $playlist_items->pageInfo->totalResults;
         } else {
@@ -255,7 +255,7 @@ class Block_youtube_channel
                     }
 
                     //get more detailed metadata for each individual video from 'videos' YouTube API v3 call
-                    $video_metadata = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics%2Cstatus&id=' . $video_id . '&fields=items(contentDetails(duration)%2Cstatistics(viewCount%2CfavoriteCount%2ClikeCount%2CdislikeCount)%2Cstatus(embeddable))&key=' . $youtube_api_key)); // TODO #3467
+                    $video_metadata = @json_decode(http_get_contents('https://www.googleapis.com/youtube/v3/videos?part=contentDetails%2Cstatistics%2Cstatus&id=' . $video_id . '&fields=items(contentDetails(duration)%2Cstatistics(viewCount%2CfavoriteCount%2ClikeCount%2CdislikeCount)%2Cstatus(embeddable))&key=' . $youtube_api_key, array('convert_to_internal_encoding' => true)));
 
                     //check if we got a result. If not, set error and move on.
                     if (!isset($video_metadata->items[0]->contentDetails->duration)) {

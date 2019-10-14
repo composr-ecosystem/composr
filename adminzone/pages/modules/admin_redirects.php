@@ -374,7 +374,7 @@ class Module_admin_redirects
             warn_exit(do_lang_tempcode('URL_REDIRECT_ERROR_UNWRITABLE_HTACCESS'));
         }
 
-        $c = cms_file_get_contents_safe(get_file_base() . '/.htaccess');
+        $c = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK);
         $eng_enable_point = stripos($c, 'RewriteEngine on');
         $ref_point = strpos($c, Module_admin_redirects::URL_REDIRECT_HTACCESS_REF_LINE);
         if (($eng_enable_point === false) || ($ref_point === false)) {

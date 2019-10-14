@@ -385,7 +385,7 @@ class Module_admin_email_log
         header('Content-Type: ' . $mime_type);
         header('Content-Disposition: inline; filename="' . escape_header($filename) . '"');
 
-        echo cms_file_get_contents_safe($path);
+        echo cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();

@@ -908,7 +908,7 @@ function remap_urlpath_as_portable($urlpath)
         return $urlpath;
     }
 
-    return array($urlpath, base64_encode(cms_file_get_contents_safe($path)));
+    return array($urlpath, base64_encode(cms_file_get_contents_safe($path, FILE_READ_LOCK)));
 }
 
 /**

@@ -43,7 +43,7 @@ class tutorials_broken_links_test_set extends cms_test_case
     public function testSelfLinks()
     {
         foreach (array_keys($this->pages) as $f) {
-            $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt'); // TODO #3467
+            $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             $this->assertTrue(strpos($c, ':' . $f . '"]') === false, 'Seems to have a self-linking situation in ' . $f);
         }
@@ -55,7 +55,7 @@ class tutorials_broken_links_test_set extends cms_test_case
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
         $files[] = 'install.php';
         foreach ($files as $path) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
             $matches = array();
             $num_matches = preg_match_all('#(get_tutorial_url|set_helper_panel_tutorial)\(\'([^\']+)\'\)#', $c, $matches);
@@ -74,7 +74,7 @@ class tutorials_broken_links_test_set extends cms_test_case
     public function testTutorialBrokenLinks()
     {
         foreach (array_keys($this->pages) as $f) {
-            $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt'); // TODO #3467
+            $c = cms_file_get_contents_safe($this->path . '/' . $f . '.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             $matches = array();
             $num_matches = preg_match_all('#\[page="(_SEARCH|_SELF|docs):([^"]+)"\]#', $c, $matches);

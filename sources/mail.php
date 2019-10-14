@@ -961,7 +961,7 @@ abstract class Mail_dispatcher_base
                 if (!is_file($path)) {
                     continue;
                 }
-                $contents = cms_file_get_contents_safe($path);
+                $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
                 $real_attachment = array(
                     'mime' => $mime_type,
@@ -1268,7 +1268,7 @@ abstract class Mail_dispatcher_base
                 return null; // Too large to process into an e-mail
             }
 
-            $file_contents = @cms_file_get_contents_safe($file_path_stub);
+            $file_contents = @cms_file_get_contents_safe($file_path_stub, FILE_READ_LOCK);
         } else {
             $file_contents = null;
             $matches = array();
@@ -1294,7 +1294,7 @@ abstract class Mail_dispatcher_base
                             if ($total_filesize > 1024 * 1024 * 5) {
                                 return null; // Too large to process into an e-mail
                             }
-                            $file_contents = cms_file_get_contents_safe($_full);
+                            $file_contents = cms_file_get_contents_safe($_full, FILE_READ_LOCK);
                             $mime_type = get_mime_type(get_file_extension($filename), has_privilege($as, 'comcode_dangerous'));
                         }
                     }

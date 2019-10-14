@@ -71,7 +71,7 @@ class lang_spelling_test_set extends cms_test_case
                     continue;
                 }
 
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
                 $this->check($this, $path, null, $c, $verbose);
             }
@@ -85,7 +85,7 @@ class lang_spelling_test_set extends cms_test_case
             'data/maintenance_status.csv',
         );
         foreach ($files as $_path) {
-            $c = cms_file_get_contents_safe($path . '/' . $_path, false);
+            $c = cms_file_get_contents_safe($path . '/' . $_path);
 
             if ($_path == 'data/maintenance_status.csv') {
                 $c = preg_replace('#^.*,#mU', '', $c);

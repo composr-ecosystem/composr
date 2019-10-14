@@ -134,7 +134,7 @@ class _actionlog_test_set extends cms_test_case
         $all_code = '';
         foreach ($files as $f) {
             if (substr($f, -4) == '.php') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $f, false);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $f);
                 $all_code .= $c;
             }
         }

@@ -435,7 +435,7 @@ class Hook_payment_gateway_secpay
             $_url = build_url(array('page' => 'purchase', 'type' => 'finish', 'type_code' => $transaction_row['e_type_code'], 'cancel' => 1, 'message' => do_lang_tempcode('DECLINED_MESSAGE', $message)), get_module_zone('purchase'));
         }
         $url = $_url->evaluate();
-        echo http_get_contents($url, array('trigger_error' => false)); // TODO #3467
+        echo http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
 
         $tax = null;
 

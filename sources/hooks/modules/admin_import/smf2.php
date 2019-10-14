@@ -1150,7 +1150,7 @@ class Hook_import_smf2
         $attachments_dir = $forum_dir . '/attachments/'; // Forum attachments directory
         $filename_fixed = $filename . $ext;
         $file_path = $attachments_dir . $filename;
-        $data = ($data == '') ? @cms_file_get_contents_safe($file_path) : $data;
+        $data = ($data == '') ? @cms_file_get_contents_safe($file_path, FILE_READ_LOCK) : $data;
         $filename = ($output_filename == '') ? $filename_fixed : $output_filename;
 
         list($path, $url) = find_unique_path('uploads/' . $sections, $filename);

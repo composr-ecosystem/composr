@@ -85,7 +85,7 @@ class _config_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $num_matches = preg_match_all('#get_option\(\'([^\']+)\'\)#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -102,7 +102,7 @@ class _config_test_set extends cms_test_case
             }
 
             if ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $num_matches = preg_match_all('#\{\$CONFIG_OPTION[^\w,]*,(\w+)\}#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -182,7 +182,7 @@ class _config_test_set extends cms_test_case
             if (!is_file($path)) {
                 $path = get_file_base() . '/sources_custom/hooks/systems/config/' . $hook . '.php';
             }
-            $c = cms_file_get_contents_safe($path);
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
 
             $expected_addon = preg_replace('#^.*@package\s+(\w+).*$#s', '$1', $c);
             $this->assertTrue($details['addon'] == $expected_addon, 'Addon mismatch for ' . $hook);
@@ -196,7 +196,7 @@ class _config_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php' || $file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 foreach (array_keys($hooks) as $hook) {
                     if ($hook == 'description') {

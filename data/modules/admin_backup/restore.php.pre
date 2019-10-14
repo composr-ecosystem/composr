@@ -115,6 +115,7 @@ $time_max = $time_start + get_param_integer('time_limit', 10);
 
 // Open file
 $data_file = fopen(__DIR__ . '/restore_data.php', 'rb');
+// TODO: #3467
 
 // Skip forward for offset in this iteration
 $offset = get_param_integer('start_offset', 0);
@@ -136,7 +137,7 @@ while (($line = fgets($data_file)) !== false) {
         continue;
     }
 
-    if (substr($line, 0, 2) != '//') {
+    if (substr(ltrim($line), 0, 2) != '//') {
         // Done
         break;
     }

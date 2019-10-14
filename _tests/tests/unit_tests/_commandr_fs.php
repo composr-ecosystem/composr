@@ -42,7 +42,7 @@ class _commandr_fs_test_set extends cms_test_case
         $commandr_fs_hooks = find_all_hooks('systems', 'commandr_fs');
         foreach ($commandr_fs_hooks as $commandr_fs_hook => $dir) {
             $_path = get_file_base() . '/' . $dir . '/hooks/systems/commandr_fs/' . $commandr_fs_hook . '.php';
-            $c = cms_file_get_contents_safe($_path);
+            $c = cms_file_get_contents_safe($_path, FILE_READ_LOCK);
             if (strpos($c, ' extends Resource_fs_base') !== false) {
                 if (get_forum_type() != 'cns') {
                     if (in_array($commandr_fs_hook, array('forums', 'groups'))) {
@@ -135,7 +135,7 @@ class _commandr_fs_test_set extends cms_test_case
             }
 
             $path = get_file_base() . '/' . $dir . '/hooks/systems/commandr_fs/' . $commandr_fs_hook . '.php';
-            $c = cms_file_get_contents_safe($path);
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
             if (strpos($c, ' extends Resource_fs_base') !== false) {
                 $this->assertTrue(array_key_exists($commandr_fs_hook, $referenced_in_cma), 'Resource-fs hook not referenced: ' . $commandr_fs_hook);
             }

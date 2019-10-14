@@ -88,7 +88,7 @@ function has_escaped_dynamic_sql($query)
         if (!array_key_exists($str, $GLOBALS['DB_ESCAPE_STRING_LIST'])) { // Not explicitly escaped, so we scan the code to see if it was hard-coded in there
             foreach (debug_backtrace() as $backtrace_depth => $backtrace) {
                 if ((isset($backtrace['file'])) && (file_exists($backtrace['file']))) {
-                    $file = file($backtrace['file']);
+                    $file = cms_file_safe($backtrace['file']);
                     $ok = false;
                     $found_query_line = false;
                     foreach ($query_call_strings as $query_call_string) {

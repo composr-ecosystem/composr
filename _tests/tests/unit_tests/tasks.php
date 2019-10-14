@@ -47,7 +47,7 @@ class tasks_test_set extends cms_test_case
 
         $this->establish_admin_session();
         $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'csv' => 1), 'adminzone');
-        $data = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => get_session_id()))); // TODO #3467
+        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
         file_put_contents($tmp_path, $data);
@@ -81,7 +81,7 @@ class tasks_test_set extends cms_test_case
         require_code('hooks/systems/tasks/export_catalogue');
         $ob_export = new Hook_task_export_catalogue();
         $results = $ob_export->run('links');
-        $c = cms_file_get_contents_safe($results[1][1]);
+        $c = cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK);
         $this->assertTrue(strpos($c, 'TestingABC') !== false, 'Did not see our TestingABC record in: ' . $c . "\n\n" . serialize($import_result));
 
         $ob_import->run('links', 'Title', 'add', 'leave', 'skip', '', '', '', true, true, true, $results[1][1]);
@@ -142,7 +142,7 @@ class tasks_test_set extends cms_test_case
         }
         */
 
-        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', array('trigger_error' => false)); // TODO #3467
+        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', array('convert_to_internal_encoding' => true, 'trigger_error' => false));
         if ($result !== null) {
             /* Could not get this working with upload method
             $matches = array();
@@ -155,7 +155,7 @@ class tasks_test_set extends cms_test_case
             $cookies = array('JSESSIONID' => $session_id);
             $extra_headers = array();
             $url = qualify_url(html_entity_decode($rel_url, ENT_QUOTES), 'https://ical-validator.herokuapp.com/validate/');
-            $result = http_get_contents($url, array('ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers)); // TODO #3467
+            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers));
             */
 
             $matches = array();
@@ -165,7 +165,7 @@ class tasks_test_set extends cms_test_case
             $ical = convert_to_internal_encoding($ical, get_charset(), 'utf-8');
             $post_params = array('snippet' => $ical);
             $url = qualify_url(html_entity_decode($rel_url, ENT_QUOTES), 'https://ical-validator.herokuapp.com/validate/');
-            $result = http_get_contents($url, array('ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params)); // TODO #3467
+            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params));
             if ($this->debug) {
                 @var_dump($url);
                 @var_dump($result);
@@ -244,7 +244,7 @@ class tasks_test_set extends cms_test_case
         require_code('hooks/systems/tasks/export_members');
         $ob_export = new Hook_task_export_members();
         $results = $ob_export->run(false, '.csv', '', array('ID', 'Username'), array(), 'ID');
-        $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1]), 'TestingABC') !== false); // TODO #3467
+        $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK | FILE_READ_BOM), 'TestingABC') !== false);
 
         $ob_import->run('', false, $results[1][1]);
     }

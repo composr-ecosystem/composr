@@ -62,7 +62,7 @@ class Hook_commandr_command_themewizard_find_color
             require_code('files2');
             $d = get_directory_contents(get_file_base() . '/themes/' . filter_naughty($theme) . '/css', '', 0, true, true, array('css'));
             foreach ($d as $f) {
-                $c = cms_file_get_contents_safe(get_file_base() . '/themes/' . filter_naughty($theme) . '/css/' . $f, false, false, true); // TODO #3467
+                $c = cms_file_get_contents_safe(get_file_base() . '/themes/' . filter_naughty($theme) . '/css/' . $f, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                 $matches = array();
                 $num_matches = preg_match_all('/#([A-Za-f\d]{6}).*\{\$,(.*)\}/', $c, $matches);
                 $matches2 = array();

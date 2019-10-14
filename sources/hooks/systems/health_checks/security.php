@@ -130,7 +130,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $_data = convert_to_internal_encoding($_data, get_charset(), 'utf-8');
 
         for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue or Google issue
-            $http_result = cms_http_request($url, array('trigger_error' => false, 'post_params' => array($_data), 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json')); // TODO #3467
+            $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => array($_data), 'timeout' => 200.0, 'raw_post' => true, 'raw_content_type' => 'application/json'));
 
             if ($http_result->data !== null) {
                 break;
@@ -327,7 +327,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $files = array_merge($files, get_directory_contents($fb . '/themes', 'themes', 0, true, true, array('php'))); // common uploads location
 
         foreach ($files as $file) {
-            $c = @cms_file_get_contents_safe($fb . '/' . $file, false);
+            $c = @cms_file_get_contents_safe($fb . '/' . $file);
             if ($c !== false) {
                 $trigger = $this->isLikelyWebShell($file, $c);
                 if ($trigger !== null) {
@@ -551,8 +551,8 @@ class Hook_health_check_security extends Hook_Health_Check
 
         $ok = !file_exists($et_path);
         if (!$ok) {
-            $c = cms_file_get_contents_safe($et_path, false, false, true); // TODO #3467
-            $ok = (is_file($et_orig_path)) && ($c == cms_file_get_contents_safe($et_orig_path, false, false, true)); // TODO #3467
+            $c = cms_file_get_contents_safe($et_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $ok = (is_file($et_orig_path)) && ($c == cms_file_get_contents_safe($et_orig_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
             if (!$ok) {
                 $ok = (preg_match('#function execute_temp\(\)\s*\{\s*\}#', $c) != 0);
             }

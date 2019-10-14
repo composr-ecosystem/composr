@@ -63,7 +63,7 @@ function css_inherit($css_file, $theme, $destination_theme, $seed, $dark, $algor
     }
 
     // Read a raw
-    $sheet = cms_file_get_contents_safe($full_path); // TODO #3467
+    $sheet = cms_file_get_contents_safe($full_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
     // Re-seed
     if (addon_installed('themewizard')) {
@@ -165,7 +165,7 @@ function js_compile($j, $js_cache_path, $minify = true, $theme = null)
 function compress_cms_stub_file($stub_file)
 {
     if (function_exists('gzencode')) {
-        $data = @cms_file_get_contents_safe($stub_file); // TODO #3467
+        $data = @cms_file_get_contents_safe($stub_file, FILE_READ_LOCK | FILE_READ_BOM);
 
         if ($data === false) {
             return;
@@ -194,9 +194,9 @@ function css_compile($active_theme, $theme, $c, $full_path, $css_cache_path, $mi
         require_code('themes2');
         $global_full_path = find_template_path('global.css', 'css', $active_theme);
 
-        if (strpos(cms_file_get_contents_safe($global_full_path), '{$THEMEWIZARD_COLOR,') !== false) { // TODO #3467
+        if (strpos(cms_file_get_contents_safe($global_full_path, FILE_READ_LOCK | FILE_READ_BOM), '{$THEMEWIZARD_COLOR,') !== false) {
             require_code('tempcode_compiler');
-            $temp = template_to_tempcode(cms_file_get_contents_safe($global_full_path), 0, false, $c, $active_theme, user_lang()); // TODO #3467
+            $temp = template_to_tempcode(cms_file_get_contents_safe($global_full_path, FILE_READ_LOCK | FILE_READ_BOM), 0, false, $c, $active_theme, user_lang());
             $temp->evaluate(); // We just need it to evaluate, not do anything with it
         }
     }

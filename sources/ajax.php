@@ -466,7 +466,7 @@ function load_template_script()
     }
 
     if (file_exists($x)) {
-        echo cms_file_get_contents_safe($x); // TODO #3467
+        echo cms_file_get_contents_safe($x, FILE_READ_LOCK | FILE_READ_BOM);
     }
 
     exit(); // So auto_append_file cannot run and corrupt our output
@@ -488,7 +488,7 @@ function sheet_script()
     if ($sheet != '') {
         $path = css_enforce(filter_naughty($sheet), get_param_string('theme', null));
         if ($path != '') {
-            echo @str_replace('../../../', '', cms_file_get_contents_safe($path)); // TODO #3467
+            echo @str_replace('../../../', '', cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM));
         }
     }
 
@@ -511,7 +511,7 @@ function script_script()
     if ($script != '') {
         $path = javascript_enforce(filter_naughty($script), get_param_string('theme', null));
         if ($path != '') {
-            echo @str_replace('../../../', '', cms_file_get_contents_safe($path)); // TODO #3467
+            echo @str_replace('../../../', '', cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM));
         }
     }
 

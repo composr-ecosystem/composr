@@ -112,7 +112,7 @@ class modularisation_test_set extends cms_test_case
                 foreach ($addon_files as $fileindex => $_path) {
                     if ($_path == $path) {
                         if (substr($_path, -4) == '.php') {
-                            $data = cms_file_get_contents_safe(get_file_base() . '/' . $_path, false);
+                            $data = cms_file_get_contents_safe(get_file_base() . '/' . $_path);
                             $check_package = $this->should_check_package($data, $path);
 
                             if ($check_package) {
@@ -135,7 +135,7 @@ class modularisation_test_set extends cms_test_case
                 }
             }
             if (!$found) {
-                $data = cms_file_get_contents_safe(get_file_base() . '/' . $_path, false);
+                $data = cms_file_get_contents_safe(get_file_base() . '/' . $_path);
                 $check_package = $this->should_check_package($data, $path);
 
                 if ($check_package) {

@@ -28,7 +28,7 @@ class tutorials_codebox_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $this->assertTrue(strpos($c, '[code]') === false, 'Has non-specified [code]-tag language in ' . $file);
                 $this->assertTrue(strpos($c, '[codebox]') === false, 'Has non-specified [codebox]-tag language in ' . $file);
@@ -77,7 +77,7 @@ class tutorials_codebox_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $matches = array();
                 $num_matches = preg_match_all('#\[(code|codebox)="([^"]*)"\]#', $c, $matches);

@@ -196,7 +196,7 @@ function _upgrader_file_upgrade_screen()
             // See if we can skip the file, if the on-disk version is identical?
             if ((file_exists(get_file_base() . '/' . $upgrade_file['path'])) && (($is_directory) || (filesize(get_file_base() . '/' . $upgrade_file['path']) == $upgrade_file['size']))) {
                 $tar_data = tar_get_file($upgrade_resource, $upgrade_file['path']);
-                if (cms_file_get_contents_safe(get_file_base() . '/' . $upgrade_file['path']) == $tar_data['data']) {
+                if (cms_file_get_contents_safe(get_file_base() . '/' . $upgrade_file['path'], FILE_READ_LOCK) == $tar_data['data']) {
                     $out .= do_lang('UPGRADER_SKIPPING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
                     continue;
                 }

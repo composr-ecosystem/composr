@@ -28,12 +28,12 @@ class log_refs_test_set extends cms_test_case
         $all_code = '';
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, array('php'));
         foreach ($files as $path) {
-            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+            $all_code .= cms_file_get_contents_safe(get_file_base() . '/' . $path);
         }
 
-        $codebook = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt'); // TODO #3467
+        $codebook = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/codebook_3.txt', FILE_READ_LOCK | FILE_READ_BOM);
 
-        $web_config = cms_file_get_contents_safe(get_file_base() . '/web.config'); // TODO #3467
+        $web_config = cms_file_get_contents_safe(get_file_base() . '/web.config', FILE_READ_LOCK | FILE_READ_BOM);
 
         $defined_logs = array();
         $hook_obs = find_all_hook_obs('systems', 'logs', 'Hook_logs_');

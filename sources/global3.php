@@ -154,6 +154,12 @@ function init__global3()
     global $DISABLE_SMART_DECACHING_TEMPORARILY;
     $DISABLE_SMART_DECACHING_TEMPORARILY = false;
 
+    if (!defined('FILE_READ_LOCK')) {
+        define('FILE_READ_LOCK', 1);
+        define('FILE_READ_BOM', 2);
+        define('FILE_READ_UNIXIFIED_TEXT', 4);
+    }
+
     // Time limits...
 
     if (!defined('TIME_LIMIT_EXTEND_modest')) {
@@ -315,13 +321,15 @@ function fix_permissions($path, $perms = null)
  * Get the contents of a file, with locking support.
  *
  * @param  PATH $path File path
- * @param  boolean $locking Handle locking; has a performance impact, so avoid if opening very large numbers of files
- * @param  boolean $handle_file_bom Do character set conversions indicated by a BOM
- * @param  boolean $unixify_line_format Convert line endings to Unix-style
+ * @param  integer $flags FILE_READ_* flags
  * @return ~string File contents (false: error)
  */
-function cms_file_get_contents_safe($path, $locking = true, $handle_file_bom = false, $unixify_line_format = false)
+function cms_file_get_contents_safe($path, $flags = 0)
 {
+    $locking = ($flags & FILE_READ_LOCK) != 0;
+    $handle_file_bom = ($flags & FILE_READ_BOM) != 0;
+    $unixify_line_format = ($flags & FILE_READ_UNIXIFIED_TEXT) != 0;
+
     $tmp = fopen($path, 'rb');
     if ($tmp === false) {
         return false;
@@ -360,7 +368,22 @@ function _get_boms()
     );
 }
 
-// TODO: #3467 Define cms_file_safe() as a front-end to cms_file_get_contents_safe, and change some file() calls to it, using boolean parameters as appropriate.
+/**
+ * Reads entire file into an array.
+ *
+ * @param  PATH $filename The file name
+ * @return ~array The array (each line being an entry in the array, and newlines still attached) (false: error)
+ */
+function cms_file_safe($path)
+{
+    $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM | FILE_READ_UNIXIFIED_TEXT);
+    if ($c === false) {
+        return false;
+    }
+
+    $lines = explode("\n", $c);
+    return $lines;
+}
 
 /**
  * Detect a BOM (Unicode byte-order-mark) from a string, and strip it. Return the altered string.
@@ -434,7 +457,7 @@ function handle_file_bom($path, $handle_charset_conversion_automatically = true)
     if ($handle_charset_conversion_automatically) {
         // Automatic conversion, we simply read in the file, strip the BOM, convert, and re-save...
 
-        $contents = cms_file_get_contents_safe($path); // TODO: #3467 We can actually do this line-by-line, will be memory-conservative then
+        $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK); // TODO: #3467 We can actually do this line-by-line, will be memory-conservative then
         $contents = substr($contents, strlen($bom));
         require_code('character_sets');
         $contents = convert_to_internal_encoding($contents, $file_charset);
@@ -1595,7 +1618,7 @@ function addon_installed($addon, $check_hookless = false)
                 // Check tables defined in db_meta.bin (bundled addons)
                 static $data = null;
                 if ($data === null) {
-                    $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin'));
+                    $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK));
                 }
                 foreach ($data['tables'] as $table_name => $table) {
                     if ($table['addon'] == $addon) {
@@ -2771,7 +2794,7 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
     global $SITE_INFO;
     if ((!$force_db) && (((isset($SITE_INFO['known_suexec'])) && ($SITE_INFO['known_suexec'] == '1')) || (cms_is_writable(get_file_base() . '/.htaccess')))) {
         $bans = array();
-        $ban_count = preg_match_all('#\n(Require not ip) (.*)#i', cms_file_get_contents_safe(get_file_base() . '/.htaccess'), $bans);
+        $ban_count = preg_match_all('#\n(Require not ip) (.*)#i', cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_LOCK), $bans);
         $ip_bans = array();
         for ($i = 0; $i < $ban_count; $i++) {
             $ip_bans[$bans[1][$i]] = array('ip' => $bans[1][$i]);
@@ -4294,6 +4317,7 @@ function is_maintained($code)
             $lines = explode("\n", $file);
             array_shift($lines); // Skip header row
             foreach ($lines as $line) {
+                // TODO: #3467
                 $row = str_getcsv($line);
                 $cache[$row[0]] = !empty($row[3]);
             }

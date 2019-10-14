@@ -73,7 +73,7 @@ class Block_side_network
         if (strlen($netlinks) > 0) {
             require_code('character_sets');
 
-            $http_result = cms_http_request($netlinks, array('trigger_error' => false)); // TODO #3467
+            $http_result = cms_http_request($netlinks, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
             if ($http_result->data === null) {
                 $if_network = ($http_result->message_b === null) ? $http_result->message : $http_result->message_b;
             } else {

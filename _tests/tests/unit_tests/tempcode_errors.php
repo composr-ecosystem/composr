@@ -32,7 +32,7 @@ class tempcode_errors_test_set extends cms_test_case
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (strtolower(substr($file, -4)) == '.tpl') {
-                    $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                    $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                     $this->assertTrue(strpos($c, '{+START,IF_PASSED,{') === false, 'Bad IF_PASSED parameter in ' . $file . ' template');
                     $this->assertTrue(strpos($c, '{+START,IF_NON_PASSED,{') === false, 'Bad IF_NON_PASSED parameter in ' . $file . ' template');

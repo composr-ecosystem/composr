@@ -271,7 +271,7 @@ function find_remote_addons()
     $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : 'http://compo.sr';
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
-    $contents = http_get_contents($url, array('trigger_error' => false)); // TODO #3467
+    $contents = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
     $matches = array();
     $num_matches = preg_match_all('#<entry id="(\d+)".* title="([^"]+)"#Us', $contents, $matches);
     for ($i = 0; $i < $num_matches; $i++) {
@@ -955,7 +955,7 @@ function find_updated_addons()
     }
 
     require_code('http');
-    list($addon_data) = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false)), 5/*5 minute cache*/); // TODO #3467
+    list($addon_data) = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 5/*5 minute cache*/);
     if (($addon_data === null) || ($addon_data == '')) {
         return array();
         //warn_exit(do_lang('INTERNAL_ERROR'));

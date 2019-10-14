@@ -214,7 +214,7 @@ class DatabaseRepair
             );
         }
 
-        $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin'));
+        $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK));
 
         $expected_tables = array();
         foreach ($data['tables'] as $table_name => $table) {

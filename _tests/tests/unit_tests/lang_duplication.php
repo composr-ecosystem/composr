@@ -48,7 +48,7 @@ class lang_duplication_test_set extends cms_test_case
                 $path = get_file_base() . '/lang_custom/EN/' . $file . '.ini';
             }
 
-            $c = cms_file_get_contents_safe($path); // TODO #3467
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
             $c = preg_replace('#^.*\[strings\]#s', '', $c); // Remove descriptions section
 

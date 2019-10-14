@@ -34,7 +34,7 @@ class basic_code_formatting_test_set extends cms_test_case
 
         $this->text_formats = array();
         $path = get_file_base() . '/.gitattributes';
-        $c = cms_file_get_contents_safe($path);
+        $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         $matches = array();
         $num_matches = preg_match_all('#^\*\.(\w+) text#m', $c, $matches);
         $found = array();
@@ -126,7 +126,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if ((in_array($ext, $file_types_spaces)) || (in_array($ext, $file_types_tabs))) {
-                $c = cms_file_get_contents_safe($path, false);
+                $c = cms_file_get_contents_safe($path);
 
                 $contains_tabs = strpos($c, "\t");
                 $contains_spaced_tabs = strpos($c, '    ');
@@ -189,7 +189,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if ((isset($this->text_formats[$ext])) && ($ext != 'svg') && ($ext != 'ini')) {
-                $c = cms_file_get_contents_safe($path, false);
+                $c = cms_file_get_contents_safe($path);
 
                 $ok = (preg_match('#[ \t]$#m', $c) == 0);
                 $this->assertTrue($ok, 'Has trailing whitespace in ' . $path);
@@ -242,7 +242,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = cms_file_get_contents_safe($path, false);
+                $c = cms_file_get_contents_safe($path);
 
                 if ($ext == 'php' || $ext == 'css' || $ext == 'js') {
                     // Strip comments, which often contain people's non-English names
@@ -297,7 +297,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = cms_file_get_contents_safe($path, false);
+                $c = cms_file_get_contents_safe($path);
 
                 $this->assertTrue(strpos($c, "\r") === false, 'Windows text format detected for ' . $path);
 

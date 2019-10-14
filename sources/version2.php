@@ -51,7 +51,7 @@ function get_future_version_information()
     static $http_result = null; // Cache
     if ($http_result === null) {
         require_code('http');
-        $http_result = cache_and_carry('cms_http_request', array($url, array('trigger_error' => false)), ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0); // TODO #3467
+        $http_result = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
     }
 
     if (is_array($http_result) && isset($http_result[0])) {
@@ -225,9 +225,9 @@ function is_php_version_supported($v)
     if ($data === null) {
         require_code('http');
         if (function_exists('set_option')) {
-            $data = cache_and_carry('http_get_contents', array('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('trigger_error' => false)), 60 * 60 * 24 * 7); // TODO #3467
+            $data = cache_and_carry('http_get_contents', array('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 60 * 60 * 24 * 7);
         } else {
-            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('trigger_error' => false)); // TODO #3467
+            $data = http_get_contents('https://raw.githubusercontent.com/php/web-php/master/include/branches.inc', array('convert_to_internal_encoding' => true, 'trigger_error' => false));
         }
     }
 

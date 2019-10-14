@@ -40,7 +40,7 @@ class privilege_existence_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $num_matches = preg_match_all('#add_privilege\(\'[^\']+\', \'([^\']+)\'#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -55,7 +55,7 @@ class privilege_existence_test_set extends cms_test_case
             $file_type = get_file_extension($path);
 
             if ($file_type == 'php') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, false);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $num_matches = preg_match_all('#has_privilege\((get_member\(\)|\$\w+), \'([^\']+)\'\)#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
@@ -120,7 +120,7 @@ class privilege_existence_test_set extends cms_test_case
             }
 
             if ($file_type == 'tpl' || $file_type == 'txt') {
-                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path); // TODO #3467
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $num_matches = preg_match_all('#\{\$HAS_PRIVILEGE,(\w+)\}#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {

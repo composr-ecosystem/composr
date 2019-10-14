@@ -347,7 +347,7 @@ function init__m_zip()
 
             // UNCOMMENT THIS TO SPEEDUP. WILL REQUIRE MORE RAM AND FAIL FOR BIG-BIG FILES
 
-            //if (/*$zip_entry_file_size == 0 ||*/ $zip_entry_file_size == filesize($TheFile)) return implode('', file($TheFile));
+            //if (/*$zip_entry_file_size == 0 ||*/ $zip_entry_file_size == filesize($TheFile)) return implode('', cms_file_safe($TheFile));
 
             $FH = $M_ZIP_FILE_HANDLES[$zip_entry[0]];
             if ($FH) {

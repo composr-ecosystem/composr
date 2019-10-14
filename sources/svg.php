@@ -169,7 +169,7 @@ function _start_svg()
     }
     $js_file = str_replace(get_custom_file_base(), get_custom_base_url(), javascript_enforce('global'));
     global $CSS_FILE_CONTENTS;
-    $CSS_FILE_CONTENTS = cms_file_get_contents_safe($css_file_path); // TODO #3467
+    $CSS_FILE_CONTENTS = cms_file_get_contents_safe($css_file_path, FILE_READ_LOCK | FILE_READ_BOM);
     return '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <' . '?xml-stylesheet href="' . escape_html($css_file) . '"?' . '>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">

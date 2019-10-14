@@ -287,7 +287,7 @@ class Module_recommend
                 if ($from !== null) {
                     $resource_title = get_param_string('title', '', INPUT_FILTER_GET_COMPLEX);
                     if ($resource_title == '') { // Auto download it
-                        $downloaded_at_link = http_get_contents($from, array('trigger_error' => false, 'byte_limit' => 3000)); // TODO #3467
+                        $downloaded_at_link = http_get_contents($from, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => 3000));
                         if (is_string($downloaded_at_link)) {
                             $matches = array();
                             if (cms_preg_match_safe('#\s*<title[^>]*\s*>\s*(.*)\s*\s*<\s*/title\s*>#mi', $downloaded_at_link, $matches) != 0) {
@@ -402,7 +402,7 @@ class Module_recommend
                     $possible_email_fields = array('E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email');
                     $possible_name_fields = array('Name', 'Forename', 'First Name', 'Display Name', 'First');
 
-                    $fixed_contents = cms_file_get_contents_safe($_FILES['upload']['tmp_name'], false, false, true); // TODO #3467
+                    $fixed_contents = cms_file_get_contents_safe($_FILES['upload']['tmp_name'], FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
                     require_code('files');
                     cms_file_put_contents_safe($_FILES['upload']['tmp_name'], $fixed_contents, FILE_WRITE_FAILURE_SILENT);
 

@@ -276,7 +276,7 @@ class Hook_chat_bot_trickstr
         mt_srand((double)microtime() * 1000000);
 
         // load knowledge file
-        $lines_array = file(get_custom_file_base() . '/sources_custom/hooks/modules/chat_bots/knowledge.txt');
+        $lines_array = cms_file_safe(get_custom_file_base() . '/sources_custom/hooks/modules/chat_bots/knowledge.txt');
 
         $count = count($lines_array);
 

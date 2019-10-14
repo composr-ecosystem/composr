@@ -26,7 +26,7 @@ class tutorial_title_structure_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $last_level = 1;
 
@@ -50,7 +50,7 @@ class tutorial_title_structure_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $last_level = 1;
 
@@ -75,7 +75,7 @@ class tutorial_title_structure_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file); // TODO #3467
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
 
                 $matches = array();
                 $test = (preg_match('#\[title="(\d+)"\](.*)(?![/title])\[/title\]\s*\[title="\\1"\](.*)(?![/title])\[/title\]#', $c, $matches) == 0);

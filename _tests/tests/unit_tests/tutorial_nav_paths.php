@@ -46,7 +46,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK);
 
                 $matches = array();
                 $num_matches = preg_match_all('#"([^"]*)" configuration option[^s]#', $c, $matches);
@@ -79,7 +79,7 @@ class tutorial_nav_paths_test_set extends cms_test_case
         $dh = opendir($path);
         while (($file = readdir($dh)) !== false) {
             if (substr($file, -4) == '.txt') {
-                $c = cms_file_get_contents_safe($path . '/' . $file);
+                $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK);
 
                 $matches = array();
                 $num_matches = preg_match_all('#Admin Zone > Setup > Configuration > (\w[\w /]+\w)( > (\w[\w /]+\w))?#', $c, $matches);

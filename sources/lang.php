@@ -136,7 +136,7 @@ function lang_load_runtime_processing()
 
         $path = get_custom_file_base() . '/caches/lang/_runtime_processing.lcd';
         if (is_file($path)) {
-            $LANG_RUNTIME_PROCESSING = @unserialize(cms_file_get_contents_safe($path));
+            $LANG_RUNTIME_PROCESSING = @unserialize(cms_file_get_contents_safe($path, FILE_READ_LOCK));
             if ($LANG_RUNTIME_PROCESSING !== false) {
                 $needs_compiling = false;
             }
@@ -570,7 +570,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
         }
 
         if ((is_file($cache_path)) && ((!is_file($lang_file)) || ((@/*race conditions*/filemtime($cache_path) > filemtime($lang_file)) && (@/*race conditions*/filemtime($cache_path) > filemtime($lang_file_default))))) {
-            $tmp = @cms_file_get_contents_safe($cache_path);
+            $tmp = @cms_file_get_contents_safe($cache_path, FILE_READ_LOCK);
             if ($tmp != '') {
                 $unserialized = @unserialize($tmp);
                 if ($unserialized !== false) {

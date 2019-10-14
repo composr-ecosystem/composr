@@ -20,7 +20,7 @@ class phpstub_accuracy_test_set extends cms_test_case
 {
     public function testFunctionsNeeded()
     {
-        $phpstub = cms_file_get_contents_safe(get_file_base() . '/sources_custom/phpstub.php');
+        $phpstub = cms_file_get_contents_safe(get_file_base() . '/sources_custom/phpstub.php', FILE_READ_LOCK);
         $matches = array();
         $num_matches = preg_match_all('#^function (\w+)\(#m', $phpstub, $matches);
         $declared_functions = array();
@@ -30,7 +30,7 @@ class phpstub_accuracy_test_set extends cms_test_case
         }
         sort($declared_functions);
 
-        $c = cms_file_get_contents_safe(get_file_base() . '/sources/hooks/systems/health_checks/install_env_php_lock_down.php');
+        $c = cms_file_get_contents_safe(get_file_base() . '/sources/hooks/systems/health_checks/install_env_php_lock_down.php', FILE_READ_LOCK);
         $num_matches = preg_match_all('#<<<END(.*)END;#Us', $c, $matches);
         $c = '';
         for ($i = 0; $i < $num_matches; $i++) {

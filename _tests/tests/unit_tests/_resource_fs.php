@@ -66,7 +66,7 @@ class _resource_fs_test_set extends cms_test_case
             }
 
             $path = get_file_base() . '/' . $dir . '/hooks/systems/commandr_fs/' . $commandr_fs_hook . '.php';
-            $c = cms_file_get_contents_safe($path);
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK);
             if (strpos($c, ' extends Resource_fs_base') !== false) {
                 require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($commandr_fs_hook));
                 $ob = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($commandr_fs_hook));

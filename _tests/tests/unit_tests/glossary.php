@@ -20,7 +20,7 @@ class glossary_test_set extends cms_test_case
 {
     public function testConsistentSize()
     {
-        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/sup_glossary.txt'); // TODO #3467
+        $c = cms_file_get_contents_safe(get_file_base() . '/docs/pages/comcode_custom/EN/sup_glossary.txt', FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
         $cnt = substr_count($c, '<tr');
         $this->assertTrue($cnt <= 100, 'Glossary should be restricted to 100 terms, but has ' . integer_format($cnt - 1) . '. Merge some terms if you have had to add new ones (e.g. put less important associated terms under a major term) and/or remove some.');
 

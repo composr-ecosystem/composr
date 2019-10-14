@@ -377,7 +377,7 @@ function demonstratr_add_site($codename, $name, $email_address, $password, $desc
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('sites', 's_server', array('s_codename' => $codename));
     if ($test !== null) {
         // Did it fail adding before? It's useful to not have to fiddle around manually cleaning up when debugging
-        $definitely_failed = false;//(strpos(cms_file_get_contents_safe(special_demonstratr_dir() . '/rcpthosts', false), "\n" . $codename . '.composr.info' . "\n") === false);
+        $definitely_failed = false;//(strpos(cms_file_get_contents_safe(special_demonstratr_dir() . '/rcpthosts'), "\n" . $codename . '.composr.info' . "\n") === false);
         $probably_failed = !file_exists(special_demonstratr_dir() . '/alias/.qmail-demonstratr_' . $codename . '_staff');
         if (($definitely_failed) || ((($probably_failed) || (get_param_integer('keep_force', 0) == 1)) && ($GLOBALS['FORUM_DRIVER']->is_staff(get_member())))) {
             demonstratr_delete_site($test, $codename);
@@ -678,7 +678,7 @@ function reset_aliases()
     require_code('files');
 
     // Rebuild virtualdomains
-    $vds = explode("\n", cms_file_get_contents_safe(special_demonstratr_dir() . '/virtualdomains', false));
+    $vds = cms_file_safe(special_demonstratr_dir() . '/virtualdomains');
     $text = '';
     foreach ($vds as $vd) {
         if ((strpos($vd, ':alias-demonstratr_') === false) && (trim($vd) != '')) {
@@ -696,7 +696,7 @@ function reset_aliases()
     cms_file_put_contents_safe($path, $text, FILE_WRITE_FIX_PERMISSIONS);
 
     // Rebuild rcpthosts
-    $vds = explode("\n", cms_file_get_contents_safe(special_demonstratr_dir() . '/rcpthosts', false));
+    $vds = cms_file_safe(special_demonstratr_dir() . '/rcpthosts');
     $hosts = array();
     foreach ($vds as $vd) {
         if (trim($vd) != '') {
@@ -745,7 +745,7 @@ function find_server_load($server)
     return 1; // Not currently supported, needs customising per-server
 
     /*
-    //$stats = http_get_contents('http://' . $server . '/data_custom/stats.php?html=1'); // TODO #3467
+    //$stats = http_get_contents('http://' . $server . '/data_custom/stats.php?html=1', array('convert_to_internal_encoding' => true));
     $stats = shell_exec('php /home/demonstratr/public_html/data_custom/stats.php 1');
     $matches = array();
     preg_match('#Memory%: (.*)<br />Swap%: (.*)<br />15-min-load: load average: (.*)<br />5-min-load: (.*)<br />1-min-load: (.*)<br />CPU-user%: (.*)<br />CPU-idle%: (.*)<br />Free-space: (.*)#', $stats, $matches);

@@ -146,7 +146,7 @@ function list_tutorials()
 
     $cache_path = get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin';
     if ((is_file($cache_path)) && (filemtime($cache_path) > time() - 60 * 60/*1hr cache*/) && (get_param_integer('keep_tutorial_test', 0) == 0)) {
-        return unserialize(cms_file_get_contents_safe($cache_path));
+        return unserialize(cms_file_get_contents_safe($cache_path, FILE_READ_LOCK));
     }
 
     push_query_limiting(false);
@@ -302,7 +302,7 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
         }
 
         $tutorial_path = get_file_base() . '/docs/pages/comcode_custom/EN/' . $tutorial_name . '.txt';
-        $c = remove_code_block_contents(cms_file_get_contents_safe($tutorial_path)); // TODO #3467
+        $c = remove_code_block_contents(cms_file_get_contents_safe($tutorial_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM));
         $matches = array();
 
         if (preg_match('#\[title sub="Written by ([^"]*)"\]([^\[\]]*)\[/title\]#', $c, $matches) != 0) {
