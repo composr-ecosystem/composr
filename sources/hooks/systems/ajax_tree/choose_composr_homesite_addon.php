@@ -42,10 +42,10 @@ class Hook_ajax_tree_choose_composr_homesite_addon
             $url .= '&default=' . urlencode($default);
         }
         $contents = http_get_contents($url, array('convert_to_internal_encoding' => true));
-        $contents = preg_replace('#^\s*<' . '\?xml version="1.0" encoding="[^"]*"\?' . '><request>#' . ($utf ? 'U' : ''), '', $contents);
-        $contents = preg_replace('#</request>#' . ($utf ? 'U' : ''), '', $contents);
-        $contents = preg_replace('#<category [^>]*has_children="false"[^>]*>[^>]*</category>#' . ($utf ? 'U' : ''), '', $contents);
-        $contents = preg_replace('#<category [^>]*title="Manual install required"[^>]*>[^>]*</category>#' . ($utf ? 'U' : ''), '', $contents);
+        $contents = preg_replace('#^\s*<' . '\?xml version="1.0" encoding="[^"]*"\?' . '><request>#', '', $contents);
+        $contents = preg_replace('#</request>#', '', $contents);
+        $contents = preg_replace('#<category [^>]*has_children="false"[^>]*>[^>]*</category>#', '', $contents);
+        $contents = preg_replace('#<category [^>]*title="Manual install required"[^>]*>[^>]*</category>#', '', $contents);
         return $contents;
     }
 

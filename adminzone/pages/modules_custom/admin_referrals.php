@@ -80,6 +80,7 @@ class Module_admin_referrals
 
         $type = get_param_string('type', 'browse');
 
+        require_code('files');
         require_lang('referrals');
 
         if ($type == 'browse') {
@@ -92,7 +93,7 @@ class Module_admin_referrals
             if (!is_file($path)) {
                 $path = get_file_base() . '/text_custom/referrals.txt';
             }
-            $ini_file = parse_ini_file($path, true);
+            $ini_file = cms_parse_ini_file_safe($path, true);
             $scheme_title = $ini_file[$scheme]['title'];
 
             $this->title = get_screen_title('MANUALLY_ADJUST_SCHEME_SETTINGS', true, array(escape_html($scheme_title)));

@@ -38,7 +38,7 @@ class addon_references_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
-            $matches = arraycms_file_get_contents_safe
+            $matches = array();
             $num_matches = preg_match_all('#addon_installed\(\'([^\']*)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
                 $addon = $matches[1][$i];

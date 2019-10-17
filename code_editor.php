@@ -460,11 +460,11 @@ END;
         // Edit
         if (!isset($_POST['delete'])) {
             if ($conn === null) { // Via direct access
-                $myfile = @fopen($save_path, 'ab');
-                if ($myfile === false) {
+                $success = file_put_contents($save_path, $file, LOCK_EX);
+                if ($success === false) {
                     echo <<<END
 <script>
-var msg='Access denied. You probably should have specified FTP details.';
+var msg='Could not write to file. You probably should have specified FTP details.';
 if (window.alert !== null) {
     window.alert(msg);
 } else {
@@ -474,24 +474,6 @@ if (window.alert !== null) {
 END;
                     return;
                 }
-                flock($myfile, LOCK_EX);
-                ftruncate($myfile, 0);
-                if (fwrite($myfile, $file) === false) {
-                    fclose($myfile);
-                    echo <<<END
-<script>
-var msg='Could not write to file, out of disk space?';
-if (window.alert !== null) {
-    window.alert(msg);
-} else {
-    console.log(msg+' (popup blocker stopping alert)');
-}
-</script>
-END;
-                    return;
-                }
-                flock($myfile, LOCK_UN);
-                fclose($myfile);
             } else { // Via FTP
                 $path2 = tempnam((((ini_get('open_basedir') != '') && (preg_match('#(^|:|;)/tmp($|:|;|/)#', ini_get('open_basedir')) == 0)) ? get_custom_file_base() . '/temp/' : '/tmp/'), 'cmsce');
                 if ($path2 === false) {
@@ -547,13 +529,7 @@ END;
             if (file_exists(str_replace('_custom/', '/', $save_path))) {
                 $hash = file_get_contents(str_replace('_custom/', '/', $save_path));
                 if ($conn === null) { // Via direct access
-                    $myfile = @fopen($save_path . '.editfrom', 'wb');
-                    if ($myfile !== false) {
-                        flock($myfile, LOCK_EX);
-                        fwrite($myfile, $hash);
-                        flock($myfile, LOCK_UN);
-                        fclose($myfile);
-                    }
+                    @file_put_contents($save_path . '.editfrom', $hash, LOCK_EX);
                 } else { // Via FTP
                     $path2 = ce_cms_tempnam();
 

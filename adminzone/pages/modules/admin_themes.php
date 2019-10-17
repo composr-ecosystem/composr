@@ -614,7 +614,7 @@ class Module_admin_themes
 
         // Mapping
         if (method_exists($GLOBALS['FORUM_DRIVER'], 'get_skin_list')) {
-            $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_better(get_file_base() . '/themes/map.ini') : array();
+            $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_fast(get_file_base() . '/themes/map.ini') : array();
             $default_selection = array();
             $mapping = new Tempcode();
             $all_skins = $GLOBALS['FORUM_DRIVER']->get_skin_list();
@@ -828,7 +828,7 @@ class Module_admin_themes
         if (!file_exists($ini_file)) {
             $ini_file = get_file_base() . '/themes/default/theme.ini';
         }
-        $before = cms_parse_ini_file_better($ini_file);
+        $before = cms_parse_ini_file_fast($ini_file);
         $contents = '';
         $themeonly_options = array('title', 'description', 'author');
         foreach ($themeonly_options as $themeonly_option) {
@@ -858,7 +858,7 @@ class Module_admin_themes
         set_category_permissions_from_environment('theme', $theme);
 
         // Update map file
-        $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_better(get_file_base() . '/themes/map.ini') : array();
+        $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_fast(get_file_base() . '/themes/map.ini') : array();
         $new_map = array();
         foreach ($map as $key => $val) {
             if ($val != $theme) {

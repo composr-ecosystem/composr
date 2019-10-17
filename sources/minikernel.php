@@ -663,7 +663,6 @@ function get_charset()
         $path = get_file_base() . '/lang/' . $lang . '/global.ini';
     }
     $file = fopen($path, 'rb');
-    // TODO: #3467
     $contents = unixify_line_format(fread($file, 100));
     fclose($file);
     $matches = array();

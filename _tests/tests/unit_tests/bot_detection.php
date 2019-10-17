@@ -55,7 +55,7 @@ class bot_detection_test_set extends cms_test_case
     public function testBotListInSync()
     {
         require_code('files');
-        $file_bots = cms_parse_ini_file_better(get_file_base() . '/text/bots.txt');
+        $file_bots = cms_parse_ini_file_fast(get_file_base() . '/text/bots.txt');
         ksort($file_bots);
 
         $_SERVER['HTTP_USER_AGENT'] = ''; // Force away optimisation

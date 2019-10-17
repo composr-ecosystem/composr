@@ -524,7 +524,7 @@ class Hook_actionlog_core extends Hook_actionlog
                     $path = get_file_base() . '/themes/' . $theme . '/theme.ini';
                 }
                 if (is_file($path)) {
-                    $details = cms_parse_ini_file_better($path);
+                    $details = cms_parse_ini_file_fast($path);
                     if (array_key_exists('title', $details)) {
                         return $details['title'];
                     }
@@ -539,7 +539,7 @@ class Hook_actionlog_core extends Hook_actionlog
                     $path = get_file_base() . '/themes/' . $theme . '/theme.ini';
                 }
                 if (is_file($path)) {
-                    $details = cms_parse_ini_file_better($path);
+                    $details = cms_parse_ini_file_fast($path);
                     if (array_key_exists('title', $details)) {
                         return $details['title'];
                     }

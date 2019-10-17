@@ -1178,7 +1178,6 @@ class Module_admin_version
             'ocProducts' => array('AREAS' => array('Primary sponsor')),
         );
         $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-        // TODO: #3467
         // TODO: #3032 (must default charset to utf-8 if no BOM though)
         fgetcsv($myfile);
         while (($row = fgetcsv($myfile)) !== false) {

@@ -768,18 +768,12 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
 
         // Overlay it
         foreach ($feed_urls_todo as $feed_url => $event_type) {
-            $temp_file_path = cms_tempnam();
-            require_code('files');
-            $write_to_file = cms_fopen_wb_bom($temp_file_path);
-            // TODO: #3467 (must default charset to utf-8 though due to web standards)
-            $http_response = cms_http_request($feed_url, array('convert_to_internal_encoding' => true, 'byte_limit' => 1024 * 512, 'trigger_error' => false, 'write_to_file' => $write_to_file));
+            $http_response = cms_http_request($feed_url, array('byte_limit' => 1024 * 512, 'trigger_error' => false));
 
             if (($http_response->download_mime_type == 'text/calendar') || ($http_response->download_mime_type == 'application/octet-stream')) {
-                $data = cms_file_get_contents_safe($temp_file_path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-
                 require_code('calendar_ical');
 
-                $_whole = explode('BEGIN:VCALENDAR', $data);
+                $_whole = explode('BEGIN:VCALENDAR', convert_to_internal_encoding($http_response->data, $http_response->charset));
                 $whole = end($_whole);
 
                 $events = explode('BEGIN:VEVENT', $whole);
@@ -846,6 +840,10 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
             } else {
                 require_code('rss');
 
+                $temp_file_path = cms_tempnam();
+                require_code('files');
+                cms_file_put_contents_safe($temp_file_path, $http_response->data, FILE_WRITE_BOM, $http_response->charset);
+
                 $rss = new CMS_RSS($temp_file_path, true);
 
                 $content = new Tempcode();
@@ -877,9 +875,9 @@ function calendar_matches($auth_member_id, $member_id, $restrict, $period_start,
                         }
                     }
                 }
-            }
 
-            @unlink($temp_file_path);
+                @unlink($temp_file_path);
+            }
         }
     }
 

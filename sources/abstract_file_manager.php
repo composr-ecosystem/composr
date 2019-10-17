@@ -560,8 +560,9 @@ function afm_delete_directory($basic_path, $recursive = false)
  * @param  PATH $basic_path The path to the file we are making
  * @param  string $contents The desired file contents
  * @param  boolean $world_access Whether world access is required
+ * @param  boolean $bom Whether to save a byte-order-mark if appropriate to the website character set
  */
-function afm_make_file($basic_path, $contents, $world_access)
+function afm_make_file($basic_path, $contents, $world_access, $bom = false)
 {
     $path = _rescope_path($basic_path);
     $access = _translate_file_access($world_access, get_file_extension($basic_path));
@@ -571,7 +572,7 @@ function afm_make_file($basic_path, $contents, $world_access)
     $conn = _ftp_info();
     if ($conn !== false) {
         $path2 = cms_tempnam();
-        cms_file_put_contents_safe($path2, $contents, FILE_WRITE_BOM); // TODO #3467 (new param needed to this function!)
+        cms_file_put_contents_safe($path2, $contents, $bom ? FILE_WRITE_BOM : 0);
 
         $h = fopen($path2, 'rb');
         $success = @ftp_fput($conn, $path, $h, FTP_BINARY);
@@ -592,7 +593,7 @@ function afm_make_file($basic_path, $contents, $world_access)
 
         sync_file(get_custom_file_base() . '/' . $basic_path);
     } else {
-        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM); // TODO #3467 (new param needed to this function!)
+        cms_file_put_contents_safe($path, $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | ($bom ? FILE_WRITE_BOM : 0));
         @chmod($path, $access);
     }
 }
@@ -601,11 +602,12 @@ function afm_make_file($basic_path, $contents, $world_access)
  * Read a file (not actually over the open AFM connection, but same result: we can do this directly).
  *
  * @param  PATH $path The path to the file we are reading
+ * @param  boolean $bom Whether to consider the byte-order-mark and do character set conversions
  * @return string The contents of the file
  */
-function afm_read_file($path)
+function afm_read_file($path, $bom = false)
 {
-    return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK); // TODO #3467 (new param needed!)
+    return cms_file_get_contents_safe(get_custom_file_base() . '/' . $path, FILE_READ_LOCK | ($bom ? FILE_READ_BOM : 0));
 }
 
 /**

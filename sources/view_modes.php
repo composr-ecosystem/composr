@@ -269,7 +269,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             $map_b = $map_a;
         }
         require_code('files');
-        $map = cms_parse_ini_file_better($map_b);
+        $map = cms_parse_ini_file_fast($map_b);
 
         $lang_name = user_lang();
         if (array_key_exists($lang_name, $map)) {
@@ -349,7 +349,7 @@ function special_page_types($special_page_type, &$out, $out_evaluated)
             $map_b = $map_a;
         }
         require_code('files');
-        $map = cms_parse_ini_file_better($map_b);
+        $map = cms_parse_ini_file_fast($map_b);
 
         $lang_name = user_lang();
         if (array_key_exists($lang_name, $map)) {

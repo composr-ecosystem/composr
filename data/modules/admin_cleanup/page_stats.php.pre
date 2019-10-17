@@ -174,10 +174,10 @@ function handle_self_referencing_embedment()
         if ($type == 'css') {
             header('Content-Type: text/css');
             if (!file_exists(get_file_base() . '/themes/css/global.css')) {
-                $file = file_array_get('themes/default/css/global.css');
+                $file = handle_string_bom(file_array_get('themes/default/css/global.css'));
                 echo $file;
             } else {
-                require_once(get_file_base() . '/themes/default/css/global.css');
+                echo cms_file_get_contents_safe(get_file_base() . '/themes/default/css/global.css', FILE_READ_BOM);
             }
 
             exit();

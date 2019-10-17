@@ -43,16 +43,18 @@ class Hook_task_install_geolocation_data
 
         // We need to read in IP_Country.txt, line-by-line...
 
+        require_code('files');
+
         $path = get_file_base() . '/data/modules/admin_stats/IP_Country.txt';
-        $file = @fopen($path, 'rb');
-        // TODO: #3467
+        $file_charset = null;
+        $file = @cms_fopen_rb_bom_safe($path, $file_charset, true);
         if ($file === false) {
             warn_exit(do_lang_tempcode('READ_ERROR', escape_html($path)), false, true);
         }
         $i = 0;
         $to_insert = array('begin_num' => array(), 'end_num' => array(), 'country' => array());
         while (!feof($file)) {
-            $data = fgets($file);
+            $data = cms_fgets_bom_safe($file, $file_charset);
             if ($data === false) {
                 continue;
             }
@@ -79,6 +81,7 @@ class Hook_task_install_geolocation_data
 
             $i++;
         }
+        flock($file, LOCK_UN);
         fclose($file);
 
         if (count($to_insert['begin_num']) != 0) { // Final batch, if there is one

@@ -24,7 +24,8 @@ function init__cns_join($in)
     if (!is_file($path)) {
         $path = get_file_base() . '/text_custom/referrals.txt';
     }
-    $ini_file = parse_ini_file($path, true);
+    require_code('files');
+    $ini_file = cms_parse_ini_file_safe($path, true);
     if ((!isset($ini_file['visible_referrer_field'])) || ($ini_file['visible_referrer_field'] == '1')) {
         $extra_code = "
             if ((!isset(\$adjusted_config_options['referrals'])) || (\$adjusted_config_options['referrals'] == '1')) {

@@ -216,7 +216,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
         tar_close($tar);
 
         if ($info_file !== null) {
-            $info = cms_parse_ini_file_better(null, $info_file['data']);
+            $info = cms_parse_ini_file_fast(null, $info_file['data']);
 
             if (!empty($info['copyright_attribution'])) {
                 $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
@@ -407,7 +407,7 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
     if ($info_file === null) {
         warn_exit(do_lang_tempcode('NOT_ADDON'));
     }
-    $info = cms_parse_ini_file_better(null, $info_file['data']);
+    $info = cms_parse_ini_file_fast(null, $info_file['data']);
     if (!empty($info['copyright_attribution'])) {
         $info['copyright_attribution'] = explode("\n", $info['copyright_attribution']);
     } else {
@@ -697,7 +697,7 @@ function install_addon($file, $files = null, $do_files = true, $do_db = true)
     if ($info_file === null) {
         warn_exit(do_lang_tempcode('NOT_ADDON'));
     }
-    $info = cms_parse_ini_file_better(null, $info_file['data']);
+    $info = cms_parse_ini_file_fast(null, $info_file['data']);
 
     $addon = $info['name'];
 

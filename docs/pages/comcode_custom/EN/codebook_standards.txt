@@ -250,7 +250,7 @@ Use ASCII
 | Stability
 | Composr development +
 | Automated test ([tt]basic_code_formatting.php[/tt])
-| In order to avoid having to configure IDEs and text editors on what character set to use, and problems with Composr running on different character sets, just make it so your files don't require any specific character set. This is not a strict rule, but certainly don't have your code outputting non-ASCII characters directly if utf-9 isn't being used -- encode such characters in some smarter way, e.g. using HTML entities. The actual text files are saved utf-8.
+| In order to avoid having to configure IDEs and text editors on what character set to use, and problems with Composr running on different character sets, just make it so your code files don't require any specific character set. Certainly don't have your code outputting non-ASCII characters directly -- encode such characters in some smarter way, e.g. using HTML entities.
 |}
 
 [title="3"]Back-end programming[/title]
@@ -562,7 +562,7 @@ Handle errors in failure-prone function calls (e.g. [tt]fopen[/tt])
 | Internationalisation, stability
 | Composr development +
 | Manually
-| Don't assume the character set is [tt]utf-8[/tt], or [tt]ISO-8859-1[/tt] for input data or for output data. Use appropriate conversions when interfacing with things that come-from/go-to a potentially alien character set.
+| Don't assume the character set is [tt]utf-8[/tt], or [tt]ISO-8859-1[/tt] for input data or for output data (including files and HTTP API calls). Use appropriate conversions when interfacing with things that come-from/go-to a potentially alien character set. Composr has file APIs that deal with byte-order-marks (BOMs) appropriately.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Don't put loose code (code outside functions) in any PHP file
@@ -2043,13 +2043,6 @@ Avoid the [tt]style[/tt] attribute ("inline styles")
 | Product development only
 | Automated test ([tt]template_previews.php[/tt])
 | Don't use the HTML style attribute except where you need to pass in styles contingent on template parameters.
-|-
-| [size="0.8"]{$INC,cs_count,1})[/size]
-Use ASCII characters only -- HTML entities for the rest
-| Internationalisation
-| Product development only
-| Automated test ([tt]template_previews.php[/tt])
-| Don't use any extended-ASCII characters in templates, as you cannot assume what character set will be in use.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Only forcibly open up links in new windows in certain conditions[/color]

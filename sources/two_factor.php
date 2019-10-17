@@ -125,13 +125,6 @@ function adjust_htaccess()
         $contents = substr($contents, 0, $start_pos) . implode("\n", $lines) . substr($contents, $end_pos + strlen($final_line));
     }
 
-    $myfile = @fopen($path, GOOGLE_APPENGINE ? 'wb' : 'ab');
-    flock($myfile, LOCK_EX);
-    ftruncate($myfile, 0);
-    fwrite($myfile, $contents);
-    flock($myfile, LOCK_UN);
-    fclose($myfile);
-
-    fix_permissions($path);
-    sync_file($path);
+    require_code('files');
+    cms_file_put_contents_safe($path, $contents, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
 }

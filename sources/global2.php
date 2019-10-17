@@ -899,7 +899,6 @@ function get_charset()
         $path = get_file_base() . '/lang/EN/global.ini';
     }
     $file = fopen($path, 'rb');
-    // TODO: #3467
     $contents = str_replace("\r", "\n", fread($file, 3000));
     fclose($file);
     $matches = array();

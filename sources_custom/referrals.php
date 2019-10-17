@@ -30,11 +30,13 @@ function get_referral_scheme_stats_for($referrer, $scheme_name, $raw = false)
 
 function assign_referral_awards($referee, $trigger)
 {
+    require_code('files');
+
     $path = get_custom_file_base() . '/text_custom/referrals.txt';
     if (!is_file($path)) {
         $path = get_file_base() . '/text_custom/referrals.txt';
     }
-    $ini_file = parse_ini_file($path, true);
+    $ini_file = cms_parse_ini_file_safe($path, true);
 
     $referee_username = $GLOBALS['FORUM_DRIVER']->get_username($referee);
     $referee_displayname = $GLOBALS['FORUM_DRIVER']->get_username($referee, true);
@@ -457,11 +459,13 @@ function referrer_report_script($ret = false)
 
     header('X-Robots-Tag: noindex');
 
+    require_code('files');
+
     $path = get_custom_file_base() . '/text_custom/referrals.txt';
     if (!is_file($path)) {
         $path = get_file_base() . '/text_custom/referrals.txt';
     }
-    $ini_file = parse_ini_file($path, true);
+    $ini_file = cms_parse_ini_file_safe($path, true);
 
     $scheme_name = get_param_string('scheme', 'standard_scheme');
     if (!isset($ini_file[$scheme_name])) {

@@ -259,7 +259,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             array_filter array_map array_merge_recursive array_multisort array_pad array_reduce array_walk
             atan2 fgetc fgetcsv fgetss filetype fscanf fstat array_change_key_case
             date_default_timezone_get ftruncate func_get_arg func_get_args func_num_args
-            parse_ini_file parse_str is_executable memory_get_usage
+            parse_ini_file parse_ini_string parse_str is_executable memory_get_usage
             is_scalar nl2br ob_get_length ob_implicit_flush
             ob_clean printf cosh count_chars gethostbynamel getlastmod fpassthru
             gettimeofday get_cfg_var get_resource_type hypot ignore_user_abort array_intersect_assoc

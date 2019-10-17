@@ -651,7 +651,7 @@ class Module_admin_lang
             $map_b = $map_a;
         }
         require_code('files');
-        $map = cms_parse_ini_file_better($map_b);
+        $map = cms_parse_ini_file_fast($map_b);
 
         // Upgrade to custom if not there yet (or maybe we are creating a new lang - same difference)
         $custom_dir = get_custom_file_base() . '/lang_custom/' . $lang;

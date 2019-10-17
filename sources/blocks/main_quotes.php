@@ -77,6 +77,7 @@ class Block_main_quotes
 
         require_css('random_quotes');
 
+        require_code('files');
         require_code('textfiles');
 
         $path = _find_text_file_path($file, '');
@@ -109,16 +110,15 @@ class Block_main_quotes
      */
     public function get_random_line($filename)
     {
-        $myfile = @fopen(filter_naughty($filename, true), 'rb');
-        // TODO: #3467
+        $myfile_charset = null;
+        $myfile = @cms_fopen_rb_bom_safe(filter_naughty($filename, true), $myfile_charset, true);
         if ($myfile === false) {
             return '';
         }
-        flock($myfile, LOCK_SH);
         $i = 0;
         $line = array();
         while (true) {
-            $line[$i] = fgets($myfile);
+            $line[$i] = cms_fgets_bom_safe($myfile, $myfile_charset);
 
             if (($line[$i] === false) || ($line[$i] === null)) {
                 break;

@@ -453,7 +453,7 @@ function lookup_language_full_name($code)
         if (!is_file($map_file_b)) {
             $map_file_b = $map_file_a;
         }
-        $LANGS_MAP_CACHE = cms_parse_ini_file_better($map_file_b);
+        $LANGS_MAP_CACHE = cms_parse_ini_file_fast($map_file_b);
 
         persistent_cache_set('LANGS_MAP_CACHE', $LANGS_MAP_CACHE);
     }

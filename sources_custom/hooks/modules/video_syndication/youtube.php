@@ -443,7 +443,7 @@ class Hook_video_syndication_youtube
         return ($this->_access_token !== null);
     }
 
-    protected function _http($url, $params, $http_verb = 'GET', $xml = null, $timeout = 6.0, $extra_headers = array(), $file_to_upload = null, $content_type = 'application/atom+xml')
+    protected function _http($url, $params, $http_verb = 'GET', $xml = null, $timeout = 6.0, $extra_headers = array(), $file_to_upload = null, $content_type = 'application/atom+xml', $text = true)
     {
         $youtube_developer_key = get_option('google_apis_api_key');
 
@@ -479,7 +479,21 @@ class Hook_video_syndication_youtube
             $xml = convert_to_internal_encoding($xml, get_charset(), 'utf-8');
         }
 
-        $http_result = cms_http_request($full_url, array('trigger_error' => false, 'post_params' => ($xml === null) ? null : array($xml), 'timeout' => $timeout, 'raw_post' => $xml !== null, 'files' => $files, 'extra_headers' => $extra_headers, 'http_verb' => $http_verb, 'raw_content_type' => $content_type)); // TODO #3467 (with care)
+        $options = array(
+            'trigger_error' => false,
+            'post_params' => ($xml === null) ? null : array($xml),
+            'timeout' => $timeout,
+            'raw_post' => $xml !== null,
+            'files' => $files,
+            'extra_headers' => $extra_headers,
+            'http_verb' => $http_verb,
+            'raw_content_type' => $content_type,
+        );
+        if ($text) {
+            $options['convert_to_internal_encoding'] = true;
+        }
+
+        $http_result = cms_http_request($full_url, $options);
 
         if ($http_result->data === null) {
             throw new Exception(($http_result->message_b === null) ? do_lang('UNKNOWN') : static_evaluate_tempcode($http_result->message_b));

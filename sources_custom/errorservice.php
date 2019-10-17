@@ -44,7 +44,6 @@ function get_problem_match_nearest($error_message)
     // Find matches. Stored in a CSV file.
     $matches = array();
     $myfile = fopen(get_custom_file_base() . '/uploads/website_specific/compo.sr/errorservice.csv', 'rb');
-    // TODO: #3467
     // TODO: #3032 (must default charset to utf-8 if no BOM though)
     fgetcsv($myfile); // Skip header row
     while (($row = fgetcsv($myfile)) !== false) {

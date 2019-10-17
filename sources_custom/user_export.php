@@ -47,12 +47,8 @@ function do_user_export($to_file = true)
         @mkdir($outdir, 0777);
         fix_permissions($outdir);
         $tmp_path = $outdir . '/_temp.csv';
-        $outfile = fopen($tmp_path, GOOGLE_APPENGINE ? 'wb' : 'ab');
-        // TODO: #3467
-        flock($outfile, LOCK_EX);
-        if (!GOOGLE_APPENGINE) {
-            ftruncate($outfile, 0);
-        }
+        require_code('files');
+        $outfile = cms_fopen_wb_bom($tmp_path);
     } else {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             access_denied('ADMIN_ONLY');

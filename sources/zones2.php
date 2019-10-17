@@ -221,7 +221,7 @@ function actual_add_zone($zone, $title, $default_page = DEFAULT_ZONE_PAGE_NAME, 
 
     make_zone_directory($zone);
 
-    afm_make_file($zone . '/pages/comcode_custom/EN/' . filter_naughty($default_page) . '.txt', '[title]' . $title . '[/title]' . "\n\n" . do_lang('YOUR_NEW_ZONE_PAGE', $zone . ':' . $default_page) . "\n\n" . '[block]main_comcode_page_children[/block]', true);
+    afm_make_file($zone . '/pages/comcode_custom/EN/' . filter_naughty($default_page) . '.txt', '[title]' . $title . '[/title]' . "\n\n" . do_lang('YOUR_NEW_ZONE_PAGE', $zone . ':' . $default_page) . "\n\n" . '[block]main_comcode_page_children[/block]', true, true);
     $GLOBALS['SITE_DB']->query_insert('comcode_pages', array(
         'the_zone' => $zone,
         'the_page' => $default_page,

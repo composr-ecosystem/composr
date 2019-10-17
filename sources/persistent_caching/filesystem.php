@@ -77,26 +77,21 @@ class Persistent_caching_filesystem
 
         clearstatcache();
 
-        $myfile = @fopen(get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd', 'rb');
-        if ($myfile === false) {
+        $path = get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd';
+        if (!is_file($path)) {
             return null;
         }
         if ($min_cache_date !== null) { // Code runs here as we know file exists at this point
             if (filemtime(get_custom_file_base() . '/caches/persistent/' . md5($key) . '.gcd') < $min_cache_date) {
-                fclose($myfile);
                 return null;
             }
         }
-        flock($myfile, LOCK_SH);
-        $contents = '';
-        while (!feof($myfile)) {
-            $contents .= fread($myfile, 32768);
+        $contents = @cms_file_get_contents_safe($path);
+        if ($contents === false) {
+            return null;
         }
 
         $ret = @unserialize($contents);
-
-        flock($myfile, LOCK_UN);
-        fclose($myfile);
 
         $PC_FC_CACHE[$key] = $ret;
 

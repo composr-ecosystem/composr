@@ -1404,8 +1404,10 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                 if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], array('w', 'a')))) {
                     log_warning('Call to \'' . $function . '\' that may create a file/folder. Check that the code chmods it so that FTP can delete it.', $c_pos);
                 }
+            }
 
-                // TODO: #3467 check for 't' on fopen, and disallow
+            if (($function == 'fopen') && (in_array(@$params[1][0][1][1][0], array('t')))) {
+                log_warning('Call to \'' . $function . '\' uses a text flag. This creates platform-dependent text files, which we do not want.', $c_pos);
             }
         }
     }
@@ -1628,7 +1630,7 @@ function get_insecure_functions()
          'file_get_contents', 'fpassthru', 'mkdir', 'move_uploaded_file', 'popen', 'readfile', 'rename',
          'imagepng', 'imagejpeg', 'imagegif', 'imagebmp', 'imagewebp',
          'mail', 'header',
-         'cms_parse_ini_file_better', 'deldir_contents',
+         'cms_parse_ini_file_fast', 'deldir_contents',
          'include', 'include_once', 'require', 'require_once',
          'escapeshellarg', 'escapeshellcmd', 'exec', 'passthru', 'proc_open', 'shell_exec', 'system',
          'DatabaseConnector.query', 'DatabaseConnector._query', 'DatabaseConnector.query_value_if_there',

@@ -427,30 +427,23 @@ function do_set()
     if ($copied_ok !== false) {
         co_sync_file($backup_path);
     }
-    $config_file_handle = fopen($FILE_BASE . '/' . $config_file, 'wb');
-    if ($config_file_handle === false) {
-        exit();
-    }
-    flock($config_file_handle, LOCK_EX);
-    ftruncate($config_file_handle, 0);
-    fwrite($config_file_handle, "<" . "?php\n");
+    $out = '';
+    $out .= "<" . "?php\n";
     foreach ($new as $key => $val) {
         if (is_array($val)) {
             foreach ($val as $val2) {
                 $_val = addslashes($val2);
-                if (fwrite($config_file_handle, '$SITE_INFO[\'' . $key . '\'][] = \'' . $_val . "';\n") === false) {
-                    echo '<strong>Could not save to file. Out of disk space?<strong>';
-                }
+                $out .= '$SITE_INFO[\'' . $key . '\'][] = \'' . $_val . "';\n";
             }
         } else {
             $_val = addslashes($val);
-            if (fwrite($config_file_handle, '$SITE_INFO[\'' . $key . '\'] = \'' . $_val . "';\n") === false) {
-                echo '<strong>Could not save to file. Out of disk space?<strong>';
-            }
+            $out .= '$SITE_INFO[\'' . $key . '\'] = \'' . $_val . "';\n";
         }
     }
-    flock($config_file_handle, LOCK_UN);
-    fclose($config_file_handle);
+    $success = file_put_contents($FILE_BASE . '/' . $config_file, $out, LOCK_EX);
+    if (!$success) {
+        echo '<strong>Could not save to file. Access denied?<strong>';
+    }
     co_sync_file($config_file);
 
     echo '<hr /><p>Edited configuration. If you wish to continue editing you must <a href="config_editor.php">login again.</a></p>';

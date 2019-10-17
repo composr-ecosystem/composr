@@ -314,17 +314,34 @@ function fix_permissions($path, $perms = null)
     }
 }
 
-// TODO: #3467 Look at all calls to here and set the boolean parameters as required, and trim out manual unixify_line_format calls
-// TODO: #3467 remap some file_get_contents calls to this, to make use of the boolean parameters also
-// TODO: #3467 then look to see if we have removed almost all the unixify_line_format calls
+/**
+ * Reads entire file into an array.
+ * Supports locking and character set conversion (using BOMs).
+ *
+ * @param  PATH $path File path
+ * @param  ?string $default_charset The default character set if none is specified (null: website character set)
+ * @return ~array The array (each line being an entry in the array, and newlines still attached) (false: error)
+ */
+function cms_file_safe($path, $default_charset = null)
+{
+    $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM | FILE_READ_UNIXIFIED_TEXT, $default_charset);
+    if ($c === false) {
+        return false;
+    }
+
+    $lines = explode("\n", $c);
+    return $lines;
+}
+
 /**
  * Get the contents of a file, with locking support.
  *
  * @param  PATH $path File path
  * @param  integer $flags FILE_READ_* flags
+ * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set)
  * @return ~string File contents (false: error)
  */
-function cms_file_get_contents_safe($path, $flags = 0)
+function cms_file_get_contents_safe($path, $flags = 0, $default_charset = null)
 {
     $locking = ($flags & FILE_READ_LOCK) != 0;
     $handle_file_bom = ($flags & FILE_READ_BOM) != 0;
@@ -344,7 +361,7 @@ function cms_file_get_contents_safe($path, $flags = 0)
     fclose($tmp);
 
     if ($handle_file_bom) {
-        $contents = handle_string_bom($contents);
+        $contents = handle_string_bom($contents, $default_charset);
     }
     if ($unixify_line_format) {
         $contents = unixify_line_format($contents);
@@ -369,136 +386,60 @@ function _get_boms()
 }
 
 /**
- * Reads entire file into an array.
- *
- * @param  PATH $filename The file name
- * @return ~array The array (each line being an entry in the array, and newlines still attached) (false: error)
- */
-function cms_file_safe($path)
-{
-    $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM | FILE_READ_UNIXIFIED_TEXT);
-    if ($c === false) {
-        return false;
-    }
-
-    $lines = explode("\n", $c);
-    return $lines;
-}
-
-/**
  * Detect a BOM (Unicode byte-order-mark) from a string, and strip it. Return the altered string.
  *
  * @param  string $contents Input string
+ * @param  ?string $default_charset The default character set to assume if none is specified in the input string (null: website character set)
  * @return string Altered string
  */
-function handle_string_bom($contents)
+function handle_string_bom($contents, $default_charset = null)
 {
-    $file_charset = null;
-    $bom_found = null;
-
-    $boms = _get_boms();
-
-    $magic_data = substr($contents, 0, 4);
-
-    foreach ($boms as $charset => $bom) {
-        if (substr($magic_data, strlen($bom)) == $bom) {
-            $file_charset = $charset;
-            $bom_found = $bom;
-            break;
-        }
-    }
-
-    if ($file_charset === null) {
-        return $contents;
-    }
-
-    $contents = substr($contents, strlen($bom));
-
     require_code('character_sets');
+
+    list($file_charset, $bom) = detect_string_bom($contents);
+    if ($file_charset !== null) {
+        $contents = substr($contents, strlen($bom));
+    } else {
+        $file_charset = $default_charset;
+    }
+
     $contents = convert_to_internal_encoding($contents, $file_charset);
 
     return $contents;
 }
 
 /**
- * Detect a BOM (Unicode byte-order-mark) from a file, and strip it. Return the character set found (defaults to the site character set).
+ * Detect a BOM (Unicode byte-order-mark) from a string, and find the associated character set.
  *
- * @param  PATH $path File path
- * @param  boolean $handle_charset_conversion_automatically Handle character set conversion automatically when re-saving the file
- * @return ID_TEXT Character set found
+ * @param  string $contents Input string
+ * @return array A pair: The character set (null is unknown), The BOM (null is unknown)
  */
-function handle_file_bom($path, $handle_charset_conversion_automatically = true)
+function detect_string_bom($contents)
 {
     $file_charset = null;
     $bom_found = null;
 
     $boms = _get_boms();
 
-    $orig_file = fopen($path, 'rb');
-    flock($orig_file, LOCK_SH);
-
-    $magic_data = fread($orig_file, 4);
+    $max_bom_len = 0;
+    foreach ($boms as $bom) {
+        if (strlen($bom) > $max_bom_len) {
+            $max_bom_len = strlen($bom);
+        }
+    }
+    $magic_data = substr($contents, 0, $max_bom_len);
 
     foreach ($boms as $charset => $bom) {
-        if (substr($magic_data, strlen($bom)) == $bom) {
+        if (substr($magic_data, 0, strlen($bom)) == $bom) {
             $file_charset = $charset;
             $bom_found = $bom;
             break;
         }
     }
 
-    if ($file_charset === null) {
-        flock($orig_file, LOCK_UN);
-        fclose($orig_file);
-
-        return get_charset();
-    }
-
-    if ($handle_charset_conversion_automatically) {
-        // Automatic conversion, we simply read in the file, strip the BOM, convert, and re-save...
-
-        $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK); // TODO: #3467 We can actually do this line-by-line, will be memory-conservative then
-        $contents = substr($contents, strlen($bom));
-        require_code('character_sets');
-        $contents = convert_to_internal_encoding($contents, $file_charset);
-
-        flock($orig_file, LOCK_UN);
-        fclose($orig_file);
-
-        cms_file_put_contents_safe($path, $contents);
-
-        return $file_charset;
-    }
-
-    // We need to do a chunked copy to avoid reading it all into memory...
-
-    $temp_path = cms_tempnam();
-    $new_file = fopen($temp_path, 'wb');
-    fseek($orig_file, strlen($bom_found));
-    while (!feof($orig_file)) {
-        fwrite($new_file, fread($orig_file, 1024 * 50));
-    }
-    fclose($new_file);
-
-    flock($orig_file, LOCK_UN);
-    fclose($orig_file);
-
-    // Flip the files around...
-
-    $success = @unlink($path);
-    if (!$success) {
-        unlink($temp_path);
-        intelligent_write_error($path);
-    }
-
-    rename($temp_path, $path);
-
-    return $file_charset;
-
-    // TODO: #3032 define some automated tests
+    return array($file_charset, $bom_found);
 }
 
-// TODO: #3467 Assess calls and apply BOM and unixify_line_format cleanup as required
 /**
  * Return the contents of the URL by downloading it over HTTP. If a byte limit is given, it will only download that many bytes. It outputs warnings, returning null, on error.
  *
@@ -515,7 +456,6 @@ function http_get_contents($url, $options = array())
     return $ret;
 }
 
-// TODO: #3467 Assess calls and apply BOM and unixify_line_format cleanup as required
 /**
  * Return the file in the URL by downloading it over HTTP. If a byte limit is given, it will only download that many bytes. It outputs warnings, returning null, on error.
  *
@@ -558,7 +498,7 @@ function cms_is_writable($path)
 
         return is_writable($path); // imperfect unfortunately; but unlikely to cause a problem
     } else {
-        $test = @fopen($path, 'ab');
+        $test = @fopen($path, 'cb');
         if ($test !== false) {
             fclose($test);
             return true;
@@ -3229,7 +3169,7 @@ function is_mobile($user_agent = null, $truth = false)
 
     if (((!isset($SITE_INFO['no_extra_mobiles'])) || ($SITE_INFO['no_extra_mobiles'] != '1')) && (is_file(get_file_base() . '/text_custom/mobile_devices.txt'))) {
         require_code('files');
-        $mobile_devices = cms_parse_ini_file_better((get_file_base() . '/text_custom/mobile_devices.txt'));
+        $mobile_devices = cms_parse_ini_file_fast((get_file_base() . '/text_custom/mobile_devices.txt'));
         foreach ($mobile_devices as $key => $val) {
             if ($val == 1) {
                 $browsers[] = $key;
@@ -3289,7 +3229,7 @@ function get_bot_type($agent = null)
     if ($BOT_MAP_CACHE === null) {
         if (((!isset($SITE_INFO['no_extra_bots'])) || ($SITE_INFO['no_extra_bots'] != '1')) && (is_file(get_file_base() . '/text_custom/bots.txt'))) {
             require_code('files');
-            $BOT_MAP_CACHE = cms_parse_ini_file_better(get_file_base() . '/text_custom/bots.txt');
+            $BOT_MAP_CACHE = cms_parse_ini_file_fast(get_file_base() . '/text_custom/bots.txt');
         } else {
             $BOT_MAP_CACHE = array(
                 'zyborg' => 'Looksmart',
@@ -4317,13 +4257,12 @@ function is_maintained($code)
             $lines = explode("\n", $file);
             array_shift($lines); // Skip header row
             foreach ($lines as $line) {
-                // TODO: #3467
+                // TODO: #3032
                 $row = str_getcsv($line);
                 $cache[$row[0]] = !empty($row[3]);
             }
         } else {
             $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-            // TODO: #3467
             // TODO: #3032 (must default charset to utf-8 if no BOM though)
             fgetcsv($myfile); // Skip header row
             while (($row = fgetcsv($myfile)) !== false) {

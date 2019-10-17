@@ -79,6 +79,7 @@ class resource_closing_test_set extends cms_test_case
             'sources/comcode_cleanup.php',
             'sources/database.php',
             'sources/permissions.php',
+            'sources/files.php',
             'sources_custom/hooks/modules/video_syndication/youtube.php',
         );
         $exception_stubs = array(

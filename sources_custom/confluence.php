@@ -355,7 +355,7 @@ function confluence_clean_page($html)
 function confluence_query($query, $trigger_error = true)
 {
     $url = get_confluence_base_url() . '/rest/api/' . $query;
-    list($json) = confluence_call_url($url, $trigger_error);
+    list($json) = confluence_call_url($url, $trigger_error, true);
 
     if (empty($json)) {
         if (!$trigger_error) {
@@ -368,7 +368,7 @@ function confluence_query($query, $trigger_error = true)
     return json_decode($json, true);
 }
 
-function confluence_call_url($url, $trigger_error = true)
+function confluence_call_url($url, $trigger_error = true, $text = false)
 {
     global $CONFLUENCE_USERNAME, $CONFLUENCE_PASSWORD;
     if (($CONFLUENCE_USERNAME == '') || (substr($url, 0, strlen(get_confluence_base_url() . '/')) != get_confluence_base_url() . '/')) {
@@ -378,5 +378,9 @@ function confluence_call_url($url, $trigger_error = true)
     }
 
     global $CONFLUENCE_CACHE_TIME;
-    return cache_and_carry('http_get_contents', array($url, array('auth' => $auth, 'trigger_error' => $trigger_error)), $CONFLUENCE_CACHE_TIME); // TODO #3467 (but with care)
+    $options = array('auth' => $auth, 'trigger_error' => $trigger_error);
+    if ($text) {
+        $options['convert_to_internal_encoding'] = true;
+    }
+    return cache_and_carry('http_get_contents', array($url, $options), $CONFLUENCE_CACHE_TIME);
 }

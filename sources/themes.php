@@ -545,7 +545,7 @@ function hsl_to_rgb($hue, $sat, $lht)
         $b = hue_to_rgb($p, $q, $hue - (1 / 3));
     }
 
-    return [round($r * 255), round($g * 255), round($b * 255)];
+    return array(intval(round($r * 255)), intval(round($g * 255)), intval(round($b * 255)));
 }
 
 

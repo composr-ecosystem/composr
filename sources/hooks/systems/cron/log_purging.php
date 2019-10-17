@@ -68,19 +68,19 @@ class Hook_cron_log_purging
      */
     protected function purge_log($path, $days_to_keep)
     {
+        require_code('files');
+
         $threshold_time = time() - 60 * 60 * 24 * $days_to_keep;
 
         $lines = array();
 
-        $myfile = fopen($path, 'a+b');
-        // TODO: #3467
-        flock($myfile, LOCK_SH);
-        rewind($myfile);
+        $myfile_charset = null;
+        $myfile = cms_fopen_rb_bom_safe($path, $myfile_charset, true, 'c+b');
         $matches = array();
         $found_pivot = false;
         $found_some_date = false;
         while (!feof($myfile)) {
-            $line = fgets($myfile);
+            $line = cms_fgets_bom_safe($myfile, $myfile_charset);
             if ($line === false) {
                 break;
             }
@@ -108,7 +108,6 @@ class Hook_cron_log_purging
         flock($myfile, LOCK_EX);
 
         ftruncate($myfile, 0);
-        rewind($myfile);
         foreach ($lines as $line) {
             fwrite($myfile, $line);
         }

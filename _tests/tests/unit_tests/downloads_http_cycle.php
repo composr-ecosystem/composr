@@ -31,7 +31,7 @@ class downloads_http_cycle_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_downloads', 'type' => '_add', 'keep_fatalistic' => 1), 'cms');
         $post_params = array(
-            'name' => 'Test' . uniqid('', true),
+            'download_name' => 'Test' . uniqid('', true),
             'csrf_token' => get_session_id(),
             'category_id' => strval(db_get_first_id()),
             'author' => 'Test',

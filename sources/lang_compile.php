@@ -71,7 +71,7 @@ function require_lang_compile($codename, $lang, $type, $cache_path, $ignore_erro
     global $FILE_ARRAY;
     if ((@is_array($FILE_ARRAY)) && (file_array_exists('lang/' . $lang . '/' . $codename . '.ini'))) {
         $lang_file = 'lang/' . $lang . '/' . $codename . '.ini';
-        $file = file_array_get($lang_file);
+        $file = unixify_line_format(handle_string_bom(file_array_get($lang_file)));
         _get_lang_file_map($file, $load_target, 'strings', true, true, $lang);
         $bad = true;
     } else {
@@ -252,7 +252,7 @@ function _get_lang_file_map($b, &$entries, $section = 'strings', $given_whole_fi
 
         $lines = cms_file_safe($b);
     } else {
-        $lines = explode("\n", unixify_line_format($b));
+        $lines = explode("\n", $b);
     }
 
     global $LANG_FILTER_OB;

@@ -681,9 +681,9 @@ function _check_externals($tag, $attributes, $self_close, $close)
         $VALIDATED_ALREADY[$attributes['src']] = 1;
         $url = qualify_url($attributes['src'], $GLOBALS['URL_BASE']);
         if ($url != '') {
-            $iframe = http_get_contents($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)); // Sometimes disabled due to my iframe producing a weird PHP exception, that was stopping me working
-            if (!empty($iframe)) {
-                if (($http_result->download_mime_type == 'text/html') || ($http_result->download_mime_type == 'application/xhtml+xml')) {
+            $iframe = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)); // Sometimes disabled due to my iframe producing a weird PHP exception, that was stopping me working
+            if (!empty($iframe->data)) {
+                if (($iframe->download_mime_type == 'text/html') || ($iframe->download_mime_type == 'application/xhtml+xml')) {
                     global $EXTRA_CHECK;
                     $EXTRA_CHECK[] = $iframe;
                 }

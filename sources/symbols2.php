@@ -2861,9 +2861,9 @@ function ecv2_COLOR_RGBA($lang, $escaped, $param)
     $red   = hexdec(substr($hex_color, 1, 2));
     $green = hexdec(substr($hex_color, 3, 2));
     $blue  = hexdec(substr($hex_color, 5, 2));
-    $alpha = float_format(floatval($param[1]));
+    $alpha = floatval($param[1]);
 
-    $value = "rgba({$red}, {$green}, {$blue}, {$alpha})";
+    $value = 'rgba(' . strval($red) . ', ' . strval($green) . ', ' . strval($blue) . ', ' . float_to_raw_string($alpha) . ')';
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);

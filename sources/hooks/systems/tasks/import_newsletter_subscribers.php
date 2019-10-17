@@ -57,7 +57,6 @@ class Hook_task_import_newsletter_subscribers
 
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
         $myfile = fopen($path, 'rb');
-        // TODO: #3467
         // TODO: #3032
         $del = ',';
         $csv_test_line = fgetcsv($myfile, 4096, $del);

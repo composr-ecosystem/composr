@@ -370,10 +370,6 @@ function ecv($lang, $escaped, $type, $name, $param)
                     }
                     $_value = do_template($template_file, $tpl_params, null, true, null, $ex, $td, $theme, $force_original == '1');
                     $value = $_value->evaluate();
-
-                    if ((get_charset() == 'utf-8') && (substr($value, 0, 3) == hex2bin('efbbbf'))) { // TODO: Can remove after #3467
-                        $value = substr($value, 3);
-                    }
                 }
                 break;
 

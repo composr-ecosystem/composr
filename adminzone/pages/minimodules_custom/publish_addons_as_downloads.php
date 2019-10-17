@@ -139,7 +139,7 @@ function publish_addon($addon, $version_branch, $cat_id)
     if ($test === null) {
         $tar = tar_open($from, 'rb');
         $info_file = tar_get_file($tar, 'addon.inf', true);
-        $ini_info = cms_parse_ini_file_better(null, $info_file['data']);
+        $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
         tar_close($tar);
 
         $addon_info = read_addon_info($addon, false, null, $ini_info);
@@ -190,7 +190,7 @@ function publish_theme($file, $version_branch, $cat_id)
     if ($test === null) {
         $tar = tar_open($from, 'rb');
         $info_file = tar_get_file($tar, 'addon.inf', true);
-        $ini_info = cms_parse_ini_file_better(null, $info_file['data']);
+        $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
         tar_close($tar);
 
         $addon_info = read_addon_info($addon, false, null, $ini_info);

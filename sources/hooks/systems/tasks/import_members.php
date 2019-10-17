@@ -72,7 +72,6 @@ class Hook_task_import_members
 
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
         $myfile = fopen($path, 'rb');
-        // TODO: #3467
         // TODO: #3032
         $del = ',';
         $csv_header = fgetcsv($myfile, 102400, $del);

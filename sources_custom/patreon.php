@@ -18,7 +18,6 @@ function get_patreon_patrons_on_minimum_level($level)
     $patreon_patrons = array();
 
     $myfile = fopen(get_custom_file_base() . '/data_custom/patreon_patrons.csv', 'rb');
-    // TODO: #3467
     // TODO: #3032 (must default charset to utf-8 if no BOM though)
     fgetcsv($myfile); // Skip header
     while (($row = fgetcsv($myfile)) !== false) {

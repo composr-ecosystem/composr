@@ -44,7 +44,7 @@ function cache_and_carry($func, $args, $timeout = null, $cache_errors = false)
 {
     $ret = mixed();
 
-    $path = get_custom_file_base() . '/caches/http/' . $func . '__' . md5(serialize($args)) . '.bin';
+    $path = get_custom_file_base() . '/caches/http/' . md5(serialize($func)) . '__' . md5(serialize($args)) . '.bin';
     if (is_file($path) && (($timeout === null) || (filemtime($path) > time() - $timeout * 60))) {
         $_ret = cms_file_get_contents_safe($path, FILE_READ_LOCK);
         if ($func === 'cms_http_request') {
@@ -325,6 +325,8 @@ abstract class HttpDownloader
     protected $raw_content_type = 'application/xml'; // string. The content type to use if a raw HTTP post
     protected $ignore_http_status = false; // boolean. Return a result regardless of HTTP status
     protected $verifypeer_enabled = true; // boolean. Whether to check SSL certificates
+    protected $convert_to_internal_encoding = false; // boolean. Whether to look at the character set of the request (from HTTP headers and BOMs) and convert it
+    protected $default_charset = 'utf-8'; // string. The default character set to assume if none is specified in the response
 
     // Class processing configuration
     protected $add_content_type_header_manually = false;
@@ -621,8 +623,8 @@ abstract class HttpDownloader
         global $DOWNLOAD_LEVEL;
         $DOWNLOAD_LEVEL++;
         $this->data = $this->_run($url, $options);
-        $this->detect_character_encoding();
         $DOWNLOAD_LEVEL--;
+        $this->detect_character_encoding();
 
         return $this->data;
     }
@@ -716,6 +718,10 @@ abstract class HttpDownloader
 
         if (array_key_exists('verifypeer_enabled', $options)) {
             $this->verifypeer_enabled = $options['verifypeer_enabled'];
+        }
+
+        if (array_key_exists('convert_to_internal_encoding', $options)) {
+            $this->convert_to_internal_encoding = $options['convert_to_internal_encoding'];
         }
     }
 
@@ -860,6 +866,7 @@ abstract class HttpDownloader
 
     /**
      * Try a bit harder to detect the character encoding, in case it was not in an HTTP header.
+     * Perform a data conversion is requested.
      */
     protected function detect_character_encoding()
     {
@@ -869,7 +876,21 @@ abstract class HttpDownloader
                 $this->charset = trim($matches[1]);
             } elseif (preg_match('#<meta\s+http-equiv="Content-Type"\s+content="[^"]*;\s*charset=([^"]+)"#i', substr($this->data, 0, 2048), $matches) != 0) {
                 $this->charset = trim($matches[1]);
+            } else {
+                list($this->charset, $bom) = detect_string_bom($this->data);
+                if (($this->convert_to_internal_encoding) && ($bom !== null)) {
+                    $this->data = substr($this->data, strlen($bom));
+                }
+
+                if ($this->charset === null) {
+                    $this->charset = $this->default_charset;
+                }
             }
+        }
+
+        if (($this->convert_to_internal_encoding) && ($this->charset !== null)) {
+            require_code('character_sets');
+            $this->data = convert_to_internal_encoding($this->data, $this->charset);
         }
     }
 

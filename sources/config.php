@@ -183,7 +183,7 @@ function get_theme_option($name, $default = null, $theme = null, $missing_ok = f
             static $map = array();
             if (!isset($map[$theme])) {
                 require_code('files');
-                $map[$theme] = cms_parse_ini_file_better($ini_path);
+                $map[$theme] = cms_parse_ini_file_fast($ini_path);
             }
 
             if ((isset($map[$theme][$name])) && ($map[$theme][$name] != '')) {

@@ -36,6 +36,7 @@ class cms_test_case extends WebTestCase
 
         $args = array_slice($_SERVER['argv'], 2);
 
+        $this->debug = (get_param_integer('debug', 0) == 1);
         if (in_array('debug', $args)) {
             $this->debug = true;
             unset($args[array_search('debug', $args)]);

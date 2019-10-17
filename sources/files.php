@@ -55,26 +55,104 @@ function init__files()
 }
 
 /**
+ * Opens file or URL. {{creates-file}}
+ * Supports character set detection using BOM (which will then by bypassed from further reading).
+ *
+ * @param  PATH $path File path
+ * @param  string $charset Detected character set will be written into here
+ * @param  boolean $locking File lock (if set, you must unlock with LOCK_UN before fclose)
+ * @param  string $mode Mode (e.g. at).
+ * @param  ?string $default_charset The default character set if none is specified (null: leave as null, ultimately meaning the default website character set will be used)
+ * @return ~resource The file handle (false: could not be opened)
+ */
+function cms_fopen_rb_bom_safe($path, &$charset, $locking = false, $mode = 'rb', $default_charset = null)
+{
+    $charset = null;
+
+    $myfile = fopen($path, $mode);
+    if ($myfile === false) {
+        return false;
+    }
+
+    if ($locking) {
+        flock($myfile, LOCK_SH);
+    }
+
+    $starts_at_end = (strpos($mode, 'a+') !== false);
+    if ($starts_at_end) {
+        fseek($myfile, 0, SEEK_SET);
+    }
+
+    $start_data = fread($myfile, 4);
+
+    list($charset, $bom) = detect_string_bom($start_data);
+    if ($charset === null) {
+        $charset = $default_charset;
+    }
+
+    if ($starts_at_end) {
+        fseek($myfile, 0, SEEK_END);
+    } elseif ($bom !== null) {
+        fseek($myfile, strlen($bom), SEEK_SET);
+    } else {
+        fseek($myfile, 0, SEEK_SET);
+    }
+
+    return $myfile;
+}
+
+/**
+ * Gets line from file pointer. Supports character set conversion.
+ *
+ * @param  resource $myfile The file pointer
+ * @param  ?string $charset The character set to read with (likely found from cms_fopen_rb_bom_safe) (null: website character set)
+ * @return ~string The string read (false: error)
+ */
+function cms_fgets_bom_safe($myfile, $charset)
+{
+    $line = fgets($myfile);
+    if ($line !== false) {
+        require_code('character_sets');
+        $line = convert_to_internal_encoding($line, $charset);
+    }
+
+    return $line;
+}
+
+/**
  * Open a file for writing, with a BOM.
  *
  * @param  PATH $path File path
- * @param  boolean $lock File lock
+ * @param  boolean $locking File lock (if set, you must unlock with LOCK_UN before fclose)
+ * @param  ?string $mode File mode (null: detect based on $locking)
+ * @param  ?string $charset Character set to write with (null: website character set)
  * @return ~resource The file handle (false: could not be opened)
  */
-function cms_fopen_wb_bom($path, $lock = false)
+function cms_fopen_wb_bom($path, $locking = false, $mode = null, $charset = null)
 {
-    $boms = _get_boms();
-    $charset = get_charset();
+    if ($mode === null) {
+        $mode = ($locking ? 'cb' : 'wb');
+    }
 
-    $myfile = fopen($path, 'wb');
+    $boms = _get_boms();
+    if ($charset === null) {
+        $charset = get_charset();
+    }
+
+    $myfile = fopen($path, $mode);
 
     if ($myfile !== false) {
-        if ($lock) {
+        if ($locking) {
             flock($myfile, LOCK_EX);
+            if ($mode == 'cb') {
+                ftruncate($myfile, 0);
+            }
         }
 
-        if (array_key_exists($charset, $boms)) {
-            fwrite($myfile, $boms[$charset]);
+        if ((strpos($mode, 'a') === false) || (ftell($myfile) == 0)) {
+            if (array_key_exists($charset, $boms)) {
+                fwrite($myfile, $boms[$charset]);
+            }
         }
     }
 
@@ -87,12 +165,31 @@ function cms_fopen_wb_bom($path, $lock = false)
  * @param  PATH $path File path
  * @param  string $contents File contents
  * @param  integer $flags FILE_WRITE_* flags
+ * @param  ?string $charset Character set to write with (null: website character set)
  * @param  integer $retry_depth How deep it is into retrying if somehow the data did not get written
  * @return boolean Success status
  */
-function cms_file_put_contents_safe($path, $contents, $flags = 4, $retry_depth = 0)
+function cms_file_put_contents_safe($path, $contents, $flags = 4, $charset = null, $retry_depth = 0)
 {
-    // TODO #3467  Add BOM if requested by FILE_WRITE_BOM IFF is not already there
+    // Add BOM (byte-order-mark) to identify character set within the file
+    if (($flags & FILE_WRITE_BOM) != 0) {
+        $boms = _get_boms();
+        if ($charset === null) {
+            $charset = get_charset();
+        }
+        if (array_key_exists($charset, $boms)) {
+            $bom_found = false;
+            foreach ($boms as $bom) {
+                if (substr($contents, strlen($bom)) == $bom) {
+                    $bom_found = true;
+                    break;
+                }
+            }
+            if (!$bom_found) { // Only add if not already there
+                $contents = $boms[$charset] . $contents;
+            }
+        }
+    }
 
     $num_bytes_to_save = strlen($contents);
 
@@ -189,7 +286,7 @@ function cms_file_put_contents_safe($path, $contents, $flags = 4, $retry_depth =
     // Error condition: If somehow it said it saved but didn't actually (maybe a race condition on servers with buggy locking)
     if ($size != $num_bytes_to_save) {
         if ($retry_depth < 5) {
-            return cms_file_put_contents_safe($path, $contents, $flags, $retry_depth + 1);
+            return cms_file_put_contents_safe($path, $contents, $flags, $charset, $retry_depth + 1);
         }
 
         if (($flags & FILE_WRITE_FAILURE_SILENT) == 0) {
@@ -338,29 +435,42 @@ function clean_file_size($bytes)
     return strval($bytes) . ' Bytes';
 }
 
-// TODO: #3467 Rename to cms_parse_ini_file_safe
-// TODO: #3467 add boolean parameters as per cms_file_get_contents, possibly using that as a front-end
-// TODO: #3467 change calls to parse_ini_file() to use this using boolean parameters as appropriate, as appropriate
+/**
+ * Parse a configuration file.
+ * Supports locking and character set conversion (using BOMs).
+ *
+ * @param  PATH $path The file path
+ * @param  boolean $process_sections Whether to process sections
+ * @param  integer $scanner_mode Any INI_SCANNER_* constant
+ * @return ~array Map of Ini file data (2d if processed sections) (false: error)
+ */
+function cms_parse_ini_file_safe($path, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL)
+{
+    return parse_ini_string(cms_file_get_contents_safe($path), $process_sections, $scanner_mode);
+}
+
 /**
  * Parse the specified INI file, and get an array of what it found.
+ * Designed to be higher performance than PHP's parse_ini_file, for simpler files.
+ * Supports locking and character set conversion (using BOMs).
  *
- * @param  ?PATH $filename The path to the ini file to open (null: given contents in $file instead)
- * @param  ?string $file The contents of the file (null: the file needs opening)
+ * @param  ?PATH $path The path to the ini file to open (null: given contents in $file instead)
+ * @param  ?string $contents The contents of the file (null: the file needs opening)
  * @return array A map of the contents of the ini files
  */
-function cms_parse_ini_file_better($filename, $file = null)
+function cms_parse_ini_file_fast($path, $contents = null)
 {
-    if ($file === null) {
+    if ($contents === null) {
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
-            $file = unixify_line_format(file_array_get($filename));
+            $contents = unixify_line_format(handle_string_bom(file_array_get($path)));
         } else {
-            $file = function_exists('cms_file_get_contents_safe') ? cms_file_get_contents_safe($filename, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM) : file_get_contents($filename);
+            $contents = function_exists('cms_file_get_contents_safe') ? cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM) : file_get_contents($path);
         }
     }
 
     $ini_array = array();
-    $lines = explode("\n", $file);
+    $lines = explode("\n", $contents);
     foreach ($lines as $line) {
         $line = rtrim($line);
 

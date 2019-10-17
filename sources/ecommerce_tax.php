@@ -197,9 +197,10 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
                 'Zip5' => $zip_parts[0],
                 'Zip4' => array_key_exists(1, $zip_parts) ? $zip_parts[1] : '',
             );
+            $_request = json_encode($request);
             require_code('character_sets');
-            $request = convert_to_internal_encoding($request, get_charset(), 'utf-8');
-            $post_params = array(json_encode($request));
+            $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
+            $post_params = array($_request);
 
             $_response = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => $post_params, 'timeout' => 10.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true));
             $response = json_decode($_response, true);
@@ -273,9 +274,10 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
                 ),
                 'cartItems' => $cart_items,
             );
+            $_request = json_encode($request);
             require_code('character_sets');
-            $request = convert_to_internal_encoding($request, get_charset(), 'utf-8');
-            $post_params = array(json_encode($request));
+            $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
+            $post_params = array($_request);
 
             // Do TaxCloud call...
 
@@ -329,7 +331,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
         // Europe
         if ($tax_code == 'EU') {
             require_code('http');
-            list($__rates) = cache_and_carry('cms_http_request', array('http://euvat.ga/rates.json')); // TODO #3467
+            list($__rates) = cache_and_carry('cms_http_request', array('http://euvat.ga/rates.json', array('convert_to_internal_encoding' => true)));
             $_rates = json_decode($__rates, true);
 
             if (isset($_rates['rates'][$country])) {
@@ -457,9 +459,10 @@ function taxcloud_declare_completed($tracking_id, $txn_id, $member_id, $session_
         'dateAuthorized' => $date,
         'dateCaptured' => $date,
     );
+    $_request = json_encode($request);
     require_code('character_sets');
-    $request = convert_to_internal_encoding($request, get_charset(), 'utf-8');
-    $post_params = array(json_encode($request));
+    $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
+    $post_params = array($_request);
 
     $_response = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => $post_params, 'timeout' => 10.0, 'raw_post' => true, 'raw_content_type' => 'application/json', 'ignore_http_status' => true));
     $response = json_decode($_response, true);

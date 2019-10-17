@@ -415,7 +415,7 @@ function get_lang_member($member_id)
             if (!is_file($map_file_b)) {
                 $map_file_b = $map_file_a;
             }
-            $map = cms_parse_ini_file_better($map_file_b);
+            $map = cms_parse_ini_file_fast($map_file_b);
             if (!array_key_exists($lang, $map)) {
                 //fatal_exit('The specified language (' . $lang . ') is missing. The language needs installing/creating in Composr, or the language map file needs updating (to map this language to a known Composr one), or both.');
                 $_lang = null; // Instead of the above, let's just fallback to default! So people's weird forum integration doesn't make Composr die

@@ -175,21 +175,24 @@ class Hook_health_check_stability extends Hook_Health_Check
             return;
         }
 
+        require_code('files');
+
         $path = get_custom_file_base() . '/data_custom/errorlog.php';
-        $myfile = fopen($path, 'rb');
+        $myfile_charset = null;
+        $myfile = cms_fopen_rb_bom_safe($path, $myfile_charset);
         if ($myfile !== false) {
             $filesize = filesize($path);
 
             fseek($myfile, max(0, $filesize - 50000));
 
-            fgets($myfile); // Skip line part-way-through
+            fgets($myfile, $myfile_charset); // Skip line part-way-through
 
             $threshold_time = time() - 60 * 60 * 24 * 1;
             $threshold_count = intval(get_option('hc_error_log_day_flood_threshold'));
 
             $dates = array();
             while (!feof($myfile)) {
-                $line = fgets($myfile);
+                $line = cms_fgets_bom_safe($myfile, $myfile_charset);
                 if ($line === false) {
                     break;
                 }

@@ -1151,7 +1151,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
 
         // Load in remapper
         require_code('files');
-        $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_better(get_file_base() . '/themes/map.ini') : array();
+        $map = file_exists(get_file_base() . '/themes/map.ini') ? cms_parse_ini_file_fast(get_file_base() . '/themes/map.ini') : array();
 
         if (!$skip_member_specific) {
             // Work out

@@ -31,6 +31,8 @@ class Hook_page_groupings_referrals
             return array();
         }
 
+        require_code('files');
+
         $ret = array();
 
         $path = get_custom_file_base() . '/text_custom/referrals.txt';
@@ -39,7 +41,7 @@ class Hook_page_groupings_referrals
         }
 
         if (is_file($path)) {
-            $ini_file = parse_ini_file($path, true);
+            $ini_file = cms_parse_ini_file_safe($path, true);
 
             foreach ($ini_file as $ini_file_section_name => $ini_file_section) {
                 if ($ini_file_section_name != 'global') {

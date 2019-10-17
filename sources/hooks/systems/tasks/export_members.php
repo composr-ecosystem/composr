@@ -191,7 +191,6 @@ class Hook_task_export_members
             // Load data
             $data = array();
             $outfile = fopen($outfile_path, 'rb');
-            // TODO: #3467
             // TODO: #3032
             fgetcsv($outfile); // Skip header
             $heading_values = array_keys($headings);

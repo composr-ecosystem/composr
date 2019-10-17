@@ -200,7 +200,7 @@ function get_addons_list_under_category($category_name, $version_branch)
                         tar_close($tar);
                     }
 
-                    $ini_info = cms_parse_ini_file_better(null, $info_file['data']);
+                    $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
                     tar_close($tar);
                     $_category_name = $ini_info['category'];
 

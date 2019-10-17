@@ -195,7 +195,7 @@ function push_to_transifex($core_only, $push_cms, $push_ini, $push_translations,
     $test = _transifex('/projects/', 'POST', $_args, false);
     if ($test[1] == '201') { // If creation happened
         // Create translations for all defined languages
-        $langs = cms_parse_ini_file_better(get_file_base() . '/lang/langs.ini');
+        $langs = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');
         $failed_langs = array();
         foreach (array_keys($langs) as $lang) {
             if ($lang == fallback_lang()) {
@@ -540,7 +540,7 @@ function pull_from_transifex($version, $tar_file, $lang, $core_only)
     cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
     if ($lang === null) {
-        $langs = array_keys(cms_parse_ini_file_better(get_file_base() . '/lang/langs.ini'));
+        $langs = array_keys(cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini'));
         foreach ($langs as $lang) {
             if ($lang != fallback_lang()) {
                 pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, false);
@@ -893,7 +893,7 @@ function _pull_ini_file_from_transifex($project_slug, $tar_file, $lang, $_f, &$f
     }
 }
 
-function _transifex($call, $http_verb, $params = array(), $trigger_error = true)
+function _transifex($call, $http_verb, $params = array(), $trigger_error = true, $text = true)
 {
     list($username, $password) = _transifex_credentials();
 
@@ -926,7 +926,11 @@ function _transifex($call, $http_verb, $params = array(), $trigger_error = true)
         'http_verb' => $http_verb,
         'raw_content_type' => $raw_content_type,
     );
-    $http_result = cms_http_request($url, $options); // TODO #3467 (with care)
+    if ($text) {
+        $options['convert_to_internal_encoding'] = true;
+    }
+
+    $http_result = cms_http_request($url, $options);
     $result = $http_result->data;
 
     if (is_cli()) {

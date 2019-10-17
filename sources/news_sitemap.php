@@ -33,11 +33,8 @@ function build_news_sitemap()
 
     cms_profile_start_for('build_news_sitemap');
 
-    $sitemap_file = fopen($path, GOOGLE_APPENGINE ? 'wb' : 'ab');
-    flock($sitemap_file, LOCK_EX);
-    if (!GOOGLE_APPENGINE) {
-        ftruncate($sitemap_file, 0);
-    }
+    require_code('files');
+    $sitemap_file = cms_fopen_wb_bom($path);
 
     fwrite($sitemap_file, '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">

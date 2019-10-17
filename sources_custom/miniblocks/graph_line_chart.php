@@ -35,7 +35,6 @@ $file = empty($map['file']) ? 'uploads/website_specific/graph_test/line_chart.cs
 
 cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
 $myfile = fopen(get_custom_file_base() . '/' . $file, 'rb');
-// TODO: #3467
 // TODO: #3032
 $x_labels = fgetcsv($myfile);
 array_shift($x_labels); // Irrelevant corner

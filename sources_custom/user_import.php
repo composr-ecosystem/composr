@@ -52,12 +52,10 @@ function do_user_import()
             return;
         }
         $infile = fopen(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, 'rb');
-        // TODO: #3467
         // TODO: #3032
     } else {
         cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
         $infile = fopen(get_custom_file_base() . '/' . USER_IMPORT_TEMP_PATH, 'rb');
-        // TODO: #3467
         // TODO: #3032
     }
 

@@ -849,7 +849,7 @@ class Module_cms_news extends Standard_crud_module
         }
 
         require_code('rss');
-        $rss = new CMS_RSS($rss_url, true);
+        $rss = new CMS_RSS($rss_url);
 
         // Cleanup
         if (url_is_local($rss_url)) { // Means it is a temp file

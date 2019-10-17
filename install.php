@@ -443,9 +443,9 @@ function step_1()
     // Language selection...
 
     if (file_exists('lang_custom/langs.ini')) {
-        $lookup = cms_parse_ini_file_better(get_custom_file_base() . '/lang_custom/langs.ini');
+        $lookup = cms_parse_ini_file_fast(get_custom_file_base() . '/lang_custom/langs.ini');
     } else {
-        $lookup = cms_parse_ini_file_better(get_file_base() . '/lang/langs.ini');
+        $lookup = cms_parse_ini_file_fast(get_file_base() . '/lang/langs.ini');
     }
 
     $lang_count = array();
@@ -459,7 +459,7 @@ function step_1()
             $files = get_dir_contents('lang/' . $lang);
             foreach (array_keys($files) as $file) {
                 if ((substr($file, -4) == '.ini') && (($lang == fallback_lang()) || (is_file(get_file_base() . '/lang/' . fallback_lang() . '/' . $file)))) {
-                    $lang_count[$lang] += count(cms_parse_ini_file_better(get_file_base() . '/lang/' . $lang . '/' . $file));
+                    $lang_count[$lang] += count(cms_parse_ini_file_fast(get_file_base() . '/lang/' . $lang . '/' . $file));
                 }
             }
         }
@@ -474,7 +474,7 @@ function step_1()
             $files = get_dir_contents('lang_custom/' . $lang);
             foreach (array_keys($files) as $file) {
                 if ((substr($file, -4) == '.ini') && (is_file(get_file_base() . '/lang/' . fallback_lang() . '/' . $file))) {
-                    $lang_count[$lang] += count(cms_parse_ini_file_better(get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file));
+                    $lang_count[$lang] += count(cms_parse_ini_file_fast(get_custom_file_base() . '/lang_custom/' . $lang . '/' . $file));
                 }
             }
         }
@@ -526,9 +526,9 @@ function step_2()
     }
     global $FILE_ARRAY;
     if (@is_array($FILE_ARRAY)) {
-        $licence = file_array_get('text/' . filter_naughty($_POST['default_lang']) . '/licence.txt');
+        $licence = unixify_line_format(handle_string_bom(file_array_get('text/' . filter_naughty($_POST['default_lang']) . '/licence.txt')));
         if ($licence === null) {
-            $licence = file_array_get('text/EN/licence.txt');
+            $licence = unixify_line_format(handle_string_bom(file_array_get('text/EN/licence.txt')));
         }
     } else {
         $licence = @cms_file_get_contents_safe(get_file_base() . '/text/' . filter_naughty($_POST['default_lang']) . '/licence.txt', FILE_READ_LOCK | FILE_READ_BOM);
@@ -577,7 +577,7 @@ function step_3()
     unset($forums['none']);
     ksort($forums);
     $forums = array_merge(array('none' => 'sources/forum'), $forums);
-    $forum_info = cms_parse_ini_file_better(get_file_base() . '/sources/forum/forums.ini');
+    $forum_info = cms_parse_ini_file_fast(get_file_base() . '/sources/forum/forums.ini');
     $tforums = new Tempcode();
     $classes = array();
     foreach (array_keys($forums) as $forum) {
@@ -636,7 +636,7 @@ function step_3()
     // Database chooser
     $databases = array_merge(get_dir_contents('sources/database', true), get_dir_contents('sources_custom/database', true));
     ksort($databases);
-    $database_names = cms_parse_ini_file_better(get_file_base() . '/sources/database/database.ini');
+    $database_names = cms_parse_ini_file_fast(get_file_base() . '/sources/database/database.ini');
     $tdatabase = new Tempcode();
     $dbs_found = 0;
     foreach (array_keys($databases) as $database) {
@@ -1431,7 +1431,7 @@ function step_5_ftp()
         }
 
         // Test tmp file isn't currently being used by another iteration of process (race issue, causing horrible corruption)
-        $lock_myfile = fopen(get_file_base() . '/cms_inst_tmp/tmp', 'ab');
+        $lock_myfile = fopen(get_file_base() . '/cms_inst_tmp/tmp', 'cb');
         if (!flock($lock_myfile, LOCK_EX)) {
             warn_exit(do_lang_tempcode('DATA_FILE_CONFLICT'));
         }
@@ -2775,10 +2775,10 @@ function handle_self_referencing_embedment()
         if (substr($type, 0, 15) == 'themes/default/') {
             header('Content-type: image/svg+xml; charset=' . get_charset());
             if (!file_exists(get_file_base() . '/' . $type)) {
-                $out = file_array_get(filter_naughty($type));
+                $out = handle_string_bom(file_array_get(filter_naughty($type)));
                 echo $out;
             } else {
-                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type), FILE_READ_LOCK));
+                print(cms_file_get_contents_safe(get_file_base() . '/' . filter_naughty($type), FILE_READ_LOCK | FILE_READ_BOM));
                 exit();
             }
 

@@ -49,7 +49,7 @@ function _choose_language($title, $tip = false, $allow_all_selection = false)
             if (!is_file($map_b)) {
                 $map_b = $map_a;
             }
-            $LANGS_MAP_CACHE = cms_parse_ini_file_better($map_b);
+            $LANGS_MAP_CACHE = cms_parse_ini_file_fast($map_b);
         }
 
         $lang_name = get_site_default_lang();

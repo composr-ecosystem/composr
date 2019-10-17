@@ -696,11 +696,23 @@ function feof($handle)
  *
  * @param  resource $handle The file pointer
  * @param  ?integer $length The maximum length of the line (null: no limit)
- * @return string The string read
+ * @return ~string The string read (false: error)
  */
 function fgets($handle, $length = null)
 {
     return '';
+}
+
+/**
+ * Reads entire file into an array.
+ *
+ * @param  PATH $filename The file name
+ * @param  integer $flags Flags
+ * @return ~array The array (each line being an entry in the array, and newlines still attached) (false: error)
+ */
+function file($filename, $flags = 0)
+{
+    return array();
 }
 
 /**
@@ -863,7 +875,7 @@ function fpassthru($handle)
  *
  * @param  resource $handle The file handle
  * @param  integer $length Maximum length to read
- * @return string The read data
+ * @return ~string The read data (false: error)
  */
 function fread($handle, $length)
 {
@@ -4367,6 +4379,19 @@ function func_num_args()
  * @return ~array Map of Ini file data (2d if processed sections) (false: error)
  */
 function parse_ini_file($filename, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL)
+{
+    return array();
+}
+
+/**
+ * Parse a configuration string.
+ *
+ * @param  PATH $filename The file path
+ * @param  boolean $process_sections Whether to process sections
+ * @param  integer $scanner_mode Any INI_SCANNER_* constant
+ * @return ~array Map of Ini file data (2d if processed sections) (false: error)
+ */
+function parse_ini_string($string, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL)
 {
     return array();
 }

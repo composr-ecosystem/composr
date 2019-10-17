@@ -114,8 +114,8 @@ $time_start = time();
 $time_max = $time_start + get_param_integer('time_limit', 10);
 
 // Open file
-$data_file = fopen(__DIR__ . '/restore_data.php', 'rb');
-// TODO: #3467
+$data_file_charset = null;
+$data_file = cms_fopen_rb_bom_safe(__DIR__ . '/restore_data.php', $data_file_charset);
 
 // Skip forward for offset in this iteration
 $offset = get_param_integer('start_offset', 0);
@@ -128,7 +128,7 @@ if ($offset != 0) {
 
 // Run SQL commands
 $sql_buildup = '';
-while (($line = fgets($data_file)) !== false) {
+while (($line = cms_fgets_bom_safe($data_file, $data_file_charset)) !== false) {
     if (!$found_start) {
         // Not got to the data start yet
         if (trim($line) == '//COMMANDS BEGIN...') {

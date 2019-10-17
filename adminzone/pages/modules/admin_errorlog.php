@@ -159,6 +159,7 @@ class Module_admin_errorlog
      */
     public function show_logs()
     {
+        require_code('files');
         require_css('errorlog');
 
         // Read in errors
@@ -266,15 +267,14 @@ class Module_admin_errorlog
         $dh = opendir(get_custom_file_base() . '/data_custom');
         while (($filename = readdir($dh)) !== false) {
             if (substr($filename, -4) == '.log') {
-                $myfile = @fopen(get_custom_file_base() . '/data_custom/' . $filename, 'rb');
-                // TODO: #3467
+                $myfile_file_charset = null;
+                $myfile = @cms_fopen_rb_bom_safe(get_custom_file_base() . '/data_custom/' . $filename, $myfile_file_charset, true);
                 if ($myfile !== false) {
                     // Get last 40000 bytes of log
-                    flock($myfile, LOCK_SH);
                     fseek($myfile, -40000, SEEK_END);
                     $data = '';
                     while (!feof($myfile)) {
-                        $data .= fread($myfile, 8192);
+                        $data .= cms_fgets_bom_safe($myfile, $myfile_file_charset);
                     }
                     flock($myfile, LOCK_UN);
                     fclose($myfile);

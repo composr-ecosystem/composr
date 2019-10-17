@@ -834,7 +834,7 @@ class Module_admin
                             }
                             tar_close($tar);
                             if ($info_file !== null) {
-                                $info = cms_parse_ini_file_better(null, $info_file['data']);
+                                $info = cms_parse_ini_file_fast(null, $info_file['data']);
 
                                 $title = isset($info['title']) ? $info['title'] : '';
                                 $description = isset($info['description']) ? $info['description'] : '';
@@ -1107,7 +1107,7 @@ class Module_admin
                     $breadcrumbs->attach(do_template('BREADCRUMB_LONE_WRAP', array('_GUID' => '78d769e2d7fb010318078f13f3b34ba2', 'LABEL' => $image['theme'])));
                     $sup = do_lang_tempcode('LOCATED_IN', $breadcrumbs);
                     $lang = $image['lang'];
-                    $lang_map = cms_parse_ini_file_better(file_exists(get_file_base() . '/lang_custom/langs.ini') ? (get_file_base() . '/lang_custom/langs.ini') : (get_file_base() . '/lang/langs.ini'));
+                    $lang_map = cms_parse_ini_file_fast(file_exists(get_file_base() . '/lang_custom/langs.ini') ? (get_file_base() . '/lang_custom/langs.ini') : (get_file_base() . '/lang/langs.ini'));
                     $lang = array_key_exists($lang, $lang_map) ? $lang_map[$lang] : $lang;
                     $content[$current_results_type]->attach(do_template('INDEX_SCREEN_FANCIER_ENTRY', array('_GUID' => '68b418db6d3f7676cf1682a68f76f88a', 'NAME' => $n, 'URL' => $_url, 'TITLE' => '', 'DESCRIPTION' => escape_html($lang), 'SUP' => $sup)));
                 }
