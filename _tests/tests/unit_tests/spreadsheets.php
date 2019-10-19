@@ -25,9 +25,16 @@ class spreadsheets_test_set extends cms_test_case
         require_code('files_spreadsheets_read');
         require_code('files_spreadsheets_write');
 
-        $this->files = array('test.csv', 'test-scsv.txt', 'test-tsv.txt');
+        $this->files = array(
+            'test.csv',
+            'test-scsv.txt',
+            'test-tsv.txt',
+        );
         if (addon_installed('enhanced_spreadsheets')) {
-            $this->files = array_merge($this->files, array('test.ods', 'test.xlsx'));
+            $this->files = array_merge($this->files, array(
+                'test.ods',
+                'test.xlsx',
+            ));
         }
 
         $this->expected = array();
@@ -37,11 +44,10 @@ class spreadsheets_test_set extends cms_test_case
             array('A1', 'B1', 'C1'),
             array('A2', 'B2', 'C2'),
             array('', '', 'C3'),
-            array('A4'),
+            array('A4', '', ''),
         );
 
         $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS] = array(
-            array('A', 'B', 'C'),
             array('A1', 'B1', 'C1'),
             array('A2', 'B2', 'C2'),
             array('', '', 'C3'),
@@ -59,8 +65,8 @@ class spreadsheets_test_set extends cms_test_case
     public function testRead()
     {
         $exts = array();
-        foreach ($this->expected as $algorithm => $expected) {
-            foreach ($this->files as $file) {
+        foreach ($this->files as $file) {
+            foreach ($this->expected as $algorithm => $expected) {
                 $this->assertTrue(is_spreadsheet_readable($file));
 
                 $sheet_reader = spreadsheet_open_read(get_file_base() . '/_tests/assets/spreadsheets/' . $file, $file, $algorithm);
@@ -70,7 +76,14 @@ class spreadsheets_test_set extends cms_test_case
                 }
                 $sheet_reader->close();
 
-                $this->assertTrue($rows == $expected);
+                $this->assertTrue($rows == $expected, 'Failed on ' . $file . ' (algorithm '  . strval($algorithm) . ')');
+                if ($this->debug) {
+                    if ($rows != $expected) {
+                        @var_dump($expected);
+                        @var_dump($rows);
+                        exit();
+                    }
+                }
 
                 $exts[get_file_extension($file)] = true;
             }
@@ -80,13 +93,17 @@ class spreadsheets_test_set extends cms_test_case
 
         $_exts = explode(',', spreadsheet_read_file_types());
         sort($_exts);
-        sort($exts);
-        $this->assertTrue($_exts == $exts);
+        ksort($exts);
+        $this->assertTrue($_exts == array_keys($exts), 'Not all file extensions covered');
     }
 
     public function testWrite()
     {
         foreach ($this->expected as $algorithm => $expected) {
+            if ($algorithm == CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS) {
+                continue; // Not supported for write
+            }
+
             foreach ($this->files as $file) {
                 $this->assertTrue(is_spreadsheet_writable($file));
 
@@ -105,7 +122,14 @@ class spreadsheets_test_set extends cms_test_case
                     $rows[] = $row;
                 }
                 $sheet_reader->close();
-                $this->assertTrue($rows == $expected);
+                $this->assertTrue($rows == $expected, 'Failed on ' . $file . ' (algorithm '  . strval($algorithm) . ')');
+                if ($this->debug) {
+                    if ($rows != $expected) {
+                        @var_dump($expected);
+                        @var_dump($rows);
+                        exit();
+                    }
+                }
             }
         }
 

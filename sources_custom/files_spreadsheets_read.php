@@ -47,103 +47,13 @@ function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = 
     switch ($ext) {
         case 'csv':
         case 'txt':
-            return new CMS_CSV_Reader($path, $algorithm, $trim, $default_charset);
+            return new CMS_CSV_Reader($path, $filename, $algorithm, $trim, $default_charset);
 
         case 'xlsx':
         case 'ods':
-            return new CMS_Spout_Reader($path, $algorithm, $trim, $default_charset);
+            require_code('files_spreadsheets_read__spout');
+            return new CMS_Spout_Reader($path, $filename, $algorithm, $trim, $default_charset);
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
-}
-
-/**
- * Spout spreadsheet reader.
- *
- * @package    core
- */
-class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
-{
-    protected $reader = null;
-    protected $row_iterator = null;
-
-    /**
-     * Constructor. Opens spreadsheet for reading.
-     *
-     * @param  PATH $path File path
-     * @param  integer $algorithm An ALGORITHM_* constant
-     * @param  boolean $trim Whether to trim each cell
-     * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
-     */
-    public function __construct($path, $algorithm = 3, $trim = true, $default_charset = '')
-    {
-        require_code('spout/Autoloader/autoload');
-
-        $this->reader = Box\Spout\Reader\Common\Creator\ReaderEntityFactory\ReaderEntityFactory::createReaderFromFile($path);
-
-        $this->reader->open($path);
-
-        if ($algorithm == self::ALGORITHM_RAW) {
-            $this->fields = null;
-        } else {
-            $row = $this->read_row();
-            if ($row === false) {
-                $row = array();
-            }
-            $this->fields = $row;
-        }
-
-        $sheet_iterator = $this->reader->getSheetIterator(); // We will only look at the first sheet
-        $this->row_iterator = $sheet_iterator->getRowIterator();
-    }
-
-    /**
-     * Rewind to return first record again.
-     */
-    public function rewind()
-    {
-        $this->row_iterator->rewind();
-    }
-
-    /**
-     * Read spreadsheet row.
-     *
-     * @return ~array Row (false: error)
-     */
-    protected function _read_row()
-    {
-        if ($this->handle === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
-        }
-
-        if (!$this->row_iterator->valid()) {
-            return false;
-        }
-
-        $row = $this->row_iterator->current();
-        $row->next();
-        if (RowManager::isEmpty($row)) {
-            return $this->read_row();
-        }
-        return $row->getCells();
-    }
-
-    /**
-     * Standard destructor.
-     */
-    public function __destruct()
-    {
-        $this->close();
-    }
-
-    /**
-     * Close down the spreadsheet file handle, for when we're done.
-     */
-    public function close()
-    {
-        if ($this->reader !== null) {
-            $this->reader->close();
-            $this->reader = null;
-        }
-    }
 }

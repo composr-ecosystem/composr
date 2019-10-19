@@ -60,7 +60,7 @@ function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = 
     switch ($ext) {
         case 'csv':
         case 'txt':
-            return new CMS_CSV_Reader($path, $algorithm, $trim, $default_charset);
+            return new CMS_CSV_Reader($path, $filename, $algorithm, $trim, $default_charset);
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
@@ -79,18 +79,32 @@ abstract class CMS_Spreadsheet_Reader
 
     protected $algorithm = 3;
     protected $trim = true;
-    protected $charset = null;
     protected $fields = null;
 
     /**
      * Constructor. Opens spreadsheet for reading.
      *
      * @param  PATH $path File path
+     * @param  string $filename Filename
      * @param  integer $algorithm An ALGORITHM_* constant
      * @param  boolean $trim Whether to trim each cell
      * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
      */
-    abstract public function __construct($path, $algorithm = 3, $trim = true, $default_charset = '');
+    public function __construct($path, $filename, $algorithm = 3, $trim = true, $default_charset = '')
+    {
+        $this->algorithm = $algorithm;
+        $this->trim = $trim;
+
+        if ($algorithm == self::ALGORITHM_RAW) {
+            $this->fields = null;
+        } else {
+            $row = $this->read_row();
+            if ($row === false) {
+                $row = array();
+            }
+            $this->fields = $row;
+        }
+    }
 
     /**
      * Rewind to return first record again.
@@ -110,14 +124,23 @@ abstract class CMS_Spreadsheet_Reader
             return false;
         }
 
+        if ($this->trim) {
+            foreach ($row as &$v) {
+                $v = trim($v);
+            }
+        }
+
+        if (array_unique($row) == array('')) { // Skip to next for any blank row
+            return $this->read_row();
+        }
+
         if ($this->fields === null) {
             $_row = $row;
+
+            $this->fields = $row; // So can pad out consistently for following rows
         } else {
             switch ($this->algorithm) {
                 case self::ALGORITHM_RAW:
-                    $_row = $row;
-                    break;
-
                 case self::ALGORITHM_UNNAMED_FIELDS:
                     $_row = $row;
                     for ($i = count($_row); $i < count($this->fields); $i++) {
@@ -131,12 +154,6 @@ abstract class CMS_Spreadsheet_Reader
                         $_row[$f] = (array_key_exists($i, $row) ? $row[$i] : '');
                     }
                     break;
-            }
-        }
-
-        if ($this->trim) {
-            foreach ($_row as &$v) {
-                $v = trim($v);
             }
         }
 
@@ -167,8 +184,9 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
     const FORMAT_TSV = 2; // Tab
     const FORMAT_SCSV = 3; // Semicolon
 
-    protected $handle = null;
     protected $tmp_path = null;
+    protected $handle = null;
+    protected $charset = null;
     protected $format = 1;
     protected $start_pos = 0;
 
@@ -176,17 +194,15 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
      * Constructor. Opens spreadsheet for reading.
      *
      * @param  PATH $path File path
+     * @param  string $filename Filename
      * @param  integer $algorithm An ALGORITHM_* constant
      * @param  boolean $trim Whether to trim each cell
      * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
      * @param  ?integer $format A FORMAT_* constant (null: autodetect)
      */
-    public function __construct($path, $algorithm = 3, $trim = true, $default_charset = '', $format = null)
+    public function __construct($path, $filename, $algorithm = 3, $trim = true, $default_charset = '', $format = null)
     {
         require_code('files');
-
-        $this->algorithm = $algorithm;
-        $this->trim = $trim;
 
         // First we need to fix line endings, as there's a chance of Classic Mac line endings due to Microsoft Excel Mac's behaviour, and cms_fgets cannot cope with that
         $this->tmp_path = cms_tempnam();
@@ -206,15 +222,7 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
             $this->format = $format;
         }
 
-        if ($algorithm == self::ALGORITHM_RAW) {
-            $this->fields = null;
-        } else {
-            $row = $this->read_row();
-            if ($row === false) {
-                $row = array();
-            }
-            $this->fields = $row;
-        }
+        parent::__construct($path, $filename, $algorithm, $trim, $default_charset);
 
         $this->start_pos = ftell($this->handle);
     }
@@ -242,14 +250,6 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
             fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        do {
-            $line = cms_fgets($this->handle, $this->charset);
-        }
-        while (($line !== false) && (trim($line) == ''));
-        if ($line === false) {
-            return false;
-        }
-
         switch ($this->format) {
             case self::FORMAT_CSV:
                 $delimiter = ',';
@@ -262,6 +262,11 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
                 break;
             default:
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        $line = cms_fgets($this->handle, $this->charset);
+        if ($line === false) {
+            return false;
         }
 
         return str_getcsv($line, $delimiter, '"', (version_compare(PHP_VERSION, '7.4.0') >= 0) ? '' : '\\'/*LEGACY*/);

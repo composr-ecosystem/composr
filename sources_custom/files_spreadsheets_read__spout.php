@@ -1,0 +1,109 @@
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2019
+
+ See text/EN/licence.txt for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    enhanced_spreadsheets
+ */
+
+/**
+ * Spout spreadsheet reader.
+ *
+ * @package    core
+ */
+class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
+{
+    protected $reader = null;
+    protected $row_iterator = null;
+
+    /**
+     * Constructor. Opens spreadsheet for reading.
+     *
+     * @param  PATH $path File path
+     * @param  string $filename Filename
+     * @param  integer $algorithm An ALGORITHM_* constant
+     * @param  boolean $trim Whether to trim each cell
+     * @param  ?string $default_charset The default character set to assume if none is specified in the file (null: website character set) (blank: smart detection)
+     */
+    public function __construct($path, $filename, $algorithm = 3, $trim = true, $default_charset = '')
+    {
+        require_code('spout/Autoloader/autoload');
+
+        $ext = get_file_extension($filename);
+        switch ($ext) {
+            case 'ods':
+                $this->reader = Box\Spout\Reader\Common\Creator\ReaderEntityFactory::createODSReader();
+                break;
+
+            case 'xlsx':
+                $this->reader = Box\Spout\Reader\Common\Creator\ReaderEntityFactory::createXLSXReader();
+                break;
+
+            default:
+                fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        $this->reader->open($path);
+
+        $sheet_iterator = $this->reader->getSheetIterator(); // We will only look at the first sheet
+        $sheet_iterator->rewind();
+        $this->row_iterator = $sheet_iterator->current()->getRowIterator();
+        $this->row_iterator->rewind();
+
+        parent::__construct($path, $filename, $algorithm, $trim, $default_charset);
+    }
+
+    /**
+     * Rewind to return first record again.
+     */
+    public function rewind()
+    {
+        $this->row_iterator->rewind();
+    }
+
+    /**
+     * Read spreadsheet row.
+     *
+     * @return ~array Row (false: error)
+     */
+    protected function _read_row()
+    {
+        if ($this->reader === null) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
+        }
+
+        if (!$this->row_iterator->valid()) {
+            return false;
+        }
+
+        $row = $this->row_iterator->current();
+        $this->row_iterator->next();
+        return $row->getCells();
+    }
+
+    /**
+     * Standard destructor.
+     */
+    public function __destruct()
+    {
+        $this->close();
+    }
+
+    /**
+     * Close down the spreadsheet file handle, for when we're done.
+     */
+    public function close()
+    {
+        if ($this->reader !== null) {
+            $this->reader->close();
+            $this->reader = null;
+        }
+    }
+}

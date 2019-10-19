@@ -141,6 +141,8 @@ Note the old-style Excel format ([tt].xls[/tt]) is intentionally not supported b
             'sources_custom/hooks/systems/addon_registry/enhanced_spreadsheets.php',
             'sources_custom/files_spreadsheets_write.php',
             'sources_custom/files_spreadsheets_read.php',
+            'sources_custom/files_spreadsheets_write__spout.php',
+            'sources_custom/files_spreadsheets_read__spout.php',
 
             'sources_custom/spout/index.html',
             'sources_custom/spout/Common/index.html',

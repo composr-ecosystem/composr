@@ -54,9 +54,6 @@ function make_spreadsheet(&$path, $data, $filename = null, $metadata = array())
 {
     if ($filename === null) {
         $filename = basename($path);
-        if (!is_spreadsheet_writable($filename)) {
-            $filename = 'data.csv';
-        }
     }
 
     $sheet_writer = spreadsheet_open_write($path, $filename);
@@ -81,13 +78,16 @@ function spreadsheet_open_write(&$path, $filename = null, $algorithm = 3, $chars
 {
     if ($filename === null) {
         $filename = basename($path);
+        if (!is_spreadsheet_writable($filename)) {
+            $filename = 'data.csv';
+        }
     }
 
     $ext = get_file_extension($filename);
     switch ($ext) {
         case 'csv':
         case 'txt':
-            return new CMS_CSV_Writer($path, $algorithm, $charset);
+            return new CMS_CSV_Writer($path, $filename, $algorithm, $charset);
     }
 
     warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html($ext)));
@@ -112,10 +112,11 @@ abstract class CMS_Spreadsheet_Writer
      * Open spreadsheet for writing.
      *
      * @param  ?PATH $path File to write into (null: create a temporary file and return by reference)
+     * @param  string $filename Filename
      * @param  integer $algorithm An ALGORITHM_* constant
      * @param  ?string $charset The character set to write with (if supported) (null: website character set)
      */
-    abstract public function __construct(&$path, $algorithm = 3, $charset = null);
+    abstract public function __construct(&$path, $filename, $algorithm = 3, $charset = null);
 
     /**
      * Write spreadsheet row.
@@ -128,7 +129,6 @@ abstract class CMS_Spreadsheet_Writer
         if ($this->algorithm == self::ALGORITHM_NAMED_FIELDS) {
             if ($this->fields === null) { // First row
                 $this->fields = array_keys($row);
-
                 $this->_write_row($this->fields);
             }
         }
@@ -215,12 +215,13 @@ class CMS_CSV_Writer extends CMS_Spreadsheet_Writer
      * Open spreadsheet for writing.
      *
      * @param  ?PATH $path File to write into (null: create a temporary file and return by reference)
+     * @param  string $filename Filename
      * @param  integer $algorithm An ALGORITHM_* constant
      * @param  ?string $charset The character set to write with (if supported) (null: website character set)
      * @param  integer $format A FORMAT_* constant
      * @param  boolean $write_bom Whether to write a byte-order-mark (BOM)
      */
-    public function __construct(&$path, $algorithm = 3, $charset = null, $format = 1, $write_bom = true)
+    public function __construct(&$path, $filename, $algorithm = 3, $charset = null, $format = 1, $write_bom = true)
     {
         require_code('files');
 
