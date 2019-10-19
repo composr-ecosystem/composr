@@ -118,9 +118,7 @@
 						{$GET,boxes}
 					</div>
 
-					<div class="left">
-						{VIDEO}
-					</div>
+					{VIDEO}
 				</div>
 			{+END}
 
