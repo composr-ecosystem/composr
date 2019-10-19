@@ -35,22 +35,70 @@ class Hook_task_export_quiz
             return null;
         }
 
-        $filename = 'quiz.csv';
+        disable_php_memory_limit();
+
+        $questions_rows = $GLOBALS['SITE_DB']->query_select('quiz_questions', array('*'), array('q_quiz' => $quiz_id), 'ORDER BY q_order');
+
+        $spreadsheet_data = array();
+
+        // Create header array
+        $header = array(do_lang('MEMBER'), do_lang('EMAIL'));
+
+        // Get all entries and member answers of this quiz in to an array
+        $member_answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_entry_answer t1 JOIN ' . get_table_prefix() . 'quiz_entries t2 ON t2.id=t1.q_entry JOIN ' . get_table_prefix() . 'quiz_questions t3 ON t3.id=t1.q_question', array('t2.id AS entry_id', 'q_question', 'q_member', 'q_answer', 'q_results'), array('t2.q_quiz' => $quiz_id), 'ORDER BY q_order');
+        $member_answers = array();
+        foreach ($member_answer_rows as $id => $answer_entry) {
+            $member_entry_key = strval($answer_entry['q_member']) . '_' . strval($answer_entry['entry_id']) . '_' . strval($answer_entry['q_results']);
+            $question_id = $answer_entry['q_question'];
+            if (!isset($member_answers[$member_entry_key][$question_id])) {
+                $member_answers[$member_entry_key][$question_id] = array();
+            }
+            $member_answers[$member_entry_key][$question_id] = $answer_entry['q_answer'];
+        }
+
+        // Proper answers, for non-free-form questions
+        $answer_rows = $GLOBALS['SITE_DB']->query_select('quiz_question_answers a JOIN ' . get_table_prefix() . 'quiz_questions q ON q.id=a.q_question', array('q_answer_text', 'q_question', 'a.id'), array('q_quiz' => $quiz_id), 'ORDER BY q.q_order,a.q_order');
+
+        // Loop over it all
+        foreach ($member_answers as $member_bits => $_member_answers) {
+            list($member_id, , $result) = explode('_', $member_bits, 3);
+            $username = $GLOBALS['FORUM_DRIVER']->get_username(intval($member_id));
+            $member_email = $GLOBALS['FORUM_DRIVER']->get_member_email_address(intval($member_id));
+
+            $member_answers_spreadsheet = array();
+            $member_answers_spreadsheet[do_lang('IDENTIFIER')] = $member_id;
+            $member_answers_spreadsheet[do_lang('USERNAME')] = $username;
+            $member_answers_spreadsheet[do_lang('EMAIL')] = $member_email;
+            $member_answers_spreadsheet[do_lang('MARKS')] = $result;
+            foreach ($questions_rows as $i => $question_row) {
+                $member_answer = array_key_exists($question_row['id'], $_member_answers) ? $_member_answers[$question_row['id']] : '';
+
+                if (is_numeric($member_answer)) {
+                    foreach ($answer_rows as $question_answer_row) {
+                        if (($question_answer_row['id'] == intval($member_answer)) && ($question_answer_row['q_question'] == $question_row['id'])) {
+                            $member_answer = get_translated_text($question_answer_row['q_answer_text']);
+                        }
+                    }
+                }
+
+                $member_answers_spreadsheet[integer_format($i + 1) . ') ' . get_translated_text($question_row['q_question_text'])] = $member_answer;
+            }
+
+            $spreadsheet_data[] = $member_answers_spreadsheet;
+        }
+
+        require_code('files_spreadsheets_write');
+        $filename = 'quiz.' . spreadsheet_write_default();
+        $outfile_path = null;
+        $sheet_writer = make_spreadsheet($outfile_path, $spreadsheet_data, $filename);
 
         $headers = array();
-        $headers['Content-type'] = 'text/csv';
+        $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = array();
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        require_code('files2');
-
-        $outfile_path = cms_tempnam();
-
-        $data = get_quiz_data_for_csv($quiz_id);
-        make_csv($data, $filename, false, false, $outfile_path);
-
-        return array('text/csv', array($filename, $outfile_path), $headers, $ini_set);
+        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
     }
 }

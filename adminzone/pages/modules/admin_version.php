@@ -1177,28 +1177,27 @@ class Module_admin_version
         $sponsors = array(
             'ocProducts' => array('AREAS' => array('Primary sponsor')),
         );
-        $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-        // TODO: #3032 (must default charset to utf-8 if no BOM though)
-        fgetcsv($myfile);
-        while (($row = fgetcsv($myfile)) !== false) {
-            /*if (!empty($row[2])) { Don't actually want to list bug-fix sponsors
-                if (!isset($sponsors[$row[2]])) {
-                    $sponsors[$row[2]] = array('AREAS' => array());
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
+        while (($row = $sheet_reader->read_row()) !== false) {
+            /*if (!empty($row['Bug-fix sponsor'])) { Don't actually want to list bug-fix sponsors
+                if (!isset($sponsors[$row['Bug-fix sponsor']])) {
+                    $sponsors[$row['Bug-fix sponsor']] = array('AREAS' => array());
                 }
-                $sponsors[$row[2]]['AREAS'][] = $row[1];
+                $sponsors[$row['Bug-fix sponsor']]['AREAS'][] = $row['Title'];
             }*/
-            if (!empty($row[3])) {
-                if (!isset($sponsors[$row[3]])) {
-                    $sponsors[$row[2]] = array('AREAS' => array());
+            if (!empty($row['Current active sponsor'])) {
+                if (!isset($sponsors[$row['Current active sponsor']])) {
+                    $sponsors[$row['Bug-fix sponsor']] = array('AREAS' => array());
                 }
-                $sponsors[$row[3]]['AREAS'][] = $row[1];
+                $sponsors[$row['Current active sponsor']]['AREAS'][] = $row['Title'];
             }
         }
+        $sheet_reader->close();
         foreach ($sponsors as $sponsor => &$areas) {
             $areas['AREAS'] = array_unique($areas['AREAS']);
             //cms_mb_sort($areas['AREAS'], SORT_NATURAL | SORT_FLAG_CASE); Actually order is meaningful
         }
-        fclose($myfile);
 
         return do_template('SPONSORS_SCREEN', array(
             '_GUID' => '504a3975e168ac7d32ed78f3fadf2cbe',

@@ -152,12 +152,12 @@ if (strlen($httprange) > 0) {
 header('Content-Length: ' . strval($new_length));
 cms_disable_time_limit();
 error_reporting(0);
+cms_ob_end_clean();
 
 // Send actual data
 $myfile = fopen($_full, 'rb');
 fseek($myfile, $from);
 if ($size == $new_length) {
-    cms_ob_end_clean();
     fpassthru($myfile);
 } else {
     $i = 0;

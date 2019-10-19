@@ -100,13 +100,13 @@ class Module_cms_catalogues extends Standard_crud_module
 
         if (has_privilege($member_id, 'mass_import', 'cms_catalogues')) {
             $ret += array(
-                'import' => array('IMPORT_CATALOGUE_ENTRIES', 'admin/import_csv'),
+                'import' => array('IMPORT_CATALOGUE_ENTRIES', 'admin/import_spreadsheet'),
             );
         }
 
         if ($GLOBALS['FORUM_DRIVER']->is_super_admin($member_id)) {
             $ret += array(
-                'export' => array('EXPORT_CATALOGUE_ENTRIES', 'admin/export_csv'),
+                'export' => array('EXPORT_CATALOGUE_ENTRIES', 'admin/export_spreadsheet'),
             );
         }
 
@@ -310,8 +310,8 @@ class Module_cms_catalogues extends Standard_crud_module
                 has_privilege(get_member(), 'edit_cat_midrange_content', 'cms_catalogues') ? array('admin/edit_one_category', array('_SELF', array_merge($extra_map, array('type' => 'edit_category')), '_SELF'), ($catalogue_name != '') ? do_lang('NEXT_ITEM_edit_one_category') : do_lang('EDIT_CATALOGUE_CATEGORY')) : null,
                 (!$has_categories) ? null : (has_privilege(get_member(), 'submit_midrange_content', 'cms_catalogues') ? array('admin/add', array('_SELF', array_merge($extra_map, array('type' => 'add_entry')), '_SELF'), ($catalogue_name != '') ? do_lang('NEXT_ITEM_add') : do_lang('ADD_CATALOGUE_ENTRY')) : null),
                 (!$has_categories) ? null : (has_privilege(get_member(), 'edit_midrange_content', 'cms_catalogues') ? array('admin/edit', array('_SELF', array_merge($extra_map, array('type' => 'edit_entry')), '_SELF'), ($catalogue_name != '') ? do_lang('NEXT_ITEM_edit') : do_lang('EDIT_CATALOGUE_ENTRY')) : null),
-                (!$has_categories) ? null : (has_privilege(get_member(), 'mass_import', 'cms_catalogues') ? array('admin/import_csv', array('_SELF', array_merge($extra_map, array('type' => 'import')), '_SELF'), do_lang('IMPORT_CATALOGUE_ENTRIES')) : null),
-                (!$has_categories) ? null : ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? array('admin/export_csv', array('_SELF', array_merge($extra_map, array('type' => 'export')), '_SELF'), do_lang('EXPORT_CATALOGUE_ENTRIES')) : null),
+                (!$has_categories) ? null : (has_privilege(get_member(), 'mass_import', 'cms_catalogues') ? array('admin/import_spreadsheet', array('_SELF', array_merge($extra_map, array('type' => 'import')), '_SELF'), do_lang('IMPORT_CATALOGUE_ENTRIES')) : null),
+                (!$has_categories) ? null : ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? array('admin/export_spreadsheet', array('_SELF', array_merge($extra_map, array('type' => 'export')), '_SELF'), do_lang('EXPORT_CATALOGUE_ENTRIES')) : null),
             ), manage_custom_fields_donext_link('catalogue'), manage_custom_fields_donext_link('catalogue_category')),
             ($catalogue_name != '') ? escape_html(get_translated_text($cat_title)) : do_lang('MANAGE_CATALOGUES')
         );
@@ -1003,7 +1003,7 @@ class Module_cms_catalogues extends Standard_crud_module
     {
         check_privilege('mass_import');
 
-        $catalogue_select = $this->choose_catalogue($this->title, 'admin/import_csv');
+        $catalogue_select = $this->choose_catalogue($this->title, 'admin/import_spreadsheet');
 
         if ($catalogue_select !== null) {
             return $catalogue_select;
@@ -1018,33 +1018,34 @@ class Module_cms_catalogues extends Standard_crud_module
         // Build up form
         $fields = new Tempcode();
 
-        $fields->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('CSV_UPLOAD_DESC'), 'file_anytype', true, null, null, true, 'csv,txt'));
+        require_code('files_spreadsheets_read');
+        $fields->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('SPREADSHEET_UPLOAD_DESC'), 'file_anytype', true, null, null, true, spreadsheet_read_file_types()));
         $hidden = new Tempcode();
         handle_max_file_size($hidden);
 
-        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_CSV_IMPORT_KEY_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_IMPORT_KEY_FIELD'), 'key_field', '', false));
+        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_SPREADSHEET_IMPORT_KEY_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_IMPORT_KEY_FIELD'), 'key_field', '', false));
 
         $new_handling_options = new Tempcode();
         $new_handling_options->attach(form_input_radio_entry('new_handling', 'add', true, do_lang_tempcode('NEW_HANDLING_ADD')));
         $new_handling_options->attach(form_input_radio_entry('new_handling', 'skip', false, do_lang_tempcode('NEW_HANDLING_SKIP')));
-        $fields->attach(form_input_radio(do_lang_tempcode('CATALOGUE_CSV_NEW_HANDLING'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_NEW_HANDLING'), 'new_handling', $new_handling_options));
+        $fields->attach(form_input_radio(do_lang_tempcode('CATALOGUE_SPREADSHEET_NEW_HANDLING'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_NEW_HANDLING'), 'new_handling', $new_handling_options));
 
         $delete_handling_options = new Tempcode();
         $delete_handling_options->attach(form_input_radio_entry('delete_handling', 'delete', false, do_lang_tempcode('DELETE_HANDLING_DELETE')));
         $delete_handling_options->attach(form_input_radio_entry('delete_handling', 'leave', true, do_lang_tempcode('DELETE_HANDLING_LEAVE')));
-        $fields->attach(form_input_radio(do_lang_tempcode('CATALOGUE_CSV_DELETE_HANDLING'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_DELETE_HANDLING'), 'delete_handling', $delete_handling_options));
+        $fields->attach(form_input_radio(do_lang_tempcode('CATALOGUE_SPREADSHEET_DELETE_HANDLING'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_DELETE_HANDLING'), 'delete_handling', $delete_handling_options));
 
         $update_handling_options = new Tempcode();
         $update_handling_options->attach(form_input_radio_entry('update_handling', 'overwrite', true, do_lang_tempcode('UPDATE_HANDLING_OVERWRITE')));
         $update_handling_options->attach(form_input_radio_entry('update_handling', 'freshen', false, do_lang_tempcode('UPDATE_HANDLING_FRESHEN')));
         $update_handling_options->attach(form_input_radio_entry('update_handling', 'skip', false, do_lang_tempcode('UPDATE_HANDLING_SKIP')));
         $update_handling_options->attach(form_input_radio_entry('update_handling', 'delete', false, do_lang_tempcode('UPDATE_HANDLING_DELETE')));
-        $fields->attach(form_input_radio(do_lang_tempcode('CATALOGUE_CSV_UPDATE_HANDLING'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_UPDATE_HANDLING'), 'update_handling', $update_handling_options));
+        $fields->attach(form_input_radio(do_lang_tempcode('CATALOGUE_SPREADSHEET_UPDATE_HANDLING'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_UPDATE_HANDLING'), 'update_handling', $update_handling_options));
 
 
-        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_CSV_IMPORT_META_KEYWORDS_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_IMPORT_META_KEYWORDS_FIELD'), 'meta_keywords_field', '', false));
-        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_CSV_IMPORT_META_DESCRIPTION_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_IMPORT_META_DESCRIPTION_FIELD'), 'meta_description_field', '', false));
-        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_CSV_IMPORT_NOTES_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_CSV_IMPORT_NOTES_FIELD'), 'notes_field', '', false));
+        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_SPREADSHEET_IMPORT_META_KEYWORDS_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_IMPORT_META_KEYWORDS_FIELD'), 'meta_keywords_field', '', false));
+        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_SPREADSHEET_IMPORT_META_DESCRIPTION_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_IMPORT_META_DESCRIPTION_FIELD'), 'meta_description_field', '', false));
+        $fields->attach(form_input_codename(do_lang_tempcode('CATALOGUE_SPREADSHEET_IMPORT_NOTES_FIELD'), do_lang_tempcode('DESCRIPTION_CATALOGUE_SPREADSHEET_IMPORT_NOTES_FIELD'), 'notes_field', '', false));
 
         require_code('feedback2');
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically(1, 1, 1);
@@ -1058,7 +1059,7 @@ class Module_cms_catalogues extends Standard_crud_module
             'TEXT' => do_lang_tempcode('CATALOGUE_IMPORT_TEXT'),
             'HIDDEN' => $hidden,
             'FIELDS' => $fields,
-            'SUBMIT_ICON' => 'admin/import_csv',
+            'SUBMIT_ICON' => 'admin/import_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
         ));
@@ -1095,26 +1096,20 @@ class Module_cms_catalogues extends Standard_crud_module
         $allow_comments = post_param_integer('allow_comments', 0);
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
 
-        // Grab the CSV file
+        // Grab the spreadsheet file
         require_code('uploads');
-        $csv_path = null;
+        $spreadsheet_path = null;
         if (((is_plupload(true)) && (array_key_exists('file_anytype', $_FILES))) || ((array_key_exists('file_anytype', $_FILES)) && (is_uploaded_file($_FILES['file_anytype']['tmp_name'])))) {
-            $csv_path = $_FILES['file_anytype']['tmp_name'];
+            $spreadsheet_path = $_FILES['file_anytype']['tmp_name'];
         }
-        if ($csv_path === null) {
+        if ($spreadsheet_path === null) {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
-
-        // Fix up the CSV file to have unix style line endings
-        // TODO: #3032
-        $fixed_contents = cms_file_get_contents_safe($csv_path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-        require_code('files');
-        cms_file_put_contents_safe($csv_path, $fixed_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_BOM);
 
         log_it('IMPORT_CATALOGUE_ENTRIES', $catalogue_name);
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('CATALOGUE_IMPORT'), $this->title, 'import_catalogue', array($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $csv_path));
+        return call_user_func_array__long_task(do_lang('CATALOGUE_IMPORT'), $this->title, 'import_catalogue', array($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $spreadsheet_path));
     }
 
     /**
@@ -1128,7 +1123,7 @@ class Module_cms_catalogues extends Standard_crud_module
             access_denied('I_ERROR');
         }
 
-        $catalogue_select = $this->choose_catalogue($this->title, 'admin/export_csv');
+        $catalogue_select = $this->choose_catalogue($this->title, 'admin/export_spreadsheet');
 
         if ($catalogue_select !== null) {
             return $catalogue_select;
@@ -1140,7 +1135,7 @@ class Module_cms_catalogues extends Standard_crud_module
     }
 
     /**
-     * The actualiser to download a CSV of catalogues.
+     * The actualiser to download a spreadsheet of catalogues.
      *
      * @param  ID_TEXT $catalogue_name The name of the catalogue
      * @return Tempcode The UI

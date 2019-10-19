@@ -46,9 +46,8 @@ $max = get_param_integer('max', 50);
 if ($start == $max) {
     $max = $start + 50;
 }
-$csv = get_param_integer('csv', 0) == 1;
-if ($csv) {
-    require_code('files2');
+$spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+if ($spreadsheet) {
     cms_disable_time_limit();
     $start = 0;
     $max = 10000;
@@ -116,13 +115,13 @@ if ($field_id !== null) {
         $member_join_date = get_timezoned_date_time($member['m_join_time']);
         $member_visit_date = get_timezoned_date_time($member['m_last_visit_time']);
 
-        if ($csv) {
-            $csv_data = array();
+        if ($spreadsheet) {
+            $spreadsheet_data = array();
             $sname = do_lang('USERNAME');
             $scredits = do_lang('CREDITS');
             $sjoin = do_lang('JOIN_DATE');
             $slast = do_lang('LAST_VISIT_TIME');
-            $csv_data[] = array(
+            $spreadsheet_data[] = array(
                 $sname => $member_name,
                 $scredits => $credits,
                 $sjoin => $member_join_date,
@@ -135,8 +134,12 @@ if ($field_id !== null) {
         $total += $credits;
         $i++;
     }
-    if ($csv) {
-        make_csv($csv_data, 'unspent_credits.csv');
+    if ($spreadsheet) {
+        require_code('files_spreadsheets_write');
+        $filename = 'unspent_credits.' . spreadsheet_write_default();
+        $path = null;
+        $sheet_writer = make_spreadsheet($path, $spreadsheet_data, $filename);
+        $sheet_writer->output_and_exit($filename, true);
     }
     $msg = do_lang_tempcode('TOTAL_UNSPENT_SUPPORT_CREDITS', strval($total));
     $list = results_table(do_lang_tempcode('UNSPENT_SUPPORT_CREDITS'), $start, 'start', $max, 'max', $i, $header_row, $fields_values, $sortables, $sortable, $sort_order, 'sort', $msg);

@@ -10,15 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    user_simple_csv_sync
+ * @package    user_simple_spreadsheet_sync
  */
 
 function init__user_export()
 {
     define('USER_EXPORT_ENABLED', false);
     define('USER_EXPORT_MINUTES', 60 * 24);
-
-    define('USER_EXPORT_DELIM', ',');
 
     define('USER_EXPORT_PATH', 'data_custom/modules/user_export/out.csv');
 
@@ -42,30 +40,18 @@ function do_user_export($to_file = true)
 
     cms_disable_time_limit();
 
-    if ($to_file) {
-        $outdir = get_custom_file_base() . '/' . dirname(USER_EXPORT_PATH);
-        @mkdir($outdir, 0777);
-        fix_permissions($outdir);
-        $tmp_path = $outdir . '/_temp.csv';
-        require_code('files');
-        $outfile = cms_fopen_wb_bom($tmp_path);
-    } else {
+    if (!$to_file) {
         if (!$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) {
             access_denied('ADMIN_ONLY');
         }
-
-        header('Content-type: text/plain; charset=' . get_charset());
-        $outfile = @fopen('php://output', 'wb');
     }
+
+    $outfile_path = null;
+    require_code('files_spreadsheets_write');
+    $sheet_writer = spreadsheet_open_write($outfile_path);
 
     global $USER_EXPORT_WANTED;
-    foreach (array_values($USER_EXPORT_WANTED) as $i => $title) {
-        if ($i != 0) {
-            fwrite($outfile, USER_EXPORT_DELIM);
-        }
-        fwrite($outfile, '"' . str_replace('"', '""', $title) . '"');
-    }
-    fwrite($outfile, "\n");
+    $sheet_writer->write_row(array_values($USER_EXPORT_WANTED));
 
     require_code('cns_members');
 
@@ -80,30 +66,27 @@ function do_user_export($to_file = true)
 
             $row = cns_get_all_custom_fields_match_member($row['id']) + $row;
 
+            $sheet_row = array();
             foreach (array_keys($USER_EXPORT_WANTED) as $i => $local_key) {
-                if ($i != 0) {
-                    fwrite($outfile, USER_EXPORT_DELIM);
-                }
-                $val = is_array($row[$local_key]) ? $row[$local_key]['RAW'] : $row[$local_key];
-                if (!is_string($val)) {
-                    $val = strval($val);
-                }
-                fwrite($outfile, '"' . str_replace('"', '""', $val) . '"');
+                $sheet_row[] = is_array($row[$local_key]) ? $row[$local_key]['RAW'] : $row[$local_key];
             }
-            fwrite($outfile, "\n");
+            $sheet_writer->write_row($sheet_row);
         }
         $start += $max;
     } while (count($rows) > 0);
 
-    flock($outfile, LOCK_UN);
-    fclose($outfile);
     if ($to_file) {
-        @mkdir($outdir, 0777);
-        fix_permissions($outdir);
-        rename($tmp_path, $outdir . '/' . basename(USER_EXPORT_PATH));
-        sync_file($outdir . '/' . basename(USER_EXPORT_PATH));
+        $sheet_writer->close();
+
+        // Move temporary file to final output path and sync etc
+        require_code('files');
+        make_missing_directory(get_custom_file_base() . '/' . dirname(USER_EXPORT_PATH));
+        @unlink(get_custom_file_base() . '/' . USER_EXPORT_PATH);
+        rename($outfile_path, get_custom_file_base() . '/' . USER_EXPORT_PATH);
+        fix_permissions(get_custom_file_base() . '/' . USER_EXPORT_PATH);
+        sync_file(get_custom_file_base() . '/' . USER_EXPORT_PATH);
     } else {
-        flush();
+        $sheet_writer->output_and_exit(basename($outfile_path), true);
     }
 }
 

@@ -38,8 +38,6 @@ class Hook_task_export_ecom_transactions
             return null;
         }
 
-        $filename = 'transactions_' . (($transaction_status == '') ? '' : ($transaction_status . '__')) . (($type_code == '') ? '' : ($type_code . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.csv';
-
         require_code('ecommerce');
 
         $where = 't_time BETWEEN ' . strval($start_date) . ' AND ' . strval($end_date);
@@ -49,8 +47,6 @@ class Hook_task_export_ecom_transactions
         if ($type_code != '') {
             $where .= ' AND ' . db_string_equal_to('t_type_code', $type_code);
         }
-
-        $data = array();
 
         $query = 'SELECT t.*,t.id AS t_id,a.*
             FROM ' . get_table_prefix() . 'ecom_transactions t
@@ -69,6 +65,10 @@ class Hook_task_export_ecom_transactions
         }
         $tax_categories = array_keys($tax_categories);
 
+        require_code('files_spreadsheets_write');
+        $filename = 'transactions_' . (($transaction_status == '') ? '' : ($transaction_status . '__')) . (($type_code == '') ? '' : ($type_code . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . spreadsheet_write_default();
+        $outfile_path = null;
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
         foreach ($rows as $i => $_transaction) {
             task_log($this, 'Processing transaction row', $i, count($rows));
 
@@ -154,19 +154,17 @@ class Hook_task_export_ecom_transactions
             $full_address = implode("\n", $address);
             $transaction[do_lang('ADDRESS')] = $full_address;
 
-            $data[] = $transaction;
+            $sheet_writer->write_row($transaction);
         }
+        $sheet_writer->close();
 
         $headers = array();
-        $headers['Content-type'] = 'text/csv';
+        $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = array();
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        require_code('files2');
-        $outfile_path = cms_tempnam();
-        make_csv($data, $filename, false, false, $outfile_path);
-        return array('text/csv', array($filename, $outfile_path), $headers, $ini_set);
+        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
     }
 }

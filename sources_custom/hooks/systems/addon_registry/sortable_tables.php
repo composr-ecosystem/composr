@@ -86,7 +86,7 @@ class Hook_addon_registry_sortable_tables
      */
     public function get_description()
     {
-        return 'This addon creates a main_sortable_table block that shows the contents of a CSV file (or a database table) in a sortable and filterable table. To use, place the CSV file in [tt]uploads/website_specific[/tt], and place the block like:
+        return 'This addon creates a main_sortable_table block that shows the contents of a CSV spreadsheet file (or a database table) in a sortable and filterable table. To use, place the [abbr="Comma-separated Values"]CSV[/abbr] spreadsheet file in [tt]uploads/website_specific[/tt], and place the block like:
 [code]
 [block=""example.csv""]main_sortable_table[/block]
 [/code]
@@ -95,7 +95,7 @@ class Hook_addon_registry_sortable_tables
 
 We will automatically detect what columns can be filtered, how to sort each column, and display numbers in an attractive way.
 
-Additionally, there are blocks for rendering graphs and maps from CSV files. This is not currently documented, although sample CSV files are provided under [tt]uploads/website_specific/graph_test/[/tt] and a page of sample usage is provided at [tt]site:_graph_test[/tt].';
+Additionally, there are blocks for rendering graphs and maps from CSV spreadsheet files. This is not currently documented, although sample spreadsheet files are provided under [tt]uploads/website_specific/graph_test/[/tt] and a page of sample usage is provided at [tt]site:_graph_test[/tt].';
     }
 
     /**

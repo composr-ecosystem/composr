@@ -146,7 +146,7 @@ class Hook_cron_disastr
             $sick_and_immunised_members = array();
             $sick_and_immunised_members = array_merge($sick_members, $immunised_members);
 
-            // Create a CSV list of members to be avoided - sick and immunised members should be avoided!!!
+            // Create a comma-delimited list of members to be avoided - sick and immunised members should be avoided!!!
             $avoid_members = implode(',', @array_map('strval', $sick_and_immunised_members));
 
             $avoid_members = (strlen($avoid_members) == 0) ? '0' : $avoid_members;

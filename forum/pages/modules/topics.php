@@ -2700,6 +2700,7 @@ END;
         }
 
         if (get_param_integer('ajax', 0) == 1) {
+            $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
             exit();
         }
 

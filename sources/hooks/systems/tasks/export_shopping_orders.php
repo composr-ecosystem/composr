@@ -37,12 +37,7 @@ class Hook_task_export_shopping_orders
             return null;
         }
 
-        $filename = 'orders_' . (($order_status == '') ? '' : ($order_status . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.csv';
-
         require_code('ecommerce');
-
-        $orders = array();
-        $data = array();
 
         $where = 'add_date BETWEEN ' . strval($start_date) . ' AND ' . strval($end_date);
         if ($order_status != '') {
@@ -56,6 +51,11 @@ class Hook_task_export_shopping_orders
             ORDER BY add_date';
         $rows = $GLOBALS['SITE_DB']->query($query);
         remove_duplicate_rows($rows);
+
+        require_code('files_spreadsheets_write');
+        $filename = 'orders_' . (($order_status == '') ? '' : ($order_status . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . spreadsheet_write_default();
+        $outfile_path = null;
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
         foreach ($rows as $i => $_order) {
             task_log($this, 'Processing shopping order row', $i);
@@ -110,19 +110,17 @@ class Hook_task_export_shopping_orders
             $full_address = implode(', ', $address);
             $order[do_lang('SHIPPING_ADDRESS')] = $full_address;
 
-            $data[] = $order;
+            $sheet_writer->write_row($order);
         }
+        $sheet_writer->close();
 
         $headers = array();
-        $headers['Content-type'] = 'text/csv';
+        $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = array();
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        require_code('files2');
-        $outfile_path = cms_tempnam();
-        make_csv($data, $filename, false, false, $outfile_path);
-        return array('text/csv', array($filename, $outfile_path), $headers, $ini_set);
+        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
     }
 }

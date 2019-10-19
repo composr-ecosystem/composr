@@ -197,7 +197,7 @@ Once a catalogue is added it will get its own icon under Content Management.
 You can edit a catalogue to change details, add, edit or remove fields. Access this at:
 Admin Zone > Content > Catalogues > Edit catalogue, or from under Admin Zone > Content > [tt]<Catalogue name>[/tt].
 
-You cannot change field data types after you have created them (except between field types that have the same "storage" type) as this would affect the integrity of any data that may have already been entered into them. A workaround is to export to CSV, delete the field, create a new field with the same name and the new type, and reimport the CSV.
+You cannot change field data types after you have created them (except between field types that have the same "storage" type) as this would affect the integrity of any data that may have already been entered into them. A workaround is to export to a spreadsheet, delete the field, create a new field with the same name and the new type, and reimport the spreadsheet.
 
 You can delete a catalogue from the bottom of its edit form.
 
@@ -382,10 +382,10 @@ The Composr [tt]search[/tt] module provides special support for searching catalo
 
 For more information see the [page="_SEARCH:tut_search"]Searching your website[/page] tutorial.
 
-[title="2"]CSV import[/title]
+[title="2"]Spreadsheet import[/title]
 
-You can import CSV files into catalogues. Be aware this adds entries only, it doesn't try and do any merging with what is already there.
-You can also export CSV files. Some general notes about using CSV files with Composr may be found in the [page="_SEARCH:tut_adv_members"]Advanced Composr member system[/page] tutorial, as importing/exporting members via CSV files is the most common use of CSV files within Composr.
+You can import [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet files into catalogues. Be aware this adds entries only, it doesn't try and do any merging with what is already there.
+You can also export spreadsheet files. Some general notes about using spreadsheet files with Composr may be found in the [page="_SEARCH:tut_adv_members"]Advanced Composr member system[/page] tutorial, as importing/exporting members via spreadsheet files is the most common use of spreadsheet files within Composr.
 
 [title="2"]Creating a tree catalogue, fast (advanced)[/title]
 

@@ -91,13 +91,12 @@ foreach ($categories_default as $category) {
 
 // Import news
 $done = 0;
-$csvfile = fopen(get_custom_file_base() . '/data_custom/free_article_import__articles.csv', 'rb');
-// TODO: #3032
-fgetcsv($csvfile, 1024000); // Skip header row
-while (($r = fgetcsv($csvfile, 1024000)) !== false) {
-    $url = $r[1];
+require_code('files_spreadsheets_read');
+$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/data_custom/free_article_import__articles.csv');
+while (($r = $sheet_reader->read_row()) !== false) {
+    $url = $r['URL'];
 
-    if ($r[5] == '') {
+    if ($r['Body'] == '') {
         $parsed_url = parse_url($url);
         switch ($parsed_url['host']) {
             case 'ezinearticles.com':
@@ -114,38 +113,38 @@ while (($r = fgetcsv($csvfile, 1024000)) !== false) {
         }
     }
 
-    if ((empty($r[0])) || (empty($r[2])) || (empty($r[3])) || (empty($r[5]))) {
+    if ((empty($r['Category'])) || (empty($r['Author'])) || (empty($r['Title'])) || (empty($r['Body']))) {
         warn_exit('Failed to get full data for ' . $url);
     }
 
-    $main_news_category = array_search($r[0], $categories_existing);
+    $main_news_category = array_search($r['Category'], $categories_existing);
     if ($main_news_category === false) {
-        $id = add_news_category($r[0], '', '');
-        $categories_existing[$id] = $r[0];
+        $id = add_news_category($r['Category'], '', '');
+        $categories_existing[$id] = $r['Category'];
         $main_news_category = $id;
 
         require_code('permissions2');
         set_global_category_access('news', $id);
     }
-    $author = trim($r[2]);
-    $title = trim($r[3]);
-    $time = ($r[4] == '') ? time() : strtotime($r[4]);
-    $r[5] = trim($r[5]);
-    $r[5] = cms_preg_replace_safe('#.*<body[^<>]*>\s*#si', '', $r[5]);
-    $r[5] = cms_preg_replace_safe('#\s*<h1[^<>]*>[^<>]*</h1>\s*#si', '', $r[5]);
-    $r[5] = cms_preg_replace_safe('#\s*</body>\s*</html>#si', '', $r[5]);
-    $news_article = '[html]' . $r[5] . '[/html]';
-    $news = empty($r[6]) ? '' : $r[6]; // Summary
+    $author = trim($r['Author']);
+    $title = trim($r['Title']);
+    $time = ($r['Date'] == '') ? time() : strtotime($r['Date']);
+    $r['Body'] = trim($r['Body']);
+    $r['Body'] = cms_preg_replace_safe('#.*<body[^<>]*>\s*#si', '', $r['Body']);
+    $r['Body'] = cms_preg_replace_safe('#\s*<h1[^<>]*>[^<>]*</h1>\s*#si', '', $r['Body']);
+    $r['Body'] = cms_preg_replace_safe('#\s*</body>\s*</html>#si', '', $r['Body']);
+    $news_article = '[html]' . $r['Body'] . '[/html]';
+    $news = empty($r['Summary']) ? '' : $r['Summary'];
 
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'id', array($GLOBALS['SITE_DB']->translate_field_ref('title') => $title, 'date_and_time' => $time));
     if ($test === null) { // If does not exist yet
         $id = add_news($title, $news, $author, 1, 1, 1, 1, '', $news_article, $main_news_category, array(), $time);
-        seo_meta_set_for_explicit('news', strval($id), $r[7], $news);
+        seo_meta_set_for_explicit('news', strval($id), $r['Keywords'], $news);
 
         $done++;
     }
 }
-fclose($csvfile);
+$sheet_reader->close();
 
 @header('Content-type: text/plain; charset=' . get_charset());
 echo 'Imported ' . integer_format($done) . ' news articles.';
@@ -155,10 +154,10 @@ function parse_ezinearticles($r)
     // NB: You'll get security errors on this occasionally. You need to open up the URL manually, solve the CAPTCHA, then refresh.
     // The inbuilt cache will ensure the script can get to the end of the process.
 
-    $f = http_get_contents_cached($r[1]);
+    $f = http_get_contents_cached($r['URL']);
 
     $matches = array();
-    preg_match('#&id=(\d+)#s', $r[1], $matches);
+    preg_match('#&id=(\d+)#s', $r['URL'], $matches);
     $id = $matches[1];
 
     $matches = array();
@@ -173,7 +172,7 @@ function parse_ezinearticles($r)
     preg_match('#<h1>(.*)</h1>#Us', $f, $matches);
     $title = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $f = http_get_contents_cached('http://ezinearticles.com/ezinepublisher/?id=' . urlencode($id), $r[1]);
+    $f = http_get_contents_cached('http://ezinearticles.com/ezinepublisher/?id=' . urlencode($id), $r['URL']);
 
     $matches = array();
     preg_match('#<textarea id="formatted-article" wrap="physical" style="width:98%;height:200px;" readonly>(.*)</textarea>#Us', $f, $matches);
@@ -192,8 +191,8 @@ function parse_ezinearticles($r)
     $keywords = html_entity_decode($matches[1], ENT_QUOTES);
 
     return array(
-        $r[0], // Category
-        $r[1], // URL
+        $r['Category'], // Category
+        $r['URL'], // URL
         $author,
         $title,
         $date,
@@ -209,10 +208,10 @@ function parse_articlesbase($r)
         'SPSI' => '8209dce6e2947e79c6bf67fb7022ad39',
     ));
 
-    $f = http_get_contents_cached($r[1], $r[1], $cookies);
+    $f = http_get_contents_cached($r['URL'], $r['URL'], $cookies);
 
     $matches = array();
-    preg_match('#-(\d+)\.html$#Us', $r[1], $matches);
+    preg_match('#-(\d+)\.html$#Us', $r['URL'], $matches);
     $id = $matches[1];
 
     $matches = array();
@@ -231,7 +230,7 @@ function parse_articlesbase($r)
     preg_match('#<h1 class="atitle" itemprop="name">(.*)</h1>#Us', $f, $matches);
     $title = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $f = http_get_contents_cached('http://www.articlesbase.com/ezine/' . $id, $r[1], $cookies);
+    $f = http_get_contents_cached('http://www.articlesbase.com/ezine/' . $id, $r['URL'], $cookies);
 
     $matches = array();
     preg_match('#<textarea id="ezine_html" onclick="\$\(this\).select\(\)">(.*)</textarea>#Us', $f, $matches);
@@ -248,8 +247,8 @@ function parse_articlesbase($r)
     $keywords = html_entity_decode($matches[1], ENT_QUOTES);
 
     return array(
-        $r[0], // Category
-        $r[1], // URL
+        $r['Category'], // Category
+        $r['URL'], // URL
         $author,
         $title,
         $date,
@@ -261,7 +260,7 @@ function parse_articlesbase($r)
 
 function parse_articletrader($r)
 {
-    $f = http_get_contents_cached($r[1]);
+    $f = http_get_contents_cached($r['URL']);
 
     $matches = array();
     preg_match('#<a rel="nofollow" href=\'([^\']*)\'>Get Html Code</a>#Us', $f, $matches);
@@ -276,7 +275,7 @@ function parse_articletrader($r)
     preg_match('#<h1 style="margin-bottom:3px">(.*)</h1>#Us', $f, $matches);
     $title = html_entity_decode($matches[1], ENT_QUOTES);
 
-    $f = http_get_contents_cached('http://www.articletrader.com' . $synd_url, $r[1]);
+    $f = http_get_contents_cached('http://www.articletrader.com' . $synd_url, $r['URL']);
 
     $matches = array();
     preg_match('#<textarea style="width:99%" rows=30>(.*)</textarea>#Us', $f, $matches);
@@ -288,8 +287,8 @@ function parse_articletrader($r)
     $keywords = '';
 
     return array(
-        $r[0], // Category
-        $r[1], // URL
+        $r['Category'], // Category
+        $r['URL'], // URL
         $author,
         $title,
         $date,

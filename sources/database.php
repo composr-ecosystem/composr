@@ -39,7 +39,8 @@ function init__database()
     }
     $DB_SCOPE_CHECK = array(true);
     if (((!isset($SITE_INFO['no_extra_logs'])) || ($SITE_INFO['no_extra_logs'] != '1')) && (is_file(get_custom_file_base() . '/data_custom/queries.log'))) {
-        $QUERY_FILE_LOG = fopen(get_custom_file_base() . '/data_custom/queries.log', 'ab');
+        require_code('files');
+        $QUERY_FILE_LOG = cms_fopen_text_write(get_custom_file_base() . '/data_custom/queries.log', false, 'ab');
     } else {
         $QUERY_FILE_LOG = null;
     }

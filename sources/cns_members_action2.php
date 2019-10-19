@@ -30,17 +30,17 @@ function init__cns_members_action2()
 }
 
 /**
- * Get extended field mapping data for CSV import/export.
+ * Get extended field mapping data for spreadsheet import/export.
  *
  * @return array Triple: headings, CPFs, subscription type data
  */
-function member_get_csv_headings_extended()
+function member_get_spreadsheet_headings_extended()
 {
     // Read CPFs
     $cpfs = list_to_map('id', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('id', 'cf_type', 'cf_name'), array(), 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name')));
 
     // Headings
-    $headings = member_get_csv_headings();
+    $headings = member_get_spreadsheet_headings();
     foreach ($cpfs as $i => $c) { // CPFs take precedence over normal fields of the same name
         $cpfs[$i]['_cf_name'] = get_translated_text($c['cf_name'], $GLOBALS['FORUM_DB']);
         $cpfs[$i]['_cf_name'] = str_replace(',', (get_charset() == 'utf-8') ? hex2bin('efb990') : '', $cpfs[$i]['_cf_name']); // Normal commas break sort_maps_by
@@ -69,11 +69,11 @@ function member_get_csv_headings_extended()
 }
 
 /**
- * Get field mapping data for CSV import/export.
+ * Get field mapping data for spreadsheet import/export.
  *
  * @return array A map of heading information (human name to field name/encoding details)
  */
-function member_get_csv_headings()
+function member_get_spreadsheet_headings()
 {
     $headings = array(
         'ID' => 'id',

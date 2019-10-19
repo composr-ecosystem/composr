@@ -105,7 +105,7 @@ function _a_tag_link_fixup($matches)
 {
     $referer = post_param_string('http_referer', $_SERVER['HTTP_REFERER']);
     $caller_url = looks_like_url($referer) ? preg_replace('#/[^/]*$#', '', $referer) : get_base_url();
-    $ret = '<a ' . $matches[1] . 'href="' . escape_html(qualify_url(html_entity_decode($matches[2], ENT_QUOTES, get_charset()), $caller_url)) . '"' . $matches[3] . '>';
+    $ret = '<a ' . $matches[1] . 'href="' . escape_html(qualify_url(html_entity_decode($matches[2], ENT_QUOTES), $caller_url)) . '"' . $matches[3] . '>';
     return $ret;
 }
 

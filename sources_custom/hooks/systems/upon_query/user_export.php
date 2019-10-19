@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    user_simple_csv_sync
+ * @package    user_simple_spreadsheet_sync
  */
 
 /**
@@ -22,7 +22,7 @@ class Hook_upon_query_user_export
 
     public function run_pre($ob, $query, $max, $start, $fail_ok, $get_insert_id)
     {
-        if (!addon_installed('user_simple_csv_sync')) {
+        if (!addon_installed('user_simple_spreadsheet_sync')) {
             return;
         }
 
@@ -72,7 +72,7 @@ class Hook_upon_query_user_export
 
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('user_simple_csv_sync')) {
+        if (!addon_installed('user_simple_spreadsheet_sync')) {
             return;
         }
 

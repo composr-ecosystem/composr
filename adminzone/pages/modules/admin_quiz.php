@@ -59,7 +59,7 @@ class Module_admin_quiz
             'browse' => array('MANAGE_QUIZZES', 'menu/rich_content/quiz'),
             'find_winner' => array('FIND_WINNER', 'menu/cms/quiz/find_winners'),
             'quiz_results' => array('QUIZ_RESULTS', 'menu/cms/quiz/quiz_results'),
-            'export' => array('EXPORT_QUIZ', 'admin/export_csv'),
+            'export' => array('EXPORT_QUIZ', 'admin/export_spreadsheet'),
         );
     }
 
@@ -204,7 +204,7 @@ class Module_admin_quiz
             array(
                 array('menu/cms/quiz/find_winners', array('_SELF', array('type' => 'find_winner'), '_SELF'), do_lang('FIND_WINNERS')),
                 array('menu/cms/quiz/quiz_results', array('_SELF', array('type' => 'quiz_results'), '_SELF'), do_lang('QUIZ_RESULTS')),
-                array('admin/export_csv', array('_SELF', array('type' => 'export'), '_SELF'), do_lang('EXPORT_QUIZ')),
+                array('admin/export_spreadsheet', array('_SELF', array('type' => 'export'), '_SELF'), do_lang('EXPORT_QUIZ')),
             ),
             do_lang('MANAGE_QUIZZES')
         );
@@ -227,7 +227,7 @@ class Module_admin_quiz
     }
 
     /**
-     * UI to export quiz CSV.
+     * UI to export quiz spreadsheet.
      *
      * @return Tempcode The UI
      */
@@ -251,7 +251,7 @@ class Module_admin_quiz
             'TEXT' => do_lang_tempcode('EXPORT_QUIZ_TEXT'),
             'HIDDEN' => '',
             'FIELDS' => $fields,
-            'SUBMIT_ICON' => 'admin/export_csv',
+            'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'POST' => true,
@@ -259,7 +259,7 @@ class Module_admin_quiz
     }
 
     /**
-     * Actualiser to export quiz CSV.
+     * Actualiser to export quiz spreadsheet.
      *
      * @return Tempcode The result of execution
      */

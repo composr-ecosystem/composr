@@ -20,11 +20,11 @@ class maintenance_codes_test_set extends cms_test_case
 {
     public function testMaintenanceSheetStructure()
     {
-        $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-        // TODO: #3032 (must default charset to utf-8 if no BOM though)
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv', null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
         $line = 1;
-        while (($row = fgetcsv($myfile)) !== false) {
+        while (($row = $sheet_reader->read_row()) !== false) {
             $this->assertTrue(count($row) == 7, 'Wrong number of columns on line ' . integer_format($line) . ', got ' . integer_format(count($row)) . ' expected 7');
 
             if ($line != 1) {
@@ -35,24 +35,19 @@ class maintenance_codes_test_set extends cms_test_case
             $line++;
         }
 
-        fclose($myfile);
+        $sheet_reader->close();
     }
 
     public function testMaintenanceCodeReferences()
     {
-        $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-        // TODO: #3032 (must default charset to utf-8 if no BOM though)
-
-        $header_row = fgetcsv($myfile); // Header row
-        unset($header_row[0]);
-
         $codenames = array();
-        while (($row = fgetcsv($myfile)) !== false) {
-            $codename = $row[0];
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
+        while (($row = $sheet_reader->read_row()) !== false) {
+            $codename = $row['Codename'];
             $codenames[$codename] = true;
         }
-
-        fclose($myfile);
+        $sheet_reader->close();
 
         // Test PHP code
         require_code('files2');
@@ -104,23 +99,16 @@ class maintenance_codes_test_set extends cms_test_case
     {
         // Test maintenance sheet...
 
-        $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-        // TODO: #3032 (must default charset to utf-8 if no BOM though)
-
-        $header_row = fgetcsv($myfile); // Header row
-        unset($header_row[0]);
-
-        while (($row = fgetcsv($myfile)) !== false) {
-            $testing = isset($row[6]) ? $row[6] : '';
-
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');
+        while (($row = $sheet_reader->read_row()) !== false) {
             $matches = array();
-            if (preg_match('#(\w+) automated test#', $testing, $matches) != 0) {
+            if (preg_match('#(\w+) automated test#', $row['Testing automation'], $matches) != 0) {
                 $test = $matches[1];
                 $this->assertTrue(is_file(get_file_base() . '/_tests/tests/unit_tests/' . $test . '.php'), 'Could not find referenced test, ' . $test);
             }
         }
-
-        fclose($myfile);
+        $sheet_reader->close();
 
         // Test coding standards tutorial...
 

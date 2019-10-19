@@ -65,12 +65,12 @@ This works, even though the maintenance password was left blank, because Composr
 
 [title="3"]Blocking recipients (advanced)[/title]
 
-If you wish to create a list of e-mail addresses to never send to, you can do so by making an [tt]uploads/website_specific/newsletter_blocked.csv[/tt] file. Put each e-mail address on its own line. A CSV file with a single column is the same thing as a simple text file with one entry per line, so it's really simple to edit, whichever way you wish to work. The filter works behind-the-scenes between you choosing to send out your newsletter, and Composr actually sending it. If you have the filter successfully in place then Composr will confirm this with an "You have a [tt]uploads/website_specific/newsletter_blocked.csv[/tt] file in place, blocking (number of addresses) e-mail addresses from receiving the newsletter." message on the newsletter authoring screen ("Send out issue").
+If you wish to create a list of e-mail addresses to never send to, you can do so by making an [tt]uploads/website_specific/newsletter_blocked.csv[/tt] spreadsheet file. Put each e-mail address on its own line. A [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet file with a single column is the same thing as a simple text file with one entry per line, so it's really simple to edit, whichever way you wish to work. The filter works behind-the-scenes between you choosing to send out your newsletter, and Composr actually sending it. If you have the filter successfully in place then Composr will confirm this with an "You have a [tt]uploads/website_specific/newsletter_blocked.csv[/tt] spreadsheet file in place, blocking (number of addresses) e-mail addresses from receiving the newsletter." message on the newsletter authoring screen ("Send out issue").
 The block list is useful for situations such as:
  - A previous send failed part-way-through for some reason, and you have a list of users you know it did get sent to already.
  - You maintain a manual list of users who have unsubscribed and you are very careful to not send to them, even if someone re-subscribes them.
  - You want to block a list of e-mail addresses you know belong to competitors.
-You may add additional columns to the CSV file, which will be ignored. You can use this for keeping notes, for example. If you do this make sure you save as a true CSV file (comma-separated) though, not a TSV file.
+You may add additional columns to the CSV spreadsheet file, which will be ignored. You can use this for keeping notes, for example.
 
 [title="2"]Sending newsletters[/title]
 
@@ -149,7 +149,7 @@ In a similar vein to automatic issues, you may create newsletters from news. To 
 
 [title="2"]Customised targeting[/title]
 
-You may export the newsletter subscribers to a [acronym="Comma-separated Values"]CSV[/acronym] file, change it somehow (using whatever strategy you like) and then choose to send out newsletters to your altered copy of the CSV file.
+You may export the newsletter subscribers to a spreadsheet file, change it somehow (using whatever strategy you like) and then choose to send out newsletters to your altered copy of the spreadsheet file.
 
 This can be used in many ways, such as:
  - Splitting up the subscribers, to do split testing
@@ -157,7 +157,7 @@ This can be used in many ways, such as:
  - Picking out certain members from the newsletter list based on some kind of characteristic (you might use extra software to correlate this against another database in some way)
  - Migrating the subscriber list to another piece of dedicated newsletter software, or sending it to an expert newsletter design company for targeting
 
-You can also import subscribers from a CSV file, or send a newsletter to a CSV file (this is done on the newsletter form). Composr is quite flexible in supporting different layouts of CSV file: it will try and auto-sense which columns are which.
+You can also import subscribers from a [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet file, or send a newsletter to a CSV spreadsheet file (this is done on the newsletter form). Composr is quite flexible in supporting different layouts of CSV spreadsheet file: it will try and auto-sense which columns are which.
 
 All these features are available under Admin Zone > Tools > Newsletter.
 

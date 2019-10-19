@@ -51,7 +51,7 @@ class Hook_task_import_members
         $outputted_messages = new Tempcode();
 
         require_code('cns_members_action2');
-        $headings = member_get_csv_headings();
+        $headings = member_get_spreadsheet_headings();
         $all_cpfs = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('*'), array(), 'ORDER BY cf_order,' . $GLOBALS['FORUM_DB']->translate_field_ref('cf_name'));
         foreach ($all_cpfs as $i => $c) { // CPFs take precedence over normal fields of the same name
             $c['_cf_name'] = get_translated_text($c['cf_name'], $GLOBALS['FORUM_DB']);
@@ -68,46 +68,12 @@ class Hook_task_import_members
         $all_members = collapse_2d_complexity('id', 'm_username', $GLOBALS['FORUM_DB']->query_select('f_members', array('id', 'm_username')));
         $all_members_flipped = array_flip($all_members);
 
-        $_csv_data = array();
+        $_spreadsheet_data = array();
 
-        cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-        $myfile = fopen($path, 'rb');
-        // TODO: #3032
-        $del = ',';
-        $csv_header = fgetcsv($myfile, 102400, $del);
-        if ($csv_header === false) {
-            @unlink($path);
-            sync_file($path);
-            return array(null, do_lang_tempcode('NO_DATA_IMPORTED'));
-        }
-        if ((count($csv_header) == 1) && (strpos($csv_header[0], ';') !== false)) {
-            $del = ';';
-            rewind($myfile);
-            $csv_header = fgetcsv($myfile, 102400, $del);
-        }
-        while (($csv_line = fgetcsv($myfile, 102400, $del)) !== false) {
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read($path);
+        while (($line = $sheet_reader->read_row()) !== false) {
             task_log($this, 'Importing member row', $done);
-
-            $line = array();
-            foreach ($csv_header as $i => $h) {
-                $extracted_value = trim(unixify_line_format(array_key_exists($i, $csv_line) ? $csv_line[$i] : ''));
-
-                if (strpos($h, ':') !== false) { // Special syntax to allow merging of columns together into a single multi-line field
-                    $parts = explode(':', $h, 2);
-                    $h = trim($parts[0]);
-                    if ($extracted_value != '') {
-                        $extracted_value = $parts[1] . ': ' . $extracted_value;
-                    }
-                }
-
-                if (array_key_exists($h, $line)) {
-                    if ($extracted_value != '') {
-                        $line[$h] .= (($line[$h] != '') ? "\n" : '') . $extracted_value;
-                    }
-                } else {
-                    $line[$h] = $extracted_value;
-                }
-            }
 
             if ((!array_key_exists('Username', $line)) || ($line['Username'] == '')) {
                 // Can we auto-generate it
@@ -200,11 +166,11 @@ class Hook_task_import_members
                 $dob_key = 'DOB';
             }
 
-            // If it's an edited member, add in their existing CSV details, so that if it's a partial merge it'll still work without deleting anything!
+            // If it's an edited member, add in their existing spreadsheet details, so that if it's a partial merge it'll still work without deleting anything!
             if (!$new_member) {
                 $member_groups = $GLOBALS['FORUM_DB']->query_select('f_group_members', array('gm_member_id', 'gm_group_id'), array('gm_validated' => 1, 'gm_member_id' => $linked_id));
                 $member_cpfs = list_to_map('mf_member_id', $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', array('*'), array('mf_member_id' => $linked_id), '', 1));
-                $this_record = $download_ob->_get_csv_member_record($member_cpfs + $GLOBALS['FORUM_DRIVER']->get_member_row($linked_id), $_all_groups, $headings, $all_cpfs, $member_groups, array()); // Remember "+" in PHP won't overwrite existing keys
+                $this_record = $download_ob->_get_spreadsheet_member_record($member_cpfs + $GLOBALS['FORUM_DRIVER']->get_member_row($linked_id), $_all_groups, $headings, $all_cpfs, $member_groups, array()); // Remember "+" in PHP won't overwrite existing keys
                 if (!array_key_exists($email_address_key, $line)) {
                     unset($this_record['E-mail address']);
                 }
@@ -503,7 +469,7 @@ class Hook_task_import_members
 
             $done++;
         }
-        fclose($myfile);
+        $sheet_reader->close();
 
         if ($done == 0) {
             @unlink($path);

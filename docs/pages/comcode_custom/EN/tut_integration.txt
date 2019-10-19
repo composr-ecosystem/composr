@@ -340,9 +340,9 @@ It can be a bit tricky to share members between Composr and another system. Ther
 2) Reprogram the other system so that it uses the same member system that Composr uses (be that Composr's own, or that of a third party system); you might be able to find a modification for the other system that does it already (for instance, if you are using a widespread forum like phpBB, and want to integrate an external system, it is possible that the other system already has a modification to allow it to tie itself to phpBB)
 3) Disable joining of members in the other system, and make it so that login checks against whatever member system Composr is using; maintain a separate member database in the other system, but effectively tie it in to whatever Composr is using
 4) Use LDAP or HTTP-auth for all systems, with each setting up their own separate 'extra' member information scheme; Composr supports LDAP and HTTP-auth, but systems that do are in the minority so it may be a lot of work bringing other involved systems 'up to speed'
-5) Manually synchronise via CSV imports from one system to another
+5) Manually synchronise via spreadsheet imports from one system to another
 6) Use the [tt]user_sync[/tt] non-bundled addon to programmatically import from one database to another (requires some limited PHP programming to customise it)
-7) Use the [tt]user_simple_csv_sync[/tt] non-bundled addon to tie together CSV import/export between Composr and another system (requires some limited PHP programming to customise it)
+7) Use the [tt]user_simple_spreadsheet_sync[/tt] non-bundled addon to tie together spreadsheet import/export between Composr and another system (requires some limited PHP programming to customise it)
 
 These are all very technical tasks, so we do not expect that many users will have the experience to easily carry them out themselves.
 

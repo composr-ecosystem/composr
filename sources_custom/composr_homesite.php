@@ -808,44 +808,24 @@ function do_backup_script()
     $user = substr(md5('demonstratr_site_' . $id), 0, 16);
     shell_exec('mysqldump -h' . /*$server*/'localhost' . ' -u' . $user . ' -p' . $SITE_INFO['mysql_demonstratr_password'] . ' demonstratr_site_' . $id . ' --skip-opt > ' . $tmp_path);
     $file_array[] = array('full_path' => $tmp_path, 'name' => 'database.sql', 'time' => time());
-    $data = create_zip_file($file_array);
+    $tmp_path2 = cms_tempnam();
+    create_zip_file($tmp_path2, $file_array);
     unlink($tmp_path);
 
     // Send header
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="backup-' . date('Y-m-d') . '.zip"');
-    header('Accept-Ranges: bytes');
 
     // Default to no resume
-    $from = 0;
-    $new_length = strlen($data);
+    header('Content-Length: ' . strval(filesize($tmp_path2)));
 
-    // They're trying to resume (so update our range)
-    $httprange = $_SERVER['HTTP_RANGE'];
-    if (strlen($httprange) > 0) {
-        $_range = explode('=', $_SERVER['HTTP_RANGE']);
-        if (count($_range) == 2) {
-            if (strpos($_range[0], '-') === false) {
-                $_range = array_reverse($_range);
-            }
-            $range = $_range[0];
-            if (substr($range, -1, 1) == '-') {
-                $range .= strval($new_length - 1);
-            }
-            $bits = explode('-', $range);
-            if (count($bits) == 2) {
-                header('Content-Range: ' . $range . '/' . strval($new_length));
-                list($from, $to) = $bits;
-                $new_length = $to - $from + 1;
-            }
-        }
-    }
-    header('Content-Length: ' . strval($new_length));
     cms_disable_time_limit();
     error_reporting(0);
+    cms_ob_end_clean();
 
-    // Send actual data
-    echo substr($data, $from, $new_length);
+    readfile($tmp_path2);
+
+    unlink($tmp_path2);
 }
 
 /**

@@ -24,7 +24,7 @@ The next option is a checkbox to allow you to only send HTML versions and not a 
 
 The next option is a Priority level which will be displayed to the recipient if their e-mail software supports this.
 
-The next section allows you to choose which usergroups you wish to send the e-mail to. This could be the entire site member list to a limited group or perhaps a staff only e-mail. This section also allows you to upload a CSV file of users to send the e-mail to.
+The next section allows you to choose which usergroups you wish to send the e-mail to. This could be the entire site member list to a limited group or perhaps a staff only e-mail. This section also allows you to upload a [abbr="Comma-separated Values"]CSV[/abbr] spreadsheet file of users to send the e-mail to.
 
 The last option before previewing the e-mail is which template you wish to use. In most cases there will only be one option here, unless you have created more mail templates. Once you have completed all of the form you can preview how the e-mail will look in both HTML and plain text format. If the e-mail looks okay then you can click Proceed to dispatch the e-mail to those members you selected.
 

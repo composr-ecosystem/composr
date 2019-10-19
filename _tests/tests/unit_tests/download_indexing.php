@@ -49,10 +49,14 @@ class download_indexing_test_set extends cms_test_case
                 'time' => time(),
             ),
         );
-        require_code('zip');
-        $data = create_zip_file($file_array);
 
-        $data_mash = create_data_mash('foo.zip', $data);
+        require_code('zip');
+        $tmp_path2 = cms_tempnam();
+        create_zip_file($tmp_path2, $file_array);
+
+        $data_mash = create_data_mash('foo.zip', cms_file_get_contents_safe($tmp_path2));
+
+        unlink($tmp_path2);
 
         $this->assertTrue(strpos($data_mash, 'foobar') !== false);
     }

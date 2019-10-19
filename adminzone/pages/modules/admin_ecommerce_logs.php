@@ -779,7 +779,7 @@ class Module_admin_ecommerce_logs
             '_GUID' => '0d0e9f85a2e3d7b456b843ebaeb54c14',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
-            'SUBMIT_ICON' => 'admin/export_csv',
+            'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => do_lang_tempcode('EXPORT_TRANSACTIONS'),
             'TEXT' => paragraph(do_lang_tempcode('EXPORT_TRANSACTIONS_TEXT')),
             'URL' => build_url(array('page' => '_SELF', 'type' => '_export_transactions'), '_SELF'),
@@ -789,7 +789,7 @@ class Module_admin_ecommerce_logs
     }
 
     /**
-     * Actualiser to build logs CSV from the selected filters.
+     * Actualiser to build logs spreadsheet from the selected filters.
      *
      * @return Tempcode The result of execution
      */

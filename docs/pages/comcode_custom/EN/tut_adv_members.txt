@@ -235,17 +235,15 @@ As long as you have the newsletters addon installed, welcome e-mails will piggy-
 
 [title="2"]Importing/exporting members[/title]
 
-[media width="150" description="Importing members from a CSV file" float="right"]data_custom/images/docs/tut_adv_members/member_import.png[/media]
-You can use [abbr="Comma-Separated-Values"]CSV[/abbr] files to put member data into your website, or to export it. There are many different reasons you might want to do this, but in simple terms, organisations often need to shuffle member data between different systems and this is a good/normal way to do it.
+[media width="150" description="Importing members from a CSV spreadsheet file" float="right"]data_custom/images/docs/tut_adv_members/member_import.png[/media]
+You can use [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet files to put member data into your website, or to export it. There are many different reasons you might want to do this, but in simple terms, organisations often need to shuffle member data between different systems and this is a good/normal way to do it.
 
 [title="3"]Exporting[/title]
 
 This is very easy. Just go to...
-Admin Zone > Security > Members > Download member spreadsheet (CSV)
+Admin Zone > Security > Members > Download member spreadsheet
 
-There are a number of advanced filtering options you can use. Programmers can extend the export system to include "presets" for these options.
-
-The non-bundled [tt]excel_support[/tt] addon allows you to add XLS export support.
+There are a number of advanced filtering options you can use.
 
 [title="3"]Loading into spreadsheet software[/title]
 
@@ -269,13 +267,13 @@ Load as normal, but check the "Quoted field as text" checkbox.
 [title="3"]Importing[/title]
 
 Follow this process to do an import:
-1) To know the format to import with, it's best to do an export first to get a conclusive input template. So, export your existing members (Admin Zone > Security > Members > Download member spreadsheet (CSV))
+1) To know the format to import with, it's best to do an export first to get a conclusive input template. So, export your existing members (Admin Zone > Security > Members > Download member spreadsheet)
 2) Open the spreadsheet in some spreadsheet software (something like Microsoft Excel or LibreOffice)
 3) Blank out the existing rows in the spreadsheet (except the header row of course)
 4) Fill in new rows, as required
-5) Save back to a [tt].csv[/tt] file ([tt].xls[/tt] or [tt].xlsx[/tt] files are [b]not[/b] supported). Make sure that it is a true CSV file (i.e. comma-delimiters between fields, not tab-delimiters or semi-colon delimiters). Opening it in something like Windows Notepad is a good way to confirm this.
+5) Save back to a [tt].csv[/tt] file
 6) Take a full database backup (you can never be too careful, a small typo such as a corruption of the header row, or a regular error in the new user rows, could result in proliferate errors after import)
-7) Import (Admin Zone > Security > Members > Import member spreadsheet (CSV)). You'll be asked to upload the CSV file and optionally to give a default password. Click the button to run the import.
+7) Import (Admin Zone > Security > Members > Import member spreadsheet). You'll be asked to upload the CSV spreadsheet file and optionally to give a default password. Click the button to run the import.
 
 Further notes follow...
 
@@ -322,7 +320,7 @@ If synching is not enabled, or group memberships come from LDAP, then the follow
  - member search by usergroup
  - birthdays RSS feed filtering by usergroup
  - sending a newsletter to a usergroup
- - implicit memberships are not shown in exported CSV files
+ - implicit memberships are not shown in exported spreadsheet files
  - copying members from one usergroup to another
  - various areas of code that list all staff
  - signing up everyone in a usergroup for calendar event reminders

@@ -601,7 +601,7 @@ If you are setting up custom products it is possible these represent aggregate p
 
 The tax derivations will be needed for tax remittance if you are subject to EU digital goods tax, or to USA destination taxation.
 
-We generally track these and they are available when you do a CSV download of transactions.
+We generally track these and they are available when you do a spreadsheet download of transactions.
 
 However, TaxCloud doesn't actually provide us broken-down data of the taxes. So if you are a USA user using TaxCloud you'll find this data on TaxCloud itself.
 

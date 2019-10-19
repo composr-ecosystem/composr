@@ -245,6 +245,12 @@ class LangFilter_EN extends LangFilter
                 }
             }
 
+            // More spreadsheet formats
+            if (is_file(get_file_base() . '/sources_custom/files_spreadsheets_read.php')) {
+                $remapping['[abbr="comma-separated Values"]CSV[/abbr] spreadsheet'] = 'spreadsheet';
+                $remapping['CSV spreadsheet'] = 'spreadsheet';
+            }
+
             $this->the_sun_never_sets_on_the_british_empire += $remapping;
             $this->make_uncle_sam_happy += $remapping;
         }

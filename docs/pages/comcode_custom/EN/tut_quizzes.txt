@@ -121,11 +121,11 @@ This is mainly just a convention and won't affect how the system works. However,
 
 Often surveyors will want to create long multi-part questionnaires. You could link parts together in a chain by putting a follow-up link in each quizzes end-text. Use of the naming convention will help you (and users) intuitively recognise that particular quizzes are designed to go together.
 
-[title="2"]Exporting to CSV[/title]
+[title="2"]Exporting to a spreadsheet[/title]
 
-You can export quiz results to a CSV file which is very useful for data analysis purposes. In particular, if some test/competition questions need to be manually marked, doing so in spreadsheet software works well.
+You can export quiz results to a spreadsheet file which is very useful for data analysis purposes. In particular, if some test/competition questions need to be manually marked, doing so in spreadsheet software works well.
 
-Many marketing agencies prefer to pick competition winners from raw CSV data, as well as processing the data for further marketing purposes.
+Many marketing agencies prefer to pick competition winners from raw spreadsheet data, as well as processing the data for further marketing purposes.
 
 [title="2"]Advanced quiz interfaces (advanced)[/title]
 

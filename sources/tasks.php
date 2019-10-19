@@ -342,9 +342,8 @@ function task_log_open()
     if (!is_file($log_path)) {
         return;
     }
-    $TASK_LOG_FILE = fopen($log_path, 'ab');
-    flock($TASK_LOG_FILE, LOCK_EX);
-    fseek($TASK_LOG_FILE, 0, SEEK_END);
+    require_code('files');
+    $TASK_LOG_FILE = cms_fopen_text_write($log_path, true, 'ab');
 }
 
 /**

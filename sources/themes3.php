@@ -466,7 +466,7 @@ function export_theme_images()
 
     require_code('tar');
     require_code('files');
-    $my_tar = tar_open(null, 'wb');
+    $my_tar = tar_open('php://stdout', 'wb');
     $theme_images = $GLOBALS['SITE_DB']->query_select('theme_images', array('DISTINCT id'));
     foreach ($theme_images as $theme_image) {
         $path = rawurldecode(find_theme_image($theme_image['id'], true, true));

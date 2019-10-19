@@ -111,14 +111,14 @@ class Block_main_quotes
     public function get_random_line($filename)
     {
         $myfile_charset = null;
-        $myfile = @cms_fopen_rb_bom_safe(filter_naughty($filename, true), $myfile_charset, true);
+        $myfile = @cms_fopen_text_read(filter_naughty($filename, true), $myfile_charset, true);
         if ($myfile === false) {
             return '';
         }
         $i = 0;
         $line = array();
         while (true) {
-            $line[$i] = cms_fgets_bom_safe($myfile, $myfile_charset);
+            $line[$i] = cms_fgets($myfile, $myfile_charset);
 
             if (($line[$i] === false) || ($line[$i] === null)) {
                 break;

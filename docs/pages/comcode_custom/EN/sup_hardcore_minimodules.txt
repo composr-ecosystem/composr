@@ -47,7 +47,7 @@ Need to output a simple spreadsheet? You are allowed to set headers and [tt]exit
 [code="PHP"]
 <?php
 
-header('Content-type: text/plain');
+header('Content-type: text/plain; charset=utf-8');
 header('Content-disposition: attachment; filename="example.csv"');
 
 // Some arbitrary data to output
@@ -89,6 +89,8 @@ function csv_escape($value)
 	return str_replace('"', '""', $value);
 }
 [/code]
+
+Note that Composr has proper spreadsheet APIs, this is just a simple example that does not use them.
 
 [title="2"]Integrations[/title]
 

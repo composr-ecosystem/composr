@@ -26,9 +26,9 @@ class tasks_test_set extends cms_test_case
         require_code('tasks');
     }
 
-    public function testNewsletterCSV()
+    public function testNewsletterSpreadsheet()
     {
-        if (($this->only !== null) && ($this->only != 'testNewsletterCSV')) {
+        if (($this->only !== null) && ($this->only != 'testNewsletterSpreadsheet')) {
             return;
         }
 
@@ -46,7 +46,7 @@ class tasks_test_set extends cms_test_case
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path);
 
         $this->establish_admin_session();
-        $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'csv' => 1), 'adminzone');
+        $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1), 'adminzone');
         $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
@@ -54,9 +54,9 @@ class tasks_test_set extends cms_test_case
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path);
     }
 
-    public function testCatalogueCSV()
+    public function testCatalogueSpreadsheet()
     {
-        if (($this->only !== null) && ($this->only != 'testCatalogueCSV')) {
+        if (($this->only !== null) && ($this->only != 'testCatalogueSpreadsheet')) {
             return;
         }
 
@@ -216,9 +216,9 @@ class tasks_test_set extends cms_test_case
         }
     }
 
-    public function testMemberCSV()
+    public function testMemberSpreadsheet()
     {
-        if (($this->only !== null) && ($this->only != 'testMemberCSV')) {
+        if (($this->only !== null) && ($this->only != 'testMemberSpreadsheet')) {
             return;
         }
 
@@ -243,7 +243,7 @@ class tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/export_members');
         $ob_export = new Hook_task_export_members();
-        $results = $ob_export->run(false, '.csv', '', array('ID', 'Username'), array(), 'ID');
+        $results = $ob_export->run(false, array('ID', 'Username'), array(), 'ID');
         $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK | FILE_READ_BOM), 'TestingABC') !== false);
 
         $ob_import->run('', false, $results[1][1]);

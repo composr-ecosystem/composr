@@ -75,12 +75,12 @@ class Hook_cron_log_purging
         $lines = array();
 
         $myfile_charset = null;
-        $myfile = cms_fopen_rb_bom_safe($path, $myfile_charset, true, 'c+b');
+        $myfile = cms_fopen_text_read($path, $myfile_charset, true, 'c+b');
         $matches = array();
         $found_pivot = false;
         $found_some_date = false;
         while (!feof($myfile)) {
-            $line = cms_fgets_bom_safe($myfile, $myfile_charset);
+            $line = cms_fgets($myfile, $myfile_charset);
             if ($line === false) {
                 break;
             }
@@ -105,8 +105,8 @@ class Hook_cron_log_purging
                 }
             }
         }
-        flock($myfile, LOCK_EX);
 
+        flock($myfile, LOCK_EX);
         ftruncate($myfile, 0);
         foreach ($lines as $line) {
             fwrite($myfile, $line);

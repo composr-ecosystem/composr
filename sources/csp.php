@@ -335,15 +335,15 @@ function load_csp($options = null, $enable_more_open_html_for = null)
  *
  * @param  integer $level Trusted sites level
  * @set 1 2
- * @param  string $sources_csv Comma-separated list of valid CSP 'sources' (blank: just trusted sites)
+ * @param  string $sources_csp Comma-separated list of valid CSP 'sources' (blank: just trusted sites)
  * @param  boolean $include_self Include a self reference
- * @return ?array CSP sources (null: allow all, only possible when $sources_csv is passed) (empty: disallow all except local)
+ * @return ?array CSP sources (null: allow all, only possible when $sources_csp is passed) (empty: disallow all except local)
  */
-function _csp_extract_sources_list($level, $sources_csv = '', $include_self = true)
+function _csp_extract_sources_list($level, $sources_csp = '', $include_self = true)
 {
-    $sources_csv = trim($sources_csv);
+    $sources_csp = trim($sources_csp);
 
-    if ($sources_csv == '*') {
+    if ($sources_csp == '*') {
         // All
         return null;
     }
@@ -362,7 +362,7 @@ function _csp_extract_sources_list($level, $sources_csv = '', $include_self = tr
         }
     }
 
-    $sources = ($sources_csv == '') ? array() : preg_split('#[, \n]#', $sources_csv);
+    $sources = ($sources_csp == '') ? array() : preg_split('#[, \n]#', $sources_csp);
     foreach ($sources as $_source) {
         $source = _csp_clean_source($_source);
         if ($source !== null) {

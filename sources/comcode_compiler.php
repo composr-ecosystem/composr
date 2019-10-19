@@ -1616,7 +1616,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                     $in_html_tag = ($a !== false) && (($b === false) || ($a > $b));
                                 } else {
                                     // Make sure not within the written source of an HTML tag
-                                    $until_now = html_entity_decode(substr($comcode, 0, $pos - 1), ENT_QUOTES, get_charset());
+                                    $until_now = html_entity_decode(substr($comcode, 0, $pos - 1), ENT_QUOTES);
                                     $a = strrpos($until_now, '<');
                                     $b = strrpos($until_now, '>');
                                     $in_html_tag = ($a !== false) && (($b === false) || ($a > $b));

@@ -64,8 +64,11 @@ $filename = 'erd_sql__by_addon.zip';
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 
+cms_ob_end_clean();
+cms_ini_set('ocproducts.xss_detect', '0');
+
 require_code('zip');
-create_zip_file($file_array, true);
+create_zip_file('php://stdout', $file_array);
 
 $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 exit();

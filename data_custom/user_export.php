@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    user_simple_csv_sync
+ * @package    user_simple_spreadsheet_sync
  */
 
 // Fixup SCRIPT_FILENAME potentially being missing
@@ -47,8 +47,8 @@ if (!is_file($FILE_BASE . '/sources/global.php')) {
 }
 require($FILE_BASE . '/sources/global.php');
 
-if (!addon_installed('user_simple_csv_sync')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('user_simple_csv_sync')));
+if (!addon_installed('user_simple_spreadsheet_sync')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('user_simple_spreadsheet_sync')));
 }
 
 require_code('user_export');

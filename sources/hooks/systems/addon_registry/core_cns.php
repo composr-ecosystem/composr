@@ -234,7 +234,7 @@ class Hook_addon_registry_core_cns
             'themes/default/images/EN/cns_rank_images/admin.svg',
             'themes/default/images/EN/cns_rank_images/mod.svg',
             'themes/default/images/EN/cns_rank_images/index.html',
-            'sources/hooks/modules/admin_import/csv_members.php',
+            'sources/hooks/modules/admin_import/spreadsheet_members.php',
             'themes/default/templates/CNS_EMOTICON_TABLE.tpl',
             'themes/default/templates/CNS_JOIN_STEP1_SCREEN.tpl',
             'themes/default/templates/CNS_USERS_ONLINE_SCREEN.tpl',

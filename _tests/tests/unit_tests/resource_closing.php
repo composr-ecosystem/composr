@@ -98,6 +98,9 @@ class resource_closing_test_set extends cms_test_case
             }
 
             $this->check_matching($path, 'fopen(', 'fclose(', in_array($path, $strict_order_exceptions));
+            $this->check_matching($path, 'cms_fopen_text_read(', 'fclose(', in_array($path, $strict_order_exceptions));
+            $this->check_matching($path, 'cms_fopen_text_write(', 'fclose(', in_array($path, $strict_order_exceptions));
+            $this->check_matching($path, 'tar_open(', 'tar_close(', in_array($path, $strict_order_exceptions));
         }
     }
 

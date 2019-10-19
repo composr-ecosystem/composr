@@ -48,22 +48,8 @@ class Hook_task_import_newsletter_subscribers
 
         push_query_limiting(false);
 
-        // TODO: #3032
-        if (filesize($path) < 1024 * 1024 * 3) { // Cleanup possible line ending problems, but only if file not too big
-            $fixed_contents = cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-            require_code('files');
-            cms_file_put_contents_safe($path, $fixed_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_BOM);
-        }
-
-        cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-        $myfile = fopen($path, 'rb');
-        // TODO: #3032
-        $del = ',';
-        $csv_test_line = fgetcsv($myfile, 4096, $del);
-        if ((count($csv_test_line) == 1) && (strpos($csv_test_line[0], ';') !== false)) {
-            $del = ';';
-        }
-        rewind($myfile);
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read($path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
         $email_index = 0;
         $forename_index = null;
@@ -82,9 +68,9 @@ class Hook_task_import_newsletter_subscribers
 
         do {
             $i = 0;
-            $_csv_data = array();
-            while (($csv_line = fgetcsv($myfile, 4096, $del)) !== false) {
-                $_csv_data[] = $csv_line;
+            $_spreadsheet_data = array();
+            while (($spreadsheet_line = $sheet_reader->read_row()) !== false) {
+                $_spreadsheet_data[] = $spreadsheet_line;
                 $i++;
                 if ($i == 500) {
                     break;
@@ -92,9 +78,9 @@ class Hook_task_import_newsletter_subscribers
             }
 
             // Process data
-            foreach ($_csv_data as $i => $csv_line) {
-                if (($j == 0) && (count($csv_line) >= 1) && ($csv_line[$email_index] !== null) && (strpos($csv_line[$email_index], '@') === false)) {
-                    foreach ($csv_line as $j => $val) {
+            foreach ($_spreadsheet_data as $i => $spreadsheet_line) {
+                if (($j == 0) && (count($spreadsheet_line) >= 1) && ($spreadsheet_line[$email_index] !== null) && (strpos($spreadsheet_line[$email_index], '@') === false)) {
+                    foreach ($spreadsheet_line as $j => $val) {
                         if (in_array(strtolower($val), array('e-mail', 'email', 'email address', 'e-mail address', strtolower(do_lang('EMAIL_ADDRESS')), 'to'))) {
                             $email_index = $j;
                         }
@@ -131,25 +117,25 @@ class Hook_task_import_newsletter_subscribers
 
                 $j++;
 
-                if ((count($csv_line) >= 1) && ($csv_line[$email_index] !== null) && (strpos($csv_line[$email_index], '@') !== false)) {
-                    $email = $csv_line[$email_index];
-                    $forename = (($forename_index !== null) && (array_key_exists($forename_index, $csv_line))) ? $csv_line[$forename_index] : '';
+                if ((count($spreadsheet_line) >= 1) && ($spreadsheet_line[$email_index] !== null) && (strpos($spreadsheet_line[$email_index], '@') !== false)) {
+                    $email = $spreadsheet_line[$email_index];
+                    $forename = (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '';
                     if ($forename == $email) {
                         $forename = ucfirst(strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
                         if (in_array($forename, array('Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'))) {
                             $forename = '';
                         }
                     }
-                    $surname = (($surname_index !== null) && (array_key_exists($surname_index, $csv_line))) ? $csv_line[$surname_index] : '';
-                    $username = (($username_index !== null) && (array_key_exists($username_index, $csv_line))) ? $csv_line[$username_index] : '';
-                    $hash = (($hash_index !== null) && (array_key_exists($hash_index, $csv_line))) ? $csv_line[$hash_index] : '';
-                    $salt = (($salt_index !== null) && (array_key_exists($salt_index, $csv_line))) ? $csv_line[$salt_index] : '';
-                    $language = (($language_index !== null) && (array_key_exists($language_index, $csv_line)) && ((file_exists(get_custom_file_base() . '/lang/' . $csv_line[$language_index])) || (file_exists(get_custom_file_base() . '/lang_custom/' . $csv_line[$language_index])))) ? $csv_line[$language_index] : $_language;
+                    $surname = (($surname_index !== null) && (array_key_exists($surname_index, $spreadsheet_line))) ? $spreadsheet_line[$surname_index] : '';
+                    $username = (($username_index !== null) && (array_key_exists($username_index, $spreadsheet_line))) ? $spreadsheet_line[$username_index] : '';
+                    $hash = (($hash_index !== null) && (array_key_exists($hash_index, $spreadsheet_line))) ? $spreadsheet_line[$hash_index] : '';
+                    $salt = (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line))) ? $spreadsheet_line[$salt_index] : '';
+                    $language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line)) && ((file_exists(get_custom_file_base() . '/lang/' . $spreadsheet_line[$language_index])) || (file_exists(get_custom_file_base() . '/lang_custom/' . $spreadsheet_line[$language_index])))) ? $spreadsheet_line[$language_index] : $_language;
                     if ($language == '') {
                         $language = $_language;
                     }
-                    $code_confirm = (($code_confirm_index !== null) && (array_key_exists($code_confirm_index, $csv_line))) ? intval($csv_line[$code_confirm_index]) : 0;
-                    $join_time = (($join_time_index !== null) && (!empty($csv_line[$join_time_index]))) ? strtotime($csv_line[$join_time_index]) : time();
+                    $code_confirm = (($code_confirm_index !== null) && (array_key_exists($code_confirm_index, $spreadsheet_line))) ? intval($spreadsheet_line[$code_confirm_index]) : 0;
+                    $join_time = (($join_time_index !== null) && (!empty($spreadsheet_line[$join_time_index]))) ? strtotime($spreadsheet_line[$join_time_index]) : time();
                     if ($join_time === false) {
                         $join_time = time();
                     }
@@ -205,9 +191,9 @@ class Hook_task_import_newsletter_subscribers
                     $count2++;
                 }
             }
-        } while (count($_csv_data) != 0);
+        } while (count($_spreadsheet_data) != 0);
 
-        fclose($myfile);
+        $sheet_reader->close();
 
         if ($subscribe) {
             $message = do_lang_tempcode('NEWSLETTER_IMPORTED_THIS', escape_html(integer_format($count)), escape_html(integer_format($count2)));

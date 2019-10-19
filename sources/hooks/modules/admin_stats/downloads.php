@@ -98,8 +98,8 @@ class Hook_admin_stats_downloads
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 30);
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             cms_disable_time_limit();
             $start = 0;
             $max = 10000;
@@ -142,8 +142,11 @@ class Hook_admin_stats_downloads
             $i++;
         }
         $list = results_table(do_lang_tempcode('SECTION_DOWNLOADS'), $start, 'start', $max, 'max', count($downloads), $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($csv) {
-            make_csv($real_data, 'download_stats.csv');
+        if ($spreadsheet) {
+            $filename = 'download_stats.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
 
         $output = create_bar_chart(array_slice($downloads, $start, $max), do_lang('TITLE'), do_lang('COUNT_DOWNLOADS'), '', '');

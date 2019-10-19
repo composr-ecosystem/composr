@@ -91,7 +91,7 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
 
     // Open
     $sitemaps_out_temppath = cms_tempnam(); // We write to temporary path first to minimise the time our target file is invalid (during generation)
-    $sitemaps_out_file = cms_fopen_wb_bom($sitemaps_out_temppath);
+    $sitemaps_out_file = cms_fopen_text_write($sitemaps_out_temppath);
     $sitemaps_out_path = get_custom_file_base() . '/data_custom/sitemaps/set_' . strval($set_number) . '.xml';
     $blob = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
@@ -172,7 +172,7 @@ function rebuild_sitemap_index()
 
     // Open
     $sitemaps_out_temppath = cms_tempnam(); // We write to temporary path first to minimise the time our target file is invalid (during generation)
-    $sitemaps_out_file = cms_fopen_wb_bom($sitemaps_out_temppath);
+    $sitemaps_out_file = cms_fopen_text_write($sitemaps_out_temppath);
     $sitemaps_out_path = get_custom_file_base() . '/data_custom/sitemaps/index.xml';
     $blob = '<' . '?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';

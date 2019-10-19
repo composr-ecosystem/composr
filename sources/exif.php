@@ -120,26 +120,18 @@ function get_exif_image_caption($path, $filename)
 {
     $comments = '';
 
-    // Try CSV file
-    $csv_path = get_custom_file_base() . '/uploads/galleries/descriptions.csv';
-    if (file_exists($csv_path)) {
-        $del = ',';
-
-        cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-        $csv_file_handle = fopen($csv_path, 'rb');
-        // TODO: #3032
-        $csv_test_line = fgetcsv($csv_file_handle, 10240, $del);
-        if ((count($csv_test_line) == 1) && (strpos($csv_test_line[0], ';') !== false)) {
-            $del = ';';
-        }
-        rewind($csv_file_handle);
-        while (($csv_line = fgetcsv($csv_file_handle, 10240, $del)) !== false) {
-            if (preg_match('#(^|/|\\\\)' . preg_quote(trim($csv_line[0]), '#') . '#', $filename) != 0) {
-                $comments = trim($csv_line[1]);
+    // Try spreadsheet file
+    $spreadsheet_path = get_custom_file_base() . '/uploads/galleries/descriptions.csv';
+    if (file_exists($spreadsheet_path)) {
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read($spreadsheet_path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+        while (($spreadsheet_line = $sheet_reader->read_row()) !== false) {
+            if (preg_match('#(^|/|\\\\)' . preg_quote(trim($spreadsheet_line[0]), '#') . '#', $filename) != 0) {
+                $comments = trim($spreadsheet_line[1]);
                 break;
             }
         }
-        fclose($csv_file_handle);
+        $sheet_reader->close();
     }
 
     $file_pointer = fopen($path, 'rb');

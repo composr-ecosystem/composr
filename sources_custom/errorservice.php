@@ -41,13 +41,16 @@ function get_problem_match_script()
  */
 function get_problem_match_nearest($error_message)
 {
-    // Find matches. Stored in a CSV file.
+    require_code('files_spreadsheets_read');
+
+    // Find matches. Stored in a spreadsheet file.
     $matches = array();
-    $myfile = fopen(get_custom_file_base() . '/uploads/website_specific/compo.sr/errorservice.csv', 'rb');
-    // TODO: #3032 (must default charset to utf-8 if no BOM though)
-    fgetcsv($myfile); // Skip header row
-    while (($row = fgetcsv($myfile)) !== false) {
-        list($message, $summary, $how, $solution) = $row;
+    $sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/uploads/website_specific/compo.sr/errorservice.csv');
+    while (($row = $sheet_reader->read_row()) !== false) {
+        $message = $row['Message'];
+        $summary = $row['Summary'];
+        $how = $row['How did this happen?'];
+        $solution = $row['How do I fix it?'];
 
         $assembled = $summary . "\n\n[title=\"2\"]How did this happen?[/title]\n\n" . $how . "\n\n[title=\"2\"]How do I fix it?[/title]\n\n" . $solution;
 
@@ -67,7 +70,7 @@ function get_problem_match_nearest($error_message)
             $matches[$message] = $assembled;
         }
     }
-    fclose($myfile);
+    $sheet_reader->close();
 
     // No matches
     if (count($matches) == 0) {

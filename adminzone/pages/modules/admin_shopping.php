@@ -621,7 +621,7 @@ class Module_admin_shopping
             '_GUID' => 'e2e5097798c963f4977ba22b50ddf2f3',
             'SKIP_WEBSTANDARDS' => true,
             'TITLE' => $this->title,
-            'SUBMIT_ICON' => 'admin/export_csv',
+            'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => do_lang_tempcode('EXPORT_ORDER_LIST'),
             'TEXT' => paragraph(do_lang_tempcode('EXPORT_ORDER_LIST_TEXT')),
             'URL' => build_url(array('page' => '_SELF', 'type' => '_export_orders'), '_SELF'),
@@ -631,7 +631,7 @@ class Module_admin_shopping
     }
 
     /**
-     * Actualiser to build orders CSV from the selected filters.
+     * Actualiser to build orders spreadsheet from the selected filters.
      *
      * @return Tempcode The result of execution
      */

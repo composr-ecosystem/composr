@@ -4386,7 +4386,7 @@ function parse_ini_file($filename, $process_sections = false, $scanner_mode = IN
 /**
  * Parse a configuration string.
  *
- * @param  PATH $filename The file path
+ * @param  PATH $string The configuration string
  * @param  boolean $process_sections Whether to process sections
  * @param  integer $scanner_mode Any INI_SCANNER_* constant
  * @return ~array Map of Ini file data (2d if processed sections) (false: error)

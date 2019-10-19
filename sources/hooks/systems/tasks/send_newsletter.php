@@ -36,11 +36,11 @@ class Hook_task_send_newsletter
      * @param  string $from_name Override the name the mail is sent from (blank: site name)
      * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
      * @range  1 5
-     * @param  string $csv_data CSV data of extra subscribers (blank: none). This is in the same Composr newsletter CSV format that we export elsewhere.
+     * @param  string $spreadsheet_data Spreadsheet data of extra subscribers (blank: none). This is in the same Composr newsletter spreadsheet format that we export elsewhere.
      * @param  ID_TEXT $mail_template The template used to show the e-mail
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($message_id, $message, $subject, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $csv_data, $mail_template)
+    public function run($message_id, $message, $subject, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template)
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -82,7 +82,7 @@ class Hook_task_send_newsletter
 
         $start = 0;
         do {
-            list($addresses, $hashes, $usernames, $forenames, $surnames, $ids,) = newsletter_who_send_to($send_details, $lang, $start, $max, false, $csv_data);
+            list($addresses, $hashes, $usernames, $forenames, $surnames, $ids,) = newsletter_who_send_to($send_details, $lang, $start, $max, false, $spreadsheet_data);
 
             $insert_maps = array( // We will do very efficient mass-inserts (making index maintenance and disk access much more efficient)
                 'd_inject_time' => array(),

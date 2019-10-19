@@ -155,9 +155,14 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>You won't need much awareness of XML unless doing particular advanced configuration.</td>
 		</tr>
 		<tr>
-			<td>File formats like [url="http://tools.ietf.org/html/rfc5545"]iCalendar 2.0[/url], CSV files, JPEG, PNG, ZIP, Tar, Gzip</td>
+			<td>File formats like [url="http://tools.ietf.org/html/rfc5545"]iCalendar 2.0[/url], JPEG, PNG, ZIP, Tar, Gzip</td>
 			<td>These are used in specific areas of Composr, for reading and writing special file types. PNG is an image file format. PNG is used in favour to GIF, as it supports images more than 256 colours, 'alpha transparency' (blended transparency that is not tied to background colour) and is not encumbered by software patents.</td>
-			<td>The ability to use image editors, and choose appropriate image file types, is definitely useful. Being able to import and export appropriately-structured CSV files (spreadsheets) is also useful.</td>
+			<td>The ability to use image editors, and choose appropriate image file types, is definitely useful.</td>
+		</tr>
+		<tr>
+			<td>[abbr="comma-separated Values"]CSV[/abbr] spreadsheet files</td>
+			<td>CSV spreadsheet files are used for importing and exporting record-based data. By convention Composr will assume <kbd>.csv</kbd> spreadsheet files are in the same character set as the website is configured to use, unless a byte-order-mark says otherwise or the website is in utf-8 but the text is <em>invalid</em> utf-8.</td>
+			<td>Being able to import and export appropriately-structured CSV spreadsheet files is also useful.</td>
 		</tr>
 		<tr>
 			<td>[abbr="Lightweight Directory Access Protocol"][url="http://tools.ietf.org/html/rfc4510"]LDAP 3[/url][/abbr]</td>

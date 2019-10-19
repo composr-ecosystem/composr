@@ -33,17 +33,12 @@ $color_pool = empty($map['color_pool']) ? array() : explode(',', $map['color_poo
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/line_chart.csv' : $map['file'];
 
-cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-$myfile = fopen(get_custom_file_base() . '/' . $file, 'rb');
-// TODO: #3032
-$x_labels = fgetcsv($myfile);
-array_shift($x_labels); // Irrelevant corner
 $datasets = array();
-while (($line = fgetcsv($myfile)) !== false) {
-    if (implode('', $line) == '') {
-        continue;
-    }
-
+require_code('files_spreadsheets_read');
+$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+$x_labels = $sheet_reader->read_row();
+array_shift($x_labels); // Irrelevant corner
+while (($line = $sheet_reader->read_row()) !== false) {
     if (count($line) < 2) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
@@ -69,7 +64,7 @@ while (($line = fgetcsv($myfile)) !== false) {
         'datapoints' => $datapoints,
     );
 }
-fclose($myfile);
+$sheet_reader->close();
 
 $tpl = graph_line_chart($datasets, $x_labels, $x_axis_label, $y_axis_label, $begin_at_zero, $show_data_labels, $color_pool, $width, $height);
 $tpl->evaluate_echo();

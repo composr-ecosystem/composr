@@ -27,46 +27,22 @@ class Hook_task_export_members
      * Run the task hook.
      *
      * @param  boolean $filter_by_allow Only provide members that have "Receive newsletters and other site updates" set
-     * @param  string $extension File extension to use
-     * @param  string $preset Preset to use
      * @param  array $fields_to_use List of fields to use (empty: none)
      * @param  array $usergroups List of usergroups to use (empty: all)
      * @param  string $order_by Field to order by
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($filter_by_allow, $extension, $preset, $fields_to_use, $usergroups, $order_by)
+    public function run($filter_by_allow, $fields_to_use, $usergroups, $order_by)
     {
-        $filename = 'members-' . date('Y-m-d') . '.' . $extension;
-
-        require_code('mime_types');
-        $mime_type = get_mime_type($extension, true);
-
-        $headers = array();
-        $headers['Content-type'] = $mime_type;
-        $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
-
-        $ini_set = array();
-        $ini_set['ocproducts.xss_detect'] = '0';
-
         require_code('cns_members_action2');
-        list($headings, $cpfs, $subscription_types) = member_get_csv_headings_extended();
+        list($headings, $cpfs, $subscription_types) = member_get_spreadsheet_headings_extended();
 
         $_headings = $headings;
 
-        // What to filter on
-        if ($preset == '') {
-            foreach (explode(',', $order_by) as $_order_by) {
-                if ((!in_array($_order_by, $fields_to_use)) && (isset($_headings[$_order_by]))) {
-                    $fields_to_use[] = $_order_by;
-                }
+        foreach (explode(',', $order_by) as $_order_by) {
+            if ((!in_array($_order_by, $fields_to_use)) && (isset($_headings[$_order_by]))) {
+                $fields_to_use[] = $_order_by;
             }
-        } else {
-            $presets = $this->_get_export_presets();
-            $_preset = $presets[$preset];
-
-            $fields_to_use = $_preset['fields'];
-            $order_by = array_key_exists('row_order', $_preset) ? $_preset['row_order'] : 'ID';
-            $usergroups = array_key_exists('usergroups', $_preset) ? $_preset['usergroups'] : array();
         }
         $headings = array();
         foreach ($fields_to_use as $field_label) {
@@ -105,9 +81,10 @@ class Hook_task_export_members
             $group_filter_2 = '1=1';
         }
 
-        require_code('files');
-        $outfile_path = cms_tempnam();
-        $outfile = cms_fopen_wb_bom($outfile_path);
+        require_code('files_spreadsheets_write');
+        $filename = 'members-' . date('Y-m-d') . '.' . spreadsheet_write_default();
+        $outfile_path = null;
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 
         $fields = array('id', 'm_username', 'm_email_address', 'm_last_visit_time', 'm_cache_num_posts', 'm_pass_hash_salted', 'm_pass_salt', 'm_password_compat_scheme', 'm_signature', 'm_validated', 'm_join_time', 'm_primary_group', 'm_is_perm_banned', 'm_dob_day', 'm_dob_month', 'm_dob_year', 'm_reveal_age', 'm_language', 'm_allow_emails', 'm_allow_emails_from_staff');
         if (addon_installed('cns_member_avatars')) {
@@ -130,13 +107,7 @@ class Hook_task_export_members
         $member_count = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields ON id=mf_member_id WHERE ' . $group_filter_2);
 
         // Output headings
-        foreach (array_keys($headings) as $i => $h) {
-            if ($i != 0) {
-                fwrite($outfile, ',');
-            }
-            fwrite($outfile, '"' . str_replace('"', '""', $h) . '"');
-        }
-        fwrite($outfile, "\n");
+        $sheet_writer->write_row(array_keys($headings));
 
         // Filter
         $where = array();
@@ -162,58 +133,33 @@ class Hook_task_export_members
                 $member_groups = $GLOBALS['FORUM_DB']->query('SELECT gm_member_id,gm_group_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members WHERE (' . $or_list . ') AND gm_validated=1');
             }
 
-            foreach ($members as $iteration => $m) {
-                task_log($this, 'Exporting member row', $iteration + $start, $member_count);
+            foreach ($members as $i => $m) {
+                task_log($this, 'Exporting member row', $i + $start, $member_count);
 
                 if (is_guest($m['id'])) {
                     continue;
                 }
 
-                $out = $this->_get_csv_member_record($m, $groups, $headings, $cpfs, $member_groups, $subscription_types);
-                $i = 0;
-                foreach ($out as $wider) {
-                    if ($i != 0) {
-                        fwrite($outfile, ',');
-                    }
-                    fwrite($outfile, '"' . str_replace('"', '""', $wider) . '"');
-                    $i++;
-                }
-                fwrite($outfile, "\n");
+                $out = $this->_get_spreadsheet_member_record($m, $groups, $headings, $cpfs, $member_groups, $subscription_types);
+                $sheet_writer->write_row($out);
             }
 
             $start += 200;
         } while (count($members) == 200);
+        $sheet_writer->close();
 
-        fclose($outfile);
+        $headers = array();
+        $headers['Content-type'] = $sheet_writer->get_mime_type();
+        $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
-        // Have to rebuild file for some reason?
-        if ($extension != 'csv' || $order_by != 'ID') {
-            // Load data
-            $data = array();
-            $outfile = fopen($outfile_path, 'rb');
-            // TODO: #3032
-            fgetcsv($outfile); // Skip header
-            $heading_values = array_keys($headings);
-            while (($_data = fgetcsv($outfile)) !== false) {
-                $data[] = array_combine($heading_values, $_data);
-            }
-            fclose($outfile);
+        $ini_set = array();
+        $ini_set['ocproducts.xss_detect'] = '0';
 
-            if ($order_by != 'id') {
-                // Sort
-                sort_maps_by($data, $order_by);
-            }
-
-            require_code('files2');
-            $filename .= '.' . $extension;
-            make_csv($data, $filename, false, false, $outfile_path);
-        }
-
-        return array($mime_type, array($filename, $outfile_path), $headers, $ini_set);
+        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
     }
 
     /**
-     * Get a CSV-outputable row for a member.
+     * Get a spreadsheet-outputable row for a member.
      *
      * @param  array $m Member row
      * @param  array $groups Map of usergroup details
@@ -223,7 +169,7 @@ class Hook_task_export_members
      * @param  array $subscription_types List of subscription types
      * @return array The row
      */
-    public function _get_csv_member_record($m, $groups, $headings, $cpfs, $member_groups, $subscription_types)
+    public function _get_spreadsheet_member_record($m, $groups, $headings, $cpfs, $member_groups, $subscription_types)
     {
         // Usergroup subscription details
         if (addon_installed('ecommerce')) {

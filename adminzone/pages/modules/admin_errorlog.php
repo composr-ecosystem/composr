@@ -268,13 +268,13 @@ class Module_admin_errorlog
         while (($filename = readdir($dh)) !== false) {
             if (substr($filename, -4) == '.log') {
                 $myfile_file_charset = null;
-                $myfile = @cms_fopen_rb_bom_safe(get_custom_file_base() . '/data_custom/' . $filename, $myfile_file_charset, true);
+                $myfile = @cms_fopen_text_read(get_custom_file_base() . '/data_custom/' . $filename, $myfile_file_charset, true);
                 if ($myfile !== false) {
                     // Get last 40000 bytes of log
                     fseek($myfile, -40000, SEEK_END);
                     $data = '';
                     while (!feof($myfile)) {
-                        $data .= cms_fgets_bom_safe($myfile, $myfile_file_charset);
+                        $data .= cms_fgets($myfile, $myfile_file_charset);
                     }
                     flock($myfile, LOCK_UN);
                     fclose($myfile);

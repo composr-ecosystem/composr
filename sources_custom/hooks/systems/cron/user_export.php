@@ -10,7 +10,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    user_simple_csv_sync
+ * @package    user_simple_spreadsheet_sync
  */
 
 /**
@@ -27,7 +27,7 @@ class Hook_cron_user_export
      */
     public function info($last_run, $calculate_num_queued)
     {
-        if (!addon_installed('user_simple_csv_sync')) {
+        if (!addon_installed('user_simple_spreadsheet_sync')) {
             return null;
         }
 

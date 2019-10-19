@@ -93,7 +93,7 @@ function load_themewizard_params_from_theme($theme, $guess_images_if_needed = fa
         closedir($dh);
 
         if ($theme != 'default') {
-            $myfile = cms_fopen_wb_bom(get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/theme.ini', false, 'ab');
+            $myfile = cms_fopen_text_write(get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/theme.ini', false, 'ab');
             fwrite($myfile, 'themewizard_images=' . $themewizard_images . "\n");
             flock($myfile, LOCK_UN);
             fclose($myfile);

@@ -95,7 +95,7 @@ Any content which has not been translated yet will display in the original langu
 [title="2"]Limitations[/title]
 
 Content translation may not be supported in every feature perfectly, here are some known limitations:
- - Content CSV import and export is not translation-aware
+ - Content spreadsheet import and export is not translation-aware
   - see the next section for a workaround
  - Content sorting will only sort consistently if translations are complete
   - for example, if you have some translations into German, but some falling back to English, and viewing in German, only the German entries will be sorted correctly
@@ -110,7 +110,7 @@ For example, for a catalogue have Comcode-supporting field types and put in lang
 Advantages:
  - Easier to maintain if you prefer working with code than the translation interface
  - Avoid re-translating if you already have created language strings for the same text
- - Can survive CSV import and export
+ - Can survive spreadsheet import and export
 
 [concepts
  1_key="Content language string"       1_value="A translatable piece of content-managed text, stored in the Composr [tt]translate[/tt] table using an ID"

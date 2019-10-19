@@ -23,7 +23,7 @@ And the following special ones:
 
 [title="3"]Data format importing[/title]
 
-We try and support import of neutral data formats into Composr. For example, CSV files, or importing all the downloads in a directory. These features may help ease a transition and are linked from the importers list also (as shortcuts). Neutral formats are an important part of our approach because having an importer for everything is clearly not viable.
+We try and support import of neutral data formats into Composr. For example, [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet files, or importing all the downloads in a directory. These features may help ease a transition and are linked from the importers list also (as shortcuts). Neutral formats are an important part of our approach because having an importer for everything is clearly not viable.
 
 [title="3"]Getting a new importer written for you[/title]
 

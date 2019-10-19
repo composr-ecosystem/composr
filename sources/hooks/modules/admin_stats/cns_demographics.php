@@ -150,7 +150,7 @@ class Hook_admin_stats_cns_demographics
             'TEXT' => do_lang_tempcode('DESCRIPTION_DEMOGRAPHICS'),
         ));
 
-        $tpl = do_template('STATS_SCREEN', array('_GUID' => 'f60cb424d07969f1e74eb10bb6a5eeda', 'TITLE' => $title, 'NO_CSV' => '1', 'GRAPH' => $graph, 'STATS' => $list));
+        $tpl = do_template('STATS_SCREEN', array('_GUID' => 'f60cb424d07969f1e74eb10bb6a5eeda', 'TITLE' => $title, 'NO_SPREADSHEET' => '1', 'GRAPH' => $graph, 'STATS' => $list));
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

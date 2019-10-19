@@ -625,7 +625,7 @@ function load_minimodule_page($string, &$out = null)
         $PAGE_STRING = $string;
     }
 
-    /*if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null))  Actually we cannot do this, as some mini-modules don't return HTML and exit themselves (e.g. CSV downloads)
+    /*if (($GLOBALS['OUTPUT_STREAMING']) && ($out !== null))  Actually we cannot do this, as some mini-modules don't return HTML and exit themselves (e.g. spreadsheet downloads)
         $out->evaluate_echo(null, true);*/
 
     return _load_mini_code($string);

@@ -23,73 +23,53 @@ function install_location_data()
 {
     require_code('files');
     require_code('locations');
+    require_code('files_spreadsheets_read');
 
     // Open WorldGazetteer.csv
-    $myfile = fopen(get_file_base() . '/data_custom/locations/WorldGazetteer.csv', 'rb');
-    // TODO: #3032 (must default charset to utf-8 if no BOM though)
-    $header = fgetcsv($myfile, 4096);
     $locations = array();
-    while (($line = fgetcsv($myfile, 4096)) !== false) {
-        $newline = array();
-        foreach ($header as $i => $h) {
-            $newline[$h] = isset($line[$i]) ? $line[$i] : '';
-        }
-
-        if ($newline['Latitude'] != '') {
-            $newline['Latitude'] = float_to_raw_string(floatval($newline['Latitude']) / 100.0, 10);
-            $newline['Longitude'] = float_to_raw_string(floatval($newline['Longitude']) / 100.0, 10);
+    $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/WorldGazetteer.csv');
+    while (($line = $sheet_reader->read_row()) !== false) {
+        if ($line['Latitude'] != '') {
+            $line['Latitude'] = float_to_raw_string(floatval($line['Latitude']) / 100.0, 10);
+            $line['Longitude'] = float_to_raw_string(floatval($line['Longitude']) / 100.0, 10);
         }
 
         // Fix inconsistencies
-        $newline['Country'] = preg_replace('#^(Smaller|External) Territories of (the )?#', '', $newline['Country']);
-        if ($newline['Country'] == 'UK') {
-            $newline['Country'] = 'United Kingdom';
+        $line['Country'] = preg_replace('#^(Smaller|External) Territories of (the )?#', '', $line['Country']);
+        if ($line['Country'] == 'UK') {
+            $line['Country'] = 'United Kingdom';
         }
-        if ($newline['Country'] == 'Reunion') {
-            $newline['Country'] = 'France';
+        if ($line['Country'] == 'Reunion') {
+            $line['Country'] = 'France';
         }
 
-        $locations[] = $newline;
+        $locations[] = $line;
     }
-    fclose($myfile);
+    $sheet_reader->close();
 
     // Load US locations using CivicSpace-zipcodes.csv
-    require_code('locations/us');
-    $myfile = fopen(get_file_base() . '/data_custom/locations/CivicSpace-zipcodes.csv', 'rb');
-    // TODO: #3032 (must default charset to utf-8 if no BOM though)
-    $header = fgetcsv($myfile, 4096);
     $us_locations = array();
-    while (($line = fgetcsv($myfile, 4096)) !== false) {
-        $newline = array();
-        foreach ($header as $i => $h) {
-            $newline[$h] = isset($line[$i]) ? $line[$i] : '';
-        }
-
-        $state_name = state_code_to_state_name($newline['state']);
-        $us_locations[$state_name][$newline['city']] = $newline;
+    require_code('locations/us');
+    $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/CivicSpace-zipcodes.csv');
+    while (($line = $sheet_reader->read_row()) !== false) {
+        $state_name = state_code_to_state_name($line['state']);
+        $us_locations[$state_name][$line['city']] = $line;
     }
-    fclose($myfile);
+    $sheet_reader->close();
 
     // Load World locations using World_Cities_Location_table.csv
-    require_code('locations/us');
-    $myfile = fopen(get_file_base() . '/data_custom/locations/World_Cities_Location_table.csv', 'rb');
-    // TODO: #3032 (must default charset to utf-8 if no BOM though)
-    $header = fgetcsv($myfile, 4096);
     $world_locations = array();
-    while (($line = fgetcsv($myfile, 4096)) !== false) {
-        $newline = array();
-        foreach ($header as $i => $h) {
-            $newline[$h] = isset($line[$i]) ? $line[$i] : '';
-        }
-
+    require_code('locations/us');
+    $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/World_Cities_Location_table.csv');
+    while (($line = $sheet_reader->read_row()) !== false) {
         // Fix inconsistencies
-        if ($newline['Country'] == 'United States') {
-            $newline['Country'] = 'United States of America';
+        if ($line['Country'] == 'United States') {
+            $line['Country'] = 'United States of America';
         }
 
-        $world_locations[$newline['Country']][$newline['City']] = $newline;
+        $world_locations[$line['Country']][$line['City']] = $line;
     }
-    fclose($myfile);
+    $sheet_reader->close();
 
     // Delete current data
     $GLOBALS['SITE_DB']->query_delete('locations');
@@ -257,17 +237,16 @@ function _worldcities_remaining_locations()
     require_code('locations');
 
     // Load US locations using worldcitiespop.csv
-    $myfile = fopen(get_file_base() . '/data_custom/locations/worldcitiespop.csv', 'rb');
-    // TODO: #3032 (must default charset to utf-8 if no BOM though)
-    $header = fgetcsv($myfile, 4096);
     $many_locations = array();
-    while (($line = fgetcsv($myfile, 4096)) !== false) {
-        $country_name = find_country_name_from_iso(strtoupper($line[0]));
-        $many_locations[$country_name][$line[1]] = $line[5] . ',' . $line[6];
-        $many_locations[$country_name][strtolower($line[2])] = $line[5] . ',' . $line[6];
-        $many_locations[$country_name][strtolower(remove_accents($line[2]))] = $line[5] . ',' . $line[6];
+    require_code('files_spreadsheets_read');
+    $sheet_reader = spreadsheet_open_read(get_file_base() . '/data_custom/locations/worldcitiespop.csv');
+    while (($line = $sheet_reader->read_row()) !== false) {
+        $country_name = find_country_name_from_iso(strtoupper($line['Country']));
+        $many_locations[$country_name][$line['City']] = $line['Latitude'] . ',' . $line['Longitude'];
+        $many_locations[$country_name][strtolower($line['AccentCity'])] = $line['Latitude'] . ',' . $line['Longitude'];
+        $many_locations[$country_name][strtolower(remove_accents($line['AccentCity']))] = $line['Latitude'] . ',' . $line['Longitude'];
     }
-    fclose($myfile);
+    $sheet_reader->close();
 
     $from = 0;
     do {

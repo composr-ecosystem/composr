@@ -69,7 +69,7 @@ One part of this section which you will need to use if you are planning to creat
 [media width="150" description="Composr Admin Zone tools section" float="right"]data_custom/images/docs/sup_finding_your_way_around_the_composr_adminzone/f2c4013ba5e5f2f338b107399cd3236e.png[/media]
 The tools section is home to several sections which may be extremely useful to you as administrator of your site or may be not needed at all. This section includes Composr's newsletter section where you can create and send regular newsletters to your site's members. This section also has a code editor and Composr's inbuilt upgrader.
 
-One part of this section you will likely use more than any other is the members section where you can administrate all of your members details from sending welcome e-mails to adding or editing member details. You can also download a CSV file of all of your members, or import them from elsewhere. This section also has a link to managing your site's usergroups.
+One part of this section you will likely use more than any other is the members section where you can administrate all of your members details from sending welcome e-mails to adding or editing member details. You can also download a spreadsheet file of all of your members, or import them from elsewhere. This section also has a link to managing your site's usergroups.
 
 The final three things I want to mention are the Website clean-up tools to keep your site running smoothly, links to a wide range of RSS and atom feeds for your site and Commandr which is an in built command line environment.
 [/surround]

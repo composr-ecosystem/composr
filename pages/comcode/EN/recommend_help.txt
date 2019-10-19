@@ -3,14 +3,14 @@
 When you recommend our site or a piece of content on our site, you can either:
 [list="a"]
 [*] type in the details of your contacts manually
-[*] upload a [abbr="comma-separated Values"]CSV[/abbr] file of contact details
+[*] upload a [abbr="comma-separated Values"]CSV[/abbr] spreadsheet file of contact details
 [/list]
 
-[title="2"]CSV files[/title]
+[title="2"]CSV spreadsheet files[/title]
 
-If you choose to upload a CSV file we will give you a choice to choose which contacts you would like to recommend to before sending -- don't worry we won't spam anyone on your contact list!
+If you choose to upload a CSV spreadsheet file we will give you a choice to choose which contacts you would like to recommend to before sending -- don't worry we won't spam anyone on your contact list!
 
-Our recommend tool should work with all major software and web applications that support CSV, and we have prepared instructions for retrieving CSV files from the following software:
+Our recommend tool should work with all major software and web applications that support CSV spreadsheet files, and we have prepared instructions for retrieving CSV spreadsheet files from the following software:
 
 [title="3"]Windows Live Mail[/title]
 

@@ -49,7 +49,7 @@ if (!$done) {
     require_code('database_relations');
 
     require_code('files');
-    $out_file = cms_fopen_wb_bom($out_file_path);
+    $out_file = cms_fopen_text_write($out_file_path);
     get_sql_dump($out_file, true, false, array(), null, null, $intended_db_type);
     fclose($out_file);
 }

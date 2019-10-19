@@ -18,7 +18,7 @@
  * @package    core_fields
  */
 
-/*EXTRA FUNCTIONS: get_nested_csv_structure*/
+/*EXTRA FUNCTIONS: get_nested_spreadsheet_structure*/
 
 /**
  * Farm out the files for catalogue entry fields.
@@ -177,6 +177,7 @@ function catalogue_file_script()
     header('Content-Length: ' . strval($new_length));
     cms_disable_time_limit();
     error_reporting(0);
+    cms_ob_end_clean();
 
     if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
         return;
@@ -186,7 +187,6 @@ function catalogue_file_script()
     $myfile = fopen($_full, 'rb');
     fseek($myfile, $from);
     if ($size == $new_length) {
-        cms_ob_end_clean();
         fpassthru($myfile);
     } else {
         $i = 0;
@@ -891,19 +891,19 @@ abstract class ListFieldHook
                 break;
 
             default:
-                if ((addon_installed('nested_cpf_csv_lists')) && (strtolower(substr($default, -4)) == '.csv')) {
-                    $csv_heading = option_value_from_field_array($field, 'csv_heading', '');
+                if ((addon_installed('nested_cpf_spreadsheet_lists')) && (strtolower(substr($default, -4)) == '.spreadsheet')) {
+                    $spreadsheet_heading = option_value_from_field_array($field, 'spreadsheet_heading', '');
 
-                    require_code('nested_csv');
-                    $csv_structure = get_nested_csv_structure();
+                    require_code('nested_spreadsheet');
+                    $spreadsheet_structure = get_nested_spreadsheet_structure();
 
                     $list = array();
-                    foreach ($csv_structure['csv_files'][$default]['data'] as $row) {
-                        if ($csv_heading == '') {
+                    foreach ($spreadsheet_structure['spreadsheet_files'][$default]['data'] as $row) {
+                        if ($spreadsheet_heading == '') {
                             $l = array_shift($row);
                             $list[$l] = $l;
                         } else {
-                            $l = $row[$csv_heading];
+                            $l = $row[$spreadsheet_heading];
                             $list[$l] = $l;
                         }
                     }

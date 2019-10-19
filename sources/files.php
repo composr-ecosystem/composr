@@ -62,10 +62,10 @@ function init__files()
  * @param  string $charset Detected character set will be written into here
  * @param  boolean $locking File lock (if set, you must unlock with LOCK_UN before fclose)
  * @param  string $mode Mode (e.g. at).
- * @param  ?string $default_charset The default character set if none is specified (null: leave as null, ultimately meaning the default website character set will be used)
+ * @param  ?string $default_charset The default character set if none is specified (null: leave as null, ultimately meaning the default website character set will be used) (blank: smart detection)
  * @return ~resource The file handle (false: could not be opened)
  */
-function cms_fopen_rb_bom_safe($path, &$charset, $locking = false, $mode = 'rb', $default_charset = null)
+function cms_fopen_text_read($path, &$charset, $locking = false, $mode = 'rb', $default_charset = null)
 {
     $charset = null;
 
@@ -87,6 +87,16 @@ function cms_fopen_rb_bom_safe($path, &$charset, $locking = false, $mode = 'rb',
 
     list($charset, $bom) = detect_string_bom($start_data);
     if ($charset === null) {
+        if ($default_charset === '') {
+            // We need to do a deeper probe -- if the first 10kb is utf-8 compatible it almost certainly is utf-8 or ASCII (which is fine to use as utf-8 too)
+            $remaining = fread($myfile, 1024 * 10);
+            if (fix_bad_unicode($remaining) == $remaining) {
+                $default_charset = 'utf-8';
+            } else {
+                $default_charset = (get_charset() == 'utf-8') ? 'ISO-8859-1' : get_charset(); // Pick the most appropriate non-utf-8 character set we can
+            }
+        }
+
         $charset = $default_charset;
     }
 
@@ -105,13 +115,20 @@ function cms_fopen_rb_bom_safe($path, &$charset, $locking = false, $mode = 'rb',
  * Gets line from file pointer. Supports character set conversion.
  *
  * @param  resource $myfile The file pointer
- * @param  ?string $charset The character set to read with (likely found from cms_fopen_rb_bom_safe) (null: website character set)
+ * @param  ?string $charset The character set to read with (likely found from cms_fopen_text_read) (null: website character set)
  * @return ~string The string read (false: error)
  */
-function cms_fgets_bom_safe($myfile, $charset)
+function cms_fgets($myfile, $charset)
 {
     $line = fgets($myfile);
     if ($line !== false) {
+        $line = rtrim($line, "\r"); // In case it is in Windows format (effectively this is /s/\r\n/\n/). We don't consider Classic Mac format, as only Microsoft Excel Mac does this now, and we handle that in CMS_CSV_Reader
+
+        if ($charset == 'utf-8') {
+            // Fix any bad unicode
+            $line = fix_bad_unicode($line);
+        }
+
         require_code('character_sets');
         $line = convert_to_internal_encoding($line, $charset);
     }
@@ -128,7 +145,7 @@ function cms_fgets_bom_safe($myfile, $charset)
  * @param  ?string $charset Character set to write with (null: website character set)
  * @return ~resource The file handle (false: could not be opened)
  */
-function cms_fopen_wb_bom($path, $locking = false, $mode = null, $charset = null)
+function cms_fopen_text_write($path, $locking = false, $mode = null, $charset = null)
 {
     if ($mode === null) {
         $mode = ($locking ? 'cb' : 'wb');
@@ -829,7 +846,7 @@ function should_ignore_file($path, $bitmask = 0)
             '_critical_error.html' => '',
 
             // Non-bundled addons inside the git repository
-            'out.csv' => 'data_custom/modules/user_export', // user_simple_csv_sync
+            'out.csv' => 'data_custom/modules/user_export', // user_simple_spreadsheet_sync
             'request_helper.bin' => 'mobiquo/include', // tapatalk
             'server_certificates.pem' => 'data_custom/modules/composr_mobile_sdk/ios', // composr_mobile_sdk
             'if_hosted_service.txt' => 'text', // composr_homesite (Demonstratr)

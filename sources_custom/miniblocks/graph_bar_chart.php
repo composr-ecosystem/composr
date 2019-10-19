@@ -33,15 +33,10 @@ $color_pool = empty($map['color_pool']) ? array() : explode(',', $map['color_poo
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/bar_chart.csv' : $map['file'];
 
-cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-$myfile = fopen(get_custom_file_base() . '/' . $file, 'rb');
-// TODO: #3032
 $datapoints = array();
-while (($line = fgetcsv($myfile)) !== false) {
-    if (implode('', $line) == '') {
-        continue;
-    }
-
+require_code('files_spreadsheets_read');
+$sheet_reader = spreadsheet_open_read(get_custom_file_base() . '/' . $file, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+while (($line = $sheet_reader->read_row()) !== false) {
     if (count($line) < 2) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
@@ -52,7 +47,7 @@ while (($line = fgetcsv($myfile)) !== false) {
         'tooltip' => implode(',', array_slice($line, 2)),
     );
 }
-fclose($myfile);
+$sheet_reader->close();
 
 $tpl = graph_bar_chart($datapoints, $x_axis_label, $y_axis_label, $begin_at_zero, $show_data_labels, $color_pool, $width, $height);
 $tpl->evaluate_echo();

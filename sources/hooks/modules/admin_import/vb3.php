@@ -614,7 +614,7 @@ class Hook_import_vb3
                 continue;
             }
 
-            $name = html_entity_decode($row['title'], ENT_QUOTES, get_charset());
+            $name = html_entity_decode($row['title'], ENT_QUOTES);
             $description = html_to_comcode($row['description']);
             $position = $row['displayorder'];
             $post_count_increment = 1;//$row['options']&4096; This didn't work, not important though

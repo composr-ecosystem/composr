@@ -84,7 +84,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
         $from_email = $this->_default_property_str($properties, 'from_email');
         $from_name = $this->_default_property_str($properties, 'from_name');
         $priority = $this->_default_property_int($properties, 'priority');
-        $csv_data = $this->_default_property_str($properties, 'csv_data');
+        $spreadsheet_data = $this->_default_property_str($properties, 'spreadsheet_data');
         $frequency = $this->_default_property_str($properties, 'frequency');
         $day = $this->_default_property_int($properties, 'day');
         $in_full = $this->_default_property_int($properties, 'in_full');
@@ -93,7 +93,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
 
         require_code('newsletter');
 
-        $id = add_periodic_newsletter($label, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $csv_data, $frequency, $day, $in_full, $template, $last_sent);
+        $id = add_periodic_newsletter($label, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent);
 
         $this->_resource_save_extend($this->file_resource_type, strval($id), $filename, $label, $properties);
 
@@ -126,7 +126,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
             'from_email' => $row['np_from_email'],
             'from_name' => $row['np_from_name'],
             'priority' => $row['np_priority'],
-            'csv_data' => $row['np_csv_data'],
+            'spreadsheet_data' => $row['np_spreadsheet_data'],
             'frequency' => $row['np_frequency'],
             'day' => $row['np_day'],
             'in_full' => $row['np_in_full'],
@@ -158,7 +158,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
         $from_email = $this->_default_property_str($properties, 'from_email');
         $from_name = $this->_default_property_str($properties, 'from_name');
         $priority = $this->_default_property_int($properties, 'priority');
-        $csv_data = $this->_default_property_str($properties, 'csv_data');
+        $spreadsheet_data = $this->_default_property_str($properties, 'spreadsheet_data');
         $frequency = $this->_default_property_str($properties, 'frequency');
         $day = $this->_default_property_int($properties, 'day');
         $in_full = $this->_default_property_int($properties, 'in_full');
@@ -167,7 +167,7 @@ class Hook_commandr_fs_periodic_newsletters extends Resource_fs_base
 
         require_code('newsletter');
 
-        edit_periodic_newsletter(intval($resource_id), $label, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $csv_data, $frequency, $day, $in_full, $template, $last_sent);
+        edit_periodic_newsletter(intval($resource_id), $label, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent);
 
         $this->_resource_save_extend($this->file_resource_type, $resource_id, $filename, $label, $properties);
 

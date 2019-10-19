@@ -100,4 +100,5 @@ function bookmarks_process_node($node)
     }
 }
 
+$GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
 exit();

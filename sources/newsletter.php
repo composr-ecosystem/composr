@@ -380,11 +380,11 @@ function newsletter_wrap($_message, $lang, $subject = '')
  * @param  string $from_name Override the name the mail is sent from (blank: site name)
  * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
  * @range  1 5
- * @param  string $csv_data CSV data of extra subscribers in JSON format (blank: none). This is in the same Composr newsletter CSV format that we export elsewhere.
+ * @param  string $spreadsheet_data Spreadsheet data of extra subscribers in JSON format (blank: none). This is in the same Composr newsletter spreadsheet format that we export elsewhere.
  * @param  ID_TEXT $mail_template The template used to show the e-mail
  * @return Tempcode UI
  */
-function send_newsletter($message, $subject, $language, $send_details, $html_only = 0, $from_email = '', $from_name = '', $priority = 3, $csv_data = '', $mail_template = 'MAIL')
+function send_newsletter($message, $subject, $language, $send_details, $html_only = 0, $from_email = '', $from_name = '', $priority = 3, $spreadsheet_data = '', $mail_template = 'MAIL')
 {
     require_lang('newsletter');
 
@@ -410,7 +410,7 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
 
     // Schedule the task
     require_code('tasks');
-    return call_user_func_array__long_task(do_lang('NEWSLETTER_SEND'), get_screen_title('NEWSLETTER_SEND'), 'send_newsletter', array($message_id, $message, $subject, $language, $send_details, $html_only, $from_email, $from_name, $priority, $csv_data, $mail_template), false, get_param_integer('keep_send_immediately', 0) == 1, false);
+    return call_user_func_array__long_task(do_lang('NEWSLETTER_SEND'), get_screen_title('NEWSLETTER_SEND'), 'send_newsletter', array($message_id, $message, $subject, $language, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $mail_template), false, get_param_integer('keep_send_immediately', 0) == 1, false);
 }
 
 /**
@@ -421,10 +421,10 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
  * @param  integer $start Start position in result set (results are returned in parallel for each category of result)
  * @param  integer $max Maximum records to return from each category
  * @param  boolean $get_raw_rows Whether to get raw rows rather than mailer-ready correspondence lists
- * @param  string $csv_data JSON CSV data to also consider
- * @return array Returns a tuple of corresponding detail lists, emails,hashes,usernames,forenames,surnames,ids, and a record count for newsletters (depending on requests: csv, 1, <newsletterID>, g<groupID>) [record counts not returned if $start is not zero, for performance reasons]
+ * @param  string $spreadsheet_data JSON spreadsheet data to also consider
+ * @return array Returns a tuple of corresponding detail lists, emails,hashes,usernames,forenames,surnames,ids, and a record count for newsletters (depending on requests: spreadsheet, 1, <newsletterID>, g<groupID>) [record counts not returned if $start is not zero, for performance reasons]
  */
-function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw_rows = false, $csv_data = '')
+function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw_rows = false, $spreadsheet_data = '')
 {
     // Find who to send to
     $usernames = array();
@@ -542,9 +542,9 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
         }
     }
 
-    // From CSV
-    if ($csv_data != '') {
-        $_csv_data = json_decode($csv_data, true);
+    // From spreadsheet
+    if ($spreadsheet_data != '') {
+        $_spreadsheet_data = json_decode($spreadsheet_data, true);
 
         $email_index = 0;
         $forename_index = 1;
@@ -554,13 +554,13 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
         $hash_index = 5;
 
         if ($start == 0) {
-            $total['csv'] = 0;
+            $total['spreadsheet'] = 0;
         }
 
         $pos = 0;
-        foreach ($_csv_data as $i => $csv_line) {
-            if (($i <= 0) && (count($csv_line) >= 1) && (isset($csv_line[0])) && (strpos($csv_line[0], '@') === false) && (isset($csv_line[1])) && (strpos($csv_line[1], '@') === false)) {
-                foreach ($csv_line as $j => $val) {
+        foreach ($_spreadsheet_data as $i => $spreadsheet_line) {
+            if (($i <= 0) && (count($spreadsheet_line) >= 1) && (isset($spreadsheet_line[0])) && (strpos($spreadsheet_line[0], '@') === false) && (isset($spreadsheet_line[1])) && (strpos($spreadsheet_line[1], '@') === false)) {
+                foreach ($spreadsheet_line as $j => $val) {
                     if (in_array(strtolower($val), array('e-mail', 'email', 'email address', 'e-mail address'))) {
                         $email_index = $j;
                     }
@@ -583,21 +583,21 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $get_raw
                 continue;
             }
 
-            if ((count($csv_line) >= 1) && ($csv_line[$email_index] !== null) && (strpos($csv_line[$email_index], '@') !== false)) {
+            if ((count($spreadsheet_line) >= 1) && ($spreadsheet_line[$email_index] !== null) && (strpos($spreadsheet_line[$email_index], '@') !== false)) {
                 if (($pos >= $start) && ($pos - $start < $max)) {
                     if (!$get_raw_rows) {
-                        $emails[] = $csv_line[$email_index];
-                        $forenames[] = array_key_exists($forename_index, $csv_line) ? $csv_line[$forename_index] : '';
-                        $surnames[] = array_key_exists($surname_index, $csv_line) ? $csv_line[$surname_index] : '';
-                        $usernames[] = array_key_exists($username_index, $csv_line) ? $csv_line[$username_index] : '';
-                        $ids[] = array_key_exists($id_index, $csv_line) ? $csv_line[$id_index] : '';
-                        $hashes[] = array_key_exists($hash_index, $csv_line) ? $csv_line[$hash_index] : '';
+                        $emails[] = $spreadsheet_line[$email_index];
+                        $forenames[] = array_key_exists($forename_index, $spreadsheet_line) ? $spreadsheet_line[$forename_index] : '';
+                        $surnames[] = array_key_exists($surname_index, $spreadsheet_line) ? $spreadsheet_line[$surname_index] : '';
+                        $usernames[] = array_key_exists($username_index, $spreadsheet_line) ? $spreadsheet_line[$username_index] : '';
+                        $ids[] = array_key_exists($id_index, $spreadsheet_line) ? $spreadsheet_line[$id_index] : '';
+                        $hashes[] = array_key_exists($hash_index, $spreadsheet_line) ? $spreadsheet_line[$hash_index] : '';
                     } else {
-                        $raw_rows[] = $csv_line;
+                        $raw_rows[] = $spreadsheet_line;
                     }
                 }
                 if ($start == 0) {
-                    $total['csv']++;
+                    $total['spreadsheet']++;
                 }
 
                 $pos++;
@@ -759,15 +759,14 @@ function newsletter_block_list()
     $blocked = array();
     $block_path = get_custom_file_base() . '/uploads/website_specific/newsletter_blocked.csv';
     if (is_file($block_path)) {
-        cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-        $myfile = fopen($block_path, 'rb');
-        // TODO: #3032
-        while (($row = fgetcsv($myfile, 1024)) !== false) {
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read($block_path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+        while (($row = $sheet_reader->read_row()) !== false) {
             if ($row[0] != '') {
                 $blocked[$row[0]] = true;
             }
         }
-        fclose($myfile);
+        $sheet_reader->close();
     }
     return $blocked;
 }
@@ -877,7 +876,7 @@ function delete_newsletter($id)
  * @param  SHORT_TEXT $from_email From address
  * @param  SHORT_TEXT $from_name From name
  * @param  SHORT_INTEGER $priority Priority
- * @param  LONG_TEXT $csv_data CSV data of who to send to (JSON)
+ * @param  LONG_TEXT $spreadsheet_data Spreadsheet data of who to send to (JSON)
  * @param  SHORT_TEXT $frequency Send frequency
  * @set weekly biweekly monthly
  * @param  SHORT_INTEGER $day Weekday to send on
@@ -886,7 +885,7 @@ function delete_newsletter($id)
  * @param  ?TIME $last_sent When was last sent (null: now)
  * @return AUTO_LINK The ID
  */
-function add_periodic_newsletter($subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $csv_data, $frequency, $day, $in_full = 0, $template = 'MAIL', $last_sent = null)
+function add_periodic_newsletter($subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full = 0, $template = 'MAIL', $last_sent = null)
 {
     require_code('global4');
     prevent_double_submit('ADD_PERIODIC_NEWSLETTER', null, $subject);
@@ -904,7 +903,7 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
         'np_from_email' => $from_email,
         'np_from_name' => $from_name,
         'np_priority' => $priority,
-        'np_csv_data' => $csv_data,
+        'np_spreadsheet_data' => $spreadsheet_data,
         'np_frequency' => $frequency,
         'np_day' => $day,
         'np_in_full' => $in_full,
@@ -934,7 +933,7 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
  * @param  SHORT_TEXT $from_email From address
  * @param  SHORT_TEXT $from_name From name
  * @param  SHORT_INTEGER $priority Priority
- * @param  LONG_TEXT $csv_data CSV data of who to send to (JSON)
+ * @param  LONG_TEXT $spreadsheet_data Spreadsheet data of who to send to (JSON)
  * @param  SHORT_TEXT $frequency Send frequency
  * @set weekly biweekly monthly
  * @param  SHORT_INTEGER $day Weekday to send on
@@ -942,7 +941,7 @@ function add_periodic_newsletter($subject, $message, $lang, $send_details, $html
  * @param  ID_TEXT $template Mail template to use, e.g. MAIL
  * @param  ?TIME $last_sent When was last sent (null: don't change)
  */
-function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $csv_data, $frequency, $day, $in_full, $template, $last_sent = null)
+function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $frequency, $day, $in_full, $template, $last_sent = null)
 {
     $rows = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'), array('id' => $id), '', 1);
 
@@ -959,7 +958,7 @@ function edit_periodic_newsletter($id, $subject, $message, $lang, $send_details,
         'np_from_email' => $from_email,
         'np_from_name' => $from_name,
         'np_priority' => $priority,
-        'np_csv_data' => $csv_data,
+        'np_spreadsheet_data' => $spreadsheet_data,
         'np_frequency' => $frequency,
         'np_day' => $day,
         'np_in_full' => $in_full,

@@ -152,7 +152,7 @@ class Hook_cron_newsletter_periodic
             $subject = $periodic_row['np_subject'] . '-' . get_timezoned_date_time(time(), false, false, $GLOBALS['FORUM_DRIVER']->get_guest_id());
 
             require_code('newsletter');
-            send_newsletter($message, $subject, $lang, unserialize($periodic_row['np_send_details']), $periodic_row['np_html_only'], $periodic_row['np_from_email'], $periodic_row['np_from_name'], $periodic_row['np_priority'], $periodic_row['np_csv_data'], $periodic_row['np_template']);
+            send_newsletter($message, $subject, $lang, unserialize($periodic_row['np_send_details']), $periodic_row['np_html_only'], $periodic_row['np_from_email'], $periodic_row['np_from_name'], $periodic_row['np_priority'], $periodic_row['np_spreadsheet_data'], $periodic_row['np_template']);
         }
 
         return $time_now;

@@ -281,14 +281,14 @@ class Module_admin_stats
         require_code('svg');
         require_css('stats');
 
-        if (get_param_integer('csv', 0) == 1) {
-            require_code('files2');
+        if (get_param_integer('spreadsheet', 0) == 1) {
+            require_code('files_spreadsheets_write');
         }
 
         $type = get_param_string('type', 'browse');
 
         if (in_array($type, array('browse', 'overview', 'users_online', 'submission_rates', 'referrers', '_page', 'load_times', 'clear', '_clear', 'install_data', 'page'))) {
-            if (get_param_integer('csv', 0) == 0) {
+            if (get_param_integer('spreadsheet', 0) == 0) {
                 send_http_output_ping();
             }
         }
@@ -446,8 +446,8 @@ class Module_admin_stats
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50); // Intentionally the browse is disabled, as the graph will show all - we fudge $max_rows to $i
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             cms_disable_time_limit();
             $start = 0;
             $max = 10000;
@@ -502,8 +502,11 @@ class Module_admin_stats
 
             $result_entries->attach(results_entry(array(get_timezoned_date($data[$i]['t'] + $base, false), integer_format($data[$i]['value'])), true));
         }
-        if ($csv) {
-            make_csv($real_data, 'users_online.csv');
+        if ($spreadsheet) {
+            $filename = 'users_online.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
         $list = results_table(do_lang_tempcode('USERS_ONLINE_STATISTICS'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
 
@@ -533,8 +536,8 @@ class Module_admin_stats
         // Like the users online above, we need to use a nice scatter graph
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50); // Intentionally the browse is disabled, as the graph will show all - we fudge $max_rows to $i
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             cms_disable_time_limit();
             $start = 0;
             $max = 10000;
@@ -587,8 +590,11 @@ class Module_admin_stats
             $fields->attach(results_entry(array($data[$i]['key'], integer_format($data[$i]['value'])), true));
         }
         $list = results_table(do_lang_tempcode('SUBMISSION_STATISTICS'), $start, 'start', $max, 'max', $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($csv) {
-            make_csv($real_data, 'submission_rates.csv');
+        if ($spreadsheet) {
+            $filename = 'submission_rates.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
 
         $output = create_scatter_graph($data, do_lang('DATE'), do_lang('SUBMISSION_STATISTICS'), '', '');
@@ -636,12 +642,12 @@ class Module_admin_stats
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 30);
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             cms_disable_time_limit();
             $start = 0;
             $max = 10000;
-            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in Excel retro-actively
+            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in a spreadsheet application retro-actively
             $time_end = time();*/
         }
 
@@ -709,8 +715,11 @@ class Module_admin_stats
             $i++;
         }
         $list = results_table(do_lang_tempcode('LOAD_TIMES'), $start, 'start', $max, 'max', count($data), $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($csv) {
-            make_csv($real_data, 'load_times.csv');
+        if ($spreadsheet) {
+            $filename = 'load_times.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
 
         $output = create_bar_chart($data, do_lang('PAGE'), do_lang('LOAD_TIME'), '', do_lang('dates:DPLU_SECONDS'));
@@ -758,12 +767,12 @@ class Module_admin_stats
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 25);
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             cms_disable_time_limit();
             $start = 0;
             $max = 10000;
-            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in Excel retro-actively
+            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in a spreadsheet application retro-actively
             $time_end = time();*/
         }
 
@@ -837,8 +846,11 @@ class Module_admin_stats
             $done_total += $data[$referrer];
             $i++;
         }
-        if ($csv) {
-            make_csv($real_data, 'referrers.csv');
+        if ($spreadsheet) {
+            $filename = 'referrers.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
 
         if ((360 - $done_total) > 0) {
@@ -895,12 +907,12 @@ class Module_admin_stats
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 30);
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             cms_disable_time_limit();
             $start = 0;
             $max = 10000;
-            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in Excel retro-actively
+            /*$time_start = 0;     Actually, this is annoying. We have legitimate reason to filter, and cannot re-filter the data in a spreadsheet application retro-actively
             $time_end = time();*/
         }
 
@@ -985,8 +997,11 @@ class Module_admin_stats
         }
         unset($views['(' . do_lang('ALL') . ')']);
         $list = results_table(do_lang_tempcode('PAGES_STATISTICS'), $start, 'start', $max, 'max', count($views), $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
-        if ($csv) {
-            make_csv($real_data, 'page_stats.csv');
+        if ($spreadsheet) {
+            $filename = 'page_stats.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
 
         $output = create_bar_chart(array_slice($views, $start, $max), do_lang('PAGE'), do_lang('COUNT_VIEWS'), '', '');

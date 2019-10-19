@@ -206,11 +206,12 @@ function inline_language_editing(&$codename, $lang)
         make_missing_directory(dirname($save_path));
     }
 
+    require_code('files');
+
     // Tack language strings onto this file
     list($codename, $value) = explode('=', $codename, 2);
     if (!is_file($save_path)) {
-        $myfile = fopen($save_path, 'ab');
-        flock($myfile, LOCK_EX);
+        $myfile = cms_fopen_text_write($save_path, true, 'ab');
         fwrite($myfile, "[strings]\n");
 
         $has_terminating_line = true;
@@ -220,11 +221,9 @@ function inline_language_editing(&$codename, $lang)
         $has_terminating_line = (substr($c, -1) == "\n");
         $write_needed = (strpos($c, "\n" . $codename . '=' . $value . "\n") === false);
 
-        $myfile = fopen($save_path, 'ab');
-        flock($myfile, LOCK_EX);
+        $myfile = cms_fopen_text_write($save_path, true, 'ab');
     }
     if ($write_needed) {
-        fseek($myfile, 0, SEEK_END);
         if (!$has_terminating_line) {
             fwrite($myfile, "\n");
         }

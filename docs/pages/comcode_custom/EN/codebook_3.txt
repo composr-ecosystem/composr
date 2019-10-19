@@ -1273,13 +1273,13 @@ This section is not designed as primary documentation for the tools. Those tools
 | Web service call
 |-
 | [tt]data_custom/user_export.php[/tt]
-| Export users to CSV, designed for automatic synching.
-| [tt]user_simple_csv_sync[/tt]
+| Export users to a [abbr="comma-separated Values"]CSV[/abbr] spreadsheet file, designed for automatic synching.
+| [tt]user_simple_spreadsheet_sync[/tt]
 | Web service call
 |-
 | [tt]data_custom/user_import.php[/tt]
-| Import users from CSV, designed for automatic synching.
-| [tt]user_simple_csv_sync[/tt]
+| Import users from a [abbr="comma-separated Values"]CSV[/abbr] spreadsheet file, designed for automatic synching.
+| [tt]user_simple_spreadsheet_sync[/tt]
 | Web service call
 |}
 

@@ -131,8 +131,8 @@ class Module_cms_banners extends Standard_crud_module
             return $this->browse();
         }
 
-        if ($type == 'export_csv') {
-            return $this->export_csv();
+        if ($type == 'export_spreadsheet') {
+            return $this->export_spreadsheet();
         }
 
         require_javascript('banners');
@@ -165,7 +165,7 @@ class Module_cms_banners extends Standard_crud_module
                 has_privilege(get_member(), 'edit_cat_highrange_content', 'cms_banners') ? array('admin/edit_one_category', array('_SELF', array('type' => 'edit_category'), '_SELF'), do_lang('EDIT_BANNER_TYPE')) : null,
                 has_privilege(get_member(), 'submit_midrange_content', 'cms_banners') ? array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_BANNER')) : null,
                 has_privilege(get_member(), 'edit_own_midrange_content', 'cms_banners') ? array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_BANNER')) : null,
-                array('admin/export_csv', array('_SELF', array('type' => 'export_csv'), '_SELF'), do_lang('EXPORT_CSV_BANNERS')),
+                array('admin/export_spreadsheet', array('_SELF', array('type' => 'export_spreadsheet'), '_SELF'), do_lang('EXPORT_SPREADSHEET_BANNERS')),
             ),
             do_lang('MANAGE_BANNERS')
         );
@@ -508,14 +508,12 @@ class Module_cms_banners extends Standard_crud_module
     }
 
     /**
-     * The actualiser to export a banners CSV.
+     * The actualiser to export a banners spreadsheet.
      *
      * @return Tempcode The UI
      */
-    public function export_csv()
+    public function export_spreadsheet()
     {
-        $csv_rows = array();
-
         $_has_banner_network = $GLOBALS['SITE_DB']->query_select_value('banners', 'SUM(views_from)');
         $has_banner_network = (@intval($_has_banner_network) != 0);
 
@@ -537,45 +535,50 @@ class Module_cms_banners extends Standard_crud_module
             }
         }
 
+        $outfile_path = null;
+        require_code('files_spreadsheets_write');
+        $filename = 'banners.' . spreadsheet_write_default();
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
+
         foreach ($rows as $row) {
-            $csv_row = array();
+            $spreadsheet_row = array();
 
             // Basic details...
 
-            $csv_row[do_lang('CODENAME')] = $row['name'];
+            $spreadsheet_row[do_lang('CODENAME')] = $row['name'];
 
-            $csv_row[do_lang('BANNER_TYPE')] = ($row['b_type'] == '') ? do_lang('_DEFAULT') : $row['b_type'];
+            $spreadsheet_row[do_lang('BANNER_TYPE')] = ($row['b_type'] == '') ? do_lang('_DEFAULT') : $row['b_type'];
 
             $banner_types = implode(', ', collapse_1d_complexity('b_type', $GLOBALS['SITE_DB']->query_select('banners_types', array('b_type'), array('name' => $row['name']))));
-            $csv_row[do_lang('SECONDARY_CATEGORIES')] = $banner_types;
+            $spreadsheet_row[do_lang('SECONDARY_CATEGORIES')] = $banner_types;
 
             if ($has_title_text) {
-                $csv_row[do_lang('BANNER_TITLE_TEXT')] = $row['title_text'];
+                $spreadsheet_row[do_lang('BANNER_TITLE_TEXT')] = $row['title_text'];
             }
 
             if ($has_caption) {
-                $csv_row[do_lang('DESCRIPTION')] = get_translated_text($row['caption']);
+                $spreadsheet_row[do_lang('DESCRIPTION')] = get_translated_text($row['caption']);
             }
 
-            $csv_row[do_lang('IMAGE')] = (url_is_local($row['img_url']) ? (get_custom_base_url() . '/') : '') . $row['img_url'];
+            $spreadsheet_row[do_lang('IMAGE')] = (url_is_local($row['img_url']) ? (get_custom_base_url() . '/') : '') . $row['img_url'];
 
-            $csv_row[do_lang('DESTINATION_URL')] = $row['site_url'];
+            $spreadsheet_row[do_lang('DESTINATION_URL')] = $row['site_url'];
 
             // Basic stats...
 
             if ($has_banner_network) {
-                $csv_row[strip_html(do_lang('BANNER_HITS_FROM'))] = integer_format($row['hits_from']);
-                $csv_row[strip_html(do_lang('BANNER_VIEWS_FROM'))] = integer_format($row['views_from']);
+                $spreadsheet_row[strip_html(do_lang('BANNER_HITS_FROM'))] = integer_format($row['hits_from']);
+                $spreadsheet_row[strip_html(do_lang('BANNER_VIEWS_FROM'))] = integer_format($row['views_from']);
             }
-            $csv_row[strip_html(do_lang('BANNER_HITS_TO'))] = ($row['site_url'] == '') ? strip_html(do_lang('CANT_TRACK')) : integer_format($row['hits_to']);
-            $csv_row[strip_html(do_lang('BANNER_VIEWS_TO'))] = ($row['site_url'] == '') ? strip_html(do_lang('CANT_TRACK')) : integer_format($row['views_to']);
+            $spreadsheet_row[strip_html(do_lang('BANNER_HITS_TO'))] = ($row['site_url'] == '') ? strip_html(do_lang('CANT_TRACK')) : integer_format($row['hits_to']);
+            $spreadsheet_row[strip_html(do_lang('BANNER_VIEWS_TO'))] = ($row['site_url'] == '') ? strip_html(do_lang('CANT_TRACK')) : integer_format($row['views_to']);
 
             if ($row['views_to'] != 0) {
                 $click_through = float_format(100.0 * (floatval($row['hits_to']) / floatval($row['views_to'])));
             } else {
                 $click_through = do_lang('NA');
             }
-            $csv_row[strip_html(do_lang('BANNER_CLICKTHROUGH'))] = ($row['site_url'] == '') ? strip_html(do_lang('CANT_TRACK')) : $click_through;
+            $spreadsheet_row[strip_html(do_lang('BANNER_CLICKTHROUGH'))] = ($row['site_url'] == '') ? strip_html(do_lang('CANT_TRACK')) : $click_through;
 
             // Display determination details...
 
@@ -594,22 +597,22 @@ class Module_cms_banners extends Standard_crud_module
                         $deployment_agreement = do_lang('BANNER_FALLBACK');
                         break;
                 }
-                $csv_row[do_lang('DEPLOYMENT_AGREEMENT')] = $deployment_agreement;
+                $spreadsheet_row[do_lang('DEPLOYMENT_AGREEMENT')] = $deployment_agreement;
 
-                $csv_row[do_lang('HITS_ALLOCATED')] = $campaign_remaining;
+                $spreadsheet_row[do_lang('HITS_ALLOCATED')] = $campaign_remaining;
             }
 
-            $csv_row[do_lang('DISPLAY_LIKELIHOOD')] = strval($row['display_likelihood']);
+            $spreadsheet_row[do_lang('DISPLAY_LIKELIHOOD')] = strval($row['display_likelihood']);
 
             if (addon_installed('stats')) {
                 $banners_regions = implode(', ', collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', array('region'), array('content_type' => 'banner', 'content_id' => $row['name']))));
-                $csv_row[do_lang('FILTER_REGIONS')] = $banners_regions;
+                $spreadsheet_row[do_lang('FILTER_REGIONS')] = $banners_regions;
             }
 
-            $csv_row[do_lang('EXPIRY_DATE')] = ($row['expiry_date'] === null) ? do_lang('NA') : get_timezoned_date_time($row['expiry_date']);
+            $spreadsheet_row[do_lang('EXPIRY_DATE')] = ($row['expiry_date'] === null) ? do_lang('NA') : get_timezoned_date_time($row['expiry_date']);
 
             if (addon_installed('unvalidated')) {
-                $csv_row[do_lang('VALIDATED')] = ($row['validated'] == 1) ? do_lang('YES') : do_lang('NO');
+                $spreadsheet_row[do_lang('VALIDATED')] = ($row['validated'] == 1) ? do_lang('YES') : do_lang('NO');
             }
 
             // Meta details...
@@ -618,16 +621,15 @@ class Module_cms_banners extends Standard_crud_module
             if ($username === null) {
                 $username = do_lang('UNKNOWN');
             }
-            $csv_row[do_lang('SUBMITTER')] = $username;
+            $spreadsheet_row[do_lang('SUBMITTER')] = $username;
 
-            $csv_row[do_lang('ADDED')] = get_timezoned_date_time($row['add_date']);
-            $csv_row[do_lang('EDITED')] = ($row['edit_date'] === null) ? '' : date('Y-m-d', $row['edit_date']);
+            $spreadsheet_row[do_lang('ADDED')] = get_timezoned_date_time($row['add_date']);
+            $spreadsheet_row[do_lang('EDITED')] = ($row['edit_date'] === null) ? '' : date('Y-m-d', $row['edit_date']);
 
-            $csv_rows[] = $csv_row;
+            $sheet_writer->write_row($spreadsheet_row);
         }
 
-        require_code('files2');
-        make_csv($csv_rows, 'banners.csv');
+        $sheet_writer->output_and_exit($filename, true);
 
         return new Tempcode();
     }

@@ -89,7 +89,7 @@ function css_inherit($css_file, $theme, $destination_theme, $seed, $dark, $algor
     $tmp_filename = $css_file . '__tmp_copy_' . uniqid('', true);
     $temp_file = get_custom_file_base() . '/themes/' . $destination_theme . '/css_custom/' . $tmp_filename . '.css';
     require_code('files');
-    $myfile = @cms_fopen_wb_bom($temp_file) or intelligent_write_error($temp_file);
+    $myfile = @cms_fopen_text_write($temp_file) or intelligent_write_error($temp_file);
     fwrite($myfile, $sheet);
 
     // Load up as Tempcode

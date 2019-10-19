@@ -270,7 +270,7 @@ header('Content-Disposition: attachment; filename="' . escape_header($filename, 
 
 require_code('tar');
 
-$tar = tar_open(null, 'wb');
+$tar = tar_open('php://stdout', 'wb');
 
 tar_add_file($tar, 'sources_custom/hooks/modules/admin_setupwizard_installprofiles/mycustomprofile.php', $profile);
 tar_add_file($tar, 'addon.inf', $addoninf);

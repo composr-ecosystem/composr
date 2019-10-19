@@ -185,7 +185,7 @@ function _git_status__tar($stub, $filename)
     header('Content-Disposition: attachment; filename="' . $filename . '"');
 
     require_code('tar');
-    $myfile = tar_open(null, 'wb');
+    $myfile = tar_open('php://stdout', 'wb');
     foreach ($paths as $path) {
         $_path = get_git_file_base() . '/' . $path;
         if (is_file($_path)) {
@@ -194,6 +194,7 @@ function _git_status__tar($stub, $filename)
     }
     tar_close($myfile);
 
+    $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
     exit();
 }
 

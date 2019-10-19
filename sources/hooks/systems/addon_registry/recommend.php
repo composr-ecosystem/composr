@@ -111,7 +111,7 @@ class Hook_addon_registry_recommend
             'sources/blocks/main_screen_actions.php',
             'themes/default/css/screen_actions.css',
             'themes/default/templates/BLOCK_MAIN_SCREEN_ACTIONS.tpl',
-            'sources/hooks/systems/config/enable_csv_recommend.php',
+            'sources/hooks/systems/config/enable_spreadsheet_recommend.php',
             'sources/hooks/systems/page_groupings/recommend.php',
             'themes/default/css/recommend.css',
             'sources/hooks/systems/privacy/recommend.php',

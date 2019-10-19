@@ -179,7 +179,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
         $path = get_custom_file_base() . '/data_custom/errorlog.php';
         $myfile_charset = null;
-        $myfile = cms_fopen_rb_bom_safe($path, $myfile_charset);
+        $myfile = cms_fopen_text_read($path, $myfile_charset);
         if ($myfile !== false) {
             $filesize = filesize($path);
 
@@ -192,7 +192,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
             $dates = array();
             while (!feof($myfile)) {
-                $line = cms_fgets_bom_safe($myfile, $myfile_charset);
+                $line = cms_fgets($myfile, $myfile_charset);
                 if ($line === false) {
                     break;
                 }

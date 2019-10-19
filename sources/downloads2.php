@@ -262,6 +262,7 @@ function dload_script()
     header('Content-Length: ' . strval($new_length));
     cms_disable_time_limit();
     error_reporting(0);
+    cms_ob_end_clean();
 
     if ($_SERVER['REQUEST_METHOD'] == 'HEAD') {
         return;
@@ -275,7 +276,6 @@ function dload_script()
     $myfile = fopen($_full, 'rb');
     fseek($myfile, $from);
     if ($size == $new_length) {
-        cms_ob_end_clean();
         fpassthru($myfile);
     } else {
         $i = 0;

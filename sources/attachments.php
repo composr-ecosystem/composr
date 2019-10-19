@@ -295,6 +295,7 @@ function attachments_script()
     header('Content-Length: ' . strval($new_length));
     cms_disable_time_limit();
     error_reporting(0);
+    cms_ob_end_clean();
 
     if ($from == 0) {
         $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'values SET the_value=' . db_cast('(' . db_cast('the_value', 'INT') . '+' . strval($size) . ')', 'CHAR') . ' WHERE the_name=\'download_bandwidth\'', 1);
@@ -310,7 +311,6 @@ function attachments_script()
     $myfile = fopen($_full, 'rb');
     fseek($myfile, $from);
     if ($size == $new_length) {
-        cms_ob_end_clean();
         fpassthru($myfile);
     } else {
         $i = 0;

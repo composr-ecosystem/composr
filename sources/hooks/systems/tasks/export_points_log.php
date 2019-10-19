@@ -41,9 +41,10 @@ class Hook_task_export_points_log
 
         $label = do_lang('POINTS_GAINED_BETWEEN', get_timezoned_date_time($from, false), get_timezoned_date_time($to, false));
 
-        $data = array();
-
-        $total_gained_points = 0;
+        require_code('files_spreadsheets_write');
+        $filename = 'points_log_' . date('Y-m-d', $from) . '--' . date('Y-m-d', $to) . '.' . spreadsheet_write_default();
+        $outfile_path = null;
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
         $quizzes = array();
         if (addon_installed('quizzes')) {
@@ -53,8 +54,8 @@ class Hook_task_export_points_log
 
         $members = $GLOBALS['FORUM_DRIVER']->get_matching_members('', 10000/*reasonable limit -- works via returning 'most active' first*/);
         $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
-        foreach ($members as $iteration => $member) {
-            task_log($this, 'Exporting points log row', $iteration, count($members));
+        foreach ($members as $i => $member) {
+            task_log($this, 'Exporting points log row', $i, count($members));
 
             $member_id = $GLOBALS['FORUM_DRIVER']->mrow_id($member);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_NULL);
@@ -91,41 +92,17 @@ class Hook_task_export_points_log
                 }
             }
 
-            $data[] = $data_point;
-
-            $total_gained_points += $points_gained;
+            $sheet_writer->write_row($data_point);
         }
-
-        // Ordering for automatic 'lottery'
-        $winner_data = array();
-        while (count($data) != 0) {
-            $rand = mt_rand(0, $total_gained_points);
-            $so_far = 0;
-            foreach ($data as $i => $data_point) {
-                $so_far += $data_point[$label];
-
-                if (($rand < $so_far) || (($rand == $so_far) && ($so_far == $total_gained_points))) {
-                    $winner_data[] = $data_point;
-                    unset($data[$i]);
-                    $total_gained_points -= $data_point[$label];
-
-                    break;
-                }
-            }
-        }
-
-        $filename = 'points_log_' . date('Y-m-d', $from) . '--' . date('Y-m-d', $to) . '.csv';
+        $sheet_writer->close();
 
         $headers = array();
-        $headers['Content-type'] = 'text/csv';
+        $headers['Content-type'] = $sheet_writer->get_mime_type();
         $headers['Content-Disposition'] = 'attachment; filename="' . escape_header($filename) . '"';
 
         $ini_set = array();
         $ini_set['ocproducts.xss_detect'] = '0';
 
-        require_code('files2');
-        $outfile_path = cms_tempnam();
-        make_csv($winner_data, $filename, false, false, $outfile_path);
-        return array('text/csv', array($filename, $outfile_path), $headers, $ini_set);
+        return array($sheet_writer->get_mime_type(), array($filename, $outfile_path), $headers, $ini_set);
     }
 }

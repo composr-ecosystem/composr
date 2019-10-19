@@ -430,8 +430,16 @@ function detect_string_bom($contents)
     $magic_data = substr($contents, 0, $max_bom_len);
 
     foreach ($boms as $charset => $bom) {
+        // Big-endian (most significant byte first)
         if (substr($magic_data, 0, strlen($bom)) == $bom) {
             $file_charset = $charset;
+            $bom_found = $bom;
+            break;
+        }
+
+        // Little-endian (most significant byte last - which is what happens on Intel and most ARM architectures IF characters are being stored in wchars rather than raw byte strings)
+        if (substr($magic_data, 0, strlen($bom)) == strrev($bom)) {
+            $file_charset = $charset . 'LE';
             $bom_found = $bom;
             break;
         }
@@ -1530,8 +1538,10 @@ function addon_installed($addon, $check_hookless = false)
 {
     global $ADDON_INSTALLED_CACHE;
     if ($ADDON_INSTALLED_CACHE == array()) {
-        if (function_exists('persistent_cache_get')) {
-            $ADDON_INSTALLED_CACHE = persistent_cache_get('ADDONS_INSTALLED');
+        if (!in_safe_mode()) {
+            if (function_exists('persistent_cache_get')) {
+                $ADDON_INSTALLED_CACHE = persistent_cache_get('ADDONS_INSTALLED');
+            }
         }
     }
     if (isset($ADDON_INSTALLED_CACHE[$addon])) {
@@ -1540,10 +1550,13 @@ function addon_installed($addon, $check_hookless = false)
 
     // Check addon_registry hook
     $addon = filter_naughty($addon, true);
-    $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php') || is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+    $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
+    if ((!$answer) && (!in_safe_mode())) {
+        $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+    }
 
     // Check addons table
-    if (!$GLOBALS['IN_MINIKERNEL_VERSION']) {
+    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (!in_safe_mode())) {
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {
@@ -1582,7 +1595,9 @@ function addon_installed($addon, $check_hookless = false)
 
     $ADDON_INSTALLED_CACHE[$addon] = $answer;
     if (function_exists('persistent_cache_set')) {
-        persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
+        if (!in_safe_mode()) {
+            persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
+        }
     }
 
     return $answer;
@@ -4254,22 +4269,17 @@ function is_maintained($code)
         global $FILE_ARRAY;
         if (@is_array($FILE_ARRAY)) {
             $file = file_array_get('data/maintenance_status.csv');
-            $lines = explode("\n", $file);
-            array_shift($lines); // Skip header row
-            foreach ($lines as $line) {
-                // TODO: #3032
-                $row = str_getcsv($line);
-                $cache[$row[0]] = !empty($row[3]);
-            }
+            file_put_contents('php://memory', $file);
+            $path = 'php://memory';
         } else {
-            $myfile = fopen(get_file_base() . '/data/maintenance_status.csv', 'rb');
-            // TODO: #3032 (must default charset to utf-8 if no BOM though)
-            fgetcsv($myfile); // Skip header row
-            while (($row = fgetcsv($myfile)) !== false) {
-                $cache[$row[0]] = !empty($row[3]);
-            }
-            fclose($myfile);
+            $path = get_file_base() . '/data/maintenance_status.csv';
         }
+        require_code('files_spreadsheets_read');
+        $sheet_reader = spreadsheet_open_read($path);
+        while (($row = $sheet_reader->read_row()) !== false) {
+            $cache[$row['Codename']] = !empty($row['Current active sponsor']);
+        }
+        $sheet_reader->close();
     }
 
     if (isset($cache[$code])) {

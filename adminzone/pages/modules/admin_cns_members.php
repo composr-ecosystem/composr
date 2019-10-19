@@ -66,10 +66,10 @@ class Module_admin_cns_members
 
         if (has_privilege(get_member(), 'mass_import')) {
             $ret['delurk'] = array('DELETE_LURKERS', 'menu/adminzone/tools/users/delete_lurkers');
-            $ret['import_csv'] = array('IMPORT_MEMBERS', 'admin/import_csv');
+            $ret['import_spreadsheet'] = array('IMPORT_MEMBERS', 'admin/import_spreadsheet');
         }
 
-        $ret['export_csv'] = array('EXPORT_MEMBERS', 'admin/export_csv');
+        $ret['export_spreadsheet'] = array('EXPORT_MEMBERS', 'admin/export_spreadsheet');
 
         if ($support_crosslinks) {
             if (has_privilege($member_id, 'member_maintenance')) {
@@ -148,21 +148,21 @@ class Module_admin_cns_members
             breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:delurk', do_lang_tempcode('DELETE_LURKERS'))));
         }
 
-        if ($type == 'import_csv') {
+        if ($type == 'import_spreadsheet') {
             breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
         }
 
-        if ($type == '_import_csv') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:import_csv', do_lang_tempcode('IMPORT_MEMBERS'))));
+        if ($type == '_import_spreadsheet') {
+            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:import_spreadsheet', do_lang_tempcode('IMPORT_MEMBERS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
-        if ($type == 'export_csv') {
+        if ($type == 'export_spreadsheet') {
             breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS'))));
         }
 
-        if ($type == '_export_csv') {
-            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:export_csv', do_lang_tempcode('EXPORT_MEMBERS'))));
+        if ($type == '_export_spreadsheet') {
+            breadcrumb_set_parents(array(array('_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')), array('_SEARCH:admin_cns_members:export_spreadsheet', do_lang_tempcode('EXPORT_MEMBERS'))));
             breadcrumb_set_self(do_lang_tempcode('DONE'));
         }
 
@@ -174,11 +174,11 @@ class Module_admin_cns_members
             $this->title = get_screen_title('DELETE_LURKERS');
         }
 
-        if ($type == 'import_csv' || $type == '_import_csv') {
+        if ($type == 'import_spreadsheet' || $type == '_import_spreadsheet') {
             $this->title = get_screen_title('IMPORT_MEMBERS');
         }
 
-        if ($type == 'export_csv' || $type == '_export_csv') {
+        if ($type == 'export_spreadsheet' || $type == '_export_spreadsheet') {
             $this->title = get_screen_title('EXPORT_MEMBERS');
 
             set_helper_panel_text(comcode_lang_string('DOC_EXPORT_MEMBERS'));
@@ -221,17 +221,17 @@ class Module_admin_cns_members
         if ($type == '__delurk') {
             return $this->__delurk();
         }
-        if ($type == 'export_csv') {
-            return $this->export_csv();
+        if ($type == 'export_spreadsheet') {
+            return $this->export_spreadsheet();
         }
-        if ($type == '_export_csv') {
-            return $this->_export_csv();
+        if ($type == '_export_spreadsheet') {
+            return $this->_export_spreadsheet();
         }
-        if ($type == 'import_csv') {
-            return $this->import_csv();
+        if ($type == 'import_spreadsheet') {
+            return $this->import_spreadsheet();
         }
-        if ($type == '_import_csv') {
-            return $this->_import_csv();
+        if ($type == '_import_spreadsheet') {
+            return $this->_import_spreadsheet();
         }
 
         return new Tempcode();
@@ -262,8 +262,8 @@ class Module_admin_cns_members
                 (!has_privilege(get_member(), 'member_maintenance')) ? null : array('menu/adminzone/tools/users/member_edit', array('members', array('type' => 'browse'), get_module_zone('members'), do_lang_tempcode('SWITCH_ZONE_WARNING')), do_lang_tempcode('EDIT_MEMBER'), 'DOC_EDIT_MEMBER'),
                 array('menu/adminzone/tools/users/merge_members', array('admin_cns_merge_members', array('type' => 'browse'), get_module_zone('admin_cns_merge_members')), do_lang_tempcode('MERGE_MEMBERS'), 'DOC_MERGE_MEMBERS'),
                 (!has_privilege(get_member(), 'mass_import')) ? null : array('menu/adminzone/tools/users/delete_lurkers', array('admin_cns_members', array('type' => 'delurk'), get_module_zone('admin_cns_members')), do_lang_tempcode('DELETE_LURKERS'), 'DOC_DELETE_LURKERS'),
-                (!has_privilege(get_member(), 'mass_import')) ? null : array('admin/import_csv', array('admin_cns_members', array('type' => 'import_csv'), get_module_zone('admin_cns_members')), do_lang_tempcode('IMPORT_MEMBERS'), 'DOC_IMPORT_MEMBERS'),
-                array('admin/export_csv', array('admin_cns_members', array('type' => 'export_csv'), get_module_zone('admin_cns_members')), do_lang_tempcode('EXPORT_MEMBERS'), 'DOC_EXPORT_MEMBERS'),
+                (!has_privilege(get_member(), 'mass_import')) ? null : array('admin/import_spreadsheet', array('admin_cns_members', array('type' => 'import_spreadsheet'), get_module_zone('admin_cns_members')), do_lang_tempcode('IMPORT_MEMBERS'), 'DOC_IMPORT_MEMBERS'),
+                array('admin/export_spreadsheet', array('admin_cns_members', array('type' => 'export_spreadsheet'), get_module_zone('admin_cns_members')), do_lang_tempcode('EXPORT_MEMBERS'), 'DOC_EXPORT_MEMBERS'),
                 addon_installed('cns_cpfs') ? array('menu/adminzone/tools/users/custom_profile_fields', array('admin_cns_customprofilefields', array('type' => 'browse'), get_module_zone('admin_cns_customprofilefields')), do_lang_tempcode('CUSTOM_PROFILE_FIELDS'), 'DOC_CUSTOM_PROFILE_FIELDS') : null,
                 addon_installed('welcome_emails') ? array('menu/adminzone/setup/welcome_emails', array('admin_cns_welcome_emails', array('type' => 'browse'), get_module_zone('admin_cns_welcome_emails')), do_lang_tempcode('WELCOME_EMAILS'), 'DOC_WELCOME_EMAILS') : null,
                 addon_installed('securitylogging') ? array('menu/adminzone/tools/users/investigate_user', array('admin_lookup', array(), get_module_zone('admin_lookup')), do_lang_tempcode('INVESTIGATE_USER'), 'DOC_INVESTIGATE_USER') : null,
@@ -716,33 +716,16 @@ class Module_admin_cns_members
     }
 
     /**
-     * The UI to export a CSV file of members.
+     * The UI to export a spreadsheet file of members.
      *
      * @return Tempcode The UI
      */
-    public function export_csv()
+    public function export_spreadsheet()
     {
         $hidden = new Tempcode();
         $fields = new Tempcode();
 
         $js_function_calls = array();
-
-        // Contents (preset / detailed specification)...
-
-        //$fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '64766722d13457f593b60d0c9ca9aab5', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('CONTENTS'))));
-
-        $presets = method_exists($this, '_get_export_presets') ? $this->_get_export_presets() : array();
-        if ($presets != array()) {
-            $preset_radios = new Tempcode();
-            $preset_radios->attach(form_input_radio_entry('preset', '', true, do_lang_tempcode('NA_EM')));
-            foreach (array_keys($presets) as $preset) {
-                $preset_radios->attach(form_input_radio_entry('preset', $preset, false));
-            }
-            $fields->attach(form_input_radio(do_lang_tempcode('PRESET'), '', 'preset', $preset_radios, false));
-
-            require_javascript('core_cns');
-            $js_function_calls[] = 'adminCnsMembersDownloadCsv';
-        }
 
         // Option to filter by whether members allow e-mails
         $fields->attach(form_input_tick(do_lang_tempcode('FILTER_BY_ALLOW'), do_lang_tempcode('DESCRIPTION_FILTER_BY_ALLOW'), 'filter_by_allow', get_param_integer('filter_by_allow', 0) == 1));
@@ -750,7 +733,7 @@ class Module_admin_cns_members
         // Select fields
         $fields_to_use = new Tempcode();
         require_code('cns_members_action2');
-        list($headings) = member_get_csv_headings_extended();
+        list($headings) = member_get_spreadsheet_headings_extended();
         foreach ($headings as $field_label => $field_name) {
             $fields_to_use->attach(form_input_list_entry($field_label, true));
         }
@@ -767,35 +750,15 @@ class Module_admin_cns_members
         $groups = cns_create_selection_list_usergroups();
         $fields->attach(form_input_multi_list(do_lang_tempcode('USERGROUPS'), do_lang_tempcode('SELECT_USERGROUPS_TO_FILTER'), 'usergroups', $groups, null, 10, false));
 
-        // Filename...
-
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '16d396d2357684d2dbfebefbd20776a3', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('FILENAME'))));
-
         // File name
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '16d396d2357684d2dbfebefbd20776a3', 'SECTION_HIDDEN' => false, 'TITLE' => do_lang_tempcode('FILENAME'))));
         $filename = strtolower(do_lang('MEMBERS')) . '-' . date('Y-m-d');
         $fields->attach(form_input_line(do_lang_tempcode('NAME'), '', 'filename', $filename, true));
-
-        // File type
-        $_file_types = array('csv');
-        if (addon_installed('excel_support')) {
-            $_file_types[] = 'xls';
-            $_file_types[] = 'xlsx';
-            $_file_types[] = 'html';
-
-            if (is_dir(get_file_base() . '/sources_custom/tcpdf') || is_dir(get_file_base() . '/sources_custom/dompdf') || is_dir(get_file_base() . '/sources_custom/mpdf')) {
-                $_file_types[] = 'pdf';
-            }
-        }
-        $file_types = new Tempcode();
-        foreach ($_file_types as $file_type) {
-            $file_types->attach(form_input_radio_entry('extension', $file_type, ($file_type == 'csv'), strtoupper($file_type)));
-        }
-        $fields->attach(form_input_radio(do_lang_tempcode('TYPE'), '', 'extension', $file_types, true));
 
         // ...
 
         $submit_name = do_lang_tempcode('EXPORT_MEMBERS');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_export_csv'), '_SELF');
+        $post_url = build_url(array('page' => '_SELF', 'type' => '_export_spreadsheet'), '_SELF');
         $text = '';
 
         return do_template('FORM_SCREEN', array(
@@ -805,7 +768,7 @@ class Module_admin_cns_members
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => $text,
-            'SUBMIT_ICON' => 'admin/export_csv',
+            'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
             'TARGET' => '_blank',
             'JS_FUNCTION_CALLS' => $js_function_calls,
@@ -813,15 +776,13 @@ class Module_admin_cns_members
     }
 
     /**
-     * The actualiser to export a CSV of members.
+     * The actualiser to export a spreadsheet of members.
      *
      * @return Tempcode The UI
      */
-    public function _export_csv()
+    public function _export_spreadsheet()
     {
         $filter_by_allow = post_param_integer('filter_by_allow', 0);
-        $extension = post_param_string('extension');
-        $preset = post_param_string('preset', '');
         $fields_to_use = isset($_POST['fields_to_use']) ? $_POST['fields_to_use'] : array();
         $usergroups = isset($_POST['usergroups']) ? $_POST['usergroups'] : array();
         $order_by = post_param_string('order_by');
@@ -829,15 +790,15 @@ class Module_admin_cns_members
         log_it('EXPORT_MEMBERS');
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('EXPORT_MEMBERS'), $this->title, 'export_members', array($filter_by_allow == 1, $extension, $preset, $fields_to_use, $usergroups, $order_by));
+        return call_user_func_array__long_task(do_lang('EXPORT_MEMBERS'), $this->title, 'export_members', array($filter_by_allow == 1, $fields_to_use, $usergroups, $order_by));
     }
 
     /**
-     * The UI for importing a CSV file.
+     * The UI for importing a spreadsheet file.
      *
      * @return Tempcode The UI
      */
-    public function import_csv()
+    public function import_spreadsheet()
     {
         check_privilege('mass_import');
 
@@ -845,12 +806,13 @@ class Module_admin_cns_members
 
         $fields = new Tempcode();
         handle_max_file_size($hidden);
-        $fields->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_IMPORT_CSV'), 'file', true, null, null, true, 'csv,txt'));
+        require_code('files_spreadsheets_read');
+        $fields->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_IMPORT_SPREADSHEET'), 'file', true, null, null, true, spreadsheet_read_file_types()));
         $fields->attach(form_input_line(do_lang_tempcode('DEFAULT_PASSWORD'), do_lang_tempcode('DESCRIPTION_DEFAULT_PASSWORD'), 'default_password', '', false));
         $fields->attach(form_input_tick(do_lang_tempcode('FORCE_TEMPORARY_PASSWORD'), do_lang_tempcode('DESCRIPTION_FORCE_TEMPORARY_PASSWORD'), 'temporary_password', false));
 
         $submit_name = do_lang_tempcode('IMPORT_MEMBERS');
-        $post_url = build_url(array('page' => '_SELF', 'type' => '_import_csv'), '_SELF');
+        $post_url = build_url(array('page' => '_SELF', 'type' => '_import_spreadsheet'), '_SELF');
         $text = '';
 
         return do_template('FORM_SCREEN', array(
@@ -860,17 +822,17 @@ class Module_admin_cns_members
             'FIELDS' => $fields,
             'URL' => $post_url,
             'TEXT' => $text,
-            'SUBMIT_ICON' => 'admin/import_csv',
+            'SUBMIT_ICON' => 'admin/import_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
         ));
     }
 
     /**
-     * The actualiser for importing a CSV file.
+     * The actualiser for importing a spreadsheet file.
      *
      * @return Tempcode The UI
      */
-    public function _import_csv()
+    public function _import_spreadsheet()
     {
         check_privilege('mass_import');
 
@@ -880,19 +842,12 @@ class Module_admin_cns_members
 
         require_code('uploads');
         if ((is_plupload(true)) || ((array_key_exists('file', $_FILES)) && (is_uploaded_file($_FILES['file']['tmp_name'])))) {
-            // TODO: #3032
-            if (filesize($_FILES['file']['tmp_name']) < 1024 * 1024 * 3) { // Cleanup possible line ending problems, but only if file not too big
-                $fixed_contents = cms_file_get_contents_safe($_FILES['file']['tmp_name'], FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                require_code('files');
-                cms_file_put_contents_safe($_FILES['file']['tmp_name'], $fixed_contents, FILE_WRITE_FAILURE_SILENT);
-            }
-
             $target_path = get_custom_file_base() . '/temp/' . basename($_FILES['file']['tmp_name']);
             require_code('files2');
             if (!file_exists(dirname($target_path))) {
                 make_missing_directory(dirname($target_path));
             }
-            copy($_FILES['file']['tmp_name'], $target_path);
+            move_uploaded_file($_FILES['file']['tmp_name'], $target_path);
             fix_permissions($target_path);
             sync_file($target_path);
         } else {

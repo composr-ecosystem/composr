@@ -165,13 +165,13 @@ class Module_admin_points
             'TEXT' => '',
             'HIDDEN' => '',
             'URL' => get_self_url(false, false, array(), false, true),
-            'SUBMIT_ICON' => 'admin/export_csv',
+            'SUBMIT_ICON' => 'admin/export_spreadsheet',
             'SUBMIT_NAME' => do_lang_tempcode('EXPORT'),
         ));
     }
 
     /**
-     * Export a CSV of point transactions.
+     * Export a spreadsheet of point transactions.
      *
      * @return Tempcode The result of execution
      */

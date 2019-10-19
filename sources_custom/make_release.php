@@ -959,7 +959,7 @@ function make_install_sql()
     $HAS_MULTI_LANG_CONTENT = false;
     require_code('files');
     $out_path = get_file_base() . '/install.sql';
-    $out_file = cms_fopen_wb_bom($out_path);
+    $out_file = cms_fopen_text_write($out_path);
     get_sql_dump($out_file, true, false, array(), null, $db);
     fclose($out_file);
     fix_permissions($out_path);
@@ -1073,7 +1073,7 @@ function _download_latest_data_ip_country()
 {
     disable_php_memory_limit();
 
-    $csv_data = '';
+    $spreadsheet_data = '';
 
     $tmp_name_gzip = cms_tempnam();
     $myfile = fopen($tmp_name_gzip, 'wb');
@@ -1084,17 +1084,15 @@ function _download_latest_data_ip_country()
     $cmd = 'gzip -d -c ' . cms_escapeshellarg($tmp_name_gzip) . ' > ' . cms_escapeshellarg($tmp_name_tar);
     _shell_exec_bin($cmd);
 
-    $lines = cms_file_safe($tmp_name_tar);
-    foreach ($lines as $line) {
-        // TODO: #3032
-        $x = str_getcsv($line);
-
-        if (!isset($x[2])) {
+    require_code('files_spreadsheets_read');
+    $sheet_reader = spreadsheet_open_read($tmp_name_tar, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+    while (($record = $sheet_reader->read_row()) !== false) {
+        if (!isset($record[2])) {
             continue;
         }
 
-        $from = ip2long($x[0]);
-        $to = ip2long($x[1]);
+        $from = ip2long($record[0]);
+        $to = ip2long($record[1]);
 
         if (empty($from)) {
             continue;
@@ -1108,10 +1106,10 @@ function _download_latest_data_ip_country()
             return;
         }
 
-        $csv_data .= strval($from) . ',' . strval($to) . ',' . $x[2] . "\n";
+        $spreadsheet_data .= strval($from) . ',' . strval($to) . ',' . $record[2] . "\n";
     }
 
-    if (empty($csv_data)) {
+    if (empty($spreadsheet_data)) {
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
             fatal_exit('Failed to extract MaxMind IP address data - the build process is not regularly tested on Windows - you need to install certain Cygwin tools, even then it may not work');
         }
@@ -1119,7 +1117,7 @@ function _download_latest_data_ip_country()
         fatal_exit('Failed to extract MaxMind IP address data');
     }
 
-    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $csv_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $spreadsheet_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
     @unlink($tmp_name_gzip);
     @unlink($tmp_name_tar);

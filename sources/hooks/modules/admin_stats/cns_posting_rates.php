@@ -94,8 +94,8 @@ class Hook_admin_stats_cns_posting_rates
             $poster_exception .= 'p_poster<>' . strval(intval($e)) . ' AND ';
         }
 
-        $csv = get_param_integer('csv', 0) == 1;
-        if ($csv) {
+        $spreadsheet = get_param_integer('spreadsheet', 0) == 1;
+        if ($spreadsheet) {
             $time_start = 0;
             $time_end = time();
             $hourly = false;
@@ -174,8 +174,11 @@ class Hook_admin_stats_cns_posting_rates
             $i++;
         }
         $list = results_table(do_lang_tempcode('POSTING_RATES'), $start, 'start', $max, 'max', count($posting_rates), $header_row, $result_entries, $sortables, '', '', 'sort', new Tempcode());
-        if ($csv) {
-            make_csv($real_data, 'posting_rates.csv');
+        if ($spreadsheet) {
+            $filename = 'posting_rates.' . spreadsheet_write_default();
+            $path = null;
+            $sheet_writer = make_spreadsheet($path, $real_data, $filename);
+            $sheet_writer->output_and_exit($filename, true);
         }
 
         $output = create_bar_chart($posting_rates, do_lang('DATE'), do_lang('COUNT_TOTAL'), '', '');

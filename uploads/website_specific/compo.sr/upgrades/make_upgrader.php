@@ -204,8 +204,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
         @copy($old_base_path . '/data/files.bin', $wip_path . '/data/files_previous.bin');
         fix_permissions($wip_path . '/data/files_previous.bin');
     }
-    $log_file = cms_fopen_wb_bom(get_file_base() . '/uploads/website_specific/compo.sr/upgrades/build.log');
-    flock($log_file, LOCK_EX);
+    $log_file = cms_fopen_text_write(get_file_base() . '/uploads/website_specific/compo.sr/upgrades/build.log', true);
     if (substr($filename, -3) == '.zip') {
         require_code('zip');
         $_file_array = get_directory_contents($wip_path, '', null);
@@ -217,7 +216,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
                 'name' => $file_path_to_add,
             );
         }
-        create_zip_file($file_array, false, $build_path_tmp);
+        create_zip_file($build_path_tmp, $file_array);
     } else {
         $tar_handle = tar_open($build_path_tmp, 'wb');
         tar_add_folder($tar_handle, $log_file, $wip_path, null, '', array(), null, false, null);

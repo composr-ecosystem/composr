@@ -92,23 +92,15 @@ function crc32_file($filename)
  * Does not require any PHP or server zip support.
  * Compression is not supported, only archiving - unless you have the PHP zip extension.
  *
+ * @param  PATH $outfile_path File to spool into
  * @param  array $file_array A list of maps (time,data/full_path,name) covering everything to ZIP up
- * @param  boolean $stream Whether to stream the output direct to the browser
- * @param  ?PATH $outfile_path File to spool into (null: none). $stream will be forced to false
- * @return mixed The data for the ZIP file OR a tuple: data, offsets, sizes; will be blank if $stream is true or $outfile_path is not null
  */
-function create_zip_file($file_array, $stream = false, $outfile_path = null)
+function create_zip_file($outfile_path, $file_array)
 {
     // Support compression via PHP
     if (class_exists('ZipArchive')) {
-        if ($outfile_path === null) {
-            $tmp_path = cms_tempnam();
-        } else {
-            $tmp_path = $outfile_path;
-        }
-
         $z = new ZipArchive();
-        $z->open($tmp_path, ZIPARCHIVE::CREATE);
+        $z->open($outfile_path, ZIPARCHIVE::CREATE);
         foreach ($file_array as $i => $file) {
             if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
                 $z->addFile($file['full_path'], $file['name']);
@@ -119,37 +111,13 @@ function create_zip_file($file_array, $stream = false, $outfile_path = null)
         }
         $z->close();
 
-        if ($stream) {
-            readfile($tmp_path);
-            unlink($tmp_path);
-            return '';
-        } else {
-            if ($outfile_path !== null) {
-                return '';
-            } else {
-                $out = cms_file_get_contents_safe($tmp_path, FILE_READ_LOCK);
-                unlink($tmp_path);
-                return $out;
-            }
-        }
+        return;
     }
 
     // Simple no-compression implementation...
 
-    $outfile = null;
-    if ($outfile_path !== null) {
-        $stream = false;
-        $outfile = fopen($outfile_path, 'wb');
-        flock($outfile, LOCK_EX);
-    }
-
-    if ($stream) {
-        cms_ob_end_clean();
-
-        cms_ini_set('ocproducts.xss_detect', '0');
-    }
-
-    $out = '';
+    $outfile = fopen($outfile_path, 'wb');
+    @flock($outfile, LOCK_EX);
 
     $offset = 0;
     $offsets = array();
@@ -158,9 +126,7 @@ function create_zip_file($file_array, $stream = false, $outfile_path = null)
     // Write files
     foreach ($file_array as $i => $file) {
         if ($offset >= pow(2, 32) - 1) {
-            if ($outfile_path !== null) {
-                @unlink($outfile_path);
-            }
+            @unlink($outfile_path);
 
             fatal_exit('Zip file is too large');
         }
@@ -189,48 +155,25 @@ function create_zip_file($file_array, $stream = false, $outfile_path = null)
         $header_offset = 30 + strlen($file['name']);
         $offsets[$file['name']] = $offset + $header_offset;
 
-        $out .= pack('VvvvVVVVvv', 0x04034b50, 10, 0, 0, $date, $crc, $compressed_size, $uncompressed_size, strlen($file['name']), 0);
-        $out .= $file['name'];
+        fwrite($outfile, pack('VvvvVVVVvv', 0x04034b50, 10, 0, 0, $date, $crc, $compressed_size, $uncompressed_size, strlen($file['name']), 0));
+        fwrite($outfile, $file['name']);
         $offset += $header_offset;
 
-        if ($stream) {
-            echo $out;
-            $offset += $uncompressed_size;
-            if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
-                readfile($file['full_path']);
-            } else {
-                echo $file['data'];
+        if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
+            $tmp = fopen($file['full_path'], 'rb');
+            flock($tmp, LOCK_SH);
+            while (!feof($tmp)) {
+                $data = fread($tmp, 1024 * 1024);
+                if ($data !== false) {
+                    fwrite($outfile, $data);
+                }
             }
-            $out = '';
+            flock($tmp, LOCK_UN);
+            fclose($tmp);
+            $offset += filesize($file['full_path']);
         } else {
-            if ($outfile !== null) {
-                fwrite($outfile, $out);
-                $out = '';
-
-                if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
-                    $tmp = fopen($file['full_path'], 'rb');
-                    flock($tmp, LOCK_SH);
-                    while (!feof($tmp)) {
-                        $data = fread($tmp, 1024 * 1024);
-                        if ($data !== false) {
-                            fwrite($outfile, $data);
-                        }
-                    }
-                    flock($tmp, LOCK_UN);
-                    fclose($tmp);
-                    $offset += filesize($file['full_path']);
-                } else {
-                    fwrite($outfile, $file['data']);
-                    $offset += strlen($file['data']);
-                }
-            } else {
-                if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
-                    $out .= cms_file_get_contents_safe($file['full_path'], FILE_READ_LOCK);
-                } else {
-                    $out .= $file['data'];
-                }
-                $offset = strlen($out);
-            }
+            fwrite($outfile, $file['data']);
+            $offset += strlen($file['data']);
         }
 
         if ((!array_key_exists('data', $file)) || ($file['data'] === null)) {
@@ -249,35 +192,12 @@ function create_zip_file($file_array, $stream = false, $outfile_path = null)
 
         $packed = pack('VvvvvVVVVvvvvvVV', 0x02014b50, 20, 10, 0, 0, $file['date'], $file['crc'], $compressed_size, $uncompressed_size, strlen($file['name']), 0, 0, 0, 0, 32, $file['offset']);
         $size += strlen($packed) + strlen($file['name']);
-        $out .= $packed;
-        $out .= $file['name'];
-
-        if ($stream) {
-            echo $out;
-            $out = '';
-        } else {
-            if ($outfile !== null) {
-                fwrite($outfile, $out);
-                $out = '';
-            }
-        }
+        fwrite($outfile, $packed);
+        fwrite($outfile, $file['name']);
     }
 
     // End of file data
-    $out .= pack('VvvvvVVv', 0x06054b50, 0, 0, count($file_array), count($file_array), $size, $offset, 0); // =46 bytes
-    if ($stream) {
-        echo $out;
-        $out = '';
-    } else {
-        if ($outfile !== null) {
-            fwrite($outfile, $out);
-            $out = '';
-        }
-    }
+    fwrite($outfile, pack('VvvvvVVv', 0x06054b50, 0, 0, count($file_array), count($file_array), $size, $offset, 0)); // =46 bytes
 
-    if ($outfile_path !== null) {
-        flock($outfile, LOCK_UN);
-    }
-
-    return $out;
+    @flock($outfile, LOCK_UN);
 }

@@ -4,8 +4,8 @@
 	{DATA}
 </div>
 
-{+START,IF_NON_PASSED,NO_CSV}
+{+START,IF_NON_PASSED,NO_SPREADSHEET}
 	<p>
-		<a href="{$SELF_URL*}&amp;csv=1" class="xls-link">{!EXPORT_STATS_TO_CSV}</a>
+		<a href="{$SELF_URL*}&amp;spreadsheet=1" class="xls-link">{!EXPORT_STATS_TO_SPREADSHEET}</a>
 	</p>
 {+END}

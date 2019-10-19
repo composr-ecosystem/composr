@@ -117,7 +117,7 @@ function _assign_referral_awards(
 ) {
     $scheme_title = isset($scheme['title']) ? $scheme['title'] : $scheme_name;
 
-    $report_url = find_script('referrer_report') . '?scheme=' . urlencode($scheme_name) . '&csv=1';
+    $report_url = find_script('referrer_report') . '?scheme=' . urlencode($scheme_name) . '&spreadsheet=1';
 
     $referrer_is_qualified = referrer_is_qualified($scheme, $referrer);
 
@@ -489,14 +489,15 @@ function referrer_report_script($ret = false)
     }
 
     require_lang('referrals');
-    $csv = (get_param_integer('csv', 0) == 1);
 
     $where = db_string_not_equal_to('i_email_address', '') . ' AND i_inviter<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
     if ($member_id !== null) {
         $where .= ' AND referrer.id=' . strval($member_id);
     }
 
-    $max = get_param_integer('max', $csv ? 10000 : 30);
+    $spreadsheet = (get_param_integer('spreadsheet', 0) == 1);
+
+    $max = get_param_integer('max', $spreadsheet ? 10000 : 30);
     $start = get_param_integer('start', 0);
 
     $dif = $GLOBALS['SITE_DB']->query_select_value_if_there('referrer_override', 'o_referrals_dif', array('o_referrer' => $member_id, 'o_scheme_name' => $scheme_name));
@@ -504,8 +505,18 @@ function referrer_report_script($ret = false)
         $dif = null;
     }
 
+    if ($spreadsheet) {
+        cms_disable_time_limit();
+
+        $outfile_path = null;
+        require_code('files_spreadsheets_write');
+        $filename = (($member_id === null) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($member_id)) . ' referrals.' . spreadsheet_write_default();
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
+    } else {
+        $data = array();
+    }
+
     // Show records
-    $data = array();
     $table = 'f_invites i LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members referrer ON referrer.id=i_inviter LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members referee ON referee.m_email_address=i_email_address';
     $referrals = $GLOBALS['FORUM_DB']->query(
         'SELECT i_time AS time,referrer.id AS referrer_id,referrer.m_username AS referrer,referrer.m_email_address AS referrer_email,referee.id AS referee_id,referee.m_username AS referee,i_email_address AS referee_email,i_taken AS qualified
@@ -525,7 +536,7 @@ function referrer_report_script($ret = false)
         $data_row = array();
         $data_row[do_lang('DATE_TIME')] = get_timezoned_date_time($ref['time'], false);
         if ($member_id === null) {
-            if ($csv) {
+            if ($spreadsheet) {
                 $deleted = true;
                 $data_row[do_lang('TYPE_REFERRER')] = ($ref['referrer'] === null) ? do_lang($deleted ? 'REFEREE_DELETED' : 'REFEREE_NOT_SIGNED_UP') : $ref['referrer'];
             } else {
@@ -553,7 +564,7 @@ function referrer_report_script($ret = false)
         if ($ref['referee'] === null) {
             $deleted = ($GLOBALS['SITE_DB']->query_select_value_if_there('actionlogs', 'id', array('the_type' => 'DELETE_MEMBER', 'param_a' => strval($ref['referee']))) !== null);
         }
-        if ($csv) {
+        if ($spreadsheet) {
             $data_row[do_lang('REFEREE')] = ($ref['referee'] === null) ? do_lang($deleted ? 'REFEREE_DELETED' : 'REFEREE_NOT_SIGNED_UP') : $ref['referee'];
         } else {
             $data_row[do_lang('REFEREE')] = ($ref['referee_id'] === null) ? '' : strval($ref['referee_id']);
@@ -566,9 +577,7 @@ function referrer_report_script($ret = false)
 
         $data_row[do_lang('ACTION')] = do_lang('cns:JOINED');
 
-        if ($ref['qualified'] == 0) {
-            $data[] = $data_row;
-        } else { // Show each individual qualification action
+        if ($ref['qualified'] == 1) { // Show each individual qualification action
             foreach ($qualifications as $qual) {
                 $data_row_x = $data_row;
 
@@ -581,9 +590,17 @@ function referrer_report_script($ret = false)
 
                 $data_row_x[do_lang('DATE_TIME')] = get_timezoned_date_time($qual['q_time']);
 
-                $data[] = $data_row_x;
+                if ($spreadsheet) {
+                    $sheet_writer->write_row($data_row_x);
+                } else {
+                    $data[] = $data_row_x;
+                }
             }
+        }
 
+        if ($spreadsheet) {
+            $sheet_writer->write_row($data_row);
+        } else {
             $data[] = $data_row;
         }
     }
@@ -613,20 +630,27 @@ function referrer_report_script($ret = false)
         if ($dif < 0) {
             $data_row[do_lang('ACTION')] = do_lang('REFERRAL_TRIGGER__ADJUSTMENT_NEGATIVE', integer_format($dif));
 
-            $data[] = $data_row;
+            if ($spreadsheet) {
+                $sheet_writer->write_row($data_row);
+            } else {
+                $data[] = $data_row;
+            }
         } else {
             for ($i = 0; $i < $dif; $i++) {
                 $data_row[do_lang('ACTION')] = do_lang('REFERRAL_TRIGGER__ADJUSTMENT');
 
-                $data[] = $data_row;
+                if ($spreadsheet) {
+                    $sheet_writer->write_row($data_row);
+                } else {
+                    $data[] = $data_row;
+                }
             }
         }
     }
 
     // Show results
-    if ($csv) {
-        require_code('files2');
-        make_csv($data, (($member_id === null) ? get_site_name() : $GLOBALS['FORUM_DRIVER']->get_username($member_id)) . ' referrals.csv');
+    if ($spreadsheet) {
+        $sheet_writer->output_and_exit($filename, true);
     } else {
         require_code('templates_results_table');
 

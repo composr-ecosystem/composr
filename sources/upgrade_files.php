@@ -140,7 +140,8 @@ function _upgrader_file_upgrade_screen()
     // We do support using a .zip (e.g. manual installer package), but we need to convert it
     if (strtolower(substr($original_filename, -4)) == '.zip') {
         require_code('tar2');
-        $upgrade_path_new = convert_zip_to_tar($upgrade_path);
+        $upgrade_path_new = null;
+        convert_zip_to_tar($upgrade_path, $upgrade_path_new);
         if ($may_delete_upgrade_path) {
             @unlink($upgrade_path);
         }

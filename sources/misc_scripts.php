@@ -294,10 +294,8 @@ function cron_bridge_script($caller)
     $_log_file = get_custom_file_base() . '/data_custom/cron.log';
     $log_file = null;
     if (is_file($_log_file)) {
-        $log_file = fopen($_log_file, 'ab');
-
-        flock($log_file, LOCK_EX);
-        fseek($log_file, 0, SEEK_END);
+        require_code('files');
+        $log_file = cms_fopen_text_write($_log_file, true, 'ab');
         fwrite($log_file, loggable_date() . '  (CRON STARTING)' . "\n");
         flock($log_file, LOCK_UN);
     }

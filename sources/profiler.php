@@ -187,7 +187,8 @@ function _cms_profile_log_line($line)
             $PROFILER_PATH .= '--in-progress.log';
         }
 
-        $PROFILER_FILEHANDLE = fopen($PROFILER_PATH, 'ab');
+        require_code('files');
+        $PROFILER_FILEHANDLE = cms_fopen_text_write($PROFILER_PATH, false, 'ab');
 
         // Pre-logging
         _cms_profile_log_line('URL: ' . get_self_url_easy(true));

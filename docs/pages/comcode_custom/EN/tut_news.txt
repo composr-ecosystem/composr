@@ -151,7 +151,7 @@ The database method is more thorough, but the XML files will work well enough fo
 
 Note that we can not import:
  - [i]for posts and pages...[/i]
-  - custom fields \[the postmeta table] (importing to news would probably be a bad idea for such content anyway -- it would be better to import to catalogues rather than continue Wordpress's shoe-horned custom-field implementation, although we don't currently have any code to do this -- unless you can get Wordpress's data into a CSV file)
+  - custom fields \[the postmeta table] (importing to news would probably be a bad idea for such content anyway -- it would be better to import to catalogues rather than continue Wordpress's shoe-horned custom-field implementation, although we don't currently have any code to do this -- unless you can get Wordpress's data into a [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet file)
   - full taxonomy for categories (description, and hierarchy, and groups)
   - child order (Composr doesn't have it, child pages are shown alphabetically, or page-linking is done manually)
   - pinned (you should manually reassign awards to stuff, and set up award layout via Comcode page layout or templating)

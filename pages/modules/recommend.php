@@ -35,7 +35,7 @@ class Module_recommend
         $info['organisation'] = 'ocProducts';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 5;
+        $info['version'] = 6;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         return $info;
@@ -79,6 +79,10 @@ class Module_recommend
                 'p_show_as_edit' => 0,
                 'p_order' => 0,
             ));
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 6)) {
+            rename_config_option('enable_csv_recommend', 'enable_spreadsheet_recommend');
         }
     }
 
@@ -187,7 +191,7 @@ class Module_recommend
 
         $type = $this->type;
 
-        // Is it send a CSV address file to parse and later usage
+        // Is it send a spreadsheet address file to parse and later usage
         if ($type == 'gui2') {
             return $this->gui2();
         }
@@ -248,7 +252,7 @@ class Module_recommend
         if (is_guest()) {
             $fields->attach(form_input_email(do_lang_tempcode('FRIEND_EMAIL_ADDRESS'), '', 'email_address_0', array_key_exists(0, $already) ? $already[0] : '', true));
         } else {
-            if (get_option('enable_csv_recommend') == '1') {
+            if (get_option('enable_spreadsheet_recommend') == '1') {
                 $set_name = 'people';
                 $required = true;
                 $set_title = do_lang_tempcode('TO');
@@ -257,11 +261,11 @@ class Module_recommend
                 $email_address_field = form_input_line_multi(do_lang_tempcode('FRIEND_EMAIL_ADDRESS'), do_lang_tempcode('THEIR_ADDRESS'), 'email_address_', $already, 1, null, 'email');
                 $field_set->attach($email_address_field);
 
-                //add an upload CSV contacts file field
                 $_help_url = build_url(array('page' => 'recommend_help'));
                 $help_url = $_help_url->evaluate();
 
-                $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD_CSV_FILE', escape_html($help_url)), 'upload', false, null, null, false));
+                require_code('files_spreadsheets_read');
+                $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD_SPREADSHEET_FILE', escape_html($help_url)), 'upload', false, null, null, false, spreadsheet_read_file_types()));
 
                 $fields->attach(alternate_fields_set__end($set_name, $set_title, '', $field_set, $required));
             } else {
@@ -356,7 +360,7 @@ class Module_recommend
     }
 
     /**
-     * The UI for the second stage of recommending the site - when CSV file is posted.
+     * The UI for the second stage of recommending the site - when spreadsheet file is posted.
      *
      * @return Tempcode The UI
      */
@@ -395,192 +399,84 @@ class Module_recommend
 
         $success_read = false;
 
-        // Start processing CSV file
-        if ((get_option('enable_csv_recommend') == '1') && (!is_guest())) {
+        // Start processing spreadsheet file
+        if ((get_option('enable_spreadsheet_recommend') == '1') && (!is_guest())) {
+            require_code('files_spreadsheets_read');
             if (array_key_exists('upload', $_FILES)) { // NB: We disabled plupload for this form so don't need to consider it
-                if (is_uploaded_file($_FILES['upload']['tmp_name']) && preg_match('#\.csv#', $_FILES['upload']['name']) != 0) {
+                if ((is_uploaded_file($_FILES['upload']['tmp_name'])) && (is_spreadsheet_readable($_FILES['upload']['tmp_name']))) {
                     $possible_email_fields = array('E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email');
                     $possible_name_fields = array('Name', 'Forename', 'First Name', 'Display Name', 'First');
 
-                    $fixed_contents = cms_file_get_contents_safe($_FILES['upload']['tmp_name'], FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-                    require_code('files');
-                    cms_file_put_contents_safe($_FILES['upload']['tmp_name'], $fixed_contents, FILE_WRITE_FAILURE_SILENT);
+                    $sheet_reader = spreadsheet_open_read($_FILES['upload']['tmp_name'], null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
-                    cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-                    $myfile = fopen($_FILES['upload']['tmp_name'], 'rb');
-                    // TODO: #3032 (must default charset to utf-8 if no BOM though)
+                    $spreadsheet_header_line_fields = $sheet_reader->read_row();
 
-                    $del = ',';
+                    require_code('type_sanitisation');
 
-                    $csv_header_line_fields = fgetcsv($myfile, 10240, $del);
-                    if ((count($csv_header_line_fields) == 1) && (strpos($csv_header_line_fields[0], ';') !== false)) {
-                        $del = ';';
-                        rewind($myfile);
-                        $csv_header_line_fields = fgetcsv($myfile, 10240, $del);
-                    }
+                    // Find e-mail
+                    $email_field_index = null;
+                    foreach ($possible_email_fields as $field) {
+                        foreach ($spreadsheet_header_line_fields as $i => $header_field) {
+                            if (strtolower($header_field) == strtolower($field)) {
+                                $email_field_index = $i;
+                                $success_read = true;
+                                break 2;
+                            }
 
-                    $skip_next_process = false;
-
-                    if (function_exists('mb_convert_encoding')) {
-                        if ((function_exists('mb_detect_encoding')) && (strlen(mb_detect_encoding($csv_header_line_fields[0], "ASCII,UTF-8,UTF-16,UTF16")) == 0)) { // Apple mail weirdness
-                            // Test string just for Apple mail detection
-                            $test_unicode = utf8_decode(mb_convert_encoding($csv_header_line_fields[0], "UTF-8", "UTF-16"));
-                            if (preg_match('#\?\?ame#u', $test_unicode) != 0) {
-                                foreach ($csv_header_line_fields as $key => $value) {
-                                    $csv_header_line_fields[$key] = utf8_decode(mb_convert_encoding($csv_header_line_fields[$key], "UTF-8", "UTF-16"));
-
-                                    $found_email_address = '';
-                                    $found_name = '';
-
-                                    $first_row_exploded = explode(';', $csv_header_line_fields[0]);
-
-                                    $email_index = 1; // by default
-                                    $name_index = 0; // by default
-
-                                    foreach ($csv_header_line_fields as $key2 => $value2) {
-                                        if (preg_match('#\?\?ame#', $value2) != 0) {
-                                            $name_index = $key2; // Windows mail
-                                        }
-                                        if (preg_match('#E\-mail#', $value2) != 0) {
-                                            $email_index = $key2; // both
-                                        }
-                                    }
-
-                                    while (($csv_line = fgetcsv($myfile, 10240, $del)) !== false) { // Reading a CSV record
-                                        foreach ($csv_line as $key2 => $value2) {
-                                            $csv_line[$key2] = utf8_decode(mb_convert_encoding($value2, "UTF-8", "UTF-16"));
-                                        }
-
-                                        $found_email_address = (array_key_exists($email_index, $csv_line) && strlen($csv_line[$email_index]) > 0) ? $csv_line[$email_index] : '';
-                                        $found_email_address = (preg_match('#.*\@.*\..*#', $found_email_address) != 0) ? preg_replace("#\"#", '', $found_email_address) : '';
-                                        $found_name = $found_email_address;
-
-                                        if (strlen($found_email_address) > 0) {
-                                            $skip_next_process = true;
-                                            // Add to the list what we've found
-                                            $fields->attach(form_input_tick($found_name, $found_email_address, 'use_details_' . strval($email_counter), true));
-                                            $hidden->attach(form_input_hidden('details_email_' . strval($email_counter), $found_email_address));
-                                            $hidden->attach(form_input_hidden('details_name_' . strval($email_counter), $found_name));
-                                            $email_counter++;
-                                            $success_read = true;
-                                        }
-                                    }
-                                }
+                            // No header
+                            if (is_email_address($header_field)) {
+                                $email_field_index = $i;
+                                $success_read = true;
+                                $sheet_reader->rewind();
+                                break 2;
                             }
                         }
                     }
 
-                    if (!$skip_next_process) {
-                        // There is a strange symbol that appears at start of the Windows Mail file, so we need to convert the first file line to catch these
-                        require_code('character_sets');
-                        $csv_header_line_fields[0] = convert_to_internal_encoding($csv_header_line_fields[0], get_charset(), 'ISO-8859-1');
-
-                        // This means that we need to import from Windows mail (also for Outlook Express) export file, which is different from others csv export formats
-                        if (array_key_exists(0, $csv_header_line_fields) && (preg_match('#\?Name#', $csv_header_line_fields[0]) != 0 || preg_match('#Name\;E\-mail\sAddress#', $csv_header_line_fields[0]) != 0)) {
-                            $found_email_address = '';
-                            $found_name = '';
-
-                            $first_row_exploded = explode(';', $csv_header_line_fields[0]);
-
-                            $email_index = 1; // by default
-                            $name_index = 0; // by default
-
-                            foreach ($first_row_exploded as $key => $value) {
-                                if (preg_match('#\?Name#', $value) != 0) {
-                                    $name_index = $key; // Windows mail
-                                }
-                                if (preg_match('#^Name$#', $value) != 0) {
-                                    $name_index = $key; // Outlook Express
-                                }
-                                if (preg_match('#E\-mail\sAddress#', $value) != 0) {
-                                    $email_index = $key; // both
+                    if ($success_read) {
+                        // Find name
+                        $name_field_index = null;
+                        foreach ($possible_name_fields as $field) {
+                            foreach ($spreadsheet_header_line_fields as $i => $header_field) {
+                                if ((strtolower($header_field) == strtolower($field)) && ($i != $email_field_index)) {
+                                    $name_field_index = $i;
+                                    break 2;
                                 }
                             }
-
-                            while (($csv_line = fgetcsv($myfile, 10240, $del)) !== false) { // Reading a CSV record
-                                $row_exploded = (array_key_exists(0, $csv_line) && strlen($csv_line['0']) > 0) ? explode(';', $csv_line[0]) : array('', '');
-
-                                $found_email_address = (strlen($row_exploded[$email_index]) > 0) ? $row_exploded[$email_index] : '';
-                                $found_name = (strlen($row_exploded[$name_index]) > 0) ? $row_exploded[$name_index] : '';
-
-                                if (strlen($found_email_address) > 0) {
-                                    // Add to the list what we've found
-                                    $fields->attach(form_input_tick($found_name, do_lang_tempcode('RECOMMENDING_TO_LINE', escape_html($found_name), escape_html($found_email_address)), 'use_details_' . strval($email_counter), true));
-                                    $hidden->attach(form_input_hidden('details_email_' . strval($email_counter), $found_email_address));
-                                    $hidden->attach(form_input_hidden('details_name_' . strval($email_counter), $found_name));
-                                    $email_counter++;
-                                    $success_read = true;
+                        }
+                        // Hmm, first one that is not the e-mail then
+                        if ($name_field_index === null) {
+                            foreach ($spreadsheet_header_line_fields as $i => $header_field) {
+                                if ($i != $email_field_index) {
+                                    $name_field_index = $i;
+                                    break;
                                 }
                             }
-                        } else {
-                            require_code('type_sanitisation');
+                        }
 
-                            // Find e-mail
-                            $email_field_index = null;
-                            foreach ($possible_email_fields as $field) {
-                                foreach ($csv_header_line_fields as $i => $header_field) {
-                                    if (strtolower($header_field) == strtolower($field)) {
-                                        $email_field_index = $i;
-                                        $success_read = true;
-                                        break 2;
-                                    }
-
-                                    // No header
-                                    if (is_email_address($header_field)) {
-                                        $email_field_index = $i;
-                                        $success_read = true;
-                                        rewind($myfile);
-                                        break 2;
-                                    }
-                                }
+                        // Go through all records
+                        while (($spreadsheet_line = $sheet_reader->read_row()) !== false) { // Reading a spreadsheet record
+                            if (empty($spreadsheet_line[$email_field_index])) {
+                                continue;
+                            }
+                            if (empty($spreadsheet_line[$name_field_index])) {
+                                continue;
                             }
 
-                            if ($success_read) {
-                                // Find name
-                                $name_field_index = null;
-                                foreach ($possible_name_fields as $field) {
-                                    foreach ($csv_header_line_fields as $i => $header_field) {
-                                        if ((strtolower($header_field) == strtolower($field)) && ($i != $email_field_index)) {
-                                            $name_field_index = $i;
-                                            break 2;
-                                        }
-                                    }
-                                }
-                                // Hmm, first one that is not the e-mail then
-                                if ($name_field_index === null) {
-                                    foreach ($csv_header_line_fields as $i => $header_field) {
-                                        if ($i != $email_field_index) {
-                                            $name_field_index = $i;
-                                            break;
-                                        }
-                                    }
-                                }
+                            $found_email_address = $spreadsheet_line[$email_field_index];
+                            $found_name = ucwords($spreadsheet_line[$name_field_index]);
 
-                                // Go through all records
-                                while (($csv_line = fgetcsv($myfile, 10240, $del)) !== false) { // Reading a CSV record
-                                    if (empty($csv_line[$email_field_index])) {
-                                        continue;
-                                    }
-                                    if (empty($csv_line[$name_field_index])) {
-                                        continue;
-                                    }
-
-                                    $found_email_address = $csv_line[$email_field_index];
-                                    $found_name = ucwords($csv_line[$name_field_index]);
-
-                                    if (is_email_address($found_email_address)) {
-                                        // Add to the list what we've found
-                                        $fields->attach(form_input_tick($found_name, do_lang_tempcode('RECOMMENDING_TO_LINE', escape_html($found_name), escape_html($found_email_address)), 'use_details_' . strval($email_counter), true));
-                                        $hidden->attach(form_input_hidden('details_email_' . strval($email_counter), $found_email_address));
-                                        $hidden->attach(form_input_hidden('details_name_' . strval($email_counter), $found_name));
-                                        $email_counter++;
-                                    }
-                                }
+                            if (is_email_address($found_email_address)) {
+                                // Add to the list what we've found
+                                $fields->attach(form_input_tick($found_name, do_lang_tempcode('RECOMMENDING_TO_LINE', escape_html($found_name), escape_html($found_email_address)), 'use_details_' . strval($email_counter), true));
+                                $hidden->attach(form_input_hidden('details_email_' . strval($email_counter), $found_email_address));
+                                $hidden->attach(form_input_hidden('details_name_' . strval($email_counter), $found_name));
+                                $email_counter++;
                             }
                         }
                     }
 
-                    fclose($myfile);
+                    $sheet_reader->close();
                 }
             }
         }

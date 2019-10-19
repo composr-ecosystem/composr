@@ -159,11 +159,13 @@ class Block_main_sortable_table
         $_rows_tooltip = array();
         $_rows_raw = array();
 
-        // CSV file
-        if ((substr($file, -4) == '.csv') || (preg_match('#^[\w\.]+$#', $file) == 0/*Not safe as a table name*/)) {
+        // Spreadsheet file
+        if (strpos($file, '.') !== false) {
+            require_code('files_spreadsheets_read');
+
             // Find/validate path
-            if (substr($file, -4) != '.csv') {
-                return do_template('RED_ALERT', array('_GUID' => '9kalmcrafmbg3hi4162gursqzdf6q43j', 'TEXT' => 'We only accept CSV files, for security reasons.'));
+            if (!is_spreadsheet_readable($file)) {
+                return do_template('RED_ALERT', array('_GUID' => '9kalmcrafmbg3hi4162gursqzdf6q43j', 'TEXT' => 'We only accept spreadsheet files, for security reasons.'));
             }
             $path = get_custom_file_base() . '/uploads/website_specific/' . filter_naughty($file);
             if (!is_file($path)) {
@@ -175,18 +177,9 @@ class Block_main_sortable_table
 
             // Load data
             $i = 0;
-            cms_ini_set('auto_detect_line_endings', '1'); // TODO: Remove with #3032
-            $myfile = fopen($path, 'rb');
-            // TODO: #3032
+            $sheet_reader = spreadsheet_open_read($path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
             $full_header_row = null;
-            while (($row = fgetcsv($myfile, 8192)) !== false) {
-                // Fix any bad unicode
-                if (get_charset() == 'utf-8') {
-                    foreach ($row as $j => $val) {
-                        $val = fix_bad_unicode($val);
-                    }
-                }
-
+            while (($row = $sheet_reader->read_row()) !== false) {
                 if ($i != 0) {
                     // Make sure row has the right column count
                     for ($j = count($row); $j < count($full_header_row); $j++) { // Too few? Pad.
@@ -258,17 +251,17 @@ class Block_main_sortable_table
 
                 $i++;
             }
-            fclose($myfile);
+            $sheet_reader->close();
 
             // Work out header
             if (isset($_rows[0])) {
                 $header_row = array_shift($_rows);
 
                 if (count($header_row) < 2) {
-                    return do_template('RED_ALERT', array('_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers. Make sure you save as a true comma-deliminated CSV file.'));
+                    return do_template('RED_ALERT', array('_GUID' => '37odjvkieql3atnq0mjb9yves78wc6yo', 'TEXT' => 'We expect at least two headers in the spreadsheet.'));
                 }
             } else {
-                return do_template('RED_ALERT', array('_GUID' => '006kvk6di5j0d4x1h83eb90k8vbbx03m', 'TEXT' => 'Empty CSV file.'));
+                return do_template('RED_ALERT', array('_GUID' => '006kvk6di5j0d4x1h83eb90k8vbbx03m', 'TEXT' => 'Empty spreadsheet file.'));
             }
 
             // Prepare initial header templating

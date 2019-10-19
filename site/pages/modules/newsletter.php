@@ -137,7 +137,7 @@ class Module_newsletter
                 'np_from_email' => 'SHORT_TEXT',
                 'np_from_name' => 'SHORT_TEXT',
                 'np_priority' => 'SHORT_INTEGER',
-                'np_csv_data' => 'LONG_TEXT',
+                'np_spreadsheet_data' => 'LONG_TEXT',
                 'np_frequency' => 'SHORT_TEXT',
                 'np_day' => 'SHORT_INTEGER',
                 'np_in_full' => 'BINARY',
@@ -182,11 +182,12 @@ class Module_newsletter
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 13)) { // LEGACY
-            // We've switched to JSON for CSV data
-            $periodic = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('id', 'np_csv_data'));
+            // We've switched to JSON for spreadsheet data
+            $GLOBALS['SITE_DB']->alter_table_field('newsletter_periodic', 'np_csv_data', 'LONG_TEXT', 'np_spreadsheet_data');
+            $periodic = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('id', 'np_spreadsheet_data'));
             foreach ($periodic as $p) {
-                if ($p['np_csv_data'] != '') {
-                    $GLOBALS['SITE_DB']->query_update('newsletter_periodic', array('np_csv_data' => json_encode(unserialize($p['np_csv_data']))), array('id' => $p['id']), '', 1);
+                if ($p['np_spreadsheet_data'] != '') {
+                    $GLOBALS['SITE_DB']->query_update('newsletter_periodic', array('np_spreadsheet_data' => json_encode(unserialize($p['np_spreadsheet_data']))), array('id' => $p['id']), '', 1);
                 }
             }
 

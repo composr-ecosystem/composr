@@ -85,8 +85,8 @@ class character_sets_test_set extends cms_test_case
 
         // Test byte-by-byte reading
         $charset = null;
-        $myfile = cms_fopen_rb_bom_safe($path_a, $charset);
-        $this->assertTrue(cms_fgets_bom_safe($myfile, $charset) == $a);
+        $myfile = cms_fopen_text_read($path_a, $charset);
+        $this->assertTrue(cms_fgets($myfile, $charset) == $a);
         fclose($myfile);
 
         // Test easy writing
@@ -97,7 +97,7 @@ class character_sets_test_set extends cms_test_case
 
         // Test byte-by-byte writing
         $tmp_path = cms_tempnam();
-        $myfile = cms_fopen_wb_bom($tmp_path);
+        $myfile = cms_fopen_text_write($tmp_path);
         fwrite($myfile, $b);
         fclose($myfile);
         $this->assertTrue(file_get_contents($tmp_path) == file_get_contents($path_b));

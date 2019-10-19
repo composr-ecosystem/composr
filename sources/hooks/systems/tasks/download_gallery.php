@@ -112,8 +112,7 @@ class Hook_task_download_gallery
         }
 
         $outfile_path = cms_tempnam();
-
-        create_zip_file($array, false, $outfile_path);
+        create_zip_file($outfile_path, $array);
 
         return array('application/octet-stream', array($filename, $outfile_path), $headers, $ini_set);
     }

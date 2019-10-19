@@ -47,14 +47,14 @@ class Hook_task_install_geolocation_data
 
         $path = get_file_base() . '/data/modules/admin_stats/IP_Country.txt';
         $file_charset = null;
-        $file = @cms_fopen_rb_bom_safe($path, $file_charset, true);
+        $file = @cms_fopen_text_read($path, $file_charset, true);
         if ($file === false) {
             warn_exit(do_lang_tempcode('READ_ERROR', escape_html($path)), false, true);
         }
         $i = 0;
         $to_insert = array('begin_num' => array(), 'end_num' => array(), 'country' => array());
         while (!feof($file)) {
-            $data = cms_fgets_bom_safe($file, $file_charset);
+            $data = cms_fgets($file, $file_charset);
             if ($data === false) {
                 continue;
             }

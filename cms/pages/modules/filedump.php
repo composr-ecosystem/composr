@@ -1231,7 +1231,10 @@ class Module_filedump
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="filedump-selection.zip"');
 
-            create_zip_file($file_array, true);
+            cms_ob_end_clean();
+            cms_ini_set('ocproducts.xss_detect', '0');
+
+            create_zip_file('php://stdout', $file_array);
 
             $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
             exit();

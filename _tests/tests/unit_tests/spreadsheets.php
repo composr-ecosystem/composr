@@ -1,0 +1,120 @@
+<?php /*
+
+ Composr
+ Copyright (c) ocProducts, 2004-2019
+
+ See text/EN/licence.txt for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  ocProducts Ltd
+ * @package    testing_platform
+ */
+
+/**
+ * Composr test case class (unit testing).
+ */
+class spreadsheets_test_set extends cms_test_case
+{
+    public function setUp()
+    {
+        parent::setUp();
+
+        require_code('files_spreadsheets_read');
+        require_code('files_spreadsheets_write');
+
+        $this->files = array('test.csv', 'test-scsv.txt', 'test-tsv.txt');
+        if (addon_installed('enhanced_spreadsheets')) {
+            $this->files = array_merge($this->files, array('test.ods', 'test.xlsx'));
+        }
+
+        $this->expected = array();
+
+        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_RAW] = array(
+            array('A', 'B', 'C'),
+            array('A1', 'B1', 'C1'),
+            array('A2', 'B2', 'C2'),
+            array('', '', 'C3'),
+            array('A4'),
+        );
+
+        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_UNNAMED_FIELDS] = array(
+            array('A', 'B', 'C'),
+            array('A1', 'B1', 'C1'),
+            array('A2', 'B2', 'C2'),
+            array('', '', 'C3'),
+            array('A4', '', ''),
+        );
+
+        $this->expected[CMS_Spreadsheet_Reader::ALGORITHM_NAMED_FIELDS] = array(
+            array('A' => 'A1', 'B' => 'B1', 'C' => 'C1'),
+            array('A' => 'A2', 'B' => 'B2', 'C' => 'C2'),
+            array('A' => '', 'B' => '', 'C' => 'C3'),
+            array('A' => 'A4', 'B' => '', 'C' => ''),
+        );
+    }
+
+    public function testRead()
+    {
+        $exts = array();
+        foreach ($this->expected as $algorithm => $expected) {
+            foreach ($this->files as $file) {
+                $this->assertTrue(is_spreadsheet_readable($file));
+
+                $sheet_reader = spreadsheet_open_read(get_file_base() . '/_tests/assets/spreadsheets/' . $file, $file, $algorithm);
+                $rows = array();
+                while (($row = $sheet_reader->read_row()) !== false) {
+                    $rows[] = $row;
+                }
+                $sheet_reader->close();
+
+                $this->assertTrue($rows == $expected);
+
+                $exts[get_file_extension($file)] = true;
+            }
+        }
+
+        $this->assertTrue(!is_spreadsheet_readable('foo.bar'));
+
+        $_exts = explode(',', spreadsheet_read_file_types());
+        sort($_exts);
+        sort($exts);
+        $this->assertTrue($_exts == $exts);
+    }
+
+    public function testWrite()
+    {
+        foreach ($this->expected as $algorithm => $expected) {
+            foreach ($this->files as $file) {
+                $this->assertTrue(is_spreadsheet_writable($file));
+
+                // Write out
+                $path = null; // Will be written by reference
+                $sheet_writer = spreadsheet_open_write($path, $file, $algorithm);
+                foreach ($expected as $row) {
+                    $sheet_writer->write_row($row);
+                }
+                $sheet_writer->close();
+
+                // Read back in and compare
+                $sheet_reader = spreadsheet_open_read($path, $file, $algorithm);
+                $rows = array();
+                while (($row = $sheet_reader->read_row()) !== false) {
+                    $rows[] = $row;
+                }
+                $sheet_reader->close();
+                $this->assertTrue($rows == $expected);
+            }
+        }
+
+        $this->assertTrue(!is_spreadsheet_writable('foo.bar'));
+
+        if (addon_installed('enhanced_spreadsheets')) {
+            $this->assertTrue(spreadsheet_write_default() == 'ods');
+        } else {
+            $this->assertTrue(spreadsheet_write_default() == 'csv');
+        }
+    }
+}

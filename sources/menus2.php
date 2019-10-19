@@ -32,17 +32,13 @@ function init__menus2()
 }
 
 /**
- * Export a menu structure to a CSV file.
+ * Export a menu structure to a spreadsheet file.
  * This function is intended for programmers, writing upgrade scripts for a custom site (dev>staging>live).
  *
- * @param  ?PATH $file_path The path to the CSV file (null: uploads/website_specific/cms_menu_items.csv)
+ * @param  ?PATH $file_path The path to the spreadsheet file (null: uploads/website_specific/cms_menu_items.<default file type>)
  */
-function export_menu_csv($file_path = null)
+function export_menu_spreadsheet($file_path = null)
 {
-    if ($file_path === null) {
-        $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.csv';
-    }
-
     $sql = 'SELECT m.id, i_menu, i_order, i_parent, i_url, i_check_permissions, i_expanded, i_new_window, i_page_only, i_theme_img_code, i_caption, i_caption_long, i_include_sitemap FROM ' . get_table_prefix() . 'menu_items m';
 
     $data = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true);
@@ -52,21 +48,21 @@ function export_menu_csv($file_path = null)
         $d['i_caption_long'] = get_translated_text($d['i_caption_long']);
     }
 
-    require_code('files');
-    require_code('files2');
-    $csv = make_csv($data, 'data.csv', false, false);
-    // TODO: #3032
-    cms_file_put_contents_safe($file_path, $csv, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
+    require_code('files_spreadsheets_write');
+    if ($file_path === null) {
+        $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
+    }
+    make_spreadsheet($file_path, $data);
 }
 
 /**
- * Import a CSV menu structure, after ERASING whole current menu structure.
+ * Import a spreadsheet file menu structure, after ERASING whole current menu structure.
  * This function is intended for programmers, writing upgrade scripts for a custom site (dev>staging>live).
- * Assumes CSV was generated with export_menu_csv.
+ * Assumes spreadsheet was generated with export_menu_spreadsheet.
  *
- * @param  ?PATH $file_path The path to the CSV file (null: uploads/website_specific/cms_menu_items.csv)
+ * @param  ?PATH $file_path The path to the spreadsheet file (null: uploads/website_specific/cms_menu_items.<default file type>)
  */
-function import_menu_csv($file_path = null)
+function import_menu_spreadsheet($file_path = null)
 {
     $old_menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', array('i_caption', 'i_caption_long'));
     foreach ($old_menu_items as $old_menu_item) {
@@ -76,35 +72,29 @@ function import_menu_csv($file_path = null)
     $GLOBALS['SITE_DB']->query_delete('menu_items');
 
     if ($file_path === null) {
-        $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.csv';
+        require_code('files_spreadsheets_write');
+        $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
     }
-    $myfile = fopen($file_path, 'rb');
-    // TODO: #3032
-    while (($record = fgetcsv($myfile, 8192)) !== false) {
-        if (!isset($record[12])) {
-            continue;
-        }
-        if ($record[0] == 'id') {
-            continue;
-        }
-
-        $id = ($record[0] == '' || $record[0] == 'NULL') ? null : intval($record[0]);
-        $menu_id = $record[1];
-        $order = intval($record[2]);
-        $parent = ($record[3] == '' || $record[3] == 'NULL') ? null : intval($record[3]);
-        $caption = $record[10];
-        $url = $record[4];
-        $check_permissions = intval($record[5]);
-        $page_only = $record[8];
-        $expanded = intval($record[6]);
-        $new_window = intval($record[7]);
-        $caption_long = $record[11];
-        $theme_image_code = $record[9];
-        $include_sitemap = intval($record[12]);
+    require_code('files_spreadsheets_read');
+    $sheet_reader = spreadsheet_open_read($file_path);
+    while (($record = $sheet_reader->read_row()) !== false) {
+        $id = ($record['id'] == '' || $record['id'] == 'NULL') ? null : intval($record['id']);
+        $menu_id = $record['i_menu'];
+        $order = intval($record['i_order']);
+        $parent = ($record['i_parent'] == '' || $record['i_parent'] == 'NULL') ? null : intval($record['i_parent']);
+        $caption = $record['i_caption'];
+        $url = $record['i_url'];
+        $check_permissions = intval($record['i_check_permissions']);
+        $page_only = $record['i_page_only'];
+        $expanded = intval($record['i_expanded']);
+        $new_window = intval($record['i_new_window']);
+        $caption_long = $record['i_caption_long'];
+        $theme_image_code = $record['i_theme_image_code'];
+        $include_sitemap = intval($record['i_include_sitemap']);
 
         add_menu_item($menu_id, $order, $parent, $caption, $url, $check_permissions, $page_only, $expanded, $new_window, $caption_long, $theme_image_code, $include_sitemap, $id);
     }
-    fclose($myfile);
+    $sheet_reader->close();
 
     delete_cache_entry('menu');
 }

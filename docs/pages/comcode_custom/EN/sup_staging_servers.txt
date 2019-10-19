@@ -132,8 +132,8 @@ Functions:
   - [tt]mass_set_page_access[/tt] -- set page access
   - [tt]define_redirects[/tt] -- set Composr-level redirects
  - Menu structure:
-  - [tt]import_menu_csv[/tt] -- import a menu structure
-  - [tt]export_menu_csv[/tt] -- export a menu structure
+  - [tt]import_menu_spreadsheet[/tt] -- import a menu structure
+  - [tt]export_menu_spreadsheet[/tt] -- export a menu structure
   - [tt]create_menu_structure[/tt] -- create a menu structure programmatically
  - Comcode pages:
   - [tt]rename_live_comcode_page[/tt] -- fix a page's database references (renaming the [tt].txt[/tt] file may not be enough)

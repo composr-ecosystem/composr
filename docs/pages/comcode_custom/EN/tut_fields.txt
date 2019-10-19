@@ -336,7 +336,7 @@ NB: When adding there is no UI if 'AUTO_INCREMENT' was used.
 [tt]USA_STATE[/tt] -- input a USA state (input uses the state name, display uses the ISO code; also see the [tt]state[/tt] field type)
 
 [i]Or:[/i]
-A pathname relative to a [tt].csv[/tt] file (relative to base directory), if the non-bundled Nested CPF CSV Lists addon is installed.
+A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if the non-bundled Nested CPF Spreadsheet Lists addon is installed.
 |-
 ! Supported field options
 | [tt]custom_values=on|off[/tt] (whether to allow a custom typed value; if enabled then inline list widgets will not be available; default is off)
@@ -351,7 +351,7 @@ A pathname relative to a [tt].csv[/tt] file (relative to base directory), if the
 
 [tt]widget=radio|inline|dropdown|inline_huge|dropdown_huge[/tt] (whether to use a radio buttons, an inline list, or a dropdown list; default is dropdown)
 
-[tt]csv_heading[/tt] (the column from the [tt].csv[/tt] file to use, if the default was set as a [tt].csv[/tt] file; default is to use the first column)
+[tt]spreadsheet_heading[/tt] (the column from the spreadsheet file to use, if the default was set as a spreadsheet file; default is to use the first column)
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__list.png[/media]

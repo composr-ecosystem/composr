@@ -21,7 +21,7 @@
 /**
  * Open up a TAR archive (or tarball if the zlib extension is available), and return the resource.
  *
- * @param  ?PATH $path The path to the TAR archive (null: write out directly to stdout)
+ * @param  PATH $path The path to the TAR archive
  * @param  string $mode The mode to open the TAR archive (rb=read, wb=write)
  * @set rb wb c+b
  * @param  boolean $known_exists Whether we know the file currently exists (performance optimisation)
@@ -34,31 +34,25 @@ function tar_open($path, $mode, $known_exists = false, $real_filename = null)
         $real_filename = basename($path);
     }
 
-    if ($path === null) {
-        $myfile = null;
-        $exists = false;
-
-        cms_ob_end_clean();
+    $exists = ($known_exists ? true : file_exists($path)) && (strpos($mode, 'c+') !== false);
+    if ((function_exists('gzopen')) && (strtolower(substr($real_filename, -3)) == '.gz')) {
+        $myfile = @gzopen($path, $mode);
     } else {
-        $exists = ($known_exists ? true : file_exists($path)) && (strpos($mode, 'c+') !== false);
-        if ((function_exists('gzopen')) && (strtolower(substr($real_filename, -3)) == '.gz')) {
-            $myfile = @gzopen($path, $mode);
+        $myfile = @fopen($path, $mode);
+    }
+    if ($myfile === false) {
+        if (substr($mode, 0, 1) == 'r') {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE'), false, true);
         } else {
-            $myfile = @fopen($path, $mode);
-        }
-        if ($myfile === false) {
-            if (substr($mode, 0, 1) == 'r') {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE'), false, true);
-            } else {
-                intelligent_write_error($path);
-            }
-        }
-        if (substr($mode, 0, 1) == 'w') {
-            flock($myfile, LOCK_EX);
-        } else {
-            flock($myfile, LOCK_SH);
+            intelligent_write_error($path);
         }
     }
+    if (substr($mode, 0, 1) == 'w') {
+        @flock($myfile, LOCK_EX);
+    } else {
+        flock($myfile, LOCK_SH);
+    }
+
     $resource = array();
     $resource['new'] = !$exists;
     $resource['mode'] = $mode;
@@ -658,12 +652,8 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
     $whole = pack('a512', $name . $mode . $uid . $gid . $size . $mtime . $chksum . $typeflag . $linkname . $magic . $version . $uname . $gname . $devmajor . $devminor . $prefix);
 
     $chunk = pack('a512', $whole);
-    if ($myfile === null) {
-        echo $chunk;
-    } else {
-        if (fwrite($myfile, $chunk) < strlen($chunk)) {
-            warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
-        }
+    if (fwrite($myfile, $chunk) < strlen($chunk)) {
+        warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
     }
 
     $block_size = file_size_to_tar_block_size($data_is_path ? filesize($data) : strlen($data));
@@ -672,41 +662,25 @@ function tar_add_file(&$resource, $target_path, $data, $_mode = 0644, $_mtime = 
         flock($infile, LOCK_SH);
         while (!feof($infile)) {
             $in = fread($infile, 8000);
-            if ($myfile === null) {
-                echo $in;
-            } else {
-                if (fwrite($myfile, $in) < strlen($in)) {
-                    warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
-                }
+            if (fwrite($myfile, $in) < strlen($in)) {
+                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
             }
         }
         flock($infile, LOCK_UN);
         fclose($infile);
         $extra_to_write = $block_size - filesize($data);
         if ($extra_to_write != 0) {
-            if ($myfile === null) {
-                echo pack('a' . strval($extra_to_write), '');
-            } else {
-                if (fwrite($myfile, pack('a' . strval($extra_to_write), '')) == 0) {
-                    warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
-                }
+            if (fwrite($myfile, pack('a' . strval($extra_to_write), '')) == 0) {
+                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
             }
         }
     } else {
         $chunk = pack('a' . strval($block_size), $data);
-        if ($myfile === null) {
-            echo $chunk;
-        } else {
-            if (fwrite($myfile, $chunk) < strlen($chunk)) {
-                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
-            }
+        if (fwrite($myfile, $chunk) < strlen($chunk)) {
+            warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
         }
     }
     $resource['end'] += $block_size + 512;
-
-    if ($myfile === null) {
-        flush();
-    }
 
     return $offset + 512;
 }
@@ -734,22 +708,20 @@ function tar_crc($header)
  */
 function tar_close($resource)
 {
-    if (substr($resource['mode'], 0, 1) != 'r') {
-        if ($resource['myfile'] === null) {
-            $chunk = pack('a1024', '');
-            echo $chunk;
-        } else {
-            $chunk = pack('a1024', '');
-            if (fwrite($resource['myfile'], $chunk) < strlen($chunk)) {
-                warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
-            }
+    $writing = (substr($resource['mode'], 0, 1) != 'r');
 
-            flock($resource['myfile'], LOCK_UN);
-            fclose($resource['myfile']);
-            fix_permissions($resource['full']);
+    if ($writing) {
+        $chunk = pack('a1024', '');
+        if (fwrite($resource['myfile'], $chunk) < strlen($chunk)) {
+            warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html($resource['full'])), false, true);
         }
-    } else {
-        flock($resource['myfile'], LOCK_UN);
-        fclose($resource['myfile']);
+    }
+
+    @flock($resource['myfile'], LOCK_UN);
+    fclose($resource['myfile']);
+
+    if ($writing) {
+        fix_permissions($resource['full']);
+        sync_file($resource['full']);
     }
 }

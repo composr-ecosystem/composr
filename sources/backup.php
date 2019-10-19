@@ -146,7 +146,7 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
 
     require_code('files');
     $log_file_path = get_custom_file_base() . '/exports/backups/' . $file . '.txt';
-    $log_file = @cms_fopen_wb_bom($log_file_path, true) or intelligent_write_error($log_file_path); // .txt file because IIS doesn't allow .log download
+    $log_file = @cms_fopen_text_write($log_file_path, true) or intelligent_write_error($log_file_path); // .txt file because IIS doesn't allow .log download
     cms_ini_set('log_errors', '1');
     cms_ini_set('error_log', $log_file_path);
 
