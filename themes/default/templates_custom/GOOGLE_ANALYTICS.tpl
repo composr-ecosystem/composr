@@ -1,7 +1,5 @@
-{$,TODO: Move to .js file #2960}
-
 {$SET,client_id,{$CONFIG_OPTION,google_apis_client_id}}
-<div id="ga-{ID*}" data-tpl="googleAnalytics" data-tpl-params="{+START,PARAMS_JSON,ID,PROPERTY_ID,ACCESS_TOKEN,DIMENSION,METRICS,DAYS,CHART_TYPE,UNDER_TAB,client_id}{_*}{+END}">
+<div id="ga-{ID*}" data-tpl="googleAnalytics" data-tpl-params="{+START,PARAMS_JSON,ID,PROPERTY_ID,ACCESS_TOKEN,DIMENSION,METRICS,DAYS,CHART_TYPE,UNDER_TAB,EXTRA,client_id}{_*}{+END}">
 	<div id="auth-button-{ID*}"></div>
 
 	{+START,INCLUDE,_GOOGLE_TIME_PERIODS}{+END}

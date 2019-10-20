@@ -1001,7 +1001,7 @@ HTML;
 
         list($sort_name, $sort_dir) = explode(' ', $sort, 2);
 
-        sort_maps_by($query_rows, ($sort_dir == 'DESC') ? '!' . $sort_name : $sort_name);
+        sort_maps_by($query_rows, ($sort_dir == 'DESC') ? ('!' . $sort_name) : $sort_name);
 
         // Show media
         $i = 0;
@@ -1319,7 +1319,7 @@ HTML;
 
         list($sort_name, $sort_dir) = explode(' ', $sort, 2);
 
-        sort_maps_by($query_rows, ($sort_dir == 'DESC') ? '!' . $sort_name : $sort_name);
+        sort_maps_by($query_rows, ($sort_dir == 'DESC') ? ('!' . $sort_name) : $sort_name);
 
         $current_index = 0;
         $current_url = null;

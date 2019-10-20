@@ -929,7 +929,7 @@ class Database_Static_xml extends DatabaseDriver
                 fix_permissions($db[0] . '/' . $table_name);
                 sync_file($db[0] . '/' . $table_name);
                 cms_file_put_contents_safe($db[0] . '/' . $table_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
-           }
+            }
             @chdir($db[0] . '/' . $table_name);
             $files = @glob('{,.}*.{xml,xml-volatile}', GLOB_NOSORT | GLOB_BRACE);
             if ($files === false) {

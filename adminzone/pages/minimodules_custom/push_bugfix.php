@@ -250,7 +250,8 @@ $do_full_scan = (get_param_integer('full_scan', 0) == 1);
 if (($do_full_scan) || (count($git_found) == 0)) {
     $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
     if (count($files) == 0) {
-        $days = min(14, round(time() - filemtime(get_file_base() . '/index.php')) / (60 * 60 * 24) - 1);
+        $checkout_seconds = time() - filemtime(get_file_base() . '/index.php');
+        $days = min(14, intval(round($checkout_seconds / (60 * 60 * 24) - 1)));
         $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
     }
 } else {
@@ -741,7 +742,7 @@ function make_call($call, $post_params, $file = null)
 
     $files = ($file === null) ? null : array('upload' => $file);
 
-    $result = http_download_file($call_url, null, true, false, 'Composr', $post_params, null, null, null, null, null, null, null, 6.0, false, $files);
+    $result = http_get_contents($call_url, array('post_params' => $post_params, 'files' => $files));
 
     return $result;
 }

@@ -57,7 +57,7 @@ class Block_bottom_tag_cloud
                 array_key_exists('param', $map) ? $map['param'] : '',
             )
 PHP;
-        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? 60 * 60 * 24 * 365 * 5/*5 year timeout*/ : 60;
+        $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
         return $info;
     }
 

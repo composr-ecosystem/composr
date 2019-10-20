@@ -35,7 +35,7 @@ This file only contains the code for the sales log and code for viewing an indiv
  * @param  boolean $show_delete Whether to show the deletion column
  * @param  integer $max_default Default maximum number of records to show
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
- * @return ?array A pair: The sales table, pagination
+ * @return ?array A pair: The sales table, pagination (null: none)
  */
 function build_sales_table($filter_member_id, $show_username = false, $show_delete = false, $max_default = 20, $empty_ok = false)
 {

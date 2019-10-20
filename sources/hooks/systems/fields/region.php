@@ -120,7 +120,7 @@ class Hook_fields_region
         $country_list = new Tempcode();
         $country_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));
         $country_list->attach(create_region_selection_list(array($actual_value)));
-        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? $field['cf_autofill_hint'] . ' ' : '') . $field['cf_autofill_type']) : null;
+        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
         return form_input_list($_cf_name, $_cf_description, $input_name, $country_list, null, false, $field['cf_required'] == 1, null, 5, $autocomplete);
     }
 

@@ -112,7 +112,7 @@ class Hook_fields_email
             $actual_value = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
         }
         $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? $field['cf_autofill_hint'] . ' ' : '') . $field['cf_autofill_type']) : null;
+        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
         return form_input_email($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, $autocomplete);
     }
 

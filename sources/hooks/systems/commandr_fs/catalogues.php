@@ -342,7 +342,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
                     actual_add_catalogue_field($name, $field_title, $description, $type, $order, $defines_order, $visible, $default, $required, $is_sortable, $include_in_main_search, $allow_template_search, $put_in_category, $put_in_search, $options);
                 }
             } else {
-                actual_add_catalogue_field($name, do_lang('TITLE'), '', 'short_text', 0, 1, 1, 1, '', 1, 1, 1);
+                actual_add_catalogue_field($name, do_lang('TITLE'), '', 'short_text', 0, 1, 1, '', 1, 1, 1);
             }
 
             $this->_resource_save_extend('catalogue', $name, $filename, $label, $properties);

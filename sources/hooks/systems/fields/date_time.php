@@ -214,7 +214,7 @@ class Hook_fields_date_time
         $min_year = intval(option_value_from_field_array($field, 'min_year', strval(intval(date('Y')) - 10)));
         $years_to_show = intval(option_value_from_field_array($field, 'max_year', strval(intval(date('Y')) + 10))) - $min_year;
         $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? $field['cf_autofill_hint'] . ' ' : '') . $field['cf_autofill_type']) : null;
+        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
         return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($actual_value == ''), false, $time, $years_to_show, $min_year, null, true, null, true, $autocomplete);
     }
 

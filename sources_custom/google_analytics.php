@@ -184,7 +184,7 @@ function _render_google_analytics_chart($metric, $id, $days, $under_tab, $access
 
     $property_id = get_value('ga_property_id', null, true);
 
-    $extra = '';
+    $extra = array();
     switch ($metric) {
         case 'hits':
             $metrics = array('ga:sessions', 'ga:users', 'ga:hits', 'ga:socialInteractions');

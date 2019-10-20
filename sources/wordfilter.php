@@ -211,8 +211,8 @@ function warn_exit_wordfilter($name, $message)
 /**
  * The term grawlix refers to the series of typographical symbols (such as @#$%&!) used to represent swear words.
  *
- * @param  integer $length Desired length of string.
- * @return string Generated grawlixes.
+ * @param  integer $length Desired length of string
+ * @return string Generated grawlixes
  */
 function generate_grawlixes($length)
 {

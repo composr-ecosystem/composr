@@ -49,7 +49,7 @@ class Hook_sw_galleries
         }
 
         $rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS c FROM ' . get_table_prefix() . 'images WHERE ' . implode(' OR ', $where));
-        $settings['have_default_homepage_hero_slides'] = intval($rows[0]['c']) > 0 ? '1' : '0';
+        $settings['have_default_homepage_hero_slides'] = (intval($rows[0]['c']) > 0) ? '1' : '0';
 
         return $settings;
     }

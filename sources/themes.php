@@ -466,11 +466,11 @@ function rgb_to_hsl($red, $green, $blue)
         $sat = 0.0;
     } else {
         $diff = $max - $min;
-        $sat = $lht > 0.5 ? $diff / (2 - $max - $min) : $diff / ($max + $min);
+        $sat = ($lht > 0.5) ? ($diff / (2 - $max - $min)) : ($diff / ($max + $min));
 
         switch ($max) {
             case $_red:
-                $hue = ($_green - $_blue) / $diff + ($_green < $_blue ? 6 : 0);
+                $hue = ($_green - $_blue) / $diff + (($_green < $_blue) ? 6 : 0);
                 break;
             case $_green:
                 $hue = ($_blue - $_red) / $diff + 2;

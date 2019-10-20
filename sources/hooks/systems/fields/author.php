@@ -127,7 +127,7 @@ class Hook_fields_author
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
         $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
-        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? $field['cf_autofill_hint'] . ' ' : '') . $field['cf_autofill_type']) : null;
+        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
         return form_input_author($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, $autocomplete);
     }
 

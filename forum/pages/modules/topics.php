@@ -2612,7 +2612,7 @@ END;
     }
 
     /**
-     * Used by Module_topics#add_poll() to validate input for new topic to be created together with the poll in one go
+     * Used by Module_topics#add_poll() to validate input for new topic to be created together with the poll in one go.
      */
     public function _validate_request_for_potential_topic()
     {
@@ -2996,7 +2996,7 @@ END;
             $topic_id = get_param_integer('id', null);
         }
 
-        $adding_new_topic = ($topic_id === null) && boolval(get_param_integer('adding_new_topic', 0));
+        $adding_new_topic = ($topic_id === null) && (get_param_integer('adding_new_topic', 0) == 1);
 
         $map = array('page' => '_SELF', 'type' => '_add_poll');
 
@@ -3078,7 +3078,7 @@ END;
 
         $topic_id = get_param_integer('id', null);
 
-        $adding_new_topic = ($topic_id === null) && boolval(get_param_integer('adding_new_topic', 0));
+        $adding_new_topic = ($topic_id === null) && (get_param_integer('adding_new_topic', 0) == 1);
 
         if ($adding_new_topic) {
             $info = $this->_add_reply_and_return_info();

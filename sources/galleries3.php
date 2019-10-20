@@ -84,7 +84,7 @@ function show_gallery_video_script()
 
     $rows = $GLOBALS['SITE_DB']->query_select('videos', array('*'), array('id' => $id), '', 1);
     if (!array_key_exists(0, $rows)) {
-        return warn_screen(get_screen_title('ERROR_OCCURRED'), do_lang_tempcode('MISSING_RESOURCE', escape_html('video')));
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', escape_html('video')));
     }
     $myrow = $rows[0];
 

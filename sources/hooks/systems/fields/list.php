@@ -180,7 +180,7 @@ class Hook_fields_list extends ListFieldHook
             case 'inline_huge':
             case 'dropdown_huge':
             default:
-                $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? $field['cf_autofill_hint'] . ' ' : '') . $field['cf_autofill_type']) : null;
+                $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
                 if ($custom_values == 'on') {
                     $list_tpl = new Tempcode();

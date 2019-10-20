@@ -509,9 +509,9 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
                             if ($image !== null) {
                                 $pos = strrpos($image_code, '/');
                                 if (($pos !== false) || (strpos($orig_url, '/' . fallback_lang() . '/') !== false)) {
-                                    afm_make_directory($composite . substr($image_code, 0, $pos), true, true, true);
+                                    afm_make_directory($composite . substr($image_code, 0, $pos), true, true);
                                     $parts = explode('/', substr($image_code, 0, $pos));
-                                    $buildup = $composite;
+                                    $build_up = $composite;
                                     foreach ($parts as $part) {
                                         $build_up .= '/' . $part;
                                         afm_make_file($build_up . '/index.html', '', false);
