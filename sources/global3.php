@@ -3373,6 +3373,9 @@ function wordfilter_text($text)
     if (!addon_installed('wordfilter')) {
         return $text;
     }
+    if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
+        return $text;
+    }
 
     require_code('wordfilter');
     return check_wordfilter($text, null, true);

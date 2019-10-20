@@ -18,10 +18,6 @@
  * @package    wordfilter
  */
 
-require_code('crud_module');
-require_code('wordfilter');
-require_javascript('wordfilter');
-
 /**
  * Module page class.
  */
@@ -70,6 +66,8 @@ class Module_admin_wordfilter extends Standard_crud_module
      */
     public function install($upgrade_from = null, $upgrade_from_hack = null)
     {
+        require_code('wordfilter');
+
         $naughties = array(
             'arsehole', 'asshole', 'arse', 'bastard', 'cock', 'cocked', 'cocksucker', 'cunt', 'cum',
             'blowjob', 'bollocks', 'bondage', 'bugger', 'buggery', 'dickhead', 'dildo', 'faggot', 'fuck', 'fucked', 'fucking',
@@ -170,6 +168,9 @@ class Module_admin_wordfilter extends Standard_crud_module
      */
     public function run_start()
     {
+        require_code('wordfilter');
+        require_javascript('wordfilter');
+
         $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {

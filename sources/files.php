@@ -197,7 +197,7 @@ function cms_file_put_contents_safe($path, $contents, $flags = 4, $charset = nul
         if (array_key_exists($charset, $boms)) {
             $bom_found = false;
             foreach ($boms as $bom) {
-                if (substr($contents, strlen($bom)) == $bom) {
+                if ((strlen($contents) >= strlen($bom)) && (substr($contents, strlen($bom)) == $bom)) {
                     $bom_found = true;
                     break;
                 }

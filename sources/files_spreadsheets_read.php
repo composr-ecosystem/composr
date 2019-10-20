@@ -205,10 +205,15 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
         require_code('files');
 
         // First we need to fix line endings, as there's a chance of Classic Mac line endings due to Microsoft Excel Mac's behaviour, and cms_fgets cannot cope with that
-        $this->tmp_path = cms_tempnam();
-        cms_file_put_contents_safe($this->tmp_path, cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK), 0);
+        if ($GLOBALS['IN_MINIKERNEL_VERSION']) {
+            $open_path = $path;
+        } else {
+            $this->tmp_path = cms_tempnam();
+            cms_file_put_contents_safe($this->tmp_path, cms_file_get_contents_safe($path, FILE_READ_UNIXIFIED_TEXT | FILE_READ_LOCK), 0);
+            $open_path = $this->tmp_path;
+        }
 
-        $this->handle = cms_fopen_text_read($this->tmp_path, $this->charset, false/*no lock needed on our temp file*/, 'rb', $default_charset);
+        $this->handle = cms_fopen_text_read($open_path, $this->charset, false/*no lock needed on our temp file*/, 'rb', $default_charset);
 
         if ($format === null) {
             // Detect format...
@@ -288,7 +293,10 @@ class CMS_CSV_Reader extends CMS_Spreadsheet_Reader
         if ($this->handle !== null) {
             fclose($this->handle);
             $this->handle = null;
-            unlink($this->tmp_path);
+            if ($this->tmp_path !== null) {
+                unlink($this->tmp_path);
+                $this->tmp_path = null;
+            }
         }
     }
 }
