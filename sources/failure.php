@@ -437,9 +437,7 @@ function _generic_exit($text, $template, $support_match_key_messages = false)
     }
     $EXITING++;
 
-    if (!function_exists('do_header')) {
-        require_code('site');
-    }
+    require_code('site');
 
     if ((get_forum_type() == 'cns') && (get_db_type() != 'xml') && (isset($GLOBALS['FORUM_DRIVER']))) {
         require_code('cns_groups');
