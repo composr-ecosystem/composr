@@ -818,21 +818,24 @@ class Module_cms_news extends Standard_crud_module
         $import_blog_comments = post_param_integer('import_blog_comments', 0);
         $import_to_blog = post_param_integer('import_to_blog', 0);
 
-        $rss_url = post_param_string('rss_feed_url', null);
         require_code('uploads');
         if (((is_plupload(true)) && (array_key_exists('file_anytype', $_FILES))) || ((array_key_exists('file_anytype', $_FILES)) && (is_uploaded_file($_FILES['file_anytype']['tmp_name'])))) {
-            $rss_url = $_FILES['file_anytype']['tmp_name'];
+            $rss_feed = $_FILES['file_anytype']['tmp_name'];
+            $is_filesystem_path = true;
+        } else {
+            $rss_feed = post_param_string('rss_feed_url', null);
+            $is_filesystem_path = false;
         }
-        if (is_null($rss_url)) {
+        if (is_null($rss_feed)) {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
 
         require_code('rss');
-        $rss = new CMS_RSS($rss_url, true);
+        $rss = new CMS_RSS($rss_feed, $is_filesystem_path);
 
         // Cleanup
-        if (url_is_local($rss_url)) {// Means it is a temp file
-            @unlink($rss_url);
+        if ($is_filesystem_path) { // Means it is a temp file
+            @unlink($rss_feed);
         }
 
         require_code('tasks');
