@@ -104,42 +104,11 @@ class Hook_addon_registry_wordfilter
             'sources/hooks/systems/addon_registry/wordfilter.php',
             'sources/hooks/systems/page_groupings/wordfilter.php',
             'lang/EN/wordfilter.ini',
-            'themes/default/templates/WORDFILTER_SCREEN.tpl',
             'adminzone/pages/modules/admin_wordfilter.php',
             'sources/hooks/modules/admin_setupwizard/wordfilter.php',
             'sources/hooks/modules/admin_import_types/wordfilter.php',
             'sources/hooks/systems/commandr_fs_extended_config/wordfilter.php',
             'sources/hooks/systems/actionlog/wordfilter.php',
-        );
-    }
-
-    /**
-     * Get mapping between template names and the method of this class that can render a preview of them.
-     *
-     * @return array The mapping
-     */
-    public function tpl_previews()
-    {
-        return array(
-            'templates/WORDFILTER_SCREEN.tpl' => 'administrative__wordfilter_screen',
-        );
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__administrative__wordfilter_screen()
-    {
-        return array(
-            lorem_globalise(do_lorem_template('WORDFILTER_SCREEN', array(
-                'TITLE' => lorem_title(),
-                'TPL' => lorem_phrase(),
-                'ADD_FORM' => placeholder_form(),
-            )), null, '', true)
         );
     }
 }
