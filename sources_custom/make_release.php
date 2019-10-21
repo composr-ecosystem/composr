@@ -1080,12 +1080,12 @@ function _download_latest_data_ip_country()
     cms_http_request('http://download.db-ip.com/free/dbip-country-lite-' . date('Y-m') . '.csv.gz', array('convert_to_internal_encoding' => true, 'write_to_file' => $myfile, 'timeout' => 30.0));
     fclose($myfile);
 
-    $tmp_name_tar = cms_tempnam();
-    $cmd = 'gzip -d -c ' . cms_escapeshellarg($tmp_name_gzip) . ' > ' . cms_escapeshellarg($tmp_name_tar);
+    $tmp_name_csv = cms_tempnam();
+    $cmd = 'gzip -d -c ' . cms_escapeshellarg($tmp_name_gzip) . ' > ' . cms_escapeshellarg($tmp_name_csv);
     _shell_exec_bin($cmd);
 
     require_code('files_spreadsheets_read');
-    $sheet_reader = spreadsheet_open_read($tmp_name_tar, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+    $sheet_reader = spreadsheet_open_read($tmp_name_csv, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
     while (($record = $sheet_reader->read_row()) !== false) {
         if (!isset($record[2])) {
             continue;

@@ -173,7 +173,7 @@ abstract class CMS_Spreadsheet_Writer
             }
         }
 
-        header('Content-Type: ' . $this->get_mime_type() . '; charset="' . escape_header($this->charset, true) . '"');
+        header('Content-Type: ' . $this->get_mime_type() . '; charset="' . escape_header(($this->charset === null) ? get_charset() : $this->charset, true) . '"');
         header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 
         cms_ini_set('ocproducts.xss_detect', '0');

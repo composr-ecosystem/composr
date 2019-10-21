@@ -30,9 +30,10 @@ class Hook_task_import_newsletter_subscribers
      * @param  AUTO_LINK $newsletter_id The newsletter being imported into
      * @param  boolean $subscribe Whether we are subscribing the member (true=adding, false=removing)
      * @param  PATH $path The path of the file to import
+     * @param  ?string $filename The filename of the file to import (null: detect from $path)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($_language, $newsletter_id, $subscribe, $path)
+    public function run($_language, $newsletter_id, $subscribe, $path, $filename = null)
     {
         if (!addon_installed('newsletter')) {
             return null;
@@ -49,7 +50,7 @@ class Hook_task_import_newsletter_subscribers
         push_query_limiting(false);
 
         require_code('files_spreadsheets_read');
-        $sheet_reader = spreadsheet_open_read($path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+        $sheet_reader = spreadsheet_open_read($path, $filename, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
         $email_index = 0;
         $forename_index = null;

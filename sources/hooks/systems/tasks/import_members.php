@@ -29,9 +29,10 @@ class Hook_task_import_members
      * @param  ?string $default_password The default password to use (null: skip members with no password)
      * @param  boolean $use_temporary_passwords Whether to assign temporary passwords
      * @param  PATH $path The path of the file to import
+     * @param  ?string $filename The filename of the file to import (null: detect from $path)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($default_password, $use_temporary_passwords, $path)
+    public function run($default_password, $use_temporary_passwords, $path, $filename = null)
     {
         set_mass_import_mode();
 
@@ -71,7 +72,7 @@ class Hook_task_import_members
         $_spreadsheet_data = array();
 
         require_code('files_spreadsheets_read');
-        $sheet_reader = spreadsheet_open_read($path);
+        $sheet_reader = spreadsheet_open_read($path, $filename);
         while (($line = $sheet_reader->read_row()) !== false) {
             task_log($this, 'Importing member row', $done);
 

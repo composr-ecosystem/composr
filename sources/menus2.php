@@ -61,8 +61,9 @@ function export_menu_spreadsheet($file_path = null)
  * Assumes spreadsheet was generated with export_menu_spreadsheet.
  *
  * @param  ?PATH $file_path The path to the spreadsheet file (null: uploads/website_specific/cms_menu_items.<default file type>)
+* @param  ?string $filename The filename of the spreadsheet file (null: detect from $file_path)
  */
-function import_menu_spreadsheet($file_path = null)
+function import_menu_spreadsheet($file_path = null, $filename = null)
 {
     $old_menu_items = $GLOBALS['SITE_DB']->query_select('menu_items', array('i_caption', 'i_caption_long'));
     foreach ($old_menu_items as $old_menu_item) {
@@ -76,7 +77,7 @@ function import_menu_spreadsheet($file_path = null)
         $file_path = get_custom_file_base() . '/uploads/website_specific/cms_menu_items.' . spreadsheet_write_default();
     }
     require_code('files_spreadsheets_read');
-    $sheet_reader = spreadsheet_open_read($file_path);
+    $sheet_reader = spreadsheet_open_read($file_path, $filename);
     while (($record = $sheet_reader->read_row()) !== false) {
         $id = ($record['id'] == '' || $record['id'] == 'NULL') ? null : intval($record['id']);
         $menu_id = $record['i_menu'];

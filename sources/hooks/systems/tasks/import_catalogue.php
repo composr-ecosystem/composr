@@ -40,10 +40,11 @@ class Hook_task_import_catalogue
      * @param  boolean $allow_rating Whether rating is allowed for this resource
      * @param  boolean $allow_comments Whether comments are allowed for this resource
      * @param  boolean $allow_trackbacks Whether trackbacks are allowed for this resource
-     * @param  PATH $spreadsheet_path The spreadsheet file being imported
+     * @param  PATH $spreadsheet_path The path of the file to import
+     * @param  ?string $filename The filename of the file to import (null: detect from $spreadsheet_path)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $spreadsheet_path)
+    public function run($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $spreadsheet_path, $filename = null)
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -71,7 +72,7 @@ class Hook_task_import_catalogue
 
         // Open spreadsheet file
         require_code('files_spreadsheets_read');
-        $sheet_reader = spreadsheet_open_read($spreadsheet_path, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+        $sheet_reader = spreadsheet_open_read($spreadsheet_path, $filename, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
         // Read column names
         $spreadsheet_field_titles = array_flip($sheet_reader->read_row());

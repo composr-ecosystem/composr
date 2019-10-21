@@ -191,6 +191,9 @@ class template_no_unused_test_set extends cms_test_case
             'RATING_INLINE_STATIC',
             'ADMIN_ZONE_SEARCH',
             '_GOOGLE_TIME_PERIODS',
+            'HEADER_CLASSIC',
+            'HEADER_SIDE',
+            'HEADER_MODERN',
         );
 
         $themes = find_all_themes();

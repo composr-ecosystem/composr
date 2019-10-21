@@ -43,7 +43,7 @@ class tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/import_newsletter_subscribers');
         $ob_import = new Hook_task_import_newsletter_subscribers();
-        $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path);
+        $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
 
         $this->establish_admin_session();
         $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1), 'adminzone');
@@ -51,7 +51,7 @@ class tasks_test_set extends cms_test_case
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
         file_put_contents($tmp_path, $data);
-        $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path);
+        $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
     }
 
     public function testCatalogueSpreadsheet()
@@ -76,7 +76,7 @@ class tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/import_catalogue');
         $ob_import = new Hook_task_import_catalogue();
-        $import_result = $ob_import->run('links', 'Title', 'add', 'leave', 'skip', '', '', '', true, true, true, $tmp_path);
+        $import_result = $ob_import->run('links', 'Title', 'add', 'leave', 'skip', '', '', '', true, true, true, $tmp_path, 'test.csv');
 
         require_code('hooks/systems/tasks/export_catalogue');
         $ob_export = new Hook_task_export_catalogue();
@@ -84,7 +84,7 @@ class tasks_test_set extends cms_test_case
         $c = cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK);
         $this->assertTrue(strpos($c, 'TestingABC') !== false, 'Did not see our TestingABC record in: ' . $c . "\n\n" . serialize($import_result));
 
-        $ob_import->run('links', 'Title', 'add', 'leave', 'skip', '', '', '', true, true, true, $results[1][1]);
+        $ob_import->run('links', 'Title', 'add', 'leave', 'skip', '', '', '', true, true, true, $results[1][1], 'test.csv');
     }
 
     public function testCalendarICal()
@@ -237,7 +237,7 @@ class tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/import_members');
         $ob_import = new Hook_task_import_members();
-        $ob_import->run('', false, $tmp_path);
+        $ob_import->run('', false, $tmp_path, 'test.csv');
 
         @unlink($tmp_path);
 
@@ -246,6 +246,6 @@ class tasks_test_set extends cms_test_case
         $results = $ob_export->run(false, array('ID', 'Username'), array(), 'ID');
         $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK | FILE_READ_BOM), 'TestingABC') !== false);
 
-        $ob_import->run('', false, $results[1][1]);
+        $ob_import->run('', false, $results[1][1], 'test.csv');
     }
 }

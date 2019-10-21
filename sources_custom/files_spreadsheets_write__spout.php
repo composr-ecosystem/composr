@@ -42,6 +42,8 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
         $this->path = $path;
         $this->algorithm = $algorithm;
 
+        cms_ini_set('ocproducts.type_strictness', '0');
+
         $ext = get_file_extension($filename);
         switch ($ext) {
             case 'ods':
@@ -58,6 +60,8 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
         }
 
         $this->writer->openToFile($path);
+
+        cms_ini_set('ocproducts.type_strictness', '1');
     }
 
     /**
@@ -79,7 +83,11 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
             $_row[] = convert_to_internal_encoding(@strval($val), get_charset(), 'utf-8');
         }
 
+        cms_ini_set('ocproducts.type_strictness', '0');
+
         $this->writer->addRow(Box\Spout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($_row));
+
+        cms_ini_set('ocproducts.type_strictness', '1');
     }
 
     /**
@@ -96,7 +104,9 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
     public function close()
     {
         if ($this->writer !== null) {
+            cms_ini_set('ocproducts.type_strictness', '0');
             $this->writer->close();
+            cms_ini_set('ocproducts.type_strictness', '1');
             $this->writer = null;
         }
     }
