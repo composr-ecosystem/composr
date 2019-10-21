@@ -107,6 +107,7 @@ class external_code_considerations_test_set extends cms_test_case
                 'themes/default/javascript_custom/core_rich_media.js',
                 'themes/default/javascript_custom/password_censor.js',
                 'themes/default/javascript_custom/shoutr.js',
+                'themes/default/javascript_custom/google_analytics.js',
                 'themes/default/javascript_custom/twitter_feed_integration_block.js',
                 'themes/default/javascript_custom/user_mappr.js',
                 'themes/default/javascript_custom/workflows.js',
