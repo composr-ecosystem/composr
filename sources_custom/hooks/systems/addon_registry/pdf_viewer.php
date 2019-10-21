@@ -16,7 +16,7 @@
 /**
  * Hook class.
  */
-class Hook_addon_registry_pagination_protection
+class Hook_addon_registry_pdf_viewer
 {
     /**
      * Get a list of file permissions to set
