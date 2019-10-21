@@ -13,7 +13,7 @@
 				</a>
 
 				{+START,IF_NON_EMPTY,{TITLE}}
-				<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!">{TITLE*}</a>
+					<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!">{TITLE*}</a>
 				{+END}
 			</h3>
 

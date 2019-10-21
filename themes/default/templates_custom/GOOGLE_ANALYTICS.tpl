@@ -5,7 +5,7 @@
 	{+START,INCLUDE,_GOOGLE_TIME_PERIODS}{+END}
 
 	<div id="timeline-{ID*}"></div>
-	
+
 	<div id="loading-{ID*}" aria-busy="true" class="spaced">
 		<div class="ajax-loading vertical-alignment">
 			<img src="{$IMG*,loading}" width="{$IMG_WIDTH*,{$IMG,loading}}" height="{$IMG_HEIGHT*,{$IMG,loading}}" title="{!LOADING}" alt="{!LOADING}" />
@@ -13,4 +13,3 @@
 		</div>
 	</div>
 </div>
-

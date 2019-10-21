@@ -516,7 +516,7 @@
 <div class="clearfix buttons-group">
 	<div class="buttons-group-inner">
 		<button data-disable-on-click="1" class="btn btn-primary btn-scr buttons--save js-btn-save-content" type="submit">{+START,INCLUDE,ICON}NAME=buttons/save{+END} {!SAVE}</button>
-	
+
 		{+START,SET,preview_buttons}
 			{+START,IF_PASSED,LIVE_PREVIEW_URL}
 				<!-- Preview in live rendering -->
@@ -529,7 +529,7 @@
 		{+END}
 		{+START,IF_NON_EMPTY,{$TRIM,{$GET,preview_buttons}}}
 			{$GET,preview_buttons}
-	
+
 			<label for="mobile_preview_{FILE_ID*}"><input type="checkbox" name="mobile_preview_{FILE_ID*}" id="mobile_preview_{FILE_ID*}" value="1" /> {!MOBILE_VERSION}</label>
 		{+END}
 	</div>

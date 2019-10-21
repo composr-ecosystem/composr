@@ -98,7 +98,7 @@ function check_wordfilter($a, $name = null, $exit = true, $try_patterns = false,
     $changes = array();
     foreach ($words as $pos => $word) {
         $w = isset($WORDS_TO_FILTER_CACHE[strtolower($word)]) ? $WORDS_TO_FILTER_CACHE[strtolower($word)] : null;
-        
+
         if (is_array($w) && ($w['w_match_type'] === WORDFILTER_MATCH_TYPE_FULL)) {
             if (($w['w_replacement'] == '') && ($exit)) {
                 warn_exit_wordfilter($name, do_lang_tempcode('WORDFILTER_YOU', escape_html($word))); // In soviet Russia, words filter you

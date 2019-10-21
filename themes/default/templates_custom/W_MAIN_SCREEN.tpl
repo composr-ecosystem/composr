@@ -289,100 +289,100 @@
 							</tr>
 							</thead>
 							{+START,IF_NON_EMPTY,{ITEMS_HELD}}
-							<tr>
-								<td>
-									{!W_DROP}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{ITEMS_HELD}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="drop" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_DROP}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{ITEMS_HELD}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="drop" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_GIVE}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{ITEMS_HELD}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="give" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_GIVE}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{ITEMS_HELD}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="give" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_PICKPOCKET}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="btype" value="pickpocket" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_PICKPOCKET}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="btype" value="pickpocket" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_USE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{ITEMS_HELD}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="use" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_USE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{ITEMS_HELD}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="use" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_DELETE_MATCHING_MESSAGES}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									&nbsp;
-								</td>
-								<td>
-									<input type="text" size="20" name="param" class="form-control" />
-								</td>
-								<td>
-									<input type="hidden" name="btype" value="delete-message-by-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_DELETE_MATCHING_MESSAGES}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										&nbsp;
+									</td>
+									<td>
+										<input type="text" size="20" name="param" class="form-control" />
+									</td>
+									<td>
+										<input type="hidden" name="btype" value="delete-message-by-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 							{+END}
 
 							<tr>
@@ -405,138 +405,138 @@
 							</tr>
 
 							{+START,IF,{IS_STAFF}}
-							<tr>
-								<td>
-									{!W_TELEPORT_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="text" size="20" name="param" class="form-control" />
-								</td>
-								<td>
-									<input type="hidden" name="type" value="teleport-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_TELEPORT_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="text" size="20" name="param" class="form-control" />
+									</td>
+									<td>
+										<input type="hidden" name="type" value="teleport-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_IMPRISON_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="imprison-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_IMPRISON_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="imprison-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_HURT_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="hurt-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_HURT_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="hurt-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_HEAL_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="dehurt-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_HEAL_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="dehurt-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_BAN_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="ban-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_BAN_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="ban-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_UNBAN_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="unban-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_UNBAN_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="unban-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 
-							<tr>
-								<td>
-									{!W_TAKE_FROM_PERSON}
-								</td>
-								<td>
-									{PEOPLE}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									{!NA}
-								</td>
-								<td>
-									<input type="hidden" name="type" value="take-from-person" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
-								</td>
-							</tr>
+								<tr>
+									<td>
+										{!W_TAKE_FROM_PERSON}
+									</td>
+									<td>
+										{PEOPLE}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										{!NA}
+									</td>
+									<td>
+										<input type="hidden" name="type" value="take-from-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!PROCEED}</button>
+									</td>
+								</tr>
 							{+END}
 						</table>
 					</form>
@@ -566,9 +566,9 @@
 								<a href="{$PAGE_LINK*,_SELF:_SELF:addroom}"><img alt="{!W_ADD_ADJOINING_ROOM}" width="68" height="68" src="{$IMG*,buildr/addroom}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:addroom}">{!W_ADD_ADJOINING_ROOM}</a>
 							</div>
 							{+START,IF,{MAY_ADD_PORTAL}}
-							<div class="buildr-icon" style="width: {$?,{MAY_ADD_PORTAL},20%,25%};">
-								<a href="{$PAGE_LINK*,_SELF:_SELF:addportal}"><img alt="{!W_ADD_PORTAL}" width="68" height="68" src="{$IMG*,buildr/addportal}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:addportal}">{!W_ADD_PORTAL}</a>
-							</div>
+								<div class="buildr-icon" style="width: {$?,{MAY_ADD_PORTAL},20%,25%};">
+									<a href="{$PAGE_LINK*,_SELF:_SELF:addportal}"><img alt="{!W_ADD_PORTAL}" width="68" height="68" src="{$IMG*,buildr/addportal}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:addportal}">{!W_ADD_PORTAL}</a>
+								</div>
 							{+END}
 							<div class="buildr-icon" style="width: {$?,{MAY_ADD_PORTAL},20%,25%};">
 								<a href="{$PAGE_LINK*,_SELF:_SELF:additem}"><img alt="{!W_ADD_ITEM}" width="68" height="68" src="{$IMG*,buildr/additem}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:additem}">{!W_ADD_ITEM}</a>
@@ -596,43 +596,43 @@
 
 				<div class="toggleable-tray js-tray-content" style="{HIDE_MODIFICATIONS*}"{+START,IF,{HIDE_MODIFICATIONS}} aria-expanded="false"{+END}>
 					{+START,IF_NON_EMPTY,{ITEMS_OWNED}}
-					<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
-						{$INSERT_SPAMMER_BLACKHOLE}
+						<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
+							{$INSERT_SPAMMER_BLACKHOLE}
 
-						<label for="item">{!W_ITEMS}</label>: {ITEMS_OWNED} <input type="hidden" name="type" value="edititem" />
-						<button class="btn btn-primary btn-scri js-click-set-type-edititem admin--edit" type="submit">{+START,INCLUDE,ICON}NAME=admin/edit{+END} {!W_EDIT_ITEM}</button>
-						<button class="btn btn-danger btn-scri js-click-set-type-confirm" type="submit">{!W_DELETE_ITEM}</button>
-					</div></form>
+							<label for="item">{!W_ITEMS}</label>: {ITEMS_OWNED} <input type="hidden" name="type" value="edititem" />
+							<button class="btn btn-primary btn-scri js-click-set-type-edititem admin--edit" type="submit">{+START,INCLUDE,ICON}NAME=admin/edit{+END} {!W_EDIT_ITEM}</button>
+							<button class="btn btn-danger btn-scri js-click-set-type-confirm" type="submit">{!W_DELETE_ITEM}</button>
+						</div></form>
 
-					{+START,IF,{IS_STAFF}}
-					<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
-						{$INSERT_SPAMMER_BLACKHOLE}
+						{+START,IF,{IS_STAFF}}
+							<form method="post" action="{$PAGE_LINK*,_SELF:_SELF}"><div>
+								{$INSERT_SPAMMER_BLACKHOLE}
 
-						<label for="item">{!FROM}</label>: {ITEMS_OWNED} <label for="item2">{!TO}</label>: {ITEMS_OWNED_2} <input type="hidden" name="type" value="mergeitems" /> <button class="btn btn-primary btn-scri admin--merge" type="submit">{!W_MERGE_ITEMS}</button>
-					</div></form>
-					{+END}
+								<label for="item">{!FROM}</label>: {ITEMS_OWNED} <label for="item2">{!TO}</label>: {ITEMS_OWNED_2} <input type="hidden" name="type" value="mergeitems" /> <button class="btn btn-primary btn-scri admin--merge" type="submit">{!W_MERGE_ITEMS}</button>
+							</div></form>
+						{+END}
 					{+END}
 
 					{+START,IF,{$OR,{$IS_NON_EMPTY,{IS_ROOM_OWNER}},{$IS_NON_EMPTY,{IS_REALM_OWNER}}}}
-					<br />
-					<div class="clearfix buildr-icons-wrap">
-						{+START,IF,{IS_ROOM_OWNER}}
-						<div class="buildr-icon" style="width: {$?,{IS_REALM_OWNER},25%,50%};">
-							<a href="{$PAGE_LINK*,_SELF:_SELF:editroom}"><img alt="{!W_EDIT_ROOM}" width="68" height="68" src="{$IMG*,buildr/addroom}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:editroom}">{!W_EDIT_ROOM}</a>
+						<br />
+						<div class="clearfix buildr-icons-wrap">
+							{+START,IF,{IS_ROOM_OWNER}}
+								<div class="buildr-icon" style="width: {$?,{IS_REALM_OWNER},25%,50%};">
+									<a href="{$PAGE_LINK*,_SELF:_SELF:editroom}"><img alt="{!W_EDIT_ROOM}" width="68" height="68" src="{$IMG*,buildr/addroom}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:editroom}">{!W_EDIT_ROOM}</a>
+								</div>
+								<div class="buildr-icon" style="width: {$?,{IS_REALM_OWNER},25%,50%};">
+									<a href="{$PAGE_LINK*,_SELF:_SELF:confirm:btype=deleteroom}"><img alt="{!W_DELETE_ROOM}" width="68" height="68" src="{$IMG*,buildr/delroom}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:deleteroom}">{!W_DELETE_ROOM}</a>
+								</div>
+							{+END}
+							{+START,IF,{IS_REALM_OWNER}}
+								<div class="buildr-icon" style="width: {$?,{IS_ROOM_OWNER},25%,50%};">
+									<a href="{$PAGE_LINK*,_SELF:_SELF:editrealm}"><img alt="{!W_EDIT_REALM}" width="68" height="68" src="{$IMG*,buildr/realms}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:editrealm}">{!W_EDIT_REALM}</a>
+								</div>
+								<div class="buildr-icon" style="width: {$?,{IS_ROOM_OWNER},25%,50%};">
+									<a href="{$PAGE_LINK*,_SELF:_SELF:confirm:btype=deleterealm}"><img alt="{!W_DELETE_REALM}" width="68" height="68" src="{$IMG*,buildr/delrealm}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:deleterealm}">{!W_DELETE_REALM}</a>
+								</div>
+							{+END}
 						</div>
-						<div class="buildr-icon" style="width: {$?,{IS_REALM_OWNER},25%,50%};">
-							<a href="{$PAGE_LINK*,_SELF:_SELF:confirm:btype=deleteroom}"><img alt="{!W_DELETE_ROOM}" width="68" height="68" src="{$IMG*,buildr/delroom}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:deleteroom}">{!W_DELETE_ROOM}</a>
-						</div>
-						{+END}
-						{+START,IF,{IS_REALM_OWNER}}
-						<div class="buildr-icon" style="width: {$?,{IS_ROOM_OWNER},25%,50%};">
-							<a href="{$PAGE_LINK*,_SELF:_SELF:editrealm}"><img alt="{!W_EDIT_REALM}" width="68" height="68" src="{$IMG*,buildr/realms}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:editrealm}">{!W_EDIT_REALM}</a>
-						</div>
-						<div class="buildr-icon" style="width: {$?,{IS_ROOM_OWNER},25%,50%};">
-							<a href="{$PAGE_LINK*,_SELF:_SELF:confirm:btype=deleterealm}"><img alt="{!W_DELETE_REALM}" width="68" height="68" src="{$IMG*,buildr/delrealm}" /></a><br /><a href="{$PAGE_LINK*,_SELF:_SELF:deleterealm}">{!W_DELETE_REALM}</a>
-						</div>
-						{+END}
-					</div>
 					{+END}
 				</div>
 			</div>

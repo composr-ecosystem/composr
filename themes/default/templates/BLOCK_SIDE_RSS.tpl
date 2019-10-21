@@ -11,18 +11,18 @@
 				</a>
 
 				{+START,IF_NON_EMPTY,{TITLE}}
-				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{TITLE`}</a>
+					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{TITLE`}</a>
 				{+END}
 			</h3>
 
 			<div class="toggleable-tray js-tray-content">
 				{+START,IF_EMPTY,{CONTENT}}
-				<p class="nothing-here">{!NO_NEWS}</p>
+					<p class="nothing-here">{!NO_NEWS}</p>
 				{+END}
 				{+START,IF_NON_EMPTY,{CONTENT}}
-				<div class="webstandards-checker-off">
-					{CONTENT}
-				</div>
+					<div class="webstandards-checker-off">
+						{CONTENT}
+					</div>
 				{+END}
 			</div>
 		</div>

@@ -90,24 +90,24 @@
 					{$HIDDENS_FOR_GET_FORM,{ACTION_URL}}
 					<label for="fma-type">{!TOPIC_ACTIONS}: </label>
 					<select class="form-control form-control-sm dropdown-actions js-moderator-action-submit-form" name="type" id="fma-type">
-                    	<option value="browse">-</option>
-                    	{MODERATOR_ACTIONS}
+						<option value="browse">-</option>
+						{MODERATOR_ACTIONS}
 					</select>
 				</form>
 
 				{+START,IF,{MAY_CHANGE_MAX}}
 					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">
 						{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},forum_max}
-						
+
 						<label for="forum_max">{!PER_PAGE}:</label>
 						<select name="forum_max" id="forum_max" class="form-control form-control-sm js-max-change-submit-form">
-                             <option value="10"{$?,{$EQ,{MAX},10}, selected="selected",}>10</option>
-                             <option value="20"{$?,{$EQ,{MAX},20}, selected="selected",}>20</option>
-                             <option value="30"{$?,{$EQ,{MAX},30}, selected="selected",}>30</option>
-                             <option value="50"{$?,{$EQ,{MAX},50}, selected="selected",}>50</option>
-                             <option value="100"{$?,{$EQ,{MAX},100}, selected="selected",}>100</option>
-                             <option value="300"{$?,{$EQ,{MAX},300}, selected="selected",}>300</option>
-                   		</select>
+							<option value="10"{$?,{$EQ,{MAX},10}, selected="selected",}>10</option>
+							<option value="20"{$?,{$EQ,{MAX},20}, selected="selected",}>20</option>
+							<option value="30"{$?,{$EQ,{MAX},30}, selected="selected",}>30</option>
+							<option value="50"{$?,{$EQ,{MAX},50}, selected="selected",}>50</option>
+							<option value="100"{$?,{$EQ,{MAX},100}, selected="selected",}>100</option>
+							<option value="300"{$?,{$EQ,{MAX},300}, selected="selected",}>300</option>
+						</select>
 					</form>
 
 					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">

@@ -61,7 +61,7 @@ class Block_main_news_slider
             (array_key_exists('attach_to_url_filter', $map) ? $map['attach_to_url_filter'] : '0') == '1',
             array_key_exists('no_links', $map) ? $map['no_links'] : 0, array_key_exists('title', $map) ? $map['title'] : '',
             array_key_exists('member_based', $map) ? $map['member_based'] : '0', array_key_exists('blogs', $map) ? $map['blogs'] : '-1',
-            array_key_exists('historic', $map) ? $map['historic'] : '', 
+            array_key_exists('historic', $map) ? $map['historic'] : '',
             array_key_exists('select', $map) ? $map['select'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
             array_key_exists('select_and', $map) ? $map['select_and'] : '',

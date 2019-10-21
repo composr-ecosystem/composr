@@ -62,7 +62,7 @@ class Block_main_news_grid
             (array_key_exists('attach_to_url_filter', $map) ? $map['attach_to_url_filter'] : '0') == '1',
             array_key_exists('no_links', $map) ? $map['no_links'] : 0, array_key_exists('title', $map) ? $map['title'] : '',
             array_key_exists('member_based', $map) ? $map['member_based'] : '0', array_key_exists('blogs', $map) ? $map['blogs'] : '-1',
-            array_key_exists('historic', $map) ? $map['historic'] : '', 
+            array_key_exists('historic', $map) ? $map['historic'] : '',
             array_key_exists('param', $map) ? intval($map['param']) : 14,
             array_key_exists('multiplier', $map) ? floatval($map['multiplier']) : 0.5, array_key_exists('fallback_full', $map) ? intval($map['fallback_full']) : 3,
             array_key_exists('fallback_archive', $map) ? intval($map['fallback_archive']) : 6,

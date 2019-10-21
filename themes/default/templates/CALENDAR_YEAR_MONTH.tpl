@@ -17,7 +17,7 @@
 		<thead>
 			<tr>
 				{+START,IF,{$SSW}}
-				<th><span>{!FC_SUNDAY}</span></th>
+					<th><span>{!FC_SUNDAY}</span></th>
 				{+END}
 				<th><span>{!FC_MONDAY}</span></th>
 				<th><span>{!FC_TUESDAY}</span></th>
@@ -26,7 +26,7 @@
 				<th><span>{!FC_FRIDAY}</span></th>
 				<th><span>{!FC_SATURDAY}</span></th>
 				{+START,IF,{$NOT,{$SSW}}}
-				<th><span>{!FC_SUNDAY}</span></th>
+					<th><span>{!FC_SUNDAY}</span></th>
 				{+END}
 			</tr>
 		</thead>

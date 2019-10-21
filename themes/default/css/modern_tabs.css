@@ -99,11 +99,11 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 /*{+END}*/
 
 /*{+START,CSS_MODE,desktop}*/
-.modern-tab-body.modern-tab-body-edit {
-	padding-left: 0;
-	padding-right: 0;
-	margin: -1em -0.5em;
-}
+	.modern-tab-body.modern-tab-body-edit {
+		padding-left: 0;
+		padding-right: 0;
+		margin: -1em -0.5em;
+	}
 /*{+END}*/
 
 /* Sub tabs, nested */
@@ -142,7 +142,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 	border-bottom: 0;
 }
 
-.modern-subtab-headers > div.tab-active::after, 
+.modern-subtab-headers > div.tab-active::after,
 .modern-subtab-headers > div:hover::after {
 	position: absolute;
 	top: 50%;
@@ -170,9 +170,9 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 }
 
 /*{+START,CSS_MODE,desktop}*/
-.modern-subtab-headers > div > a {
-	min-width: 160px;
-}
+	.modern-subtab-headers > div > a {
+		min-width: 160px;
+	}
 /*{+END}*/
 
 .modern-subtab-headers>div>a, .modern-subtab-headers>div>a:visited, .modern-subtab-headers>div>a:active, .modern-subtab-headers>div>a:hover {
@@ -192,37 +192,36 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 }
 
 /*{+START,CSS_MODE,mobile}*/ /* Horizontally scrolling sub-tabs on mobile */
-.modern-tab-body.modern-tab-body-edit {
-	padding-left: 0;
-	padding-right: 0;
-	margin: -3px;
-}
+	.modern-tab-body.modern-tab-body-edit {
+		padding-left: 0;
+		padding-right: 0;
+		margin: -3px;
+	}
 
-.modern-subtabs {
-	display: block;
-}
+	.modern-subtabs {
+		display: block;
+	}
 
-.modern-subtab-headers {
-	margin-right: 0;
-	overflow: auto;
-}
+	.modern-subtab-headers {
+		margin-right: 0;
+		overflow: auto;
+	}
 
-/*.modern-subtab-headers::-webkit-scrollbar {*/
-	/*display: none;*/
-/*}*/
+	/*.modern-subtab-headers::-webkit-scrollbar {*/
+		/*display: none;*/
+	/*}*/
 
-.modern-subtab-headers > div {
-	display: table-cell;
-	text-align: center;
-}
+	.modern-subtab-headers > div {
+		display: table-cell;
+		text-align: center;
+	}
 
-.modern-subtab-headers > div.tab-active::after,
-.modern-subtab-headers > div:hover::after {
-	display: none;
-}
+	.modern-subtab-headers > div.tab-active::after,
+	.modern-subtab-headers > div:hover::after {
+		display: none;
+	}
 
-.modern-subtab-bodies {
-	padding: 0 10px;
-}
-
+	.modern-subtab-bodies {
+		padding: 0 10px;
+	}
 /*{+END}*/

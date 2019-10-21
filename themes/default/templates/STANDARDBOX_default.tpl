@@ -19,16 +19,16 @@
 							{+END}
 						</a>
 					{+END}
-	
+
 					{+START,IF_NON_EMPTY,{TOP_LINKS}}
 						{TOP_LINKS}
 					{+END}
-	
+
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{TITLE}</a>
 				</h3>
 			{+END}
 		{+END}
-	
+
 		{+START,IF_IN_ARRAY,OPTIONS,tray_open}
 		<div class="toggleable-tray js-tray-content">
 		{+END}
@@ -41,7 +41,7 @@
 			{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open,tray_closed}{+START,IF_NON_EMPTY,{TITLE}}
 				<h3>{TITLE}</h3>
 			{+END}{+END}
-	
+
 			{+START,IF_NON_EMPTY,{META}}
 				<div class="meta-details" role="note">
 					<dl class="meta-details-list">
@@ -51,9 +51,9 @@
 					</dl>
 				</div>
 			{+END}
-	
+
 			{$PARAGRAPH,{CONTENT}}
-	
+
 			{+START,IF_NON_EMPTY,{LINKS}}
 				<ul class="horizontal-links associated-links-block-group">
 					{+START,LOOP,LINKS}

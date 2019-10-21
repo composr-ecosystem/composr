@@ -7,7 +7,7 @@
 	{+START,IF_NON_EMPTY,{ENTRIES}}
 		<div class="gallery-actions">
 			{+START,IF_PASSED,SLIDESHOW_URL}
-			<a data-link-start-slideshow="{}" class="btn btn-primary btn-slideshow" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{SLIDESHOW_URL*}">{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</a>
+				<a data-link-start-slideshow="{}" class="btn btn-primary btn-slideshow" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{SLIDESHOW_URL*}">{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</a>
 			{+END}
 
 			{+START,IF_PASSED,SORTING}
@@ -16,7 +16,7 @@
 			{+END}
 		</div>
 	{+END}
-	
+
 	{$SET,ajax_block_main_gallery_embed_wrapper,ajax-block-main-gallery-embed-wrapper-{$RAND%}}
 	<div id="{$GET*,ajax_block_main_gallery_embed_wrapper}" data-ajaxify="{ callUrl: '{$GET;*,block_call_url}', callParamsFromTarget: ['^[^_]*_start$', '^[^_]*_max$'], targetsSelector: '.ajax-block-wrapper-links a, .ajax-block-wrapper-links form' }">
 		<div class="gallery-grid-cell-wrap raw-ajax-grow-spot">
@@ -46,4 +46,3 @@
 {+END}
 
 {$SET,support_mass_select,}
-

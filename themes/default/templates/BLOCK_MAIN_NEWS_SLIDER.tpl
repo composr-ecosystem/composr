@@ -9,7 +9,7 @@
 			{+END}
 		</ol>
 	{+END}
-	
+
 	<div class="cms-slider-inner">
 		{SLIDES}
 	</div>

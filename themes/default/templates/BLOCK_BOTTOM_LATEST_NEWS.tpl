@@ -5,18 +5,18 @@
 			{+START,IF_EMPTY,{NEWS_ITEMS}}
 				<p class="nothing-here">{$?,{BLOG},{!BLOG_NO_NEWS},{!NO_NEWS}}</p>
 			{+END}
-			{+START,IF_NON_EMPTY,{NEWS_ITEMS}} 
-			{+START,LOOP,NEWS_ITEMS}
-				<a class="news-item" href="{FULL_URL*}">
-					<div class="news-item-thumb">
-						<img src="{IMG_URL*}" alt="{$STRIP_TAGS*,{NEWS_TITLE}}" />
-					</div>
-					<div class="news-item-details">
-						<h4 class="news-item-heading">{NEWS_TITLE*}</h4>
-						<time class="news-item-date" datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{_DATE}}" itemprop="datePublished">{DATE*}</time>
-					</div>
-				</a>
-			{+END}
+			{+START,IF_NON_EMPTY,{NEWS_ITEMS}}
+				{+START,LOOP,NEWS_ITEMS}
+					<a class="news-item" href="{FULL_URL*}">
+						<div class="news-item-thumb">
+							<img src="{IMG_URL*}" alt="{$STRIP_TAGS*,{NEWS_TITLE}}" />
+						</div>
+						<div class="news-item-details">
+							<h4 class="news-item-heading">{NEWS_TITLE*}</h4>
+							<time class="news-item-date" datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{_DATE}}" itemprop="datePublished">{DATE*}</time>
+						</div>
+					</a>
+				{+END}
 			{+END}
 		</div>
 	</div>

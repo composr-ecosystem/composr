@@ -31,14 +31,14 @@
 						{+END}
 							<div class="download-now" itemprop="significantLinks">
 								{+START,INCLUDE,ICON}
-								NAME=menu/rich_content/downloads
-							   ICON_SIZE=24
-							{+END}
-							{+START,IF,{MAY_DOWNLOAD}}
-								<p class="download-link associated-link suggested-link"><a {+START,IF,{$NOT,{$INLINE_STATS}}} data-click-ga-track="{ category: '{!DOWNLOAD;^*}', action: '{ORIGINAL_FILENAME;^*}' }"{+END} rel="nofollow" href="{DOWNLOAD_URL*}"><strong>{!DOWNLOAD_NOW}</strong></a></p>
+									NAME=menu/rich_content/downloads
+									ICON_SIZE=24
+								{+END}
+								{+START,IF,{MAY_DOWNLOAD}}
+									<p class="download-link associated-link suggested-link"><a {+START,IF,{$NOT,{$INLINE_STATS}}} data-click-ga-track="{ category: '{!DOWNLOAD;^*}', action: '{ORIGINAL_FILENAME;^*}' }"{+END} rel="nofollow" href="{DOWNLOAD_URL*}"><strong>{!DOWNLOAD_NOW}</strong></a></p>
 								{+END}
 								{+START,IF,{$NOT,{MAY_DOWNLOAD}}}
-								<p>{!NO_DOWNLOAD_ACCESS}</p>
+									<p>{!NO_DOWNLOAD_ACCESS}</p>
 								{+END}
 								<p class="download-filesize">({FILE_SIZE*})</p>
 							</div>

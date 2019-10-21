@@ -9,7 +9,7 @@
 			</a>
 
 			{+START,IF_NON_EMPTY,{TITLE}}
-			<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!">{TITLE}</a>
+				<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!">{TITLE}</a>
 			{+END}
 		</h3>
 
@@ -34,9 +34,9 @@
 			{+END}
 
 			{+START,IF_NON_EMPTY,{SUBMIT_URL}}
-			<ul class="horizontal-links associated-links-block-group force-margin">
-				<li><a href="{SUBMIT_URL*}">{!ADD_TOPIC}</a></li>
-			</ul>
+				<ul class="horizontal-links associated-links-block-group force-margin">
+					<li><a href="{SUBMIT_URL*}">{!ADD_TOPIC}</a></li>
+				</ul>
 			{+END}
 		</div>
 	</div>

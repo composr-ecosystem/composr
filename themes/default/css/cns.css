@@ -272,7 +272,7 @@ div.cns-table-footer>div>div {
 	/*{+END}*/
 }
 
-.cns-topic .cns-forum-box-left, 
+.cns-topic .cns-forum-box-left,
 .cns-post-details {
 	background-color: {$GET,area_background};
 	color: {$GET,box_title_text};
@@ -477,7 +477,7 @@ div.cns-table-footer>div>div {
 	max-width: none;
 }
 
-.cns-topic-post-area > h2, 
+.cns-topic-post-area > h2,
 .cns-topic-post-area > h3 {
 	margin-top: 0;
 }
@@ -572,7 +572,7 @@ hr.cns-sig-barrier {
 	padding-right: 1em;
 }
 
-.cns-topic-control-functions label, 
+.cns-topic-control-functions label,
 .cns-topic-actions label {
 	white-space: nowrap;
 }

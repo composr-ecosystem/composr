@@ -11,24 +11,24 @@
 		{+END}
 
 		{+START,IF_NON_EMPTY,{LANGUAGES}}
-           <div class="wide-table-wrap"><table class="map-table form-table wide-table">
-               <colgroup>
-                   <col class="installer-left-column" />
-                   <col class="installer-right-column" />
-               </colgroup>
+			<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+				<colgroup>
+					<col class="installer-left-column" />
+					<col class="installer-right-column" />
+				</colgroup>
 
-               <tbody>
-                   <tr>
-                       <th class="form-table-field-name">{!PLEASE_CHOOSE_LANG} (&dagger;)</th>
-                       <td class="form-table-field-input">
-                           <div class="accessibility-hidden"><label for="default_lang">{!PLEASE_CHOOSE_LANG}</label></div>
-                           <select id="default_lang" name="default_lang">
-                               {LANGUAGES}
-                           </select>
-                       </td>
-                   </tr>
-               </tbody>
-           </table></div>
+				<tbody>
+					 <tr>
+						  <th class="form-table-field-name">{!PLEASE_CHOOSE_LANG} (&dagger;)</th>
+						  <td class="form-table-field-input">
+								<div class="accessibility-hidden"><label for="default_lang">{!PLEASE_CHOOSE_LANG}</label></div>
+								<select id="default_lang" name="default_lang">
+									 {LANGUAGES}
+								</select>
+						  </td>
+					 </tr>
+				</tbody>
+		  </table></div>
 		{+END}
 		{+START,IF_EMPTY,{LANGUAGES}}
 			<input type="hidden" name="default_lang" value="{$LANG*}" />

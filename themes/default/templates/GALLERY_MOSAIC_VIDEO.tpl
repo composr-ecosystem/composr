@@ -11,13 +11,13 @@
 		<div class="gallery-mosaic-item-overlay">
 			<div class="gallery-mosaic-item-overlay-top">
 				{+START,IF_PASSED,RATING_DETAILS}{+START,IF_NON_EMPTY,{$TRIM,{RATING_DETAILS}}}
-				<div class="left grating">{RATING_DETAILS}</div>
+					<div class="left grating">{RATING_DETAILS}</div>
 				{+END}{+END}
 
 				<div class="right">
 					<span class="views">{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} {VIEWS*} <span>{!VIEWS}</span></span>
 					{+START,IF_PASSED_AND_TRUE,COMMENT_COUNT}
-					<span class="comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END} {$COMMENT_COUNT,videos,{ID}}</span>
+						<span class="comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END} {$COMMENT_COUNT,videos,{ID}}</span>
 					{+END}
 				</div>
 			</div>

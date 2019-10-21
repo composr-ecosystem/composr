@@ -17,19 +17,19 @@
 				<h3>{!SELECT_CHATROOM}</h3>
 
 				{+START,IF_NON_EMPTY,{CHATROOMS}}
-				<ul class="actions-list">
-					{+START,LOOP,CHATROOMS}
-					<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{URL*}">{NAME*}</a> <em class="associated-details">({$?,{PRIVATE},{!CHATROOM_STATUS_PRIVATE},{!CHATROOM_STATUS_PUBLIC}})</em><span class="associated-details">({!STATIC_USERS_ONLINE,{$TIME*},{USERNAMES}})</span></li>
-					{+END}
-				</ul>
+					<ul class="actions-list">
+						{+START,LOOP,CHATROOMS}
+							<li>{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{URL*}">{NAME*}</a> <em class="associated-details">({$?,{PRIVATE},{!CHATROOM_STATUS_PRIVATE},{!CHATROOM_STATUS_PUBLIC}})</em><span class="associated-details">({!STATIC_USERS_ONLINE,{$TIME*},{USERNAMES}})</span></li>
+						{+END}
+					</ul>
 
-				<p class="chat-multi-tab">{+START,INCLUDE,ICON}NAME=help{+END} {!OPEN_CHATROOMS_IN_TABS}</p>
+					<p class="chat-multi-tab">{+START,INCLUDE,ICON}NAME=help{+END} {!OPEN_CHATROOMS_IN_TABS}</p>
 				{+END}
 				{+START,IF_EMPTY,{CHATROOMS}}
-				<p class="nothing-here">{!NO_CATEGORIES,chat}</p>
+					<p class="nothing-here">{!NO_CATEGORIES,chat}</p>
 				{+END}
 			</div>
-			
+
 			{+START,IF_NON_EMPTY,{ADD_CHATROOM_URL}{PRIVATE_CHATROOM}{BLOCKING_LINK}{MOD_LINK}{SETEFFECTS_LINK}}
 				<nav class="chat-actions">
 					<h3>{!OTHER_ACTIONS}</h3>

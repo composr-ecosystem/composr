@@ -40,7 +40,7 @@
 				<div class="buttons-group post-buttons wiki-post-buttons">
 					<div class="buttons-group-inner">
 						{BUTTONS}
-	
+
 						{+START,INCLUDE,BUTTON_SCREEN_ITEM}
 							{+START,IF,{$ADDON_INSTALLED,tickets}}
 								URL={$PAGE_LINK,_SEARCH:report_content:content_type=wiki_post:content_id={ID}:redirect={$SELF_URL&}}
@@ -51,7 +51,7 @@
 								REL=report
 							{+END}
 						{+END}
-	
+
 						{+START,IF,{STAFF_ACCESS}}
 							<div id="cell-mark-{ID*}" class="cns-off mass-select-marker wiki-mass-select-marker">
 								<form class="webstandards-checker-off" title="{!MARKER}: {ID*}" method="post" action="index.php" id="form-mark-{ID*}">

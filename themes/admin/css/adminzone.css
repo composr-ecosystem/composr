@@ -34,7 +34,7 @@ header {
 }
 
 .logo .logo-link {
-	font-size: 20px;	
+	font-size: 20px;
 	color: white;
 	height: 82px;
 }
@@ -98,7 +98,7 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 	margin-bottom: 0.75em;
 }
 
-.box---message .global-message > span, 
+.box---message .global-message > span,
 .box---message .global-message > p {
 	padding-top: 0;
 }

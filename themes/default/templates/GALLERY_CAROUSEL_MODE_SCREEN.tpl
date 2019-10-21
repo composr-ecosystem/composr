@@ -15,7 +15,7 @@
 
 	{+START,IF_NON_EMPTY,{CHILDREN}}
 		<h2 class="heading-subgalleries">{!SUBGALLERIES}</h2>
-	
+
 		{CHILDREN}
 
 		<h2 class="heading-images-and-videos">{!IMAGES_AND_VIDEOS_IN,{_TITLE}}</h2>

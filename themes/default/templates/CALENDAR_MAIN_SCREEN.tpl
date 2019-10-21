@@ -78,40 +78,40 @@
 		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
 			<div class="clearfix">
 				{+START,IF_NON_EMPTY,{EVENT_TYPES_1}}
-				<div class="right event-interest-box"><section class="box"><div class="box-inner">
-					<form title="{!INTERESTS}" method="post" action="{INTERESTS_URL*}">
-						{$INSERT_SPAMMER_BLACKHOLE}
+					<div class="right event-interest-box"><section class="box"><div class="box-inner">
+						<form title="{!INTERESTS}" method="post" action="{INTERESTS_URL*}">
+							{$INSERT_SPAMMER_BLACKHOLE}
 
-						<p><strong>{!DESCRIPTION_INTERESTS}</strong></p>
+							<p><strong>{!DESCRIPTION_INTERESTS}</strong></p>
 
-						<div class="calendar-main-page-hidden-data">
-							{EVENT_TYPES_1}
-						</div>
+							<div class="calendar-main-page-hidden-data">
+								{EVENT_TYPES_1}
+							</div>
 
-						<p class="proceed-button">
-							<button data-disable-on-click="1" class="btn btn-primary btn-scr buttons--choose" type="submit">{+START,INCLUDE,ICON}NAME=buttons/choose{+END} {!INTERESTS}</button>
-						</p>
-					</form>
-				</div></section></div>
+							<p class="proceed-button">
+								<button data-disable-on-click="1" class="btn btn-primary btn-scr buttons--choose" type="submit">{+START,INCLUDE,ICON}NAME=buttons/choose{+END} {!INTERESTS}</button>
+							</p>
+						</form>
+					</div></section></div>
 				{+END}
 				{+START,IF_NON_EMPTY,{EVENT_TYPES_2}}
-				<div class="left event-interest-box"><section class="box"><div class="box-inner">
-					<form title="{!FILTER}" action="{$URL_FOR_GET_FORM*,{FILTER_URL}}" method="get">
-						{$INSERT_SPAMMER_BLACKHOLE}
+					<div class="left event-interest-box"><section class="box"><div class="box-inner">
+						<form title="{!FILTER}" action="{$URL_FOR_GET_FORM*,{FILTER_URL}}" method="get">
+							{$INSERT_SPAMMER_BLACKHOLE}
 
-						{$HIDDENS_FOR_GET_FORM,{FILTER_URL}}
+							{$HIDDENS_FOR_GET_FORM,{FILTER_URL}}
 
-						<p><strong>{!DESCRIPTION_INTERESTS_2}</strong></p>
+							<p><strong>{!DESCRIPTION_INTERESTS_2}</strong></p>
 
-						<div class="calendar-main-page-hidden-data">
-							{EVENT_TYPES_2}
-						</div>
+							<div class="calendar-main-page-hidden-data">
+								{EVENT_TYPES_2}
+							</div>
 
-						<p class="proceed-button">
-							<button data-disable-on-click="1" class="btn btn-primary btn-scr buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
-						</p>
-					</form>
-				</div></section></div>
+							<p class="proceed-button">
+								<button data-disable-on-click="1" class="btn btn-primary btn-scr buttons--filter" type="submit">{+START,INCLUDE,ICON}NAME=buttons/filter{+END} {!FILTER}</button>
+							</p>
+						</form>
+					</div></section></div>
 				{+END}
 			</div>
 		</div>

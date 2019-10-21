@@ -10,9 +10,9 @@
 }
 
 /*{+START,CSS_MODE,desktop}*/
-.chat-rooms-and-chat-actions {
-	display: flex;
-}
+	.chat-rooms-and-chat-actions {
+		display: flex;
+	}
 /*{+END}*/
 
 .chat-rooms h3, .chat-actions h3 {
@@ -33,10 +33,10 @@
 }
 
 /*{+START,CSS_MODE,mobile}*/
-.chat-actions {
-	border-top: 1px solid {$GET,standard_border};
-	border-left: none;
-}
+	.chat-actions {
+		border-top: 1px solid {$GET,standard_border};
+		border-left: none;
+	}
 /*{+END}*/
 
 .chat-actions li {
@@ -236,8 +236,8 @@ html.is-touch-enabled .chat-message>div {
 	opacity: 1;
 }
 
-.chat-operator-staff a, 
-.chat-operator-staff a:visited, 
+.chat-operator-staff a,
+.chat-operator-staff a:visited,
 .chat-operator-staff a:hover {
 	color: {$GET,red_highlight_text};
 }
@@ -265,9 +265,9 @@ html.is-touch-enabled .chat-message>div {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-.chat-im-convos-inner {
-	display: flex;
-}
+	.chat-im-convos-inner {
+		display: flex;
+	}
 /*{+END}*/
 
 .alert-box-wrap {
@@ -337,9 +337,9 @@ html.is-touch-enabled .chat-message>div {
 }
 
 /*{+START,CSS_MODE,desktop}*/
-.chat-lobby-convos-areas {
-	min-width: 26em;
-}
+	.chat-lobby-convos-areas {
+		min-width: 26em;
+	}
 /*{+END}*/
 
 .chat-participant-avatar {

@@ -23,10 +23,10 @@
 			<h1 class="logo">
 				<a class="logo-link" target="_self" href="{$PAGE_LINK*,adminzone:}" rel="home">
 					{+START,IF,{$NOT,{$THEME_OPTION,use_site_name_text_as_logo}}}
-					<img class="logo-image" src="{$IMG*,logo/small_white_logo}" alt="{$SITE_NAME*}" />
+						<img class="logo-image" src="{$IMG*,logo/small_white_logo}" alt="{$SITE_NAME*}" />
 					{+END}
 					{+START,IF,{$THEME_OPTION,use_site_name_text_as_logo}}
-					<span class="logo-text">{$SITE_NAME*}</span>
+						<span class="logo-text">{$SITE_NAME*}</span>
 					{+END}
 				</a>
 			</h1>

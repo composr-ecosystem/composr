@@ -13,11 +13,11 @@
 				<div class="buttons-group-inner">
 					{$,Put first, so it associates with the enter key}
 					{+START,IF_NON_EMPTY,{TYPE_CODES}}
-					<button id="cart-update-button" class="btn btn-primary btn-scr buttons--cart-update button-faded js-click-btn-cart-update" type="submit" name="update" title="{!UPDATE_CART}">{+START,INCLUDE,ICON}NAME=buttons/cart_update{+END} {!_UPDATE_CART}</button>
+						<button id="cart-update-button" class="btn btn-primary btn-scr buttons--cart-update button-faded js-click-btn-cart-update" type="submit" name="update" title="{!UPDATE_CART}">{+START,INCLUDE,ICON}NAME=buttons/cart_update{+END} {!_UPDATE_CART}</button>
 					{+END}
 
 					{+START,IF_NON_EMPTY,{EMPTY_CART_URL}}
-					<button class="btn btn-primary btn-scri buttons--cart-empty js-click-btn-cart-empty" type="submit">{+START,INCLUDE,ICON}NAME=buttons/cart_empty{+END} {!EMPTY_CART}</button>
+						<button class="btn btn-primary btn-scri buttons--cart-empty js-click-btn-cart-empty" type="submit">{+START,INCLUDE,ICON}NAME=buttons/cart_empty{+END} {!EMPTY_CART}</button>
 					{+END}
 				</div>
 			</div>
@@ -25,7 +25,7 @@
 			<div class="buttons-group cart-continue-button" itemprop="significantLinks">
 				<div class="buttons-group-inner">
 					<input type="hidden" name="type_codes" id="type_codes" value="{TYPE_CODES*}" />
-	
+
 					{+START,IF_NON_EMPTY,{CONTINUE_SHOPPING_URL}}
 						<a class="btn btn-primary btn-scri menu--rich-content--catalogues--products" href="{CONTINUE_SHOPPING_URL*}"><span>{+START,INCLUDE,ICON}NAME=menu/rich_content/catalogues/products{+END} {!CONTINUE_SHOPPING}</span></a>
 					{+END}
@@ -47,27 +47,27 @@
 	{+END}
 
 	{+START,IF_NON_EMPTY,{EMPTY_CART_URL}}
-       <form title="{!PRIMARY_PAGE_FORM}" method="post" enctype="multipart/form-data" action="{NEXT_URL*}">
-           {$INSERT_SPAMMER_BLACKHOLE}
-   
-           {+START,IF_PASSED,FIELDS}
-               <div class="wide-table-wrap"><table class="map-table form-table wide-table">
-                   {+START,IF,{$NOT,{$MOBILE}}}
-                       <colgroup>
-                           <col class="purchase-field-name-column" />
-                           <col class="purchase-field-input-column" />
-                       </colgroup>
-                   {+END}
-   
-                   <tbody>
-                       {FIELDS}
-                   </tbody>
-               </table></div>
-           {+END}
-   
-           <p class="purchase-button">
-               <button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed js-click-do-cart-form-submit" accesskey="u" type="button">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!CHECKOUT}</button>
-           </p>
-       </form>
+		<form title="{!PRIMARY_PAGE_FORM}" method="post" enctype="multipart/form-data" action="{NEXT_URL*}">
+			{$INSERT_SPAMMER_BLACKHOLE}
+
+			{+START,IF_PASSED,FIELDS}
+				<div class="wide-table-wrap"><table class="map-table form-table wide-table">
+					{+START,IF,{$NOT,{$MOBILE}}}
+						<colgroup>
+							<col class="purchase-field-name-column" />
+							<col class="purchase-field-input-column" />
+						</colgroup>
+					{+END}
+
+					<tbody>
+						{FIELDS}
+					</tbody>
+				</table></div>
+			{+END}
+
+			<p class="purchase-button">
+				<button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed js-click-do-cart-form-submit" accesskey="u" type="button">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!CHECKOUT}</button>
+			</p>
+		</form>
 	{+END}
 </div>

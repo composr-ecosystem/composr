@@ -17,15 +17,15 @@
 
 		<div class="toggleable-tray js-tray-content">
 			{+START,IF_NON_EMPTY,{DATES}}
-			<h4 class="checklist-header">{!REGULAR_TASKS}</h4>
+				<h4 class="checklist-header">{!REGULAR_TASKS}</h4>
 
-			{DATES}
+				{DATES}
 			{+END}
 
 			{+START,IF_NON_EMPTY,{TODO_COUNTS}}
-			<h4 class="checklist-header">{!ONE_OFF_TASKS}</h4>
+				<h4 class="checklist-header">{!ONE_OFF_TASKS}</h4>
 
-			{TODO_COUNTS}
+				{TODO_COUNTS}
 			{+END}
 
 			<h4 class="checklist-header">{!CUSTOM_TASKS}</h4>
@@ -51,11 +51,11 @@
 			</form>
 
 			{+START,IF_NON_EMPTY,{NO_TIMES}}
-			<h4 class="checklist-header">{!OTHER_MAINTENANCE}</h4>
+				<h4 class="checklist-header">{!OTHER_MAINTENANCE}</h4>
 
-			<div class="clearfix checklist-other-maintenance">
-				{NO_TIMES}
-			</div>
+				<div class="clearfix checklist-other-maintenance">
+					{NO_TIMES}
+				</div>
 			{+END}
 		</div>
 	</div>

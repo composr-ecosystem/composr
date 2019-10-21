@@ -1709,7 +1709,7 @@
         }
     }
 
-    $util.inherits(Header, $cms.View, /**@lends $cms.views.Header#*/{ 
+    $util.inherits(Header, $cms.View, /**@lends $cms.views.Header#*/{
         events: function () {
             return {
                 'click': 'handleClicking',
@@ -2086,7 +2086,7 @@
             var mainMenuItemsList = this.$('.menu-dropdown-items-main');
 
             if ((this.getHeaderView() != null) && this.getHeaderView().isSticky() && $cms.isCssMode('mobile')) {
-                // Need to make the menu items section scrollable on mobile for when it exceeds screen size 
+                // Need to make the menu items section scrollable on mobile for when it exceeds screen size
                 var top = mainMenuItemsList.getBoundingClientRect().top + 'px';
                 mainMenuItemsList.style.maxHeight = 'calc(100vh - ' + top + ')';
             } else {

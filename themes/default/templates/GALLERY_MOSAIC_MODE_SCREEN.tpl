@@ -12,7 +12,7 @@
 
 	{+START,IF_NON_EMPTY,{CHILDREN}}
 		<h2 class="heading-subgalleries">{!SUBGALLERIES}</h2>
-	
+
 		{CHILDREN}
 	{+END}
 

@@ -187,13 +187,13 @@ td.form-table-field-input .form-screen-input-multi-list {
 	margin-top: 4px;
 }
 
-.form-table-field-name, 
-.form-table-field-input, 
+.form-table-field-name,
+.form-table-field-input,
 .form-table-huge-field,
 th.form-table-field-name, /* Extra specificity to take precedence over th.de-th */
-.form-table-field-spacer>th, 
-.form-table-field-spacer>td, 
-.form-table-description-above-cell, 
+.form-table-field-spacer>th,
+.form-table-field-spacer>td,
+.form-table-description-above-cell,
 .form-table-description-under-cell {
 	border: 1px solid {$GET,standard_border};
 	color: {$GET,slightly_seeded_text};
@@ -917,7 +917,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	clear: both;
 	content: "";
 }
- 
+
 .fields-set-contents .associated-details {
 	margin-top: 0.2em;
 }
@@ -1080,7 +1080,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 	border: 1px dotted {$GET,native_ui_foreground};
 }
 
-#wysiwyg-editor .comcode-fake-table > div, 
+#wysiwyg-editor .comcode-fake-table > div,
 #wysiwyg-editor .fp-col-block {
 	outline: 1px dotted;
 	margin: 1px 0;

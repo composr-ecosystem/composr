@@ -31,7 +31,7 @@
 	{+START,IF_NON_EMPTY,{CATEGORY}}{+START,IF_NON_EMPTY,{CATEGORY_URL}}
 		<a href="{CATEGORY_URL*}" class="news-grid-item-category btn btn-secondary">{CATEGORY*}</a>
 	{+END}{+END}
-	
+
 	{+START,SET,content_box_title}
 		{+START,IF,{GIVE_CONTEXT}}
 			{!CONTENT_IS_OF_TYPE,{!NEWS},{NEWS_TITLE}}
@@ -52,7 +52,7 @@
 	<div class="news-grid-item-details" role="note">
 		<ul class="horizontal-links">
 			{+START,SET,author_details}
-				{+START,IF,{$IS_NON_EMPTY,{AUTHOR_URL}}} 
+				{+START,IF,{$IS_NON_EMPTY,{AUTHOR_URL}}}
 					{+START,INCLUDE,MEMBER_TOOLTIP}SUBMITTER={$AUTHOR_MEMBER,{AUTHOR}}{+END}
 					<a href="{AUTHOR_URL*}" title="{!AUTHOR}: {AUTHOR*}">{AUTHOR*}</a>
 				{+END}

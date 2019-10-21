@@ -14,11 +14,11 @@
 	<h1 class="logo container">
 		<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">
 			{+START,IF,{$NOT,{$THEME_OPTION,use_site_name_text_as_logo}}}
-			<img class="logo-image logo-image-large" {+START,IF,{$MOBILE}}style="display: none;"{+END} src="{$LOGO_URL*}" alt="{$SITE_NAME*}" />
-			<img class="logo-image logo-image-color" {+START,IF,{$DESKTOP}}style="display: none;"{+END} src="{$IMG*,logo/small_logo}" alt="{$SITE_NAME*}" />
+				<img class="logo-image logo-image-large" {+START,IF,{$MOBILE}}style="display: none;"{+END} src="{$LOGO_URL*}" alt="{$SITE_NAME*}" />
+				<img class="logo-image logo-image-color" {+START,IF,{$DESKTOP}}style="display: none;"{+END} src="{$IMG*,logo/small_logo}" alt="{$SITE_NAME*}" />
 			{+END}
 			{+START,IF,{$THEME_OPTION,use_site_name_text_as_logo}}
-			<span class="logo-text">{$SITE_NAME*}</span>
+				<span class="logo-text">{$SITE_NAME*}</span>
 			{+END}
 		</a>
 	</h1>
@@ -31,24 +31,24 @@
 
 				{$,Login form for guests}
 				{+START,IF,{$IS_GUEST}}{+START,IF,{$CONFIG_OPTION,block_top_login}}
-				<div class="top-form top-login">
-					{$BLOCK,block=top_login}
-				</div>
+					<div class="top-form top-login">
+						{$BLOCK,block=top_login}
+					</div>
 				{+END}{+END}
 
 				{+START,IF,{$NOT,{$IS_GUEST}}}{+START,IF,{$OR,{$CONFIG_OPTION,block_top_notifications},{$CONFIG_OPTION,block_top_notifications},{$CONFIG_OPTION,block_top_personal_stats}}}
-				<div class="top-buttons">
-					{+START,IF,{$CONFIG_OPTION,block_top_language,1}}{$BLOCK,block=top_language}{+END}
+					<div class="top-buttons">
+						{+START,IF,{$CONFIG_OPTION,block_top_language,1}}{$BLOCK,block=top_language}{+END}
 
-					{+START,IF,{$CONFIG_OPTION,block_top_notifications}}{$BLOCK,block=top_notifications}{+END}
+						{+START,IF,{$CONFIG_OPTION,block_top_notifications}}{$BLOCK,block=top_notifications}{+END}
 
-					{+START,IF,{$CONFIG_OPTION,block_top_personal_stats}}{$BLOCK,block=top_personal_stats}{+END}
+						{+START,IF,{$CONFIG_OPTION,block_top_personal_stats}}{$BLOCK,block=top_personal_stats}{+END}
 
-					{$,Search box for logged in users [could show to guests, except space is lacking]}
-					{+START,IF,{$AND,{$ADDON_INSTALLED,search},{$DESKTOP},{$NOT,{$IS_GUEST}}}}{+START,IF,{$CONFIG_OPTION,block_top_search,1}}
-						{$BLOCK,block=top_search,block_id=desktop,failsafe=1,limit_to={$?,{$MATCH_KEY_MATCH,forum:_WILD},cns_posts,all_defaults}}
-					{+END}{+END}
-				</div>
+						{$,Search box for logged in users [could show to guests, except space is lacking]}
+						{+START,IF,{$AND,{$ADDON_INSTALLED,search},{$DESKTOP},{$NOT,{$IS_GUEST}}}}{+START,IF,{$CONFIG_OPTION,block_top_search,1}}
+							{$BLOCK,block=top_search,block_id=desktop,failsafe=1,limit_to={$?,{$MATCH_KEY_MATCH,forum:_WILD},cns_posts,all_defaults}}
+						{+END}{+END}
+					</div>
 				{+END}{+END}
 			</div>
 		</div>

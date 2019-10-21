@@ -12,40 +12,40 @@
 			<div class="box-inner">
 				<ul class="horizontal-links">
 					<li>{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END} {!ADDED} <time datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{ADD_DATE_RAW}}" itemprop="datePublished">{ADD_DATE*}</time></li>
-					
+
 					<li>
 						{+START,INCLUDE,ICON}NAME=content_types/member{+END}
 						{!BY}
 						<a rel="author" href="{$MEMBER_PROFILE_URL*,{SUBMITTER}}" itemprop="author">{$USERNAME*,{SUBMITTER},1}</a>
 						{+START,INCLUDE,MEMBER_TOOLTIP}{+END}
 					</li>
-	
+
 					{+START,IF_NON_EMPTY,{EDIT_DATE}}
-					<li>{+START,INCLUDE,ICON}NAME=admin/edit{+END} {!EDITED} {EDIT_DATE*}</li>
+						<li>{+START,INCLUDE,ICON}NAME=admin/edit{+END} {!EDITED} {EDIT_DATE*}</li>
 					{+END}
-					
+
 					{+START,IF,{$INLINE_STATS}}
-					<li>{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} {VIEWS*} {!COUNT_VIEWS}</li>
+						<li>{+START,INCLUDE,ICON}NAME=cns_topic_modifiers/hot{+END} {VIEWS*} {!COUNT_VIEWS}</li>
 					{+END}
-		
+
 					{+START,IF_NON_EMPTY,{RATING_DETAILS}}
 						{$SET,rating,{$RATING,{+START,IF_PASSED,VIDEO}videos{+END}{+START,IF_NON_PASSED,VIDEO}images{+END},{ID},{SUBMITTER},,,RATING_INLINE_DYNAMIC}}
 						{+START,IF_NON_EMPTY,{$TRIM,{$GET,rating}}}
 							<li>{!RATING} {$GET,rating}</li>
 						{+END}
 					{+END}
-		
+
 					{+START,IF_NON_EMPTY,{$REVIEW_STATUS,{MEDIA_TYPE},{ID}}}
-					<li>{$REVIEW_STATUS,{MEDIA_TYPE},{ID}}</li>
+						<li>{$REVIEW_STATUS,{MEDIA_TYPE},{ID}}</li>
 					{+END}
-		
+
 					{+START,IF,{$ADDON_INSTALLED,recommend}}{+START,IF,{$CONFIG_OPTION,enable_ecards}}{+START,IF_NON_PASSED,VIDEO}
-					<li>
-						{+START,INCLUDE,ICON}NAME=file_types/email_link{+END}
-						<a href="{$PAGE_LINK*,:recommend:browse:subject={!ECARD_FOR_YOU_SUBJECT}:page_title={!SEND_AS_ECARD}:s_message={!ECARD_FOR_YOU,{$SELF_URL},{URL*},{$SITE_NAME}}:ecard=1}">
-							{!SEND_AS_ECARD}
-						</a>
-					</li>
+						<li>
+							{+START,INCLUDE,ICON}NAME=file_types/email_link{+END}
+							<a href="{$PAGE_LINK*,:recommend:browse:subject={!ECARD_FOR_YOU_SUBJECT}:page_title={!SEND_AS_ECARD}:s_message={!ECARD_FOR_YOU,{$SELF_URL},{URL*},{$SITE_NAME}}:ecard=1}">
+								{!SEND_AS_ECARD}
+							</a>
+						</li>
 					{+END}{+END}{+END}
 				</ul>
 			</div>

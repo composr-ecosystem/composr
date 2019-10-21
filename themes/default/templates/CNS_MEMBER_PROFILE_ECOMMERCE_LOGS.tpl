@@ -2,7 +2,7 @@
 	{+START,IF_EMPTY,{CONTENT}}
 		<p class="nothing-here">{!NO_ENTRIES}</p>
 	{+END}
-	
+
 	{+START,IF_NON_EMPTY,{CONTENT}}
 		{CONTENT}
 	{+END}

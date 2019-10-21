@@ -7,8 +7,8 @@
 {$SET,img_html,<img class="icon" alt="" src="{$GET*,img}" />}
 
 {+START,IF,{$PREG_MATCH,^{$BASE_URL}/themes/[^/]+/images(_custom)?/icons/,{$GET,img}}}
-{$SET,img_name,{$PREG_REPLACE,\.(png|gif|svg)$,,{$PREG_REPLACE,^{$BASE_URL}/themes/[^/]+/images(_custom)?/icons/,,{$GET,img}}}}
-{$SET,img_html,{+START,INCLUDE,ICON}NAME={$GET,img_name}{+END}}
+	{$SET,img_name,{$PREG_REPLACE,\.(png|gif|svg)$,,{$PREG_REPLACE,^{$BASE_URL}/themes/[^/]+/images(_custom)?/icons/,,{$GET,img}}}}
+	{$SET,img_html,{+START,INCLUDE,ICON}NAME={$GET,img_name}{+END}}
 {+END}
 
 {+START,IF,{TOP_LEVEL}}
@@ -18,9 +18,9 @@
 		<span class="menu-dropdown-item-caption">{CAPTION}</span>
 	</a>
 	{+START,IF,{$GET,HAS_CHILDREN}}
-	<ul aria-haspopup="true" class="menu-dropdown-items nlevel" style="display: none">
-		{CHILDREN}
-	</ul>
+		<ul aria-haspopup="true" class="menu-dropdown-items nlevel" style="display: none">
+			{CHILDREN}
+		</ul>
 	{+END}
 </li>
 {+END}
@@ -33,14 +33,14 @@
 	</a>
 
 	{+START,IF,{$GET,HAS_CHILDREN}}
-	<ul aria-haspopup="true" class="menu-dropdown-items nlevel" style="display: none">
-		{+START,IF_NON_EMPTY,{URL}}{$,Add duplicate parent link in child items that can be opened when using the hamburger menu (parent itself will toggle the child items)}
-		<li class="block-mobile menu-dropdown-item nlevel {$?,{CURRENT},current,non-current} has-img">
-			<a{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END} class="menu-dropdown-item-a nlevel-link">{+START,IF_NON_EMPTY,{$GET,img}}<span class="menu-dropdown-item-icon">{$GET,img_html}</span>{+END}<span class="menu-dropdown-item-caption">{CAPTION}</span></a>
-		</li>
-		{+END}
-		{CHILDREN}
-	</ul>
+		<ul aria-haspopup="true" class="menu-dropdown-items nlevel" style="display: none">
+			{+START,IF_NON_EMPTY,{URL}}{$,Add duplicate parent link in child items that can be opened when using the hamburger menu (parent itself will toggle the child items)}
+			<li class="block-mobile menu-dropdown-item nlevel {$?,{CURRENT},current,non-current} has-img">
+				<a{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END} class="menu-dropdown-item-a nlevel-link">{+START,IF_NON_EMPTY,{$GET,img}}<span class="menu-dropdown-item-icon">{$GET,img_html}</span>{+END}<span class="menu-dropdown-item-caption">{CAPTION}</span></a>
+			</li>
+			{+END}
+			{CHILDREN}
+		</ul>
 	{+END}
 </li>
 {+END}

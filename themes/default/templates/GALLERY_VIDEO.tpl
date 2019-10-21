@@ -11,7 +11,7 @@
 	</div>
 
 	{+START,IF_PASSED,RATING_DETAILS}{+START,IF_NON_EMPTY,{RATING_DETAILS}}
-	<div class="grating">{RATING_DETAILS}</div>
+		<div class="grating">{RATING_DETAILS}</div>
 	{+END}{+END}
 
 	<h3 class="gallery-grid-item-heading">
@@ -26,9 +26,8 @@
 			</li>
 			<li><a href="{VIEW_URL*}" title="{$DATE_TIME*,{ADD_DATE_RAW}}" class="subtle-link">{$FROM_TIMESTAMP,%e %b %Y,{ADD_DATE_RAW*}}</a></li>
 			{+START,IF_PASSED_AND_TRUE,COMMENT_COUNT}
-			<li><a href="{VIEW_URL*}" class="subtle-link">{$COMMENT_COUNT,videos,{ID}}</a></li>
+				<li><a href="{VIEW_URL*}" class="subtle-link">{$COMMENT_COUNT,videos,{ID}}</a></li>
 			{+END}
 		</ul>
 	</div>
 </div>
-

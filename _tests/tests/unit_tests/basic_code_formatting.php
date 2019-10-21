@@ -150,6 +150,8 @@ class basic_code_formatting_test_set extends cms_test_case
 
         foreach ($this->files as $path) {
             $exceptions = array(
+                '_tests/assets/text',
+                '_tests/assets/spreadsheets',
                 '_tests/codechecker/netbeans',
                 '_tests/simpletest',
                 'data/ace',
@@ -207,6 +209,8 @@ class basic_code_formatting_test_set extends cms_test_case
 
         foreach ($this->files as $path) {
             $exceptions = array(
+                '_tests/assets/text',
+                '_tests/assets/spreadsheets',
                 '_tests/simpletest',
                 'data/ckeditor',
                 'sources_custom/aws',
@@ -275,6 +279,8 @@ class basic_code_formatting_test_set extends cms_test_case
             }
 
             $exceptions = array(
+                '_tests/assets/text',
+                '_tests/assets/spreadsheets',
                 'tracker',
                 'data/ace',
                 'data/ckeditor',

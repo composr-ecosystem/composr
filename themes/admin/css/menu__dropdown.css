@@ -82,58 +82,58 @@ For example:
 		border-bottom: 1px solid {$GET,standard_border};
 	}
 
-   .menu-dropdown-item {
-      color: {$GET,BW};
-      background-color: {$GET,area_5_background};
-      border-top: 1px solid {$GET,standard_border};
-      border-left: 1px solid {$GET,standard_border};
-      transition: background-color 0.15s ease-in-out;
-   }
+	.menu-dropdown-item {
+		color: {$GET,BW};
+		background-color: {$GET,area_5_background};
+		border-top: 1px solid {$GET,standard_border};
+		border-left: 1px solid {$GET,standard_border};
+		transition: background-color 0.15s ease-in-out;
+	}
 
-   .menu-dropdown-item-a {
-       padding: 1.2em 1em;
-   }
+	.menu-dropdown-item-a {
+		 padding: 1.2em 1em;
+	}
 
 	.menu-dropdown-item.nlevel {
 		margin-left: 2em;
 	}
 
-   .menu-dropdown-item.has-children > .menu-dropdown-item-a::after {
-       content: '';
-       float: right;
-       width: 0;
-       height: 0;
-       margin-top: 5px;
-       border-style: solid;
-       border-width: 6px 6px 0 6px; /* Downward triangle */
-       border-color: currentColor transparent transparent transparent;
-   }
+	.menu-dropdown-item.has-children > .menu-dropdown-item-a::after {
+		 content: '';
+		 float: right;
+		 width: 0;
+		 height: 0;
+		 margin-top: 5px;
+		 border-style: solid;
+		 border-width: 6px 6px 0 6px; /* Downward triangle */
+		 border-color: currentColor transparent transparent transparent;
+	}
 
-   .menu-dropdown-item.has-children.is-expanded > .menu-dropdown-item-a::after {
-       border-width: 0 6px 6px 6px; /* Upward triangle */
-       border-color: transparent transparent currentColor transparent;
-   }
+	.menu-dropdown-item.has-children.is-expanded > .menu-dropdown-item-a::after {
+		 border-width: 0 6px 6px 6px; /* Upward triangle */
+		 border-color: transparent transparent currentColor transparent;
+	}
 
-   .menu-dropdown-item:hover,
-   .menu-dropdown-item.current,
-   .menu-dropdown-item.is-expanded {
-      background-color: {$GET,area_hover_2_background};
-   }
+	.menu-dropdown-item:hover,
+	.menu-dropdown-item.current,
+	.menu-dropdown-item.is-expanded {
+		background-color: {$GET,area_hover_2_background};
+	}
 
-   .menu-dropdown-item:focus-within {
-      background-color: {$GET,area_hover_2_background};
-   }
+	.menu-dropdown-item:focus-within {
+		background-color: {$GET,area_hover_2_background};
+	}
 /*{+END}*/
 
 /*{+START,CSS_MODE,desktop}*/
 	.menu-dropdown-toggle-btn {
 		display: none;
 	}
-	
+
 	.menu-dropdown-items-main {
 		display: flex;
 	}
-	
+
 	.menu-dropdown-item.toplevel {
 		border-right: 1px solid #444;
 		flex-grow: 1;
@@ -143,10 +143,9 @@ For example:
 		border-left: 1px solid #444;
 	}
 
-   .menu-dropdown-item-a {
-       padding: 0.5em;
-		
-   }
+	.menu-dropdown-item-a {
+		 padding: 0.5em;
+	}
 
 	.menu-dropdown-item-a,
 	.menu-dropdown-item-a:hover {
@@ -160,10 +159,10 @@ For example:
 		float: left;
 	}
 
-   .menu-dropdown-item-a.toplevel-link {
+	.menu-dropdown-item-a.toplevel-link {
 		padding: 15px 0;
 		text-align: center;
-   }
+	}
 
 	.menu-dropdown-item-a.toplevel-link .menu-dropdown-item-icon {
 		text-align: center;
@@ -176,20 +175,20 @@ For example:
 		height: 24px;
 	}
 
-   .menu-dropdown-item.toplevel:hover > a,
-   .menu-dropdown-item-a.toplevel-link:hover,
-   .menu-dropdown-item-a.toplevel-link:focus {
-       background: rgba(255, 255, 255, 0.1);
-   }
+	.menu-dropdown-item.toplevel:hover > a,
+	.menu-dropdown-item-a.toplevel-link:hover,
+	.menu-dropdown-item-a.toplevel-link:focus {
+		 background: rgba(255, 255, 255, 0.1);
+	}
 
-   .menu-dropdown-item.nlevel.has-children > a::after {
-       font-family: sans-serif;
-       content: '\025BA'; /* Rightward triangle */
-       float: right;
-       font-size: 0.7em;
-       margin: 0.5em 0 0 1em;
-       transform: scale(0.6, 1);
-   }
+	.menu-dropdown-item.nlevel.has-children > a::after {
+		 font-family: sans-serif;
+		 content: '\025BA'; /* Rightward triangle */
+		 float: right;
+		 font-size: 0.7em;
+		 margin: 0.5em 0 0 1em;
+		 transform: scale(0.6, 1);
+	}
 
 	.menu-dropdown-items.nlevel {
 		border-top: 1px solid {$GET,standard_border};
@@ -198,17 +197,17 @@ For example:
 		border-bottom-left-radius: {$GET,border_radius};
 		border-bottom-right-radius: {$GET,border_radius};
 	}
-	
+
 	.menu-dropdown-items.nlevel .menu-dropdown-item.last > a {
 		border-bottom-left-radius: {$GET,border_radius};
 		border-bottom-right-radius: {$GET,border_radius};
 	}
-	
+
 	.menu-dropdown-items.nlevel .menu-dropdown-items.nlevel {
 		margin-top: -1px; /* To compensate for border size */
 		border-top-right-radius: {$GET,border_radius};
 	}
-	
+
 	.menu-dropdown-items.nlevel .menu-dropdown-items.nlevel .menu-dropdown-item.first > a {
 		border-top-right-radius: {$GET,border_radius};
 	}
@@ -225,22 +224,22 @@ For example:
 		color: {$GET,a.hover};
 	}
 
-   .menu-dropdown-item.nlevel > a,
-   .menu-dropdown-item.nlevel .menu-spacer {
+	.menu-dropdown-item.nlevel > a,
+	.menu-dropdown-item.nlevel .menu-spacer {
 		background-color: {$GET,dropdown_menu_item_background};
 		font-weight: normal;
 		border-bottom: 1px solid {$GET,standard_border};
 		min-height: 20px;
 
 		/* We do want wrapping for this, as menu labels could be longer than the available space between the start of the dropdown label and the edge of the fixed width */
-        white-space: normal;
+		white-space: normal;
 	}
 
 	.menu-dropdown .nlevel .menu-spacer {
 		display: block;
 		padding-right: 0;
 	}
-	
+
 	.menu-dropdown-item.nlevel > a,
 	.menu-dropdown-item.nlevel > a:visited {
 		color: {$GET,a.link};

@@ -1,17 +1,17 @@
 {$REQUIRE_JAVASCRIPT,checking}
 
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
-	<section id="tray-actionlog" data-toggleable-tray="{ save: true }" data-tpl="blockMainStaffActions" class="box box---block-main-staff-actions">
-		<div class="box-inner">
-			<h3 class="toggleable-tray-title js-tray-header">
-               <a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
-                   {+START,INCLUDE,ICON}
-                       NAME=trays/contract
-                       ICON_SIZE=24
-                   {+END}
-               </a>
-               <a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!MODULE_TRANS_NAME_admin_actionlog}</a> <span class="associated-details">(<a title="{!MODULE_TRANS_NAME_admin_actionlog}" href="{$PAGE_LINK*,adminzone:admin_actionlog}">{$LCASE,{!MORE}}</a>)</span>
-           </h3>
+<section id="tray-actionlog" data-toggleable-tray="{ save: true }" data-tpl="blockMainStaffActions" class="box box---block-main-staff-actions">
+	<div class="box-inner">
+		<h3 class="toggleable-tray-title js-tray-header">
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
+				{+START,INCLUDE,ICON}
+					NAME=trays/contract
+					ICON_SIZE=24
+				{+END}
+			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!MODULE_TRANS_NAME_admin_actionlog}</a> <span class="associated-details">(<a title="{!MODULE_TRANS_NAME_admin_actionlog}" href="{$PAGE_LINK*,adminzone:admin_actionlog}">{$LCASE,{!MORE}}</a>)</span>
+		</h3>
 
 		<div class="toggleable-tray js-tray-content">
 {+END}
@@ -44,7 +44,7 @@
 			</div>
 
 {+START,IF,{$NEQ,{$COMMA_LIST_GET,{BLOCK_PARAMS},raw},1}}
-		    </div>
 		</div>
-	</section>
+	</div>
+</section>
 {+END}

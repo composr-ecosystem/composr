@@ -108,7 +108,7 @@
 	background: url('{$IMG;,cns_emoticons/party}') top right no-repeat;
 }
 
-.quiz-form tr.filledin.field-input th, 
+.quiz-form tr.filledin.field-input th,
 .quiz-form tr.filledin.field-input td {
 	opacity: 0.4;
 	transition: opacity 0.15s ease-in-out;
@@ -118,9 +118,9 @@
 	opacity: 0.5;
 }*/
 
-.quiz-form tr.field-input:hover th, 
-.quiz-form tr.field-input:hover td, 
-html.is-touch-enabled .quiz-form tr.field-input th, 
+.quiz-form tr.field-input:hover th,
+.quiz-form tr.field-input:hover td,
+html.is-touch-enabled .quiz-form tr.field-input th,
 html.is-touch-enabled .quiz-form tr.field-input td {
 	opacity: 1.0 !important;
 }

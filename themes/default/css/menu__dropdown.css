@@ -85,25 +85,25 @@ For example:
 }
 
 /*{+START,CSS_MODE,mobile}*/
-.menu-dropdown.is-touch-interface .menu-dropdown-toggle-btn {
-	text-decoration: none;
-	padding: 0.75em;
-	display: flex;
-	align-items: center;
-}
+	.menu-dropdown.is-touch-interface .menu-dropdown-toggle-btn {
+		text-decoration: none;
+		padding: 0.75em;
+		display: flex;
+		align-items: center;
+	}
 
-.menu-dropdown.is-see-through .menu-dropdown-toggle-btn {
-	color: {$GET,WB};
-}
+	.menu-dropdown.is-see-through .menu-dropdown-toggle-btn {
+		color: {$GET,WB};
+	}
 
-.menu-dropdown.is-see-through .menu-dropdown-toggle-btn:hover,
-.menu-dropdown.is-see-through .menu-dropdown-toggle-btn:focus {
-	color: {$COLOR_RGBA,{$GET,WB},0.8};
-}
+	.menu-dropdown.is-see-through .menu-dropdown-toggle-btn:hover,
+	.menu-dropdown.is-see-through .menu-dropdown-toggle-btn:focus {
+		color: {$COLOR_RGBA,{$GET,WB},0.8};
+	}
 
-.menu-dropdown.is-touch-interface .menu-dropdown-content {
-	box-shadow: {$GET,box_shadow};
-}
+	.menu-dropdown.is-touch-interface .menu-dropdown-content {
+		box-shadow: {$GET,box_shadow};
+	}
 /*{+END}*/
 
 .menu-dropdown.is-touch-interface .menu-dropdown-toggle-btn .icon {
@@ -262,15 +262,15 @@ For example:
 		white-space: nowrap;
 	}
 
-	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a:hover, 
-	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a:focus, 
+	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a:hover,
+	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a:focus,
 	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel:hover > a,
 	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel.current > a {
 		background-color: {$GET,dropdown_menu_item_background_hover};
 		color: {$GET,a.hover};
 	}
 
-	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a, 
+	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a,
 	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel .menu-spacer {
 		background-color: {$GET,dropdown_menu_item_background};
 		font-weight: normal;
@@ -281,8 +281,8 @@ For example:
 		display: block;
 		padding-right: 0;
 	}
-	
-	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a, 
+
+	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a,
 	.menu-dropdown.is-hover-interface .menu-dropdown-item.nlevel > a:visited {
 		color: {$GET,a.link};
 	}

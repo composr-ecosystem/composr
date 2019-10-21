@@ -27,7 +27,7 @@
 	margin-top: 0;
 }
 
-.do-next-section, 
+.do-next-section,
 .do-theme-items {
 	display: flex;
 	flex-wrap: wrap;
@@ -63,7 +63,7 @@
 	color: {$GET,WB};
 }
 
-.do-next-item, 
+.do-next-item,
 .do-theme-items > div {
 	padding: 0.75em;
 	text-align: center;
@@ -90,7 +90,7 @@ td.active-item {
 	padding-bottom: 0.5em;
 }
 
-.do-next-item a, 
+.do-next-item a,
 .do-theme-items a {
 	text-decoration: none;
 }

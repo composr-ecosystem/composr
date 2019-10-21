@@ -10,7 +10,7 @@
 	border-radius: {$GET,border_radius};
 }
 
-.cns-profile-main h2 {  
+.cns-profile-main h2 {
 	border-bottom: 1px solid {$GET,pale_border};
 }
 

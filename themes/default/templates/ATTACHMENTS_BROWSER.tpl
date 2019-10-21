@@ -20,12 +20,12 @@
 				<a class="btn btn-primary btn-scri buttons--choose js-click-do-attachment-and-close" href="#!">{+START,INCLUDE,ICON}NAME=buttons/choose{+END} <span>{!CHOOSE}</span></a>
 
 				{+START,IF,{MAY_DELETE}}
-				<form title="{!DELETE}" class="inline" method="post" action="{DELETE_URL*}">
-					{$INSERT_SPAMMER_BLACKHOLE}
+					<form title="{!DELETE}" class="inline" method="post" action="{DELETE_URL*}">
+						{$INSERT_SPAMMER_BLACKHOLE}
 
-					<input type="hidden" name="delete_{ID*}" value="1" />
-					<button data-cms-confirm-click="{!ARE_YOU_SURE_DELETE*}" type="submit" class="btn btn-danger btn-scri">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE}</button>
-				</form>
+						<input type="hidden" name="delete_{ID*}" value="1" />
+						<button data-cms-confirm-click="{!ARE_YOU_SURE_DELETE*}" type="submit" class="btn btn-danger btn-scri">{+START,INCLUDE,ICON}NAME=admin/delete3{+END} {!DELETE}</button>
+					</form>
 				{+END}
 			</div>
 		</div>

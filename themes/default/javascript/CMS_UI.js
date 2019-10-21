@@ -545,7 +545,7 @@
 
     /**
      * @memberof $cms.ui
-     * @param tooltipBeingOpened - ID for a tooltip element to avoid deactivating 
+     * @param tooltipBeingOpened - ID for a tooltip element to avoid deactivating
      */
     $cms.ui.clearOutTooltips = function clearOutTooltips(tooltipBeingOpened) {
         // Delete other tooltips, which due to browser bugs can get stuck

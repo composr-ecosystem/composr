@@ -256,7 +256,7 @@
         desktopModeMql = window.matchMedia('(min-width: 983px)');
     /**
      * Refer to $CSS_MODE calls in global.css
-     * 
+     *
      * @param {string} modeName
      * @return {boolean}
      */

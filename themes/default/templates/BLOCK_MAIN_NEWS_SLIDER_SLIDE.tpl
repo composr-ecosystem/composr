@@ -11,12 +11,12 @@
 					<a href="{FULL_URL*}" class="slide-news-item-details-inner">
 						<h3 class="slide-news-item-heading">{NEWS_TITLE*}</h3>
 						{+START,IF_NON_EMPTY,{SUMMARY}}
-						<div class="slide-news-item-summary" style="display: none;">
-							{+START,IF,{$AND,{$NOT,{$IN_STR,{SUMMARY},<p><div>}},{$NOT,{$IN_STR,{SUMMARY},<h}}}}<p class="news-summary-p">{+END}
-							{+START,IF,{TRUNCATE}}{$TRUNCATE_LEFT,{SUMMARY},400,0,1,0,0.4}{+END}
-							{+START,IF,{$NOT,{TRUNCATE}}}{SUMMARY}{+END}
-							{+START,IF,{$AND,{$NOT,{$IN_STR,{SUMMARY},<p><div>}},{$NOT,{$IN_STR,{SUMMARY},<h}}}}</p>{+END}
-						</div>
+							<div class="slide-news-item-summary" style="display: none;">
+								{+START,IF,{$AND,{$NOT,{$IN_STR,{SUMMARY},<p><div>}},{$NOT,{$IN_STR,{SUMMARY},<h}}}}<p class="news-summary-p">{+END}
+								{+START,IF,{TRUNCATE}}{$TRUNCATE_LEFT,{SUMMARY},400,0,1,0,0.4}{+END}
+								{+START,IF,{$NOT,{TRUNCATE}}}{SUMMARY}{+END}
+								{+START,IF,{$AND,{$NOT,{$IN_STR,{SUMMARY},<p><div>}},{$NOT,{$IN_STR,{SUMMARY},<h}}}}</p>{+END}
+							</div>
 						{+END}
 					</a>
 				</div>

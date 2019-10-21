@@ -2,7 +2,7 @@
 	{$HIDDENS_FOR_GET_FORM,{URL},{SORT}}
 
 	{$SET,RAND_PAGINATION,{$RAND}}
-	
+
 	{+START,SET,sort_button}
 		{+START,IF,{$GET,show_sort_button}}
 			{+START,IF_NON_PASSED,FILTER}

@@ -25,21 +25,21 @@
 			<div class="installer-main">
 				<img alt="Composr" src="{LOGO_URL*}" width="550" height="115" />
 			</div>
-	
+
 			<div class="installer-main-inner">
 				<div class="box box---installer-html-wrap">
 					<div class="box-inner">
 						<h1>{!INSTALLER,Composr}: {!INSTALLER_STEP,{STEP},10}</h1>
-	
+
 						<div id="extra-errors"></div>
-	
+
 						<div>
 							{CONTENT}
 						</div>
 					</div>
 				</div>
 			</div>
-	
+
 			<div class="installer-version">
 				<p>
 					{!VERSION_NUM,{VERSION}}
@@ -50,7 +50,7 @@
 					<a target="_blank" title="compo.sr {!LINK_NEW_WINDOW}" href="{$BRAND_BASE_URL*}">{$BRAND_BASE_URL*}</a>
 				</p>
 			</div>
-	
+
 			<script {$CSP_NONCE_HTML}>
 				{+START,IF_PASSED,INSTALLER_JS}{INSTALLER_JS/}{+END}
 			</script>

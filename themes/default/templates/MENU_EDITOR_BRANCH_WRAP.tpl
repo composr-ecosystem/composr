@@ -30,7 +30,7 @@
 				ICON_DESCRIPTION={!MOVE_DOWN}
 			{+END}
 		</a>
-		
+
 		<a href="#!" id="up_{I*}" class="js-click-btn-move-up-handle-ordering">
 			{+START,INCLUDE,ICON}
 				NAME=results/sortablefield_asc

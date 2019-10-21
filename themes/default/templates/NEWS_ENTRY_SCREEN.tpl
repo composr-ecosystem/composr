@@ -4,7 +4,7 @@
 	{+START,IF_PASSED,WARNING_DETAILS}
 		{WARNING_DETAILS}
 	{+END}
-	
+
 	<div class="news-entry-details">
 		<ul class="news-entry-details-col-start horizontal-links">
 			{+START,LOOP,CATEGORIES}
@@ -33,11 +33,11 @@
 			{+START,IF_PASSED,COMMENT_COUNT}<li class="news-entry-comments">{+START,INCLUDE,ICON}NAME=feedback/comment{+END} {$COMMENT_COUNT,news,{ID}}</li>{+END}
 		</ul>
 	</div>
-	
+
 	{+START,IF_PASSED,IMG_LARGE}
-	<div class="news-entry-image">
-		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" />
-	</div>
+		<div class="news-entry-image">
+			<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" />
+		</div>
 	{+END}
 
 	<div itemprop="articleBody" class="clearfix">
@@ -71,26 +71,26 @@
 			4_REL=report
 		{+END}
 	{+END}
-	
+
 	{+START,SET,next_and_prev}
 		{+START,IF_PASSED,PREV_ARTICLE_URL}{+START,IF_PASSED,PREV_ARTICLE_TITLE}
-		<div class="news-entry-prev">
-			<p class="news-entry-prev-label">&larr; {!PREVIOUS_ARTICLE*}</p>
-			<h4 class="news-entry-prev-title"><a href="{PREV_ARTICLE_URL*}">{PREV_ARTICLE_TITLE*}</a></h4>
-		</div>
+			<div class="news-entry-prev">
+				<p class="news-entry-prev-label">&larr; {!PREVIOUS_ARTICLE*}</p>
+				<h4 class="news-entry-prev-title"><a href="{PREV_ARTICLE_URL*}">{PREV_ARTICLE_TITLE*}</a></h4>
+			</div>
 		{+END}{+END}
 		{+START,IF_PASSED,NEXT_ARTICLE_URL}{+START,IF_PASSED,NEXT_ARTICLE_TITLE}
-		<div class="news-entry-next">
-			<p class="news-entry-next-label">{!NEXT_ARTICLE*} &rarr;</p>
-			<h4 class="news-entry-next-title"><a href="{NEXT_ARTICLE_URL*}">{NEXT_ARTICLE_TITLE*}</a></h4>
-		</div>
+			<div class="news-entry-next">
+				<p class="news-entry-next-label">{!NEXT_ARTICLE*} &rarr;</p>
+				<h4 class="news-entry-next-title"><a href="{NEXT_ARTICLE_URL*}">{NEXT_ARTICLE_TITLE*}</a></h4>
+			</div>
 		{+END}{+END}
 	{+END}
 
 	{+START,IF_NON_EMPTY,{$TRIM,{$GET,next_and_prev}}}
-	<div class="news-entry-next-and-prev">
-		{$GET,next_and_prev}
-	</div>
+		<div class="news-entry-next-and-prev">
+			{$GET,next_and_prev}
+		</div>
 	{+END}
 
 	<div class="clearfix lined-up-boxes">
