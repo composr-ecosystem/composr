@@ -8116,7 +8116,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADDRESS_DESIRED_STUB
         ADD_DATE
         ADD_FRIEND_ACTION_DESCRIPTION
-        ADD_IMAGES
+        ADD_COMCODE_IMAGE
+        ADD_COMCODE_IMAGES
         NEW_INLINE_PERSONAL_POST
         ADD_MEDIA
         ADD_NEW_PAGE
