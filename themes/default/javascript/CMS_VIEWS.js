@@ -86,7 +86,9 @@
          * @method
          */
         _removeElement: function () {
-            this.el && this.el.parentNode && this.el.parentNode.removeChild(this.el);
+            if (this.el && this.el.parentNode) {
+                this.el.parentNode.removeChild(this.el);
+            }
         },
 
         /**
