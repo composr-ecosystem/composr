@@ -50,10 +50,16 @@ class missing_block_params_test_set extends cms_test_case
                 $need[] = 'BLOCK_' . basename($path, '.php') . '_PARAM_' . $matches[1][$i];
 
                 // Check for caching
-                if ((strpos($c, '$info[\'cache_on\']') !== false) && (strpos($c, '$info[\'cache_on\'] = array(') === false) && (strpos($c, '$info[\'cache_on\'] = \'(count($_POST)==0)?$map:null\';') === false) && (strpos($c, '$info[\'cache_on\'] = \'$map\';') === false)) {
-                    $pattern = '/\$info\[\'cache_on\'\]\s*=\s*\'[^;]*array\([^;]*\\\\\'' . preg_quote($matches[1][$i]) . '\\\\\'/';
-                    if (preg_match($pattern, $c) == 0) {
-                        $this->assertTrue(false, 'Block param not cached... ' . basename($path, '.php') . ': ' . $matches[1][$i]);
+                if (
+                    (strpos($c, '$info[\'cache_on\']') !== false) && /* Has caching */
+                    (strpos($c, '$info[\'cache_on\'] = array(') === false) && /* Has expression-based caching (not function-based caching) */
+                    (strpos($c, '$info[\'cache_on\'] = \'$map\';') === false) && /* Doesn't just cache all parameters together */
+                    (strpos($c, '$info[\'cache_on\'] = \'(count($_POST)==0) ? $map : null\';') === false) /* " */
+                ) {
+                    $pattern_1 = '#\$info\[\'cache_on\'\] = \'[^;]*array\([^;]*\\\\\'' . preg_quote($matches[1][$i]) . '\\\\\'#';
+                    $pattern_2 = '#\$info\[\'cache_on\'\] = <<<\'PHP[^;]*array\([^;]*\'' . preg_quote($matches[1][$i]) . '\'#s';
+                    if ((preg_match($pattern_1, $c) == 0) && (preg_match($pattern_2, $c) == 0)) {
+                        $this->assertTrue(false, 'Block param (apparently) not cached... ' . basename($path, '.php') . ': ' . $matches[1][$i]);
                     }
                 }
             }

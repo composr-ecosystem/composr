@@ -49,7 +49,7 @@ class Block_main_newsletter_signup
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '(count($_POST)==0)?$map:null';
+        $info['cache_on'] = '(count($_POST)==0) ? $map : null';
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24);
         return $info;
