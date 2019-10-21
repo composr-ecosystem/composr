@@ -30,9 +30,10 @@ class Hook_task_export_ecom_transactions
      * @param  TIME $end_date Date to
      * @param  string $transaction_status Transaction status filter (blank: no filter)
      * @param  string $type_code Product filter (blank: no filter)
+     * @param  ?string $file_type The fle type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($start_date, $end_date, $transaction_status, $type_code)
+    public function run($start_date, $end_date, $transaction_status, $type_code, $file_type = null)
     {
         if (!addon_installed('ecommerce')) {
             return null;
@@ -66,7 +67,10 @@ class Hook_task_export_ecom_transactions
         $tax_categories = array_keys($tax_categories);
 
         require_code('files_spreadsheets_write');
-        $filename = 'transactions_' . (($transaction_status == '') ? '' : ($transaction_status . '__')) . (($type_code == '') ? '' : ($type_code . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . spreadsheet_write_default();
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = 'transactions_' . (($transaction_status == '') ? '' : ($transaction_status . '__')) . (($type_code == '') ? '' : ($type_code . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
         foreach ($rows as $i => $_transaction) {

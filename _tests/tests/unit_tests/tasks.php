@@ -46,7 +46,7 @@ class tasks_test_set extends cms_test_case
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
 
         $this->establish_admin_session();
-        $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1), 'adminzone');
+        $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'), 'adminzone');
         $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
@@ -80,7 +80,7 @@ class tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/export_catalogue');
         $ob_export = new Hook_task_export_catalogue();
-        $results = $ob_export->run('links');
+        $results = $ob_export->run('links', 'csv');
         $c = cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK);
         $this->assertTrue(strpos($c, 'TestingABC') !== false, 'Did not see our TestingABC record in: ' . $c . "\n\n" . serialize($import_result));
 
@@ -243,7 +243,7 @@ class tasks_test_set extends cms_test_case
 
         require_code('hooks/systems/tasks/export_members');
         $ob_export = new Hook_task_export_members();
-        $results = $ob_export->run(false, array('ID', 'Username'), array(), 'ID');
+        $results = $ob_export->run(false, array('ID', 'Username'), array(), 'ID', 'csv');
         $this->assertTrue(strpos(cms_file_get_contents_safe($results[1][1], FILE_READ_LOCK | FILE_READ_BOM), 'TestingABC') !== false);
 
         $ob_import->run('', false, $results[1][1], 'test.csv');

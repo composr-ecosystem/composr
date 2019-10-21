@@ -40,6 +40,11 @@ function spreadsheet_write_default()
         return non_overridden__spreadsheet_write_default();
     }
 
+    $file_type = either_param_string('file_type', null);
+    if (($file_type !== null) && (is_spreadsheet_writable('example.' . $file_type))) {
+        return $file_type;
+    }
+
     return 'ods';
 }
 

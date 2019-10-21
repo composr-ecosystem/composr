@@ -30,9 +30,10 @@ class Hook_task_export_members
      * @param  array $fields_to_use List of fields to use (empty: none)
      * @param  array $usergroups List of usergroups to use (empty: all)
      * @param  string $order_by Field to order by
+     * @param  ?string $file_type The fle type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($filter_by_allow, $fields_to_use, $usergroups, $order_by)
+    public function run($filter_by_allow, $fields_to_use, $usergroups, $order_by, $file_type = null)
     {
         require_code('cns_members_action2');
         list($headings, $cpfs, $subscription_types) = member_get_spreadsheet_headings_extended();
@@ -82,7 +83,10 @@ class Hook_task_export_members
         }
 
         require_code('files_spreadsheets_write');
-        $filename = 'members-' . date('Y-m-d') . '.' . spreadsheet_write_default();
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = 'members-' . date('Y-m-d') . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 

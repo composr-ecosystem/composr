@@ -28,9 +28,10 @@ class Hook_task_export_points_log
      *
      * @param  TIME $from Date from
      * @param  TIME $to Date to
+     * @param  ?string $file_type The fle type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($from, $to)
+    public function run($from, $to, $file_type = null)
     {
         if (!addon_installed('points')) {
             return null;
@@ -42,7 +43,10 @@ class Hook_task_export_points_log
         $label = do_lang('POINTS_GAINED_BETWEEN', get_timezoned_date_time($from, false), get_timezoned_date_time($to, false));
 
         require_code('files_spreadsheets_write');
-        $filename = 'points_log_' . date('Y-m-d', $from) . '--' . date('Y-m-d', $to) . '.' . spreadsheet_write_default();
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = 'points_log_' . date('Y-m-d', $from) . '--' . date('Y-m-d', $to) . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 

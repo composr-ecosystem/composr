@@ -29,9 +29,10 @@ class Hook_task_export_shopping_orders
      * @param  TIME $start_date Date from
      * @param  TIME $end_date Date to
      * @param  string $order_status Order status filter (blank: no filter)
+     * @param  ?string $file_type The fle type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($start_date, $end_date, $order_status)
+    public function run($start_date, $end_date, $order_status, $file_type = null)
     {
         if (!addon_installed('shopping')) {
             return null;
@@ -53,7 +54,10 @@ class Hook_task_export_shopping_orders
         remove_duplicate_rows($rows);
 
         require_code('files_spreadsheets_write');
-        $filename = 'orders_' . (($order_status == '') ? '' : ($order_status . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . spreadsheet_write_default();
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = 'orders_' . (($order_status == '') ? '' : ($order_status . '__')) . date('Y-m-d', $start_date) . '--' . date('Y-m-d', $end_date) . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 

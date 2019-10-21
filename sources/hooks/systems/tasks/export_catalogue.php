@@ -27,9 +27,10 @@ class Hook_task_export_catalogue
      * Run the task hook.
      *
      * @param  ID_TEXT $catalogue_name The catalogue to export
+     * @param  ?string $file_type The fle type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($catalogue_name)
+    public function run($catalogue_name, $file_type = null)
     {
         if (!addon_installed('catalogues')) {
             return null;
@@ -48,7 +49,10 @@ class Hook_task_export_catalogue
         $category_names = array();
 
         require_code('files_spreadsheets_write');
-        $filename = $catalogue_name . '-' . date('Y-m-d') . '.' . spreadsheet_write_default();
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = $catalogue_name . '-' . date('Y-m-d') . '.' . $file_type;
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 

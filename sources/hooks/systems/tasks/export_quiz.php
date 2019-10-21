@@ -27,9 +27,10 @@ class Hook_task_export_quiz
      * Run the task hook.
      *
      * @param  AUTO_LINK $quiz_id The quiz ID
+     * @param  ?string $file_type The fle type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
-    public function run($quiz_id)
+    public function run($quiz_id, $file_type = null)
     {
         if (!addon_installed('quizzes')) {
             return null;
@@ -88,7 +89,10 @@ class Hook_task_export_quiz
         }
 
         require_code('files_spreadsheets_write');
-        $filename = 'quiz.' . spreadsheet_write_default();
+        if ($file_type === null) {
+            $file_type = spreadsheet_write_default();
+        }
+        $filename = 'quiz.' . $file_type;
         $outfile_path = null;
         $sheet_writer = make_spreadsheet($outfile_path, $spreadsheet_data, $filename);
 
