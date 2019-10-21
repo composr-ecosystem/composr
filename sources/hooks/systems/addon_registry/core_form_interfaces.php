@@ -2334,8 +2334,6 @@ class Hook_addon_registry_core_form_interfaces
      */
     public function tpl_preview__preview_script()
     {
-        require_lang('health_check');
-
         return array(
             lorem_globalise(do_lorem_template('PREVIEW_SCRIPT', array(
                 'OUTPUT' => lorem_phrase(),

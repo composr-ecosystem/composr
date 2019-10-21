@@ -51,7 +51,9 @@ class addon_screenshots_test_set extends cms_test_case
 
                 if ($ob->get_category() != 'Development') {
                     // These are defined as exceptions where we won't enforce our screenshot rule
-                    if (in_array($hook, array())) {
+                    if (in_array($hook, array(
+                        'enhanced_spreadsheets',
+                    ))) {
                         continue;
                     }
 

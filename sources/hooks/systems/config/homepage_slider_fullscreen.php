@@ -54,6 +54,10 @@ class Hook_config_homepage_slider_fullscreen
      */
     public function get_default()
     {
+        if (!addon_installed('galleries')) {
+            return null;
+        }
+
         return '1';
     }
 }

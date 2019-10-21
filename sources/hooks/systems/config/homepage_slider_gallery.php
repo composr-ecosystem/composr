@@ -54,6 +54,10 @@ class Hook_config_homepage_slider_gallery
      */
     public function get_default()
     {
+        if (!addon_installed('galleries')) {
+            return null;
+        }
+
         return 'homepage_hero_slider';
     }
 }
