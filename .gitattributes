@@ -81,6 +81,7 @@
 *.bz2 binary
 *.cur binary
 *.bin binary
+*.dat binary
 *.dmg binary
 *.doc binary
 *.docx binary

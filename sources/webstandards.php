@@ -1011,7 +1011,7 @@ function init__webstandards()
         'script.for' => '.+',
         'script.src' => $enforce_link,
         'script.nonce' => '\w+',
-        'script.type' => '(text/javascript|text/html)',
+        'script.type' => '(application/javascript|text/html)',
         'select.autocomplete' => $autocomplete_regex,
         'select.autofocus' => '(autofocus)',
         'select.disabled' => 'disabled',

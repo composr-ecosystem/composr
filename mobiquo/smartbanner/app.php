@@ -69,7 +69,7 @@ function tt_is_https()
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://welcome-screen.tapatalk-cdn.com/welcome_screen.css"/>
-<script type="text/javascript">
+<script>
     var banner_image_path = '<?= addslashes($banner_image_path) ?>';
     var forum_name = '<?= addslashes(htmlspecialchars($name, ENT_QUOTES, "UTF-8")) ?>';
     var app_api_key = '<?= addslashes(htmlspecialchars($code, ENT_QUOTES, "UTF-8")) ?>';
@@ -101,7 +101,7 @@ function tt_is_https()
     (function() {
         function z(){
             var s = document.createElement("script");
-            s.type = "text/javascript";
+            s.type = "application/javascript";
             s.async = "async";
             // Change the second string below (tapatalk.com/your-proxiy-URL.js) to a location you control
             // that proxies the Tapstream JavaScript URL. The Tapstream JavaScript is available at
@@ -116,7 +116,7 @@ function tt_is_https()
             window.addEventListener("load", z, false);
     })();
 </script>
-<script type="text/javascript" src="https://welcome-screen.tapatalk-cdn.com/welcome2.js" charset="UTF-8"></script>
+<script src="https://welcome-screen.tapatalk-cdn.com/welcome2.js" charset="UTF-8"></script>
 <script>
     $(document).ready(function()
     {

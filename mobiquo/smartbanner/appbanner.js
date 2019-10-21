@@ -65,7 +65,7 @@ _tsq.push(["trackPage"]);
 (function() {
     function z(){
         var s = document.createElement("script");
-        s.type = "text/javascript";
+        s.type = "application/javascript";
         s.async = "async";
         // Change the second string below (tapatalk.com/your-proxiy-URL.js) to a location you control
         // that proxies the Tapstream JavaScript URL. The Tapstream JavaScript is available at

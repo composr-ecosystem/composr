@@ -103,7 +103,7 @@ END;
 
     // Find and check password
     if (!defined('EXTERNAL_ROOTKIT_DETECTION_CALL')) {
-        $config_file = cms_file_get_contents_safe($FILE_BASE . '/_config.php', FILE_READ_LOCK);
+        $config_file = file_get_contents($FILE_BASE . '/_config.php');
         $matches = array();
         if (preg_match('#\$SITE_INFO\[\'master_password\'\] = \'([^\']*)\';#', $config_file, $matches) == 0) {
             exit(':(');

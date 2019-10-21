@@ -199,8 +199,8 @@ if (isset($_POST["upload_thumbnail"]) && strlen($large_photo_exists) > 0) {
     <meta name="generator" content="WebMotionUK"/>
     <title>Thumbnail generator</title>
     <link href="../../themes/default/templates_cached/EN/global.css" rel="stylesheet"/>
-    <script type="text/javascript" src="js/jquery-pack.js"></script>
-    <script type="text/javascript" src="js/jquery.imgareaselect.min.js"></script>
+    <script src="js/jquery-pack.js"></script>
+    <script src="js/jquery.imgareaselect.min.js"></script>
 </head>
 <body>
 <!--
@@ -227,7 +227,7 @@ if (isset($_POST["upload_thumbnail"]) && strlen($large_photo_exists) > 0) {
 if (strlen($large_photo_exists) > 0) {
     $current_large_image_width = getWidth($large_image_location);
     $current_large_image_height = getHeight($large_image_location); ?>
-    <script type="text/javascript">
+    <script>
         function preview(img, selection) {
             var scaleX =
             <?= $thumb_width ?> /

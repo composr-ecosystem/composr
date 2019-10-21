@@ -25,19 +25,17 @@
  */
 function init__wordfilter()
 {
-    define('WORDFILTER_MATCH_TYPE_FULL', 'full');
-    define('WORDFILTER_MATCH_TYPE_SUBSTRING', 'substring');
-    define('WORDFILTER_MATCH_TYPE_PREFIX', 'prefix');
-
     if (!defined('WORDFILTER_MATCH_TYPES')) {
+        define('WORDFILTER_MATCH_TYPE_FULL', 'full');
+        define('WORDFILTER_MATCH_TYPE_SUBSTRING', 'substring');
+        define('WORDFILTER_MATCH_TYPE_PREFIX', 'prefix');
+
         define('WORDFILTER_MATCH_TYPES', array(
             WORDFILTER_MATCH_TYPE_FULL,
             WORDFILTER_MATCH_TYPE_SUBSTRING,
             WORDFILTER_MATCH_TYPE_PREFIX,
         ));
-    }
-    
-    if (!defined('WORDFILTER_REPLACEMENT_GRAWLIXES')) {
+
         define('WORDFILTER_REPLACEMENT_GRAWLIXES', '%GRAWLIXES%');
         // A special value for the `wordfilter.w_replacement` column to replace matching words with grawlixes
     }

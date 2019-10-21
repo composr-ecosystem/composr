@@ -616,7 +616,7 @@ class Module_cms_blogs extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         $cat = $this->donext_type;
 

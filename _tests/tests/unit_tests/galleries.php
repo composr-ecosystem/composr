@@ -73,8 +73,8 @@ class galleries_test_set extends cms_test_case
         $_POST = array(
             'fullname' => 'A test gallery for UT',
             'require__fullname' => 1,
-            'name' => 'a_test_gallery_for_ut',
-            'require__name' => 1,
+            'gallery_name' => 'a_test_gallery_for_ut',
+            'require__gallery_name' => 1,
             'comcode__description' => 1,
             'description' => 'A test gallery for UT',
             'description_parsed' => '',
@@ -82,10 +82,6 @@ class galleries_test_set extends cms_test_case
             'hid_file_id_rep_image' => -1,
             'parent_id' => 'root',
             'require__parent_id' => 1,
-            'secondary_parents' => array(
-                '0' => 'a_test_image',
-            ),
-            'require__secondary_parents' => 0,
             'accept_images' => 1,
             'tick_on_form__accept_images' => 0,
             'require__accept_images' => 0,

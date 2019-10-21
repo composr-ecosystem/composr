@@ -953,7 +953,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         $c_name = $this->donext_catalogue_name;
         $category_id = $this->donext_category_id;
@@ -1510,7 +1510,7 @@ class Module_cms_catalogues_cat extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever catalogue category was just handled (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         $catalogue_name = $this->donext_catalogue_name;
 
@@ -2221,7 +2221,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
      * @param  ?ID_TEXT $name The catalogue name we were working with (null: deleted)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $name)
+    public function do_next_manager($title, $description, $name = null)
     {
         if ($name !== null) {
             $cat_count = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $name));

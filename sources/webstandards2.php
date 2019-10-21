@@ -216,7 +216,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                     $errors[] = array('MANUAL_WCAG_ANIMATION');
                     $EXPECTING_TAG = 'noscript';
                 }
-                if (($GLOBALS['WEBSTANDARDS_JAVASCRIPT']) && ((!isset($attributes['type'])) || ((isset($attributes['type'])) && (($attributes['type'] == 'text/javascript') || (($attributes['type'] == 'application/x-javascript')))))) { // Validate CSS
+                if (($GLOBALS['WEBSTANDARDS_JAVASCRIPT']) && ((!isset($attributes['type'])) || ((isset($attributes['type'])) && (($attributes['type'] == 'text/javascript') || ($attributes['type'] == 'application/javascript') || (($attributes['type'] == 'application/x-javascript')))))) { // Validate CSS
                     if (function_exists('require_code')) {
                         require_code('webstandards_js_lint');
                     }
@@ -658,7 +658,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
         }
     }
 
-    if (($GLOBALS['WEBSTANDARDS_JAVASCRIPT']) && ($tag == 'script') && (!$GLOBALS['NO_XHTML_LINK_FOLLOW']) && (isset($attributes['src'])) && ((!isset($attributes['type'])) || (isset($attributes['type'])) && (($attributes['type'] == 'text/javascript') || ($attributes['type'] == 'application/x-javascript'))) && (!isset($VALIDATED_ALREADY[$attributes['src']]))) { // Validate CSS
+    if (($GLOBALS['WEBSTANDARDS_JAVASCRIPT']) && ($tag == 'script') && (!$GLOBALS['NO_XHTML_LINK_FOLLOW']) && (isset($attributes['src'])) && ((!isset($attributes['type'])) || (isset($attributes['type'])) && (($attributes['type'] == 'text/javascript') || ($attributes['type'] == 'application/javascript') || ($attributes['type'] == 'application/x-javascript'))) && (!isset($VALIDATED_ALREADY[$attributes['src']]))) { // Validate CSS
         $VALIDATED_ALREADY[$attributes['src']] = 1;
         $url = qualify_url($attributes['src'], $GLOBALS['URL_BASE']);
         if (!empty($url)) {

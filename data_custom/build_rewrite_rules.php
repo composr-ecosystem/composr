@@ -186,7 +186,7 @@ function write_to($file_path, $type, $match_start, $match_end, $indent_level, $r
                     $rules_txt .= '
                         # Serve pre-compressed CSS/JS files if they exist and the client accepts gzip
                         <FilesMatch "\.js\.gz($|\?)">
-                        ForceType text/javascript
+                        ForceType application/javascript
                         Header set Content-Encoding: gzip
                         Header append Vary: Accept-Encoding
                         </FilesMatch>

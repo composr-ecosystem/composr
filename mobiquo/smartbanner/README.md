@@ -43,7 +43,7 @@ Simply add two pieces of blow html code in head and body will get everything don
         ...
         <!-- Tapatalk Banner head start -->
         <link href="mobiquo/smartbanner/appbanner.css" rel="stylesheet" type="text/css" media="screen" />
-        <script type="text/javascript">
+        <script>
             var is_mobile_skin     = 0;
             var app_ios_id         = "307880732";
             var app_android_id     = "com.quoord.tapatalkpro.activity";
@@ -58,7 +58,7 @@ Simply add two pieces of blow html code in head and body will get everything don
             var mobiquo_extension  = "php";
             var app_welcome_enable = 1;
         </script>
-        <script src="mobiquo/smartbanner/appbanner.js" type="text/javascript"></script>
+        <script src="mobiquo/smartbanner/appbanner.js"></script>
         <!-- Tapatalk Banner head end-->
         ...
         </head>
@@ -66,7 +66,7 @@ Simply add two pieces of blow html code in head and body will get everything don
         <body>
         ...
         <!-- Tapatalk Banner body start -->
-            <script type="text/javascript">if (typeof(tapatalkDetect) == "function") tapatalkDetect()</script>
+            <script>if (typeof(tapatalkDetect) == "function") tapatalkDetect()</script>
         <!-- Tapatalk Banner body end -->
         ...
         </body>

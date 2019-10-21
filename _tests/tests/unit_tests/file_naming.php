@@ -72,6 +72,12 @@ class file_naming_test_set extends cms_test_case
             'data_custom/webfonts/adgs-icons.svg',
             'data_custom/webfonts/adgs-icons.ttf',
             'data_custom/webfonts/adgs-icons.woff',
+            'themes/default/images/mediaelement/mejs-controls.svg',
+            '_tests/assets/text/utf-8.txt',
+            '_tests/assets/text/utf-16.txt',
+            '_tests/assets/text/iso-8859-1.txt',
+            '_tests/assets/spreadsheets/test-tsv.txt',
+            '_tests/assets/spreadsheets/test-scsv.txt',
         );
 
         $ignore_substrings = array(

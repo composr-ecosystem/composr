@@ -777,7 +777,7 @@ class Module_cms_news extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, ($id === null) ? null : intval($id), $this->donext_type);
     }
@@ -1104,7 +1104,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return $this->_do_next_manager($title, $description, array(), ($id === null) ? null : intval($id));
     }

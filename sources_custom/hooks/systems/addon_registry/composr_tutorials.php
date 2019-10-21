@@ -390,7 +390,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/sup_configure_the_news_display_in_composr/3fb3b3088ca1d62559f7bd9900408d25.png',
             'data_custom/images/docs/sup_configure_the_news_display_in_composr/813fd3bd933d0ef16724edf575399493.png',
             'data_custom/images/docs/sup_configure_the_news_display_in_composr/dadd0a6f3478911e271a12a936ea7d31.png',
-            'data_custom/images/docs/sup_converting_an_composr_gallery_to_a_carousel/b9161f6050c814dc6c6acc965e77d7ba.jpg',
             'data_custom/images/docs/sup_creating_a_hidden_members_zone_in_composr/34192953fcca3188147739c0cd7c800d.jpg',
             'data_custom/images/docs/sup_creating_a_hidden_members_zone_in_composr/582992345a4a97857cc26a3793c9583a.jpg',
             'data_custom/images/docs/sup_creating_a_store_locator_for_your_composr_website/10cb8d619f53eb42fc1cd409461ba04a.jpg',

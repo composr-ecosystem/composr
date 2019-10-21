@@ -43,9 +43,9 @@ if ($contents === false) {
     if (substr($request, -4) == '.css') {
         header('Content-type: text/css; charset=utf-8');
     } elseif (substr($request, -3) == '.js') {
-        header('Content-type: text/javascript; charset=utf-8');
+        header('Content-type: application/javascript; charset=utf-8');
     } elseif ((substr($request, -4) == '.htm') || (substr($request, -5) == '.html')) {
-        header('Content-type: text/javascript; charset=utf-8');
+        header('Content-type: text/html; charset=utf-8');
     } else {
         header('Content-type: application/octet-stream');
     }

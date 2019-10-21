@@ -92,6 +92,7 @@ SetEnvIfNoCase Request_URI \.tar$ no-gzip dont-vary
 
 # We use timestamps in URLs to obviate this
 #ExpiresByType text/css "access plus 1 month"
+#ExpiresByType text/javascript "access plus 1 month"
 #ExpiresByType application/x-javascript "access plus 1 month"
 #ExpiresByType application/javascript "access plus 1 month"
 #</IfModule>

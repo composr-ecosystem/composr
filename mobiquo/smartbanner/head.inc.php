@@ -134,7 +134,7 @@ if (file_exists(__DIR__ . '/appbanner.js') &&
     $app_banner_head = '
         <!-- Tapatalk Banner&Welcome head start -->
         ' . ($is_byo ? '<link href="'.tt_html_escape($app_banner_css_link).'" rel="stylesheet" type="text/css" media="screen" />' : '') . '
-        <script type="text/javascript">
+        <script>
             var is_byo             = '.$is_byo.';
             var is_mobile_skin     = '.$is_mobile_skin.';
             var app_ios_id         = "'.$app_ios_id.'";
@@ -153,7 +153,7 @@ if (file_exists(__DIR__ . '/appbanner.js') &&
             var app_welcome_enable = '.(!isset($app_ads_enable) || $app_ads_enable ? 1 : 0).';
             var app_banner_enable  = '.(!isset($app_banner_enable) || $app_banner_enable ? 1 : 0).';
         </script>
-        <script src="' . tt_html_escape($app_banner_js_link) . '" type="text/javascript"></script>
+        <script src="' . tt_html_escape($app_banner_js_link) . '"></script>
         <!-- Tapatalk Banner head end-->
     ';
 }

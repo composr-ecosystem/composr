@@ -446,7 +446,7 @@ class Module_cms_booking extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return booking_do_next();
     }
@@ -640,7 +640,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return booking_do_next();
     }
@@ -822,7 +822,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return booking_do_next();
     }
@@ -1252,7 +1252,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return booking_do_next();
     }

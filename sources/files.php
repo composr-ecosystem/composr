@@ -770,7 +770,7 @@ function should_ignore_file($path, $bitmask = 0)
         }
 
         $ignore_extensions = array_merge($ignore_extensions, array(
-            'gz' => '(themes/[^/]*/templates_cached/.*|caches/guest_pages|imports/.*|exports/.*)',
+            'gz' => '(data_custom/sitemaps|themes/[^/]*/templates_cached/.*|caches/guest_pages|imports/.*|exports/.*)',
 
             // Import/Export files
             'tar' => '(imports|exports)/.*',

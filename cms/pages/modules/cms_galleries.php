@@ -1327,7 +1327,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return $this->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id));
     }
@@ -1947,7 +1947,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return $GLOBALS['MODULE_CMS_GALLERIES']->cat_crud_module->_do_next_manager($title, $description, $this->donext_type, ($id === null) ? null : intval($id), true);
     }
@@ -2336,7 +2336,7 @@ class Module_cms_galleries_cat extends Standard_crud_module
      * @param  ?ID_TEXT $id The ID of whatever was just handled (null: N/A)
      * @return Tempcode The UI
      */
-    public function do_next_manager($title, $description, $id)
+    public function do_next_manager($title, $description, $id = null)
     {
         return $this->_do_next_manager($title, $description, ($id === null) ? null : $id);
     }

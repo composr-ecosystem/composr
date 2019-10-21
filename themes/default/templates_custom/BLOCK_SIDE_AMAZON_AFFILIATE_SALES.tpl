@@ -1,7 +1,7 @@
 {$SET,height,{$ADD*,{$MULT,{ITEMS_NUMBER},80},85}}
 
 <div style="height: {$ADD,20,{$GET,height}}px; text-align: center">
-	<script {$CSP_NONCE_HTML} charset="utf-8" type="text/javascript">
+	<script {$CSP_NONCE_HTML}>
 	amzn_assoc_ad_type = "responsive_search_widget";
 	amzn_assoc_tracking_id = "{ASSOCIATES_ID;/}";
 	amzn_assoc_marketplace = "amazon";

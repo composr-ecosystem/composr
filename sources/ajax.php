@@ -504,7 +504,7 @@ function script_script()
 {
     cms_ini_set('ocproducts.xss_detect', '0');
 
-    @header('Content-Type: text/javascript; charset=' . get_charset());
+    @header('Content-Type: application/javascript; charset=' . get_charset());
     prepare_for_known_ajax_response();
 
     $script = get_param_string('script');

@@ -43,6 +43,10 @@ function spreadsheet_open_read($path, $filename = null, $algorithm = 3, $trim = 
         return non_overridden__spreadsheet_open_read($path, $filename, $algorithm, $trim, $default_charset);
     }
 
+    if ($filename === null) {
+        $filename = basename($path);
+    }
+
     $ext = get_file_extension($filename);
     switch ($ext) {
         case 'csv':
