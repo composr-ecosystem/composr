@@ -1013,21 +1013,29 @@ function _webstandards_css_sheet($data)
                         }
 
                         if (!in_array($pseudo, array(
-                            ':first-line',
-                            ':first-letter',
-                            ':before',
-                            ':after',
-                            ':selection',
+                            /* LEGACY */
                             ':-moz-selection',
                             ':-moz-focus-inner',
                             ':-webkit-scrollbar',
                             ':-webkit-scrollbar-track',
                             ':-webkit-scrollbar-thumb',
                             ':-webkit-calendar-picker-indicator',
-                            ':placeholder',
+                            ':-webkit-inner-spin-button',
+                            ':-webkit-search-cancel-button',
+                            ':-webkit-search-decoration',
+                            ':-webkit-file-upload-button',
                             ':-webkit-input-placeholder',
                             ':-moz-placeholder',
                             ':-ms-input-placeholder',
+                            ':-ms-value',
+
+                            ':first-line',
+                            ':first-letter',
+                            ':before',
+                            ':after',
+                            ':selection',
+                            ':placeholder',
+
                             'active',
                             'checked',
                             'disabled',
@@ -1035,6 +1043,7 @@ function _webstandards_css_sheet($data)
                             'enabled',
                             'first-child',
                             'focus',
+                            'focus-within',
                             'hover',
                             'indeterminate',
                             'last-child',
@@ -1288,7 +1297,15 @@ function _check_css_value($key, $value, $_i)
         $reg_exp = $CSS_PROPERTIES[$key];
     }
 
-    if ((preg_match('#^' . $reg_exp . '$#s', $value) == 0) && ($value != 'xpx') && ($value != 'x') && ($value != 'inherit') && ($value != 'initial') && (substr($value, 0, 5) != 'calc(')) {
+    if (
+        (preg_match('#^' . $reg_exp . '$#s', $value) == 0) &&
+        ($value != 'xpx') &&
+        ($value != 'x') &&
+        ($value != 'inherit') &&
+        ($value != 'initial') &&
+        (substr($value, 0, 5) != 'calc(') &&
+        (substr($value, 0, 4) != 'val(')
+    ) {
         return array(0 => 'CSS_BAD_PROPERTY_VALUE', 1 => $key, 2 => $value, 3 => $reg_exp, 'pos' => $_i);
     }
 

@@ -67,7 +67,7 @@ div.progress-bars {
 }
 
 .progress-name {
-	font-size: 8pt;
+	font-size: 0.8em;
 	font-weight: 700;
 	height: 14px;
 	text-align: left;
@@ -103,7 +103,7 @@ div.progress-bars {
 
 .progress-bar-status {
 	margin-top: 2px;
-	font-size: 7pt;
+	font-size: 0.8em;
 	text-align: left;
 	white-space: nowrap;
 }

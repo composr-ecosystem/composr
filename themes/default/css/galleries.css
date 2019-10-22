@@ -380,7 +380,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 
 .gallery-slideshow-screen .slideshow-details-overlay-top,
 .gallery-slideshow-screen .slideshow-details-overlay-bottom {
-	pointer-events: all;
+	pointer-events: auto;
 	background: rgba(0, 0, 0, 0.6);
 }
 
@@ -804,7 +804,7 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	right: 0;
 	left: 0;
 	padding: 5px 10px;
-	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
 }
 
 .gallery-mosaic-item-overlay-top .rating-display-star {
@@ -832,7 +832,7 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 	left: 0;
 	bottom: 0;
 	padding: 5px 10px;
-	background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
 }
 
 .gallery-mosaic-item-overlay-bottom .title {

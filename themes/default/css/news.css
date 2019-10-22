@@ -495,7 +495,7 @@ ul.news-entry-details-col-end li {
 	right: 0;
 	padding: 20px;
 	padding-bottom: 0;
-	background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
+	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
 	max-height: 100%;
 }
 

@@ -250,8 +250,7 @@ In mobile mode:
 html {
 	font-family: sans-serif;
 	line-height: 1.15;
-	-webkit-text-size-adjust: 100%;
-	-ms-text-size-adjust: 100%;
+	{$BETA_CSS_PROPERTY,text-size-adjust: 100%;}
 	-ms-overflow-style: scrollbar;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 14px;
@@ -268,7 +267,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
 	margin: 0;
-	font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-family: Roboto, "-apple-system", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 14px;
 	font-weight: 400;
 	line-height: 1.5;
@@ -295,8 +294,7 @@ p {
 abbr[title],
 abbr[data-original-title] {
 	text-decoration: underline;
-	-webkit-text-decoration: underline dotted;
-	text-decoration: underline dotted;
+	{$BETA_CSS_PROPERTY,text-decoration-style: dotted;}
 	cursor: help;
 	border-bottom: 0;
 }
@@ -367,7 +365,7 @@ a, .button-hyperlink {
 	color: {$GET,a.link};
 	text-decoration: none;
 	background-color: transparent;
-	-webkit-text-decoration-skip: objects;
+	{$BETA_CSS_PROPERTY,text-decoration-skip: objects;}
 }
 
 a:hover, .button-hyperlink:hover {
@@ -669,7 +667,7 @@ textarea, input, code {
 /*{+START,CSS_MODE,mobile}*/
 	.contrast-box {
 		padding-left: 15px;
-		padidng-right: 15px;
+		padding-right: 15px;
 	}
 /*{+END}*/
 
@@ -1530,7 +1528,7 @@ header.with-seed-navbar .top-button:hover {
 		visibility: hidden;
 		transition: visibility 0.4s ease-in-out, background-color 0.4s ease-in-out;
 		/* X shape cursor */
-		cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAADFBMVEUAAAD///////////84wDuoAAAAA3RSTlMAYM+UUHBYAAAAPUlEQVR4AeXSwQkAIAwEwVzsv2fh3mMF+ssOQhBnMzjZyYE0QpogDZCOEA2+jo5FuDpEveJecM9X7/b8PhcNlwDl/m+bagAAAABJRU5ErkJggg==),not-allowed;
+		cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAADFBMVEUAAAD///////////84wDuoAAAAA3RSTlMAYM+UUHBYAAAAPUlEQVR4AeXSwQkAIAwEwVzsv2fh3mMF+ssOQhBnMzjZyYE0QpogDZCOEA2+jo5FuDpEveJecM9X7/b8PhcNlwDl/m+bagAAAABJRU5ErkJggg=='),not-allowed;
 	}
 
 	.header-side.is-side-menu-open::before {
@@ -5397,10 +5395,7 @@ input.magic-image-edit-link {
 	text-align: center;
 	white-space: nowrap;
 	vertical-align: middle;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none ;
-	user-select: none;
+	{$BETA_CSS_PROPERTY,user-select: none;}
 	border: 1px solid transparent;
 	padding: 6px 12px;
 	font-size: 14px;
@@ -7519,10 +7514,8 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	align-items: center;
 	width: 100%;
 	transition: transform 0.6s ease;
-	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden;
-	-webkit-perspective: 1000px;
-	perspective: 1000px;
+	{$BETA_CSS_PROPERTY,backface-visibility: hidden;}
+	{$BETA_CSS_PROPERTY,perspective: 1000px;}
 }
 
 .cms-slider-item-background {
@@ -7587,7 +7580,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 
 .cms-slider-fade .cms-slider-item {
 	opacity: 0;
-	transition-duration: .6s;
+	transition-duration: 0.6s;
 	transition-property: opacity;
 }
 

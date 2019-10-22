@@ -34,8 +34,7 @@
 
 .carousel .move-left:hover .icon ,
 .carousel .move-right:hover .icon {
-	filter: brightness(1.4);
-	-webkit-filter: brightness(1.4);
+	{$BETA_CSS_PROPERTY,filter: brightness(1.4);}
 }
 
 .carousel .move-left {
@@ -50,7 +49,7 @@
 	right: -28px;
 	top: 0;
 	bottom: 0;
-	background: linear-gradient(to right, white, rgba(255, 255, 255, 0));
+	background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0));
 	z-index: 1;
 	pointer-events: none;
 }
@@ -67,7 +66,7 @@
 	left: -28px;
 	top: 0;
 	bottom: 0;
-	background: linear-gradient(to right, rgba(255, 255, 255, 0), white);
+	background-image: linear-gradient(to right, rgba(255, 255, 255, 0), white);
 	z-index: 1;
 	pointer-events: none;
 }

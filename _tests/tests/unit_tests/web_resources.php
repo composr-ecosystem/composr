@@ -71,6 +71,8 @@ class web_resources_test_set extends cms_test_case
             'base64.js',
             'confluence.js',
             'confluence2.js',
+            'masonry.js',
+            'glide.js',
 
             // Third-party code not confirming to Composr standards
             'widget_color.js',
@@ -124,7 +126,7 @@ class web_resources_test_set extends cms_test_case
             if (($errors !== null) && ($errors['errors'] == array())) {
                 $errors = null; // Normalise
             }
-            $this->assertTrue(($errors === null), 'Bad JS in ' . $path);
+            $this->assertTrue(($errors === null), 'Bad JS in ' . $path . (($this->only === null) ? (' (run with &only=' . basename($path) . '&debug=1 to see errors)') : ''));
             if ($errors !== null) {
                 if ($this->debug) {
                     unset($errors['tag_ranges']);
@@ -167,6 +169,7 @@ class web_resources_test_set extends cms_test_case
             'mediaelementplayer.css',
             'jquery_ui.css',
             'confluence.css',
+            'widget_glide.css',
         );
 
         if (($this->only !== null) && (in_array($this->only, $exceptions))) {

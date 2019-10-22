@@ -11,7 +11,8 @@
 	min-width: 20px;
 	height: 15px;
 	border-radius: {$GET,border_radius};
-	background: {$GET,seed} linear-gradient(to bottom, {$COLOR_DARKEN,{$GET,seed},15%} 0%,{$COLOR_DARKEN,{$GET,seed},15%} 50%,{$GET,seed} 50%,{$GET,seed} 100%);
+	background: {$GET,seed};
+	background-image: linear-gradient(to bottom, {$COLOR_DARKEN,{$GET,seed},15%} 0%,{$COLOR_DARKEN,{$GET,seed},15%} 50%,{$GET,seed} 50%,{$GET,seed} 100%);
 }
 
 .poll-answer img {
