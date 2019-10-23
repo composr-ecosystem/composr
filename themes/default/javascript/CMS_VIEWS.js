@@ -79,7 +79,7 @@
             return this;
         },
 
-z        /**
+        /**
          * Remove this view's element from the document and all event listeners
          * attached to it. Exposed for subclasses using an alternative DOM
          * manipulation API.
