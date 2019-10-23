@@ -453,6 +453,7 @@ if (!file_exists(get_custom_file_base() . '/exports/static')) {
     sync_file(get_custom_file_base() . '/exports/static');
 }
 tar_extract_to_folder($myfile, 'exports/static');
+tar_close($myfile);
 unlink($tar_path);
 
 $title = get_screen_title('Exported to static', false);

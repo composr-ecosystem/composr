@@ -72,6 +72,9 @@ class phpdoc_test_set extends cms_test_case
             'Find details of a position in the Sitemap.',
             'Get the permission page that nodes matching $page_link in this hook are tied to.',
             'Find if a page-link will be covered by this node.',
+            'Spreadsheet reader.',
+            'Read spreadsheet row.',
+            'Write spreadsheet row.',
         );
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 

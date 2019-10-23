@@ -150,6 +150,7 @@ class Hook_addon_registry_search
             'sources/hooks/systems/config/block_top_search.php',
             'sources/blocks/bottom_tag_cloud.php',
             'themes/default/templates/BLOCK_BOTTOM_TAG_CLOUD.tpl',
+            'themes/default/javascript/search.js',
         );
     }
 

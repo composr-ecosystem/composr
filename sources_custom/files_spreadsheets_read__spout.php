@@ -94,7 +94,7 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
 
         $row = $this->row_iterator->current();
         $this->row_iterator->next();
-        $cells = $row->getCells();
+        $cells = @array_map('strval', $row->getCells());
 
         cms_ini_set('ocproducts.type_strictness', '1');
 

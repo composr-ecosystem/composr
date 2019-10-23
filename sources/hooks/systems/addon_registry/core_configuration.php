@@ -167,6 +167,8 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/google_apis_client_secret.php',
             'sources/hooks/systems/config/azure_api_key.php',
             'sources/hooks/systems/config/timezone.php',
+            'sources/hooks/systems/config/theme_header_type.php',
+            'sources/hooks/systems/config/sticky_header.php',
             'adminzone/pages/modules/admin_oauth.php',
             'sources/oauth.php',
             'sources/hooks/systems/oauth/.htaccess',

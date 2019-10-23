@@ -109,6 +109,7 @@ class Hook_addon_registry_wordfilter
             'sources/hooks/modules/admin_import_types/wordfilter.php',
             'sources/hooks/systems/commandr_fs_extended_config/wordfilter.php',
             'sources/hooks/systems/actionlog/wordfilter.php',
+            'themes/default/javascript/wordfilter.js',
         );
     }
 }
