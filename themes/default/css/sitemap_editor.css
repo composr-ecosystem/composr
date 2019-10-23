@@ -75,7 +75,7 @@
 
 /*{+START,CSS_MODE,desktop}*/
 	.pte-sitemap-and-help-box-wrapper {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	.pte-sitemap {

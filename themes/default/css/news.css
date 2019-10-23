@@ -99,13 +99,13 @@ ul.news-entry-details-col-end li {
 
 /*{+START,CSS_MODE,desktop}*/
 	.news-entry-details {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	ul.news-entry-details-col-start,
 	ul.news-entry-details-col-end {
 		width: auto;
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 	}
 
@@ -129,7 +129,7 @@ ul.news-entry-details-col-end li {
 }
 
 .news-entry-screen .news-entry-next-and-prev {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .news-entry-screen .news-entry-next {
@@ -214,12 +214,12 @@ ul.news-entry-details-col-end li {
 
 .box---block-bottom-latest-news .box-body {
 	max-height: 350px;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
 }
 
 .box---block-bottom-latest-news .news-item {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	margin: 10px 0;
 	color: {$GET,WB};
 }
@@ -271,7 +271,7 @@ ul.news-entry-details-col-end li {
 
 /*{+START,CSS_MODE,desktop}*/
 	.main-news-grid {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		flex-wrap: wrap;
 		margin: 1em -10px;
 	}
@@ -330,7 +330,7 @@ ul.news-entry-details-col-end li {
 
 /*{+START,CSS_MODE,desktop}*/
 	.block-main-news-slider .cms-slider-item-inner {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		flex-flow: column wrap;
 		height: 512px;
 	}

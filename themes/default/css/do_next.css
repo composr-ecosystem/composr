@@ -29,7 +29,7 @@
 
 .do-next-section,
 .do-theme-items {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
 }
 

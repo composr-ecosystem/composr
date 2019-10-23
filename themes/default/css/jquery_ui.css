@@ -488,7 +488,7 @@ button.ui-button::-moz-focus-inner {
 	white-space: nowrap;
 	width: 90%;
 	overflow: hidden;
-	{$BETA_CSS_PROPERTY,text-overflow: ellipsis;}
+	text-overflow: ellipsis;
 }
 .ui-dialog .ui-dialog-titlebar-close {
 	position: absolute;
@@ -646,7 +646,7 @@ button.ui-button::-moz-focus-inner {
 	display: block;
 	line-height: 1.4;
 	overflow: hidden;
-	{$BETA_CSS_PROPERTY,text-overflow: ellipsis;}
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 .ui-slider {

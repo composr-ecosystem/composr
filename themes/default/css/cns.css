@@ -622,7 +622,7 @@ hr.cns-sig-barrier {
 .cns-forum-grouping-heading {
 	margin: 14px 4px;
 	min-height: 20px;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 }
 
@@ -837,7 +837,7 @@ hr.cns-sig-barrier {
 }
 
 .btns-cns-join-step1 {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	justify-content: center;
 }
 

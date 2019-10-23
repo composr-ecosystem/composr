@@ -11,7 +11,7 @@
 
 /*{+START,CSS_MODE,desktop}*/
 	.chat-rooms-and-chat-actions {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 /*{+END}*/
 
@@ -266,7 +266,7 @@ html.is-touch-enabled .chat-message>div {
 
 /*{+START,CSS_MODE,desktop}*/
 	.chat-im-convos-inner {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 /*{+END}*/
 

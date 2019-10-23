@@ -35,7 +35,7 @@
 
 .display-type-GRID {
 	{$BETA_CSS_PROPERTY,display: flex;}
-	{$BETA_CSS_PROPERTY,flex-wrap: wrap;}
+	flex-wrap: wrap;
 	margin: -0.5em 0 0 -0.5em;
 	position: relative;
 	z-index: 1;
@@ -53,7 +53,7 @@
 
 .display-type-GRID .box h3 span {
 	white-space: nowrap;
-	{$BETA_CSS_PROPERTY,text-overflow: ellipsis;}
+	text-overflow: ellipsis;
 	overflow: hidden;
 }
 

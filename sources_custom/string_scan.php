@@ -354,6 +354,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_max_queued_mails_per_cron_cycle
         CRON_SCRIPTS
         CSS_UNKNOWN_PSEUDO
+        CSS_UNKNOWN_AT_RULE
+        CSS_UNKNOWN_AT_BLOCK_RULE
         DASHBOARD_ACTIONS
         DASHBOARD_CHECKLIST
         DASHBOARD_COMPOSR_NEWS

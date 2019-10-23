@@ -19,7 +19,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 	overflow: hidden;
 	background-color: {$GET,area_5_background};
 	border-radius: {$GET,border_radius};
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 @media (max-width: 1200px) {/* Around when the tabs start wrapping better */
@@ -121,7 +121,7 @@ It makes more assumptions than the traditional tabs, like all the tabs will fit 
 
 .modern-subtabs {
 	background: {$GET,area_background};
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .modern-subtab-headers {

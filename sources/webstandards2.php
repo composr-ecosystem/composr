@@ -304,7 +304,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                     if (($attributes['type'] == 'checkbox') && (isset($attributes['id']))) {
                         $pre_content = substr($OUT, 0, $POS);
                         if (preg_match('#<label for="' . preg_quote($attributes['id'], '#') . '">[^:]+<input[^<>]+id="' . preg_quote($attributes['id'], '#') . '"#', $pre_content) != 0) {
-                            //$errors[] = array('ACCESSIB_COLONS_IN_PRE_LABELS');   Annoying
+                            //$errors[] = array('ACCESSIB_COLONS_IN_PRE_LABELS');   Over-prescriptive
                         }
                     }
 
@@ -881,8 +881,16 @@ function _webstandards_css_sheet($data)
                     $status = CSS_AT_RULE_BLOCK;
                     $at_rule_block = '';
                 } elseif ($next == ';') {
+                    $matches = array();
+                    if (preg_match('#^(\w+)\s*$#', $at_rule, $matches) != 0) {
+                        global $CSS_AT_RULES;
+                        if (!in_array($matches[1], $CSS_AT_RULES)) {
+                            $errors[] = array(0 => 'CSS_UNKNOWN_AT_RULE', 1 => $matches[1], 2 => integer_format($line), 'pos' => $i);
+                        }
+                    }
+
                     $status = CSS_NO_MANS_LAND;
-                    if (substr($at_rule, 0, 6) == 'import ') {
+                    if (preg_match('#^(import)\s*#', $at_rule, $matches) != 0) { // Contains regular CSS, which we will validate
                         $count = substr_count($at_rule, '"');
                         $first = strpos($at_rule, '"') + 1;
                         if ($count < 2) {
@@ -909,7 +917,7 @@ function _webstandards_css_sheet($data)
                                 }
                             }
                         }
-                    }
+                    } // We don't explicitly support validating other @-rules (#3928)
                 } else {
                     $at_rule .= $next;
                 }
@@ -919,24 +927,35 @@ function _webstandards_css_sheet($data)
                 if ($next == '{') {
                     ++$brace_level;
                     $at_rule_block .= $next;
-                } elseif (($next == '}') && ($brace_level == 0)) {
-                    $status = CSS_NO_MANS_LAND;
-                    if (substr($at_rule, 0, 6) == 'media ') {
-                        $css_tag_ranges_backup = $CSS_TAG_RANGES;
-                        $css_value_ranges_backup = $CSS_VALUE_RANGES;
-                        $test = _webstandards_css_sheet($at_rule_block);
-                        $CSS_TAG_RANGES = $css_tag_ranges_backup;
-                        $CSS_VALUE_RANGES = $css_value_ranges_backup;
-                        if (is_array($test)) {
-                            foreach ($test as $error) {
-                                $error['pos'] = $i;
-                                $errors[] = $error;
+                } elseif ($next == '}') {
+                    if ($brace_level == 0) {
+                        if (preg_match('#^(media)\s*$#', $at_rule, $matches) != 0) { // Contains regular CSS, which we will validate
+                            $css_tag_ranges_backup = $CSS_TAG_RANGES;
+                            $css_value_ranges_backup = $CSS_VALUE_RANGES;
+                            $test = _webstandards_css_sheet($at_rule_block);
+                            $CSS_TAG_RANGES = $css_tag_ranges_backup;
+                            $CSS_VALUE_RANGES = $css_value_ranges_backup;
+                            if (is_array($test)) {
+                                foreach ($test as $error) {
+                                    $error['pos'] = $i;
+                                    $errors[] = $error;
+                                }
+                            }
+                        } // We don't explicitly support validating other @-rules (#3928)
+
+                        $matches = array();
+                        if (preg_match('#^(\w+)\s*$#', $at_rule, $matches) != 0) {
+                            global $CSS_AT_BLOCK_RULES;
+                            if (!in_array($matches[1], $CSS_AT_BLOCK_RULES)) {
+                                $errors[] = array(0 => 'CSS_UNKNOWN_AT_BLOCK_RULE', 1 => $matches[1], 2 => integer_format($line), 'pos' => $i);
                             }
                         }
+
+                        $status = CSS_NO_MANS_LAND;
+                    } else {
+                        $brace_level--;
+                        $at_rule_block .= $next;
                     }
-                } elseif ($next == '}') {
-                    $brace_level--;
-                    $at_rule_block .= $next;
                 } else {
                     $at_rule_block .= $next;
                 }
@@ -1012,49 +1031,8 @@ function _webstandards_css_sheet($data)
                             $pseudo = $matches[1][$j];
                         }
 
-                        if (!in_array($pseudo, array(
-                            /* LEGACY */
-                            ':-moz-selection',
-                            ':-moz-focus-inner',
-                            ':-webkit-scrollbar',
-                            ':-webkit-scrollbar-track',
-                            ':-webkit-scrollbar-thumb',
-                            ':-webkit-calendar-picker-indicator',
-                            ':-webkit-inner-spin-button',
-                            ':-webkit-search-cancel-button',
-                            ':-webkit-search-decoration',
-                            ':-webkit-file-upload-button',
-                            ':-webkit-input-placeholder',
-                            ':-moz-placeholder',
-                            ':-ms-input-placeholder',
-                            ':-ms-value',
-
-                            ':first-line',
-                            ':first-letter',
-                            ':before',
-                            ':after',
-                            ':selection',
-                            ':placeholder',
-
-                            'active',
-                            'checked',
-                            'disabled',
-                            'empty',
-                            'enabled',
-                            'first-child',
-                            'focus',
-                            'focus-within',
-                            'hover',
-                            'indeterminate',
-                            'last-child',
-                            'link',
-                            'not',
-                            'nth-child',
-                            'nth-last-child',
-                            'only-child',
-                            'required',
-                            'visited',
-                        ))) {
+                        global $CSS_PSEUDO_CLASSES;
+                        if (!in_array($pseudo, $CSS_PSEUDO_CLASSES)) {
                             $errors[] = array(0 => 'CSS_UNKNOWN_PSEUDO', 1 => $pseudo, 2 => integer_format($line), 'pos' => $i);
                         }
                     }
@@ -1299,12 +1277,12 @@ function _check_css_value($key, $value, $_i)
 
     if (
         (preg_match('#^' . $reg_exp . '$#s', $value) == 0) &&
-        ($value != 'xpx') &&
-        ($value != 'x') &&
+
+        // Special values
         ($value != 'inherit') &&
         ($value != 'initial') &&
-        (substr($value, 0, 5) != 'calc(') &&
-        (substr($value, 0, 4) != 'val(')
+        (substr($value, 0, 5) != 'calc(') && // #3928
+        (substr($value, 0, 4) != 'var(')
     ) {
         return array(0 => 'CSS_BAD_PROPERTY_VALUE', 1 => $key, 2 => $value, 3 => $reg_exp, 'pos' => $_i);
     }

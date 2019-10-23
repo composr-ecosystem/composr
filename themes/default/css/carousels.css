@@ -7,7 +7,7 @@
 	overflow: hidden;
 	white-space: nowrap !important;
 	position: relative;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	padding-top: 10px;
 }
 
@@ -21,7 +21,7 @@
 
 .carousel .move-left,
 .carousel .move-right {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	position: relative;
 }
@@ -34,7 +34,7 @@
 
 .carousel .move-left:hover .icon ,
 .carousel .move-right:hover .icon {
-	{$BETA_CSS_PROPERTY,filter: brightness(1.4);}
+	filter: brightness(1.4);
 }
 
 .carousel .move-left {

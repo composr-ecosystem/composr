@@ -88,7 +88,7 @@ For example:
 	.menu-dropdown.is-touch-interface .menu-dropdown-toggle-btn {
 		text-decoration: none;
 		padding: 0.75em;
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 	}
 
@@ -196,7 +196,7 @@ For example:
 	.menu-dropdown.is-hover-interface .menu-dropdown-content,
 	.menu-dropdown.is-hover-interface .menu-dropdown-items-main,
 	.menu-dropdown.is-hover-interface .menu-dropdown-item.toplevel {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	.menu-dropdown.is-hover-interface .menu-dropdown-item-a {
@@ -212,7 +212,7 @@ For example:
 	}
 
 	.menu-dropdown.is-hover-interface .menu-dropdown-item-a.toplevel-link {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 		padding: 0 16px;
 	}

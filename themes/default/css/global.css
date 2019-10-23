@@ -267,7 +267,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
 	margin: 0;
-	font-family: Roboto, "-apple-system", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-family: "Roboto", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 14px;
 	font-weight: 400;
 	line-height: 1.5;
@@ -391,7 +391,7 @@ pre,
 code,
 kbd,
 samp {
-	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
 	font-size: 1em;
 }
 
@@ -1115,7 +1115,7 @@ header h1 {
 
 .logo-link {
 	font-size: 25px;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 }
 
@@ -1165,7 +1165,7 @@ header h1 {
 }
 
 .header-classic .global-navigation-items {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	min-height: 60px;
 }
 
@@ -1198,7 +1198,7 @@ header:not(.is-see-through).with-white-navbar {
 }
 
 .header-modern {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	transition: height 0.15s ease-in-out;
 	height: {$GET,header_modern_height};
 	position: relative;
@@ -1230,17 +1230,17 @@ html.is-scrolled .header-modern.is-sticky {
 }
 
 .header-modern .global-navigation {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .header-modern .global-navigation-items {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	margin-left: auto;
 }
 
 .header-modern .global-navigation .top-form {
 	padding: 0;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 }
 
@@ -1300,7 +1300,7 @@ header.with-seed-navbar .top-button:hover {
 }
 
 .global-navigation .menu-dropdown {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 /*{+START,CSS_MODE,desktop}*/
@@ -1311,7 +1311,7 @@ header.with-seed-navbar .top-button:hover {
 
 .global-navigation .top-buttons,
 .global-navigation .top-form {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	margin-left: auto;
 }
 
@@ -1322,13 +1322,13 @@ header.with-seed-navbar .top-button:hover {
 /*{+END}*/
 
 .top-button-wrapper {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	position: relative;
 }
 
 .top-button {
 	position: relative;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	padding: 0 10px;
 	text-decoration: none;
@@ -1372,7 +1372,7 @@ header.with-seed-navbar .top-button:hover {
 }
 
 .global-navigation .top-login-controls {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	margin: 0 -5px;
 }
@@ -1384,7 +1384,7 @@ header.with-seed-navbar .top-button:hover {
 .global-navigation .top-login .bock-top-login-links {
 	margin-left: 0.8em;
 	width: auto;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .global-navigation .top-login .bock-top-login-links > li {
@@ -1415,7 +1415,7 @@ header.with-seed-navbar .top-button:hover {
 
 /*{+START,CSS_MODE,mobile}*/
 	.header-side {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		transition: height 0.15s ease-in-out;
 		height: 90px;
 		position: relative;
@@ -1453,17 +1453,17 @@ header.with-seed-navbar .top-button:hover {
 	}
 
 	.header-side .global-navigation {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	.header-side .global-navigation-items {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		margin-left: auto;
 	}
 
 	.header-side .global-navigation .top-form {
 		padding: 0;
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 	}
 
@@ -1784,7 +1784,7 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 
 /*{+START,CSS_MODE,desktop}*/
 #panel-bottom .comcode-page {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
 }
 
@@ -1805,7 +1805,7 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 
 /*{+START,CSS_MODE,desktop}*/
 	.global-middle-outer {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	.global-middle {
@@ -1908,7 +1908,7 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 	min-height: 21px;
 	margin-top: 0.75em;
 	margin-bottom: 0.75em;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .global-message-icon {
@@ -2478,7 +2478,7 @@ p.red-alert {
 	border: 1px solid {$GET,light_error_border};
 	background-color: {$GET,light_error_background};
 	overflow: hidden;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .red-alert-icon {
@@ -3186,7 +3186,7 @@ hr.spaced-rule {
 }
 
 .flex {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .left {
@@ -4471,7 +4471,7 @@ div .buttons-group-faded > * {
 
 .comments-posting-form-end .proceed-button.contains-preview-button {
 	text-align: left;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 /*{+START,CSS_MODE,desktop}*/
@@ -5098,7 +5098,7 @@ ul.associated-links-block-group {
 }
 
 .simple-neat-checkbox {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 .simple-neat-checkbox input {
 	margin-top: 0.3em;
@@ -5317,7 +5317,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 }
 
 .form-inline {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-flow: row wrap;
 	align-items: center;
 }
@@ -5328,13 +5328,13 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 
 /*{+START,CSS_MODE,desktop}*/
 	.form-inline label {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 		justify-content: center;
 		margin-bottom: 0;
 	}
 	.form-inline .form-group {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		flex: 0 0 auto;
 		flex-flow: row wrap;
 		align-items: center;
@@ -5353,7 +5353,7 @@ select.form-control-lg:not([size]):not([multiple]), .input-group-lg > select.for
 		width: auto;
 	}
 	.form-inline .form-check {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 		justify-content: center;
 		width: auto;
@@ -5937,7 +5937,7 @@ input[type="button"].btn-block {
 }
 
 .btn-row {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	margin: -7px;
 	flex-wrap: wrap;
 }
@@ -6218,7 +6218,7 @@ input[type="button"].btn-block {
 }
 
 .btn-toolbar {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
 	justify-content: flex-start;
 }
@@ -6317,7 +6317,7 @@ input[type="button"].btn-block {
 
 .input-group {
 	position: relative;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-wrap: wrap;
 	align-items: stretch;
 	width: 100%;
@@ -6350,7 +6350,7 @@ input[type="button"].btn-block {
 
 .input-group-prepend,
 .input-group-append {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .input-group-prepend .btn,
@@ -6379,7 +6379,7 @@ input[type="button"].btn-block {
 }
 
 .input-group-text {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	padding: 5px 11px;
 	margin-bottom: 0;
@@ -6433,7 +6433,7 @@ input[type="button"].btn-block {
 }
 
 .proceed-button {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	justify-content: center;
 	flex-wrap: wrap;
 	margin-left: -7px;
@@ -7153,7 +7153,7 @@ a[rel="lightbox"] {
 .media-set {
 	margin: 1em 0;
 	{$BETA_CSS_PROPERTY,display: flex;}
-	{$BETA_CSS_PROPERTY,flex-wrap: wrap;}
+	flex-wrap: wrap;
 	border: 1px solid {$GET,standard_border};
 	background-color: {$GET,area_background};
 	border-radius: {$GET,border_radius};
@@ -7514,8 +7514,8 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	align-items: center;
 	width: 100%;
 	transition: transform 0.6s ease;
-	{$BETA_CSS_PROPERTY,backface-visibility: hidden;}
-	{$BETA_CSS_PROPERTY,perspective: 1000px;}
+	backface-visibility: hidden;
+	perspective: 1000px;
 }
 
 .cms-slider-item-background {
@@ -7624,7 +7624,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	justify-content: center;
 	width: 15%;
@@ -7675,7 +7675,7 @@ span:not(:empty)+#lightbox-position-in-set::before, span:not(:empty)+#lightbox-f
 	bottom: 10px;
 	left: 0;
 	z-index: 15;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	justify-content: center;
 	padding-left: 0;
 	margin-right: 15%;

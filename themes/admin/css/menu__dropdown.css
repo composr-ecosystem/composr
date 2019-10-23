@@ -50,7 +50,7 @@ For example:
 	.menu-dropdown-toggle-btn {
 		text-decoration: none;
 		padding: 0.75em;
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		align-items: center;
 		color: {$GET,WB};
 	}
@@ -131,7 +131,7 @@ For example:
 	}
 
 	.menu-dropdown-items-main {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	.menu-dropdown-item.toplevel {

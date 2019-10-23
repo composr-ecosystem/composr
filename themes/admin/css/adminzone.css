@@ -13,7 +13,7 @@ header {
 	background-color: #555;
 	color: {$GET,WB};
 	margin-bottom: 1em;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	border-bottom: none;
 	position: relative;
 }

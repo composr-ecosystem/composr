@@ -23,6 +23,7 @@ class css_beta_test_set extends cms_test_case
     public function testCorrectSetAsBeta()
     {
         require_code('themes2');
+        require_code('files2');
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
@@ -40,15 +41,12 @@ class css_beta_test_set extends cms_test_case
             );
 
             $in_beta = array(
-                'filter:',
-                'flex-wrap:',
-                'flex-grow:',
-                'order:',
                 'user-select:',
                 'text-size-adjust:',
-                'text-overflow:',
                 'touch-action:',
-                'appearance:',
+                'text-decoration-',
+                'font-kerning:',
+                'hyphens:',
 
                 // For specific properties
                 'display: flex',
@@ -56,38 +54,42 @@ class css_beta_test_set extends cms_test_case
             // ^ Also keep in sync with BETA_CSS_PROPERTY.php comment
 
             foreach ($directories as $dir) {
-                $d = @opendir($dir);
-                if ($d !== false) {
-                    while (($e = readdir($d)) !== false) {
-                        if (substr($e, -4) == '.css') {
-                            $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+                $files = get_directory_contents($dir);
+                foreach ($files as $e) {
+                    if (in_array($e, array( // Exceptions
+                        'confluence.css',
+                        'mediaelementplayer.css',
+                    ))) {
+                        continue;
+                    }
 
-                            $matches = array();
-                            $found = preg_match_all('#\{\$BETA_CSS_PROPERTY,(.*)\}#i', $c, $matches);
-                            for ($i = 0; $i < $found; $i++) {
-                                $property_line = $matches[1][$i];
+                    if (substr($e, -4) == '.css') {
+                        $c = cms_file_get_contents_safe($dir . '/' . $e, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-                                $is_in_beta = false;
-                                foreach ($in_beta as $_property) {
-                                    if (substr($property_line, 0, strlen($_property)) == $_property) {
-                                        $is_in_beta = true;
-                                    }
+                        $matches = array();
+                        $found = preg_match_all('#\{\$BETA_CSS_PROPERTY,(.*)\}#i', $c, $matches);
+                        for ($i = 0; $i < $found; $i++) {
+                            $property_line = $matches[1][$i];
+
+                            $is_in_beta = false;
+                            foreach ($in_beta as $_property) {
+                                if (substr($property_line, 0, strlen($_property)) == $_property) {
+                                    $is_in_beta = true;
                                 }
-
-                                $this->assertTrue($is_in_beta, 'Property ' . $property_line . ' should *not* be defined as beta in ' . $e . ' for theme ' . $theme);
                             }
 
-                            foreach ($in_beta as $property) {
-                                if ($property == 'display') {
-                                    continue;
-                                }
+                            $this->assertTrue($is_in_beta, 'Property ' . $property_line . ' should *not* be defined as beta in ' . $e . ' for theme ' . $theme);
+                        }
 
-                                $is_as_beta = (strpos($c, "\t" . $property) === false) || (strpos($c, ' ' . $property) === false);
-                                $this->assertTrue($is_as_beta, 'Property ' . $property . ' should be defined as beta in ' . $e . ' for theme ' . $theme);
+                        foreach ($in_beta as $property) {
+                            if ($property == 'display') {
+                                $property .= ': flex'; // May be used in either, depending on context, so fiddle it to be more specific
                             }
+
+                            $is_not_as_beta = (strpos($c, "\t" . $property) !== false) || (strpos($c, ' ' . $property) !== false);
+                            $this->assertTrue(!$is_not_as_beta, 'Property ' . $property . ' should be defined as beta in ' . $e . ' for theme ' . $theme);
                         }
                     }
-                    closedir($d);
                 }
             }
         }

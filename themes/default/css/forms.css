@@ -478,7 +478,7 @@ span.validated-checkbox + input[name="validated"].input-tick {
 
 .radio-list-pictures {
 	{$BETA_CSS_PROPERTY,display: flex;}
-	{$BETA_CSS_PROPERTY,flex-wrap: wrap;}
+	flex-wrap: wrap;
 	margin: -0.5em 0 0 -0.5em;
 }
 .radio-list-pictures.linear {

@@ -5,7 +5,7 @@
 
 .block-main-members {
 	{$BETA_CSS_PROPERTY,display: flex;}
-	{$BETA_CSS_PROPERTY,flex-wrap: wrap;}
+	flex-wrap: wrap;
 	margin: -0.5em 0 0 -0.5em;
 }
 

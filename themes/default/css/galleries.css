@@ -6,7 +6,7 @@
 /* All layout modes and viewing entries */
 
 .gallery-nav-inner {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	margin-bottom: 10px;
 }
@@ -238,7 +238,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 }
 
 .gallery-slideshow-screen {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	min-height: 100vh;
 	max-height: 100vh;
 	overflow: hidden;
@@ -262,7 +262,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 .gallery-slideshow-screen .slideshow-content {
 	flex-grow: 1;
 	order: 1;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
 	position: relative;
 }
@@ -301,7 +301,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 .gallery-slideshow-screen .cms-slider-item.active,
 .gallery-slideshow-screen .cms-slider-item-next,
 .gallery-slideshow-screen .cms-slider-item-prev {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	justify-content: center;
 }
 
@@ -345,7 +345,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
 	color: #fff;
 	animation: cms-fade-in 0.3s ease-in-out;
@@ -453,7 +453,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 }
 
 .gallery-slideshow-screen .slideshow-carousel .glide__slide {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	justify-content: center;
 }
@@ -465,7 +465,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 .gallery-slideshow-screen .slideshow-menu {
 	flex-basis: 0;
 	order: 2;
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	flex-direction: column;
 	background: #333;
 }
@@ -492,7 +492,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 }
 /*{+START,CSS_MODE,mobile}*/
 	.gallery-slideshow-screen .slideshow-menu-middle {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 	}
 
 	.gallery-slideshow-screen .slideshow-menu .btn-exit-slideshow {
@@ -543,7 +543,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 
 /*{+START,CSS_MODE,desktop}*/
 	.gallery-grid-cell-wrap {
-		display: flex;
+		{$BETA_CSS_PROPERTY,display: flex;}
 		flex-wrap: wrap;
 		margin-left: -10px;
 		margin-right: -10px;
@@ -648,7 +648,7 @@ html.is-gallery-slideshow body#main-website #main-website-inner {
 }
 
 .carousel-mode-other-gallery-images .head {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 	margin-bottom: 10px;
 }
@@ -953,7 +953,7 @@ html:not(.is-touch-enabled) .glide-other-gallery-images.has-multiple-views:not(:
 }
 
 .gallery-box {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	padding-bottom: 20px;
 	margin-bottom: 20px;
 	border-bottom: 1px solid {$GET,standard_border};
@@ -1072,6 +1072,6 @@ html.has-header-side #slider-homepage-hero.cms-slider-fullscreen {
 
 html.has-header-modern #slider-homepage-hero.cms-slider-fullscreen .cms-slider-item-inner,
 html.has-header-side #slider-homepage-hero.cms-slider-fullscreen .cms-slider-item-inner {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 	align-items: center;
 }
