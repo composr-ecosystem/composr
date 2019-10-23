@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    mediaelement
+ * @package    core_mediaelement
  */
 
 /**
  * Hook class.
  */
-class Hook_addon_registry_mediaelement
+class Hook_addon_registry_core_mediaelement
 {
     /**
      * Get a list of file permissions to set.
@@ -133,7 +133,7 @@ class Hook_addon_registry_mediaelement
     public function get_file_list()
     {
         return array(
-            'sources/hooks/systems/addon_registry/mediaelement.php',
+            'sources/hooks/systems/addon_registry/core_mediaelement.php',
             'data/mediaelement/index.html',
             'data/mediaelement/mediaelement-flash-audio-ogg.swf',
             'data/mediaelement/mediaelement-flash-audio.swf',
