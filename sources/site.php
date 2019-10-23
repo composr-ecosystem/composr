@@ -78,222 +78,10 @@ function init__site()
     global $ATTACH_MESSAGE_CALLED;
     $ATTACH_MESSAGE_CALLED = 0;
 
-    load_zone_data();
-
-    // SEO redirection
-    require_code('urls');
-    if (can_try_url_schemes()) {
-        $ruri = $_SERVER['REQUEST_URI'];
-
-        $url_scheme = get_option('url_scheme');
-        if (($url_scheme == 'PG') || ($url_scheme == 'HTM')) {
-            if (
-                (!headers_sent()) &&
-                (running_script('index')) &&
-                ($GLOBALS['RELATIVE_PATH'] == get_zone_name()/*i.e. a proper zone*/) && ($_SERVER['REQUEST_METHOD'] != 'POST') &&
-                (get_param_integer('keep_failover', null) !== 0) &&
-                ((strpos($ruri, '/pg/') === false) || ($url_scheme != 'PG')) &&
-                ((strpos($ruri, '.htm') === false) || ($url_scheme != 'HTM')) &&
-                ($ruri != '/')
-            ) {
-                require_code('permissions');
-                set_http_status_code(301);
-                header('Location: ' . escape_header(get_self_url(true))); // assign_refresh not used, as it is a pre-page situation
-                exit();
-            }
-        }
-    }
-
-    // Search engine having session in URL, we don't like this
-    if ((get_bot_type() !== null) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (get_param_string('keep_session', null) !== null)) {
-        //Too risky, what if something sets it at run-time. Relying on canonical URL is better.
-        //set_http_status_code(301);
-        //header('Location: ' . escape_header(get_self_url(true, false, array('keep_session' => null, 'keep_print' => null)))); // assign_refresh not used, as it is a pre-page situation
-        //exit();
-    }
-
-    if ((running_script('index')) && (!is_cli())) {
-        $access_host = preg_replace('#:.*#', '', get_local_hostname());
-
-        // Detect bad access domain
-        global $SITE_INFO;
-        if (($access_host != '') && (isset($_SERVER['HTTP_HOST'])) && (empty($GLOBALS['EXTERNAL_CALL']))) {
-            $parsed_base_url = parse_url(get_base_url());
-
-            if ((array_key_exists('host', $parsed_base_url)) && (strtolower($parsed_base_url['host']) != strtolower($access_host))) {
-                if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
-                    if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
-                        attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($parsed_base_url['host']), escape_html($access_host)), 'warn');
-                    }
-
-                    set_http_status_code(301);
-                    header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
-                    exit();
-                }
-            }
-        }
-
-        // Detect bad access protocol
-        if ((get_value('access_protocol_redirect') === '1') && ((substr(get_base_url(), 0, 8) == 'https://') && (!tacit_https()) || (substr(get_base_url(), 0, 7) == 'http://') && (tacit_https()))) {
-            set_http_status_code(301);
-            header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
-            exit();
-        }
-
-        if (get_value('disable_cookie_checks') !== '1') {
-            // Detect bad cookie domain (reasonable approximation)
-            $cookie_domain = @ltrim(get_cookie_domain(), '.');
-            if (!empty($cookie_domain) && !empty($access_host)) {
-                if (substr($access_host, -strlen($cookie_domain)) != $cookie_domain) {
-                    attach_message(do_lang_tempcode('INCORRECT_COOKIE_DOMAIN', escape_html($cookie_domain), escape_html($access_host)), 'warn');
-                }
-            }
-
-            // Detect bad cookie path
-            $cookie_path = get_cookie_path();
-            $access_path = $_SERVER['SCRIPT_NAME'];
-            if (!empty($cookie_path) && !empty($access_path)) {
-                if (substr($access_path, 0, strlen($cookie_path)) != $cookie_path) {
-                    attach_message(do_lang_tempcode('INCORRECT_COOKIE_PATH', escape_html($cookie_path), escape_html($access_path)), 'warn');
-                }
-            }
-        }
-    }
-
-    if (running_script('index')) {
-        process_url_monikers();
-    }
-
-    // Bulk advance loading
-    global $SMART_CACHE;
-    if (isset($SMART_CACHE)) {
-        $_comcode_pages_needed = $SMART_CACHE->get('comcode_pages_needed');
-        if ($_comcode_pages_needed !== null) {
-            $comcode_pages_needed = array();
-            foreach ($_comcode_pages_needed as $_comcode_page_needed => $_) {
-                $comcode_pages_needed[] = unserialize($_comcode_page_needed);
-            }
-
-            if (count($comcode_pages_needed) < 20) {
-                _load_comcodes_page_from_cache($comcode_pages_needed);
-            }
-        }
-    }
-
     global $COMCODE_PAGE_RUNTIME_CACHE;
     $COMCODE_PAGE_RUNTIME_CACHE = array();
-}
 
-/**
- * Load up details for the current zone.
- */
-function check_has_page_access()
-{
-    $real_zone = load_zone_data();
-
-    // The most important security check
-    global $SESSION_CONFIRMED_CACHE;
-    get_member(); // Make sure we've loaded our backdoor if installed
-    require_code('permissions');
-    global $ZONE;
-    if ($ZONE['zone_require_session'] == 1) {
-        set_no_clickjacking_csp();
-    }
-    if (($ZONE['zone_name'] != '') && (!is_httpauth_login()) && ((get_session_id() == '') || (!$SESSION_CONFIRMED_CACHE)) && ($ZONE['zone_require_session'] == 1) && (get_page_name() != 'login') && (!is_guest())) {
-        access_denied((($real_zone == 'data') || (has_zone_access(get_member(), $ZONE['zone_name']))) ? 'ZONE_ACCESS_SESSION' : 'ZONE_ACCESS', $ZONE['zone_name'], true);
-    } else {
-        if (($real_zone == 'data') || (has_zone_access(get_member(), $ZONE['zone_name']))) {
-            if ((running_script('index')) && /*Actually we will allow Guest denying to the front page even though that is a bit weird ((get_page_name()!=$ZONE['zone_default_page']) || ($real_zone!='')) && */(!has_page_access(get_member(), get_page_name(), $ZONE['zone_name'], true))) {
-                access_denied('PAGE_ACCESS');
-            }
-        } else {
-            if (get_page_name() != 'login') {
-                access_denied('ZONE_ACCESS', $ZONE['zone_name'], true);
-            }
-        }
-    }
-}
-
-/**
- * Load up details for the current zone.
- *
- * @return ID_TEXT The "real" zone name (not actually the zone name, but the zone name wants details to load for)
- */
-function load_zone_data()
-{
-    global $ZONE, $RELATIVE_PATH;
-    $zone_name = get_zone_name();
-    $real_zone = (($RELATIVE_PATH == '_tests') || ($RELATIVE_PATH == 'data') || ($RELATIVE_PATH == 'data_custom')) ? get_param_string('zone', '') : $zone_name;
-    /** A map of the current zone that is running.
-     *
-     * @global array $ZONE
-     */
-    if ($ZONE === null) {
-        $ZONE = persistent_cache_get(array('ZONE', $real_zone));
-
-        if ($ZONE === null) {
-            find_all_zones(); // Optimisation, this will load up our zone list which *usually* includes caching of current zone, as this likely is needed somewhere anyway
-
-            global $ALL_ZONES_TITLED_CACHE;
-            if (isset($ALL_ZONES_TITLED_CACHE[$real_zone][3])) {
-                $ZONE = $ALL_ZONES_TITLED_CACHE[$real_zone][3];
-            }
-        }
-
-        if ($ZONE === null) {
-            $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => $real_zone), '', 1);
-
-            // Auto-create zone
-            if ((!array_key_exists(0, $zones)) && (is_dir(get_file_base() . '/' . $real_zone . '/' . 'pages'))) {
-                $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => preg_replace('#\d#', '', $real_zone)), '', 1);
-                if (array_key_exists(0, $zones)) {
-                    // Ah, we have a zone with the same name, except the numbers stripped -- this can be a template
-                    $map = $zones[0];
-                    $map['zone_name'] = $real_zone;
-                    $map = insert_lang('zone_title', get_translated_text($zones[0]['zone_title']), 1) + $map;
-                    $map = insert_lang('zone_header_text', get_translated_text($zones[0]['zone_header_text']), 1) + $map;
-
-                    $access = $GLOBALS['SITE_DB']->query_select('group_zone_access', array('group_id'), array('zone_name' => $zones[0]['zone_name']));
-                    foreach ($access as $a) {
-                        $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('group_id' => $a['group_id'], 'zone_name' => $real_zone));
-                    }
-                } else {
-                    $zone_default_page = DEFAULT_ZONE_PAGE_NAME;
-                    if ($real_zone == 'forum') { // A bit of an architectural fudge, but people get confused why it doesn't come back the same
-                        $zone_default_page = 'forumview';
-                    }
-                    if ($real_zone == 'docs') {
-                        $zone_default_page = 'tutorials';
-                    }
-                    $map = array(
-                        'zone_name' => $real_zone,
-                        'zone_default_page' => $zone_default_page,
-                        'zone_theme' => 'default',
-                        'zone_require_session' => 0,
-                    );
-                    $map += insert_lang('zone_title', $real_zone, 1);
-                    $map += insert_lang('zone_header_text', $real_zone, 1);
-                }
-                $GLOBALS['SITE_DB']->query_insert('zones', $map);
-                $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => $real_zone), '', 1);
-            }
-
-            if (array_key_exists(0, $zones)) {
-                $ZONE = $zones[0];
-                persistent_cache_set(array('ZONE', $real_zone), $ZONE);
-            }
-
-            // Missing zone
-            if ($ZONE === null) {
-                $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => ''), '', 1);
-                $ZONE = $zones[0];
-                warn_exit(do_lang_tempcode('BAD_ZONE', escape_html($real_zone)));
-            }
-            unset($zones);
-        }
-    }
-
-    return $real_zone;
+    do_site_prep();
 }
 
 /**
@@ -712,6 +500,226 @@ function set_short_title($title)
     if (!$FORCE_SET_TITLE) {
         $SHORT_TITLE = ($title == '') ? null : $title;
     }
+}
+
+/**
+ * Prepare for the main do_site() page renderer.
+ */
+function do_site_prep()
+{
+    load_zone_data();
+
+    // SEO redirection
+    require_code('urls');
+    if (can_try_url_schemes()) {
+        $ruri = $_SERVER['REQUEST_URI'];
+
+        $url_scheme = get_option('url_scheme');
+        if (($url_scheme == 'PG') || ($url_scheme == 'HTM')) {
+            if (
+                (!headers_sent()) &&
+                (running_script('index')) &&
+                ($GLOBALS['RELATIVE_PATH'] == get_zone_name()/*i.e. a proper zone*/) && ($_SERVER['REQUEST_METHOD'] != 'POST') &&
+                (get_param_integer('keep_failover', null) !== 0) &&
+                ((strpos($ruri, '/pg/') === false) || ($url_scheme != 'PG')) &&
+                ((strpos($ruri, '.htm') === false) || ($url_scheme != 'HTM')) &&
+                ($ruri != '/')
+            ) {
+                require_code('permissions');
+                set_http_status_code(301);
+                header('Location: ' . escape_header(get_self_url(true))); // assign_refresh not used, as it is a pre-page situation
+                exit();
+            }
+        }
+    }
+
+    // Search engine having session in URL, we don't like this
+    if ((get_bot_type() !== null) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (get_param_string('keep_session', null) !== null)) {
+        //Too risky, what if something sets it at run-time. Relying on canonical URL is better.
+        //set_http_status_code(301);
+        //header('Location: ' . escape_header(get_self_url(true, false, array('keep_session' => null, 'keep_print' => null)))); // assign_refresh not used, as it is a pre-page situation
+        //exit();
+    }
+
+    if ((running_script('index')) && (!is_cli())) {
+        $access_host = preg_replace('#:.*#', '', get_local_hostname());
+
+        // Detect bad access domain
+        global $SITE_INFO;
+        if (($access_host != '') && (isset($_SERVER['HTTP_HOST'])) && (empty($GLOBALS['EXTERNAL_CALL']))) {
+            $parsed_base_url = parse_url(get_base_url());
+
+            if ((array_key_exists('host', $parsed_base_url)) && (strtolower($parsed_base_url['host']) != strtolower($access_host))) {
+                if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
+                    if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+                        attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($parsed_base_url['host']), escape_html($access_host)), 'warn');
+                    }
+
+                    set_http_status_code(301);
+                    header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
+                    exit();
+                }
+            }
+        }
+
+        // Detect bad access protocol
+        if ((get_value('access_protocol_redirect') === '1') && ((substr(get_base_url(), 0, 8) == 'https://') && (!tacit_https()) || (substr(get_base_url(), 0, 7) == 'http://') && (tacit_https()))) {
+            set_http_status_code(301);
+            header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
+            exit();
+        }
+
+        if (get_value('disable_cookie_checks') !== '1') {
+            // Detect bad cookie domain (reasonable approximation)
+            $cookie_domain = @ltrim(get_cookie_domain(), '.');
+            if (!empty($cookie_domain) && !empty($access_host)) {
+                if (substr($access_host, -strlen($cookie_domain)) != $cookie_domain) {
+                    attach_message(do_lang_tempcode('INCORRECT_COOKIE_DOMAIN', escape_html($cookie_domain), escape_html($access_host)), 'warn');
+                }
+            }
+
+            // Detect bad cookie path
+            $cookie_path = get_cookie_path();
+            $access_path = $_SERVER['SCRIPT_NAME'];
+            if (!empty($cookie_path) && !empty($access_path)) {
+                if (substr($access_path, 0, strlen($cookie_path)) != $cookie_path) {
+                    attach_message(do_lang_tempcode('INCORRECT_COOKIE_PATH', escape_html($cookie_path), escape_html($access_path)), 'warn');
+                }
+            }
+        }
+    }
+
+    if (running_script('index')) {
+        process_url_monikers();
+    }
+
+    // Bulk advance loading
+    global $SMART_CACHE;
+    if (isset($SMART_CACHE)) {
+        $_comcode_pages_needed = $SMART_CACHE->get('comcode_pages_needed');
+        if ($_comcode_pages_needed !== null) {
+            $comcode_pages_needed = array();
+            foreach ($_comcode_pages_needed as $_comcode_page_needed => $_) {
+                $comcode_pages_needed[] = unserialize($_comcode_page_needed);
+            }
+
+            if (count($comcode_pages_needed) < 20) {
+                _load_comcodes_page_from_cache($comcode_pages_needed);
+            }
+        }
+    }
+}
+
+/**
+ * Load up details for the current zone.
+ */
+function check_has_page_access()
+{
+    $real_zone = load_zone_data();
+
+    // The most important security check
+    global $SESSION_CONFIRMED_CACHE;
+    get_member(); // Make sure we've loaded our backdoor if installed
+    require_code('permissions');
+    global $ZONE;
+    if ($ZONE['zone_require_session'] == 1) {
+        set_no_clickjacking_csp();
+    }
+    if (($ZONE['zone_name'] != '') && (!is_httpauth_login()) && ((get_session_id() == '') || (!$SESSION_CONFIRMED_CACHE)) && ($ZONE['zone_require_session'] == 1) && (get_page_name() != 'login') && (!is_guest())) {
+        access_denied((($real_zone == 'data') || (has_zone_access(get_member(), $ZONE['zone_name']))) ? 'ZONE_ACCESS_SESSION' : 'ZONE_ACCESS', $ZONE['zone_name'], true);
+    } else {
+        if (($real_zone == 'data') || (has_zone_access(get_member(), $ZONE['zone_name']))) {
+            if ((running_script('index')) && /*Actually we will allow Guest denying to the front page even though that is a bit weird ((get_page_name()!=$ZONE['zone_default_page']) || ($real_zone!='')) && */(!has_page_access(get_member(), get_page_name(), $ZONE['zone_name'], true))) {
+                access_denied('PAGE_ACCESS');
+            }
+        } else {
+            if (get_page_name() != 'login') {
+                access_denied('ZONE_ACCESS', $ZONE['zone_name'], true);
+            }
+        }
+    }
+}
+
+/**
+ * Load up details for the current zone.
+ *
+ * @return ID_TEXT The "real" zone name (not actually the zone name, but the zone name wants details to load for)
+ */
+function load_zone_data()
+{
+    global $ZONE, $RELATIVE_PATH;
+    $zone_name = get_zone_name();
+    $real_zone = (($RELATIVE_PATH == '_tests') || ($RELATIVE_PATH == 'data') || ($RELATIVE_PATH == 'data_custom')) ? get_param_string('zone', '') : $zone_name;
+    /** A map of the current zone that is running.
+     *
+     * @global array $ZONE
+     */
+    if ($ZONE === null) {
+        $ZONE = persistent_cache_get(array('ZONE', $real_zone));
+
+        if ($ZONE === null) {
+            find_all_zones(); // Optimisation, this will load up our zone list which *usually* includes caching of current zone, as this likely is needed somewhere anyway
+
+            global $ALL_ZONES_TITLED_CACHE;
+            if (isset($ALL_ZONES_TITLED_CACHE[$real_zone][3])) {
+                $ZONE = $ALL_ZONES_TITLED_CACHE[$real_zone][3];
+            }
+        }
+
+        if ($ZONE === null) {
+            $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => $real_zone), '', 1);
+
+            // Auto-create zone
+            if ((!array_key_exists(0, $zones)) && (is_dir(get_file_base() . '/' . $real_zone . '/' . 'pages'))) {
+                $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => preg_replace('#\d#', '', $real_zone)), '', 1);
+                if (array_key_exists(0, $zones)) {
+                    // Ah, we have a zone with the same name, except the numbers stripped -- this can be a template
+                    $map = $zones[0];
+                    $map['zone_name'] = $real_zone;
+                    $map = insert_lang('zone_title', get_translated_text($zones[0]['zone_title']), 1) + $map;
+                    $map = insert_lang('zone_header_text', get_translated_text($zones[0]['zone_header_text']), 1) + $map;
+
+                    $access = $GLOBALS['SITE_DB']->query_select('group_zone_access', array('group_id'), array('zone_name' => $zones[0]['zone_name']));
+                    foreach ($access as $a) {
+                        $GLOBALS['SITE_DB']->query_insert('group_zone_access', array('group_id' => $a['group_id'], 'zone_name' => $real_zone));
+                    }
+                } else {
+                    $zone_default_page = DEFAULT_ZONE_PAGE_NAME;
+                    if ($real_zone == 'forum') { // A bit of an architectural fudge, but people get confused why it doesn't come back the same
+                        $zone_default_page = 'forumview';
+                    }
+                    if ($real_zone == 'docs') {
+                        $zone_default_page = 'tutorials';
+                    }
+                    $map = array(
+                        'zone_name' => $real_zone,
+                        'zone_default_page' => $zone_default_page,
+                        'zone_theme' => 'default',
+                        'zone_require_session' => 0,
+                    );
+                    $map += insert_lang('zone_title', $real_zone, 1);
+                    $map += insert_lang('zone_header_text', $real_zone, 1);
+                }
+                $GLOBALS['SITE_DB']->query_insert('zones', $map);
+                $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => $real_zone), '', 1);
+            }
+
+            if (array_key_exists(0, $zones)) {
+                $ZONE = $zones[0];
+                persistent_cache_set(array('ZONE', $real_zone), $ZONE);
+            }
+
+            // Missing zone
+            if ($ZONE === null) {
+                $zones = $GLOBALS['SITE_DB']->query_select('zones', array('*'), array('zone_name' => ''), '', 1);
+                $ZONE = $zones[0];
+                warn_exit(do_lang_tempcode('BAD_ZONE', escape_html($real_zone)));
+            }
+            unset($zones);
+        }
+    }
+
+    return $real_zone;
 }
 
 /**
