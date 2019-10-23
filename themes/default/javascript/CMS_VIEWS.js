@@ -79,7 +79,7 @@
             return this;
         },
 
-        /**
+z        /**
          * Remove this view's element from the document and all event listeners
          * attached to it. Exposed for subclasses using an alternative DOM
          * manipulation API.
@@ -1397,7 +1397,7 @@
 
                 // If clicking a download link then don't show the animation
                 if (document.activeElement && (document.activeElement.href != null)) {
-                    var url = document.activeElement.href.replace(/.*:\/\/[^/:]+/, '');
+                    var url = document.activeElement.href.replace(/.*:\/\/[^\/:]+/, '');
                     if (url.includes('download') || url.includes('export')) {
                         return;
                     }
