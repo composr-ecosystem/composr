@@ -38,6 +38,7 @@ class Hook_snippet_themewizard_equation
         $equation = get_param_string('css_equation', false, INPUT_FILTER_GET_COMPLEX);
 
         require_code('themewizard');
+        require_code('themes2');
 
         $css_path = get_custom_file_base() . '/themes/' . filter_naughty($theme) . '/css_custom/global.css';
         if (!file_exists($css_path)) {
