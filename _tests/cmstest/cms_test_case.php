@@ -34,7 +34,7 @@ class cms_test_case extends WebTestCase
             register_shutdown_function(array($this, 'reopen_site'));
         }
 
-        $args = array_slice($_SERVER['argv'], 2);
+        $args = isset($_SERVER['argv']) ? array_slice($_SERVER['argv'], 2) : array();
 
         $this->debug = (get_param_integer('debug', 0) == 1);
         if (in_array('debug', $args)) {
