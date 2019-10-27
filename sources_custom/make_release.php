@@ -1120,7 +1120,7 @@ function _download_latest_data_ip_country()
     cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $spreadsheet_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
     @unlink($tmp_name_gzip);
-    @unlink($tmp_name_tar);
+    @unlink($tmp_name_csv);
 }
 
 function _download_latest_data_no_banning()
