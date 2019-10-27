@@ -68,9 +68,10 @@ This section is not actively maintained. Package names may change, but it is des
 [i]These instructions have not been tested since changes have been made to them.[/i]
 
 [code="Bash"]
-apt-get install apache2 libapache2-mod-php7.2 php7.2 php7.2-common php7.2-cli php7.2-apcu php7.2-curl \
-php7.2-enchant php7.2-ffmpeg php7.2-gd php7.2-imap php7.2-mysqlnd php7.2-pspell php7.2-json openssl mysql-server \
-mysql-client postfix nano wget lynx hunspell git openssh-server nano wget iostat
+apt install apache2 libapache2-mod-php php php-common php-cli php-apcu php-curl \
+php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-pspell php-json \
+php-xml php-intl openssl mysql-server mysql-client \
+postfix nano wget lynx hunspell git openssh-server nano wget iostat
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:

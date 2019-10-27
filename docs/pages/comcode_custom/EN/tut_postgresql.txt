@@ -40,7 +40,7 @@ Third-parties may write code that assumes (intentionally or not) MySQL, so don't
 
 [title="2"]Installing Postgres[/title]
 
-You can usually install Postgres using your normal package manager. On Mac I installed using HomeBrew. On Linux, [tt]yum[/tt], [tt]apt-get[/tt], etc, should all have it.
+You can usually install Postgres using your normal package manager. On Mac I installed using HomeBrew. On Linux, [tt]yum[/tt], [tt]apt[/tt], etc, should all have it.
 On Windows there are downloadable packages.
 
 You will need the PHP [tt]postgresql[/tt] extension to be installed.
