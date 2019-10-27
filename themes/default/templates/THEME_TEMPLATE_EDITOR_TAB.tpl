@@ -457,7 +457,7 @@
 								<a href="#!" class="js-a-editarea-search" data-ea-search="inner_background">{!CHANGE_INNER_BACKGROUND}</a>
 							</li>
 							<li>
-								<a href="#!" class="js-a-editarea-search" data-ea-search="block_background">{!CHANGE_BLOCK_BACKGROUND}</a>
+								<a href="#!" class="js-a-editarea-search" data-ea-search="&#10;\.box {">{!CHANGE_BLOCK_BACKGROUND}</a>
 							</li>
 							{+START,IF,{$THEME_OPTION,fixed_width}}
 								<li>

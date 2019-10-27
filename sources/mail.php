@@ -1352,7 +1352,7 @@ abstract class Mail_dispatcher_base
     protected function mail_css_rep_callback($matches)
     {
         $filename = preg_replace('#\?\d+$#', '', basename($matches[1]));
-        if (($filename != 'block_background.svg') && ($filename != 'keyboard.png') && ($filename != 'email_link.svg') && ($filename != 'external_link.svg')) {
+        if (($filename != 'email_link.svg') && ($filename != 'external_link.svg')) {
             /*CSS CIDs do not work with Thunderbird, but data does
             $cid = uniqid('', true) . '@' . get_domain();
             $this->cid_attachments_url_mapping[$cid] = $matches[1];

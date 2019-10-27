@@ -328,7 +328,6 @@ html.is-touch-enabled .chat-message>div {
 }
 
 .chat-lobby-convos-tab-uptodate, .chat-lobby-convos-tab-new-messages {
-	background: url('{$IMG;,tabs/tab}') no-repeat;
 	float: left;
 	padding: 3px 5px 0 5px;
 	height: 20px;

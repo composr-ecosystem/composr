@@ -79,14 +79,17 @@
 
 /* Template editor */
 
+.template-editor-files-and-tabs {
+	display: flex;
+}
+
 .template-editor-file-selector {
 	width: 20em;
 	padding-right: 16px;
-	float: left;
 	height: 45em;
 }
 
-.template-editor-file-selector>.inner {
+.template-editor-file-selector > .inner {
 	overflow-x: hidden;
 	overflow-y: auto;
 	width: 100%;
@@ -94,6 +97,7 @@
 }
 
 .template-editor-tabs {
+	flex-grow: 1;
 }
 
 .file-changed {

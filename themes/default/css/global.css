@@ -6621,18 +6621,12 @@ a.tab, a.tab:visited, a.tab:hover {
 	cursor: pointer;
 	line-height: 18px;
 	opacity: 0.6;
+	border-left: 1px solid {$GET,tab_border};
+	border-top: 1px solid {$GET,tab_border};
 }
-/*{+START,CSS_MODE,desktop}*/
-	.tab {
-		background-image: url('{$IMG;,tabs/tab}') !important;
-		background-size: 350px 26px !important;
-	}
-/*{+END}*/
 /*{+START,CSS_MODE,mobile}*/
 	.tab {
 		min-width: 105px; /* Allows 3 per row, neat alignment */
-		border-left: 1px solid {$GET,tab_border};
-		border-top: 1px solid {$GET,tab_border};
 	}
 /*{+END}*/
 

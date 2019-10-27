@@ -1040,18 +1040,27 @@
         return window.JSON5.parse(strVal(source));
     };
 
+    /**
+     * @memberof $util
+     */
     $util.inform = $util.log = function log() {
         if (window.$cms && window.$cms.isDevMode()) {
-            return console.log.apply(undefined, arguments);
+            return console.log.apply(console, arguments);
         }
     };
 
+    /**
+     * @memberof $util
+     */
     $util.warn = function warn() {
-        return console.warn.apply(undefined, arguments);
+        return console.warn.apply(console, arguments);
     };
 
+    /**
+     * @memberof $util
+     */
     $util.fatal = $util.error = function error() {
-        return console.error.apply(undefined, arguments);
+        return console.error.apply(console, arguments);
     };
 
     /**

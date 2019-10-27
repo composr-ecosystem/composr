@@ -100,7 +100,6 @@ class Hook_addon_registry_core_rich_media
     public function get_file_list()
     {
         return array(
-            'themes/default/images/EN/editor/index.html',
             'themes/default/images/icons/editor/insert_emoticons.svg',
             'themes/default/images/icons/editor/wysiwyg_off.svg',
             'themes/default/images/icons/editor/wysiwyg_on.svg',
@@ -231,8 +230,6 @@ class Hook_addon_registry_core_rich_media
             'themes/default/images/icons_monochrome/carousel/button_right_hover.svg',
             'themes/default/images/icons_monochrome/carousel/button_right.svg',
             'themes/default/images/icons_monochrome/carousel/index.html',
-            'themes/default/images/carousel/fade_left.svg',
-            'themes/default/images/carousel/fade_right.svg',
             'themes/default/images/carousel/index.html',
             'themes/default/images/big_tabs/index.html',
             'themes/default/images/big_tabs/controller_button_active.svg',

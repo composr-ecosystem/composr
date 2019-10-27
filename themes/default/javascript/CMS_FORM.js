@@ -1,11 +1,11 @@
-(function ($cms) {
+(function () {
     'use strict';
 
     /**
      * Validation code and other general code relating to forms
      * @namespace $cms.form
      */
-    $cms.form = {};
+    $cms.form || ($cms.form = {});
 
     /**
      * Calls up a URL to check something, giving any 'feedback' as an error (or if just 'false' then returning false with no message)
@@ -43,7 +43,7 @@
      * @param { HTMLFormElement } formElement
      * @param { function } validatorFunction
      */
-    $cms.form.addSubmitValidator = function (formElement, validatorFunction) {
+    $cms.form.addSubmitValidator = function addSubmitValidator(formElement, validatorFunction) {
         formElement = $dom.elArg(formElement);
 
         var validatorsArray = formSubmitValidators.get(formElement);
@@ -96,7 +96,9 @@
 
                 return false; // break
             }
+
+            $util.error('$cms.form.addSubmitValidator(): Validator function returned result of invalid type "' + $util.typeName(result) + '"', { result: result, validatorFunction: validatorFn});
         });
     }
 
-}(window.$cms));
+}());
