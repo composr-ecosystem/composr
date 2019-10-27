@@ -796,7 +796,7 @@ function up_do_header()
         <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 
         <title>{$upgrader_title}</title>
-        <link rel="icon" href="http://compo.sr/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
 
         <style>/*<![CDATA[*/
 END;

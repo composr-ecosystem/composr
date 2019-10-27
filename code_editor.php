@@ -89,7 +89,7 @@ function code_editor_do_header($type, $target = '_top')
 <html lang="EN">
 <head>
     <title>Composr code editor</title>
-    <link rel="icon" href="http://compo.sr/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="https://compo.sr/favicon.ico" type="image/x-icon" />
     <style>
 ';
     @print(preg_replace('#/\*\s*\*/\s*#', '', str_replace('url(\'\')', 'none', str_replace('url("")', 'none', preg_replace('#\{\$[^\}]*\}#', '', preg_replace('#\{\$\?,\{\$MOBILE\},([^,]+),([^,]+)\}#', '$2', file_get_contents($GLOBALS['FILE_BASE'] . '/themes/default/css/global.css')))))));
