@@ -126,7 +126,7 @@ The addon only works for users of Conversr. If you use a third-party forum with 
 
 The addon has not been tested with multi-site-network installs of Composr. It assumes your Composr website is standalone.
 
-This addon assumes you are using MySQL, version 5 or newer. MariaDB would also work. It may potentially work on other database systems, but we have no plans to test it on them currently.
+This addon assumes you are using MySQL (or MariaDB). It may potentially work on other database systems, but we have no plans to test it on them currently.
 
 Your website is assumed to only be running a single language. We may have bugs if you are translating content into multiple languages.
 

@@ -98,7 +98,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
         }
 
         if (strpos(get_db_type(), 'mysql') === false) {
-            $this->stateCheckSkipped('Can only check when running MySQL');
+            $this->stateCheckSkipped('Can only check when running MySQL (or MariaDB)');
             return;
         }
 
@@ -156,7 +156,7 @@ class Hook_health_check_integrity extends Hook_Health_Check
 
             pop_db_scope_check();
         } else {
-            $this->stateCheckSkipped('Can only check when running MySQL');
+            $this->stateCheckSkipped('Can only check when running MySQL (or MariaDB)');
         }
     }
 

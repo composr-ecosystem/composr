@@ -313,37 +313,40 @@ class Hook_health_check_install_env extends Hook_Health_Check
         if (isset($GLOBALS['SITE_DB']->connection_write)) {
             $GLOBALS['SITE_DB']->ensure_connected();
 
-            if (function_exists('mysqli_get_server_version') && get_db_type() == 'mysqli') {
-                $__version = @mysqli_get_server_version($GLOBALS['SITE_DB']->connection_read[0]);
-                if (!empty($__version)) {
-                    $_version = strval($__version);
-                    $version = strval(intval(substr($_version, 0, strlen($_version) - 4))) . '.' . strval(intval(substr($_version, -4, 2))) . '.' . strval(intval(substr($_version, -2, 2)));
-                }
-            } elseif (function_exists('mysql_get_server_info') && get_db_type() == 'mysql') {
-                $_version = @mysql_get_server_info($GLOBALS['SITE_DB']->connection_read[0]);
-                if ($_version !== false) {
-                    $version = $_version;
-                }
-            } elseif (get_db_type() == 'mysql_pdo') {
+            if (strpos(get_db_type(), 'mysql') !== false) {
                 $version = $GLOBALS['SITE_DB']->query_value_if_there('SELECT version()');
             } else {
-                $this->stateCheckSkipped('Not running MySQL');
+                $this->stateCheckSkipped('Not running MySQL (or MariaDB)');
             }
         } else {
-            $this->stateCheckSkipped('Not running MySQL / No active database connection');
+            $this->stateCheckSkipped('Not running MySQL (or MariaDB) / No active database connection');
         }
 
         if ($version !== null) {
-            $mysql_too_old = version_compare($version, $minimum_version, '<');
-            $this->assertTrue(!$mysql_too_old, do_lang('MYSQL_TOO_OLD', $minimum_version, $version));
+            if (stripos($version, 'maria') !== false) {
+                $mariadb_too_old = version_compare($version, $minimum_version, '<');
+                $this->assertTrue(!$mariadb_too_old, do_lang('MARIADB_TOO_OLD', $minimum_version, $version));
 
-            $max_tested_mysql_version = '8.0'; // LEGACY needs maintaining
-            if (!is_maintained('mysql')) {
-                $mysql_too_new = version_compare($version, $max_tested_mysql_version . '.1000', '>');
-                $this->assertTrue(
-                    !$mysql_too_new,
-                    '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MYSQL_TOO_NEW', escape_html($max_tested_mysql_version)), escape_html(get_brand_base_url()), escape_html('mysql')) . '[/html]'
-                );
+                $max_tested_mariadb_version = '10.3'; // LEGACY needs maintaining
+                if (!is_maintained('mariadb')) {
+                    $mariadb_too_new = version_compare($version, $max_tested_mariadb_version . '.1000', '>');
+                    $this->assertTrue(
+                        !$mariadb_too_new,
+                        '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MARIADB_TOO_NEW', escape_html($max_tested_mariadb_version)), escape_html(get_brand_base_url()), escape_html('mariadb')) . '[/html]'
+                    );
+                }
+            } else {
+                $mysql_too_old = version_compare($version, $minimum_version, '<');
+                $this->assertTrue(!$mysql_too_old, do_lang('MYSQL_TOO_OLD', $minimum_version, $version));
+
+                $max_tested_mysql_version = '8.0'; // LEGACY needs maintaining
+                if (!is_maintained('mysql')) {
+                    $mysql_too_new = version_compare($version, $max_tested_mysql_version . '.1000', '>');
+                    $this->assertTrue(
+                        !$mysql_too_new,
+                        '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MYSQL_TOO_NEW', escape_html($max_tested_mysql_version)), escape_html(get_brand_base_url()), escape_html('mysql')) . '[/html]'
+                    );
+                }
             }
         }
     }
