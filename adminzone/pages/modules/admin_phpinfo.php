@@ -170,23 +170,7 @@ class Module_admin_phpinfo
             $out .= '<p><strong>PHP configured as</strong>: ' . escape_html(php_sapi_name()) . '</p>';
         }
 
-        if (function_exists('mysqli_get_server_version') && get_db_type() == 'mysqli') {
-            $__mysql_version = @mysqli_get_server_version($GLOBALS['SITE_DB']->connection_read[0]);
-            if ($__mysql_version !== false) {
-                $_mysql_version = strval($__mysql_version);
-                $mysql_version = strval(intval(substr($_mysql_version, 0, strlen($_mysql_version) - 4))) . '.' . strval(intval(substr($_mysql_version, -4, 2))) . '.' . strval(intval(substr($_mysql_version, -2, 2)));
-                $out .= '<p><strong>MySQL version</strong>: ' . $mysql_version . '</p>';
-            }
-        }
-
-        if (function_exists('mysql_get_server_info') && get_db_type() == 'mysql') {
-            $mysql_version = @mysql_get_server_info($GLOBALS['SITE_DB']->connection_read[0]);
-            if ($mysql_version !== false) {
-                $out .= '<p><strong>MySQL version</strong>: ' . $mysql_version . '</p>';
-            }
-        }
-
-        if (get_db_type() == 'mysql_pdo') {
+        if (strpos(get_db_type(), 'mysql') !== false) {
             $mysql_version = $GLOBALS['SITE_DB']->query_value_if_there('SELECT version()');
             $out .= '<p><strong>MySQL version</strong>: ' . $mysql_version . '</p>';
         }
