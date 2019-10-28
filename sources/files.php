@@ -549,6 +549,7 @@ function should_ignore_file($path, $bitmask = 0)
         '.gitattributes' => '',
         '.gitignore' => '',
         '.gitconfig' => '',
+        'ci_queue.json' => 'data_custom',
 
         // Build files
         'phpdoc.dist.xml' => '',

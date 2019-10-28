@@ -176,6 +176,8 @@ We hope other users will appreciate your efforts and give you some gift points t
             'lang_custom/EN/phpdoc.ini',
             'sources_custom/php.php',
             'sources_custom/phpstub.php',
+            'data_custom/continuous_integration.php',
+            'sources_custom/continuous_integration.php',
             '_tests/codechecker/build.sh',
             '_tests/codechecker/code_quality.php',
             '_tests/codechecker/codechecker.app/.htaccess',
