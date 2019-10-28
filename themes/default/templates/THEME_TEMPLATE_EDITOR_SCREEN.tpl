@@ -24,7 +24,7 @@
 
 		{$INSERT_SPAMMER_BLACKHOLE}
 
-		<div class="clearfix">
+		<div class="template-editor-files-and-tabs">
 			{$,Tree list}
 			<div class="template-editor-file-selector">
 				<div class="inner">

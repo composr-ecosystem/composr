@@ -98,8 +98,6 @@ class Hook_addon_registry_core_form_interfaces
     public function get_file_list()
     {
         return array(
-            'themes/default/images/EN/editor/off.svg',
-            'themes/default/images/EN/editor/on.svg',
             'themes/default/images/icons/tree_field/category.svg',
             'themes/default/images/icons/tree_field/entry.svg',
             'themes/default/images/icons/tree_field/collapse.svg',
