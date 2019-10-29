@@ -69,15 +69,18 @@ function continuous_integration_script()
     set_throw_errors(true);
 
     try {
-        global $SITE_INFO;
-        if (!isset($SITE_INFO['ci_password'])) {
-            throw new Exception('No CI password defined in _config.php');
-        }
-        if (get_param_string('ci_password') != $SITE_INFO['ci_password']) {
-            throw new Exception('Incorrect CI password');
-        }
+        authenticate_ci_request();
 
-        $commit_id = get_param_string('commit_id', null); // Can be HEAD
+        // Handle request to enqueue a commit
+        if ((isset($_SERVER['HTTP_X_GITLAB_EVENT'])) && ($_SERVER['HTTP_X_GITLAB_EVENT'] == 'Push Hook')) {
+            $request = json_decode(file_get_contents('php://input'), true);
+            if ($request['project_id'] != COMPOSR_GITLAB_PROJECT_ID) {
+                throw new Exception('Web hook call is for the wrong project');
+            }
+            $commit_id = $request['after']; // Technically we're checking all commits in a push, but we just check against the last one
+        } else {
+            $commit_id = get_param_string('commit_id', null); // Can be HEAD
+        }
         if ($commit_id !== null) {
             $verbose = (get_param_integer('verbose', 0) == 1);
             $dry_run = (get_param_integer('dry_run', 0) == 1);
@@ -97,6 +100,7 @@ function continuous_integration_script()
             $immediate = true;
         }
 
+        // Process queue
         if ($immediate) {
             $output = (get_param_integer('output', 0) == 1);
             $ignore_lock = (get_param_integer('ignore_lock', 0) == 1);
@@ -107,6 +111,37 @@ function continuous_integration_script()
     catch (Exception $e) {
         fatal_exit($e->getMessage());
     }
+}
+
+function authenticate_ci_request()
+{
+    if (is_cli()) {
+        return; // No authentication needed
+    }
+
+    global $SITE_INFO;
+    if (!isset($SITE_INFO['ci_password'])) {
+        throw new Exception('No CI password defined in _config.php');
+    }
+    $real_password = $SITE_INFO['ci_password'];
+
+    if (isset($_SERVER['HTTP_X_GITLAB_TOKEN'])) {
+        $given_password = $_SERVER['HTTP_X_GITLAB_TOKEN'];
+        if ($given_password != $real_password) {
+            throw new Exception('Incorrect CI password');
+        }
+        return;
+    }
+
+    $given_password = get_param_string('ci_password', null);
+    if ($given_password !== null) {
+        if ($given_password != $real_password) {
+            throw new Exception('Incorrect CI password');
+        }
+        return;
+    }
+
+    throw new Exception('No CI password given');
 }
 
 function load_ci_queue()
