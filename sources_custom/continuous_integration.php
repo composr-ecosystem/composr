@@ -87,9 +87,11 @@ function continuous_integration_script()
             $output = (get_param_integer('output', 0) == 1);
             $_limit_to = get_param_string('limit_to', '');
             $limit_to = ($_limit_to == '') ? null : explode(',', $_limit_to);
-            foreach ($limit_to as $i => $_limit_to) {
-                if (strpos($_limit_to, '/') === false) {
-                    $limit_to[$i] = 'unit_tests/' . $_limit_to;
+            if ($limit_to !== null) {
+                foreach ($limit_to as $i => $_limit_to) {
+                    if (strpos($_limit_to, '/') === false) {
+                        $limit_to[$i] = 'unit_tests/' . $_limit_to;
+                    }
                 }
             }
             $context = json_decode(get_param_string('context', '{}'), true);
