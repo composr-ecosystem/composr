@@ -542,6 +542,7 @@ function should_ignore_file($path, $bitmask = 0)
         'thumbs.db' => '.*',
         '.ds_store' => '.*',
         "icon\r" => '.*',
+        'System Volume Information' => '', // If mounted in VirtualBox as a drive
 
         // Source code control systems
         '.git' => '.*',
