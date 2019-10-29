@@ -242,6 +242,10 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $contex
 
     $results = run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to);
 
+    if ($commit_id != 'HEAD') {
+        shell_exec('git checkout ' . file_get_contents(get_file_base() . '/.git/HEAD'));
+    }
+
     return $results;
 }
 
@@ -258,6 +262,9 @@ function run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to)
     foreach ($tests as $test) {
         $result = shell_exec('php _tests/index.php ' . escapeshellarg($test));
         if (strpos($result, 'Failures: 0, Exceptions: 0') === false) {
+            if (strlen($result) > 1000) {
+               $result = substr($result, 0, 100) . '...';
+            }
             $fails[$test] = $result;
         } else {
             $successes[] = $test;
