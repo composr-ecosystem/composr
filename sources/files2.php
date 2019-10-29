@@ -1382,18 +1382,16 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                                                     } else {
                                                         curl_setopt($ch, CURLOPT_POST, true);
                                                         curl_setopt($ch, CURLOPT_POSTFIELDS, $raw_payload_curl);
-                                                        if (!is_null($files)) {
+                                                        if ($files !== null) { // We will be doing a multipart/form-data call
                                                             $curl_headers[] = 'Content-Type: multipart/form-data; boundary="--cms' . $divider . '"; charset=' . get_charset();
                                                         }
+                                                        $curl_headers[] = 'Expect:'; // Suppress  automatic Expect header
                                                     }
                                                 }
                                                 if ($do_ip_forwarding) {
                                                     $curl_headers[] = 'Host: ' . $url_parts['host'];
                                                 }
-                                                if ((count($curl_headers) != 0) && ((is_null($files)/*Breaks file uploads for some reason*/) || (!is_null($extra_headers)))) {
-                                                    if (defined('CURLINFO_HEADER_OUT')) {
-                                                        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-                                                    }
+                                                if (count($curl_headers) != 0) {
                                                     curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
                                                 }
 
