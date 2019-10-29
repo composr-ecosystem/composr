@@ -82,6 +82,7 @@ _meta_tree
 /themes/default/images_custom/*/logo/standalone_logo.png
 /themes/default/images_custom/*/logo/small_logo.png
 /themes/default/images_custom/*/logo/small_white_logo.png
+/data_custom/ci_queue.json
 
 ; The matched files should be blocked for the main Composr dev repository but not for Composr projects
 /uploads/website_specific/compo.sr/demonstratr/servers/
