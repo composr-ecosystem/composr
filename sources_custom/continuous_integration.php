@@ -235,9 +235,9 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $contex
     $old_branch = file_get_contents(get_file_base() . '/.git/HEAD');
 
     if ($commit_id != 'HEAD') {
-        shell_exec('git fetch');
-        $msg = shell_exec('git checkout ' . escapeshellarg($commit_id));
-        if (trim(shell_exec('git rev-parse HEAD')) != $commit_id) {
+        shell_exec('git fetch 2>&1');
+        $msg = shell_exec('git checkout ' . escapeshellarg($commit_id) . ' 2>&1');
+        if (trim(shell_exec('git rev-parse HEAD 2>&1')) != $commit_id) {
             throw new Exception('Failed to checkout commit ' . $commit_id . ': ' . $msg);
         }
     }
@@ -245,7 +245,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $contex
     $results = run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to);
 
     if ($commit_id != 'HEAD') {
-        shell_exec('git checkout ' . $old_branch);
+        shell_exec('git checkout ' . $old_branch . ' 2>&1');
     }
 
     return $results;
@@ -262,7 +262,7 @@ function run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to)
 
     $tests = find_all_applicable_tests($limit_to);
     foreach ($tests as $test) {
-        $result = shell_exec('php _tests/index.php ' . escapeshellarg($test));
+        $result = shell_exec('php _tests/index.php ' . escapeshellarg($test) . ' 2>&1');
         if (strpos($result, 'Failures: 0, Exceptions: 0') === false) {
             if (strlen($result) > 1000) {
                $result = substr($result, 0, 100) . '...';
