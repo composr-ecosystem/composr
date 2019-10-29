@@ -325,8 +325,8 @@ function post_results_to_commit($commit_id, $note)
     }
     $token = $SITE_INFO['gitlab_personal_token'];
 
-    $result = cms_http_request($url, array('trigger_errors' => false, 'extra_headers' => array('Private-Token' => $token), 'post_params' => array('note' => $note)));
-    if ($result->message != 200) {
+    $result = cms_http_request($url, array('timeout' => 100.0, 'trigger_errors' => false, 'extra_headers' => array('Private-Token' => $token), 'post_params' => array('note' => $note)));
+    if (substr($result->message, 0, 1) != '2') {
         throw new Exception($result->data);
     }
 }
