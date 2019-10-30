@@ -251,8 +251,8 @@
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_ACTIONS}</a>
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
 						{+START,INCLUDE,ICON}
-						NAME=trays/expand
-						ICON_SIZE=24
+							NAME=trays/expand
+							ICON_SIZE=24
 						{+END}
 					</a>
 				</h2>
@@ -551,8 +551,8 @@
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_ADDITIONS}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
 							{+START,INCLUDE,ICON}
-							NAME=trays/expand
-							ICON_SIZE=24
+								NAME=trays/expand
+								ICON_SIZE=24
 							{+END}
 						</a>
 					</h2>

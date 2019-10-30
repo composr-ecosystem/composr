@@ -59,7 +59,7 @@ form.activities-remove .remove-button:hover {
 	float: none;
 	padding: 0.5em 0.5em 0.5em 45px;
 	font-size: 1.1em;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .activities-line .activity-name {

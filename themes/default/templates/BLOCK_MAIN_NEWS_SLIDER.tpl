@@ -5,7 +5,7 @@
 	{+START,IF_PASSED,SLIDES_COUNT_ARRAY}
 		<ol class="cms-slider-indicators mobile-only">
 			{+START,LOOP,SLIDES_COUNT_ARRAY}
-			<li {+START,IF,{$EQ,{_loop_key},0}} class="active"{+END}><a href="#!" data-target="#{$GET*,id}" data-slide-to="{_loop_key*}">{$ROUND,{$ADD,{_loop_key*},1}}</a></li>
+				<li {+START,IF,{$EQ,{_loop_key},0}} class="active"{+END}><a href="#!" data-target="#{$GET*,id}" data-slide-to="{_loop_key*}">{$ROUND,{$ADD,{_loop_key*},1}}</a></li>
 			{+END}
 		</ol>
 	{+END}

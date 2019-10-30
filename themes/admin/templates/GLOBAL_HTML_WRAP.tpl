@@ -146,8 +146,8 @@
 							<li>
 								<a rel="back_to_top" accesskey="g" href="#" title="{!BACK_TO_TOP}">
 									{+START,INCLUDE,ICON}
-									NAME=tool_buttons/top
-									SIZE=24
+										NAME=tool_buttons/top
+										SIZE=24
 									{+END}
 								</a>
 							</li>

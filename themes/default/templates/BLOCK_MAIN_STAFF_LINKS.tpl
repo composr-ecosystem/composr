@@ -11,8 +11,8 @@
 
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
 					{+START,INCLUDE,ICON}
-					NAME=trays/contract
-					ICON_SIZE=24
+						NAME=trays/contract
+						ICON_SIZE=24
 					{+END}
 				</a>
 
@@ -22,7 +22,7 @@
 			<div class="toggleable-tray js-tray-content">
 				<ol id="staff-links-list-{$GET%,RAND_STAFF_LINKS}" class="spaced-list">
 					{+START,LOOP,FORMATTED_LINKS}
-					<li><a target="_blank" title="{TITLE*} {!LINK_NEW_WINDOW}" href="{URL*}">{TITLE*}</a></li>
+						<li><a target="_blank" title="{TITLE*} {!LINK_NEW_WINDOW}" href="{URL*}">{TITLE*}</a></li>
 					{+END}
 				</ol>
 

@@ -7,16 +7,16 @@
 				{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open}
 					<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
 						{+START,INCLUDE,ICON}
-						NAME=trays/expand
-						ICON_SIZE=24
+							NAME=trays/expand
+							ICON_SIZE=24
 						{+END}
 					</a>
 				{+END}
 				{+START,IF_IN_ARRAY,OPTIONS,tray_open}
 					<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!CONTRACT}">
 						{+START,INCLUDE,ICON}
-						NAME=trays/contract
-						ICON_SIZE=24
+							NAME=trays/contract
+							ICON_SIZE=24
 						{+END}
 					</a>
 				{+END}

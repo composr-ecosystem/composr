@@ -9,8 +9,8 @@
 
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
 					{+START,INCLUDE,ICON}
-					NAME=trays/contract
-					ICON_SIZE=24
+						NAME=trays/contract
+						ICON_SIZE=24
 					{+END}
 				</a>
 
@@ -30,13 +30,13 @@
 					</thead>
 					<tbody>
 					{+START,LOOP,GRID_DATA}
-					<tr>
-						<td>{SITE_NAME*}</td>
-						<td>{ALEXA_RANKING`}</td>
-						<td><a href="http://www.google.com/search?as_lq={URL&*}">{ALEXA_LINKS`}</a></td>
-						<td><a class="suggested-link" href="http://web.archive.org/web/*/{URL*}">{!VIEW}</a></td>
-						<td><a class="suggested-link" href="{URL*}">{!VIEW}</a></td>
-					</tr>
+						<tr>
+							<td>{SITE_NAME*}</td>
+							<td>{ALEXA_RANKING`}</td>
+							<td><a href="http://www.google.com/search?as_lq={URL&*}">{ALEXA_LINKS`}</a></td>
+							<td><a class="suggested-link" href="http://web.archive.org/web/*/{URL*}">{!VIEW}</a></td>
+							<td><a class="suggested-link" href="{URL*}">{!VIEW}</a></td>
+						</tr>
 					{+END}
 					</tbody>
 				</table></div>

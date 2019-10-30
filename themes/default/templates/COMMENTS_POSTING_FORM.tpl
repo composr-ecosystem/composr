@@ -39,8 +39,8 @@
 						{+START,IF_PASSED,EXPAND_TYPE}
 							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{$EQ,{EXPAND_TYPE},contract},{!CONTRACT},{!EXPAND}}">
 								{+START,INCLUDE,ICON}
-								NAME=trays/{EXPAND_TYPE}
-								ICON_SIZE=24
+									NAME=trays/{EXPAND_TYPE}
+									ICON_SIZE=24
 								{+END}
 							</a>
 							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{TITLE*}</a>
@@ -70,7 +70,7 @@
 										<td>
 											<input id="poster-name-if-guest" class="form-control" name="name" autocomplete="name" type="text" tabindex="1" maxlength="255" size="24" />
 											{+START,IF_PASSED,JOIN_BITS}{+START,IF_NON_EMPTY,{JOIN_BITS}}
-											<span class="horiz-field-sep">{JOIN_BITS}</span>
+												<span class="horiz-field-sep">{JOIN_BITS}</span>
 											{+END}{+END}
 										</td>
 									</tr>

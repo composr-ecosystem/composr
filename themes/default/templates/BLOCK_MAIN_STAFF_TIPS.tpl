@@ -5,8 +5,8 @@
 			<h3 class="toggleable-tray-title js-tray-header">
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
 					{+START,INCLUDE,ICON}
-					NAME=trays/contract
-					ICON_SIZE=24
+						NAME=trays/contract
+						ICON_SIZE=24
 					{+END}
 				</a>
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!TIPS}</a>

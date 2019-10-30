@@ -383,19 +383,17 @@ function init__webstandards()
         */
 
         /* These are non standard/supported but we want them (LEGACY) */
-        'appearance' => '([\w-]+)',
+        'appearance' => '([\w-]+)', // Tweaking shadow DOM as required by particular browsers
         'filter' => '.+', // #3928 // Not supported in IE11 but used as progressive enhancement
         'object-fit' => '(fill|contain|cover|none|scale-down)', // Not supported in IE11 but used as progressive enhancement
         'object-position' => $enforce_background_position, // Not supported in IE11 but used as progressive enhancement
         'outline-offset' => $enforce_length, // Not supported in IE11 but used as progressive enhancement
-        'overflow-scrolling' => '(touch|auto)',
+        'overflow-scrolling' => '(touch|auto)', // Relevant for mobile devices
         'resize' => '(none|both|horizontal|vertical)', // Firefox-only, but a nice feature
         'text-decoration-color' => $enforce_color, // Not supported in IE11 but used as progressive enhancement
         'text-decoration-style' => '(solid|double|dotted|dashed|wavy)', // Not supported in IE11 but used as progressive enhancement
-        'text-decoration-skip' => '(none|objects|spaces|leading-spaces|trailing-spaces|edges|box-decoration)', // Only supported by Webkit but worth having just for it
         'text-decoration-thickness' => '(' . $enforce_length . '|from-font)', // Not supported in IE11 but used as progressive enhancement
-        'text-size-adjust' => '(none|auto|\d%|\d\d%|100%)',
-        'word-wrap' => '(normal|break-word)', // Was renamed to overflow-wrap, but that name is not supported widely
+        'text-size-adjust' => '(none|auto|\d%|\d\d%|100%)', // Relevant for mobile devices
         'writing-mode' => '(tb-rl|lr-tb)', // Not supported in IE11 but used as progressive enhancement
 
         /* SVG embedded in website CSS */

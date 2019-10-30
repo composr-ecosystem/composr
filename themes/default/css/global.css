@@ -365,7 +365,6 @@ a, .button-hyperlink {
 	color: {$GET,a.link};
 	text-decoration: none;
 	background-color: transparent;
-	{$BETA_CSS_PROPERTY,text-decoration-skip: objects;}
 }
 
 a:hover, .button-hyperlink:hover {
@@ -624,7 +623,7 @@ html, body {
 tt, kbd, samp {
 	font-weight: bold;
 	font-size: 1.15em;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 abbr {
@@ -849,7 +848,7 @@ img.icon {
 	}
 	* {
 		/*white-space: normal;*/
-		/*word-wrap: break-word;*/
+		/*overflow-wrap: break-word;*/
 	}
 
 	.desktop-only {
@@ -1727,7 +1726,7 @@ body#main-website #main-website-inner, html>body div.global-middle-faux {
 }
 
 .global-side-panel {
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	color: {$GET,slightly_seeded_gray_text};
 }
 
@@ -3549,7 +3548,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 		content: attr(data-th) ":";
 		font-weight: bold;
 		width: 7em;
-		word-wrap: normal !important;
+		overflow-wrap: normal !important;
 		display: inline-block;
 		vertical-align: top;
 	}
@@ -3643,7 +3642,7 @@ div.zebra-0+div.zebra-1, div.zebra-1+div.zebra-0 {
 	font-size: 1em;
 	z-index: 10000;
 	opacity: 0.9;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	/*min-width: 6em;*/
 }
 
@@ -7411,7 +7410,7 @@ a[title="{!VIRTUAL_ROOT}"]:hover {
 .overlay {
 	overflow: visible;
 	border: 0;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .overlay-close-button {

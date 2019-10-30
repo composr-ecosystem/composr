@@ -82,16 +82,16 @@
 
 	{$,Load up the staff actions template to display staff actions uniformly (we relay our parameters to it)...}
 	{+START,INCLUDE,STAFF_ACTIONS}
-	1_URL={EDIT_URL*}
-	1_TITLE={!EDIT}
-	1_ACCESSKEY=q
-	1_REL=edit
-	1_ICON=admin/edit_this
-	{+START,IF,{$ADDON_INSTALLED,tickets}}
-		2_URL={$PAGE_LINK*,_SEARCH:report_content:content_type=author:content_id={AUTHOR}:redirect={$SELF_URL&}}
-		2_TITLE={!report_content:REPORT_THIS}
-		2_ICON=buttons/report
-		2_REL=report
-	{+END}
+		1_URL={EDIT_URL*}
+		1_TITLE={!EDIT}
+		1_ACCESSKEY=q
+		1_REL=edit
+		1_ICON=admin/edit_this
+		{+START,IF,{$ADDON_INSTALLED,tickets}}
+			2_URL={$PAGE_LINK*,_SEARCH:report_content:content_type=author:content_id={AUTHOR}:redirect={$SELF_URL&}}
+			2_TITLE={!report_content:REPORT_THIS}
+			2_ICON=buttons/report
+			2_REL=report
+		{+END}
 	{+END}
 </div>

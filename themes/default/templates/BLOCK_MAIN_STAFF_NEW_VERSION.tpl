@@ -3,8 +3,8 @@
 		<h3 class="toggleable-tray-title js-tray-header">
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
 				{+START,INCLUDE,ICON}
-				NAME=trays/contract
-				ICON_SIZE=24
+					NAME=trays/contract
+					ICON_SIZE=24
 				{+END}
 			</a>
 
@@ -16,7 +16,7 @@
 				{VERSION_TABLE}
 
 				{+START,IF,{HAS_UPDATED_ADDONS}}
-				{+START,INCLUDE,RED_ALERT}TEXT={!addons:SOME_ADDONS_UPDATED,{$PAGE_LINK*,_SEARCH:admin_addons}}{+END}
+					{+START,INCLUDE,RED_ALERT}TEXT={!addons:SOME_ADDONS_UPDATED,{$PAGE_LINK*,_SEARCH:admin_addons}}{+END}
 				{+END}
 
 				<p class="img-wrap">

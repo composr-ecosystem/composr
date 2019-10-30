@@ -8,9 +8,9 @@
 	<div class="news-entry-details">
 		<ul class="news-entry-details-col-start horizontal-links">
 			{+START,LOOP,CATEGORIES}
-			<li class="news-entry-category">
-				<a href="{$PAGE_LINK*,_SELF:_SELF:browse:{_loop_key}{$?,{BLOG},:blog=1,}}" class="btn btn-secondary">{_loop_var*}</a>
-			</li>
+				<li class="news-entry-category">
+					<a href="{$PAGE_LINK*,_SELF:_SELF:browse:{_loop_key}{$?,{BLOG},:blog=1,}}" class="btn btn-secondary">{_loop_var*}</a>
+				</li>
 			{+END}
 			<li class="news-entry-date">
 				{+START,INCLUDE,ICON}NAME=menu/rich_content/calendar{+END}

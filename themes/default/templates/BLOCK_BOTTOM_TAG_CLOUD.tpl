@@ -4,7 +4,7 @@
 		<div class="box-body">
 			<div class="tag-buttons">
 				{+START,LOOP,TAGS}
-				<a rel="tag" href="{LINK*}" class="btn btn-secondary btn-tag">{TAG*}</a>
+					<a rel="tag" href="{LINK*}" class="btn btn-secondary btn-tag">{TAG*}</a>
 				{+END}
 			</div>
 		</div>

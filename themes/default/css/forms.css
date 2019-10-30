@@ -145,7 +145,7 @@ Curved borders would be cool, but it does not work well with the carefully defin
 */
 
 .form-table-field-name {
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	text-align: left;
 	color: {$GET,slightly_seeded_text};
 	padding-top: 0.95em !important;

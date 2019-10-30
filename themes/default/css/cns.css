@@ -26,15 +26,15 @@ This file defines styles for Conversr (abbreviated as CNS).
 		width: 100%;
 	}
 	.cns-forum-topic-wrapper-column-column3 {
-		word-wrap: break-word;
+		overflow-wrap: break-word;
 		width: 100px;
 	}
 	.cns-forum-topic-wrapper-column-column4, .cns-forum-grouping-column3 {
-		word-wrap: break-word;
+		overflow-wrap: break-word;
 		width: 5em;
 	}
 	.cns-forum-topic-wrapper-column-column5, .cns-forum-grouping-column4 {
-		word-wrap: break-word;
+		overflow-wrap: break-word;
 		width: 5em;
 	}
 	.cns-forum-topic-wrapper-column-column6 {
@@ -95,7 +95,7 @@ This file defines styles for Conversr (abbreviated as CNS).
 	font-size: 0.85em;
 	vertical-align: middle;
 	display: table-cell;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .cns-column4, .cns-column5 {
@@ -431,7 +431,7 @@ div.cns-table-footer>div>div {
 }
 /*{+START,CSS_MODE,desktop}*/
 	.cns-topic-poster-name {
-		word-wrap: break-word;
+		overflow-wrap: break-word;
 	}
 /*{+END}*/
 

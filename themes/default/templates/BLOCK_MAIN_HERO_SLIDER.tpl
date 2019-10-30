@@ -3,7 +3,7 @@
 	{+START,IF_PASSED_AND_TRUE,SHOW_INDICATORS}
 		<ol class="cms-slider-indicators">
 			{+START,LOOP,ITEMS}
-			<li data-target="#{$GET*,id}" data-slide-to="{_loop_key*}"{+START,IF,{$EQ,{_loop_key},0}} class="active"{+END}></li>
+				<li data-target="#{$GET*,id}" data-slide-to="{_loop_key*}"{+START,IF,{$EQ,{_loop_key},0}} class="active"{+END}></li>
 			{+END}
 		</ol>
 	{+END}
@@ -18,25 +18,25 @@
 
 	<div class="cms-slider-inner">
 		{+START,LOOP,ITEMS}
-		<div class="cms-slider-item{+START,IF,{$EQ,{_loop_key},0}} active{+END}" {+START,IF,{$EQ,{BACKGROUND_TYPE},image}}style="background-image: url('{BACKGROUND_URL*}');"{+END}>
-			{+START,IF,{$EQ,{BACKGROUND_TYPE},video}}
-				<img class="cms-slider-item-background {+START,IF,{$DESKTOP}}mobile-only{+END}" src="{BACKGROUND_THUMB_URL*}" alt="" />
-				{+START,IF,{$DESKTOP}}
-					<video class="cms-slider-item-background desktop-only" autoplay="autoplay" loop="loop" muted="muted">
-						<source src="{BACKGROUND_URL*}" type="video/mp4" />
-					</video>
-				{+END}
-			{+END}
-			<div class="cms-slider-item-inner">
-				<div class="container">
-					{CONTENT_HTML}
-
-					{+START,IF_PASSED,EDIT_URL}
-						<a href="{EDIT_URL*}" class="cms-slider-item-edit-link">{+START,INCLUDE,ICON}NAME=admin/edit_this{+END} {!EDIT}</a>
+			<div class="cms-slider-item{+START,IF,{$EQ,{_loop_key},0}} active{+END}" {+START,IF,{$EQ,{BACKGROUND_TYPE},image}}style="background-image: url('{BACKGROUND_URL*}');"{+END}>
+				{+START,IF,{$EQ,{BACKGROUND_TYPE},video}}
+					<img class="cms-slider-item-background {+START,IF,{$DESKTOP}}mobile-only{+END}" src="{BACKGROUND_THUMB_URL*}" alt="" />
+					{+START,IF,{$DESKTOP}}
+						<video class="cms-slider-item-background desktop-only" autoplay="autoplay" loop="loop" muted="muted">
+							<source src="{BACKGROUND_URL*}" type="video/mp4" />
+						</video>
 					{+END}
+				{+END}
+				<div class="cms-slider-item-inner">
+					<div class="container">
+						{CONTENT_HTML}
+
+						{+START,IF_PASSED,EDIT_URL}
+							<a href="{EDIT_URL*}" class="cms-slider-item-edit-link">{+START,INCLUDE,ICON}NAME=admin/edit_this{+END} {!EDIT}</a>
+						{+END}
+					</div>
 				</div>
 			</div>
-		</div>
 		{+END}
 	</div>
 	<a class="cms-slider-control-prev" href="#{$GET*,id}" role="button" data-slide="prev">

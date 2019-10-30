@@ -244,7 +244,7 @@ textarea.mono-textbox {
 /*{+END}*/
 
 .installer-section kbd {
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 /* After Step 4 */
