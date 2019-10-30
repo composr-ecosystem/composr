@@ -4268,6 +4268,10 @@ END;
 
         $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_pt_from' => $a, 't_pt_to' => $b, 't_forum_id' => null), array('id' => $topic_id), '', 1);
 
+        require_code('notifications');
+        enable_notifications('cns_topic', strval($topic_id), $a); // from
+        enable_notifications('cns_topic', strval($topic_id), $b); // to
+
         // Update forum cache view
         require_code('cns_posts_action2');
         cns_force_update_forum_caching($forum_id, -1);
