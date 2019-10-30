@@ -174,10 +174,6 @@ class _config_test_set extends cms_test_case
                 $this->assertTrue(array_key_exists($setting, $settings_needed) || array_key_exists($setting, $settings_optional), 'Unknown setting: ' . $setting);
             }
 
-            if (!empty($details['theme_override'])) {
-                $this->assertTrue(in_array($details['type'], array('line', 'tick')), 'Invalid config input type for a theme-overridable option: ' . $setting);
-            }
-
             $path = get_file_base() . '/sources/hooks/systems/config/' . $hook . '.php';
             if (!is_file($path)) {
                 $path = get_file_base() . '/sources_custom/hooks/systems/config/' . $hook . '.php';
@@ -324,8 +320,8 @@ class _config_test_set extends cms_test_case
         foreach (array_keys($hooks) as $hook) {
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
             $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
-            $option = $ob->get_details();
-            $categories_found[strtolower($option['category'])] = true;
+            $details = $ob->get_details();
+            $categories_found[strtolower($details['category'])] = true;
         }
         ksort($categories_found);
 

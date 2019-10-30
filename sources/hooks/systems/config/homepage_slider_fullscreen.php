@@ -38,7 +38,7 @@ class Hook_config_homepage_slider_fullscreen
             'explanation' => 'CONFIG_OPTION_homepage_slider_fullscreen',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
-            'order_in_category_group' => 4,
+            'order_in_category_group' => 5,
             'theme_override' => true,
 
             'required' => true,

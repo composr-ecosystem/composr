@@ -44,6 +44,18 @@ class Hook_actionlog_wordfilter extends Hook_actionlog
                 'written_context_index' => 0,
                 'followup_page_links' => array(
                     'MANAGE_WORDFILTER' => '_SEARCH:admin_wordfilter',
+                    'ADD_WORDFILTER' => '_SEARCH:admin_wordfilter:add',
+                    'EDIT_WORDFILTER' => '_SEARCH:admin_wordfilter:_edit:{ID}',
+                ),
+            ),
+            'EDIT_WORDFILTER' => array(
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => null,
+                'identifier_index' => 0,
+                'written_context_index' => 0,
+                'followup_page_links' => array(
+                    'MANAGE_WORDFILTER' => '_SEARCH:admin_wordfilter',
+                    'EDIT_WORDFILTER' => '_SEARCH:admin_wordfilter:_edit:{ID}',
                 ),
             ),
             'DELETE_WORDFILTER' => array(
@@ -53,6 +65,7 @@ class Hook_actionlog_wordfilter extends Hook_actionlog
                 'written_context_index' => 0,
                 'followup_page_links' => array(
                     'MANAGE_WORDFILTER' => '_SEARCH:admin_wordfilter',
+                    'ADD_WORDFILTER' => '_SEARCH:admin_wordfilter:add',
                 ),
             ),
         );

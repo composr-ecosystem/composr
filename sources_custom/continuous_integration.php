@@ -232,7 +232,7 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $contex
 {
     // We do not currently do anything with $context. Future work would be to be able to use it to switch main configuration (e.g. database backend).
 
-    $old_branch = file_get_contents(get_file_base() . '/.git/HEAD');
+    $old_branch = git_repos();
 
     if ($commit_id != 'HEAD') {
         shell_exec('git fetch 2>&1');

@@ -18,6 +18,8 @@
  * @package    wordfilter
  */
 
+require_code('crud_module');
+
 /**
  * Module page class.
  */
@@ -196,13 +198,12 @@ class Module_admin_wordfilter extends Standard_crud_module
             get_screen_title('MANAGE_WORDFILTER'),
             comcode_lang_string('OBSCENITY_WARNING'),
             array(
-                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_FILTERED_WORD')),
-                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_FILTERED_WORD')),
+                array('admin/add', array('_SELF', array('type' => 'add'), '_SELF'), do_lang('ADD_WORDFILTER')),
+                array('admin/edit', array('_SELF', array('type' => 'edit'), '_SELF'), do_lang('EDIT_WORDFILTER')),
             ),
             do_lang('MANAGE_WORDFILTER')
         );
     }
-
 
     /**
      * Get Tempcode for adding/editing form.
@@ -276,6 +277,8 @@ class Module_admin_wordfilter extends Standard_crud_module
 
         $id = $GLOBALS['SITE_DB']->query_insert('wordfilter', array('word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type), true);
 
+        log_it('ADD_WORDFILTER', $word);
+
         return strval($id);
     }
 
@@ -296,6 +299,8 @@ class Module_admin_wordfilter extends Standard_crud_module
         }
 
         $GLOBALS['SITE_DB']->query_update('wordfilter', array('word' => $word, 'w_replacement' => $replacement, 'w_match_type' => $match_type), array('id' => $id));
+
+        log_it('EDIT_WORDFILTER', $word);
     }
 
     /**
@@ -308,6 +313,8 @@ class Module_admin_wordfilter extends Standard_crud_module
         $id = intval($_id);
 
         $GLOBALS['FORUM_DB']->query_delete('wordfilter', array('id' => $id), '', 1);
+
+        log_it('DELETE_WORDFILTER', $_id);
     }
 
     /**

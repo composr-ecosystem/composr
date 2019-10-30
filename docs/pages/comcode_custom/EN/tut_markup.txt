@@ -63,7 +63,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>You don't need to know about this, unless you are configuring it to run on Composr generated e-mails.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Sender Policy Framework"][url="http://www.openspf.org/"]SPF[/url][/abbr]</td>
+			<td>[abbr="Sender Policy Framework"][url="http://www.open-spf.org/"]SPF[/url][/abbr]</td>
 			<td>This is the protocol for limiting what servers can send e-mail for a particular domain.</td>
 			<td>It is advised to set this up to reduce spam and fraud.</td>
 		</tr>
@@ -131,7 +131,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>We support the highest levels of compliance (AAA).</td>
 		</tr>
 		<tr>
-			<td>[url="http://en.wikipedia.org/wiki/Access_key#UK_Government_recommendation_for_access_keys"]UK Gov. recommendation for access keys[/url] and [url="https://zoek.officielebekendmakingen.nl/stcrt-2006-136-p23-SC75949.html"]Besluit Kwaliteit Rijksoverheidswebsites[/url] and [url="http://www.section508.gov"]Section 508[/url]</td>
+			<td>[url="http://en.wikipedia.org/wiki/Access_key#UK_Government_recommendation_for_access_keys"]UK Gov. recommendation for access keys[/url] and [url="https://zoek.officielebekendmakingen.nl/stcrt-2006-136-p23-SC75949.html"]Besluit Kwaliteit Rijksoverheidswebsites[/url] and [url="https://www.section508.gov"]Section 508[/url]</td>
 			<td>{$IS_MAINTAINED,standard_accessibility,Detailed accessibility standards from particular countries}.</td>
 			<td>We support these standards.</td>
 		</td>
@@ -1284,7 +1284,6 @@ Some cool effects:
  - http://www.smashingmagazine.com/2008/09/11/75-really-useful-javascript-techniques/
  - http://www.turnjs.com/
  - http://www.chartjs.org/
- - http://git.aaronlumsden.com/progression/
  - http://inorganik.github.io/countUp.js/
  - http://www.zachleat.com/web/bigtext-makes-text-big/
  - http://freqdec.github.io/slabText/

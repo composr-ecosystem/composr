@@ -40,9 +40,9 @@ class Hook_config_sticky_header
             'list_options' => '',
             'order_in_category_group' => 3,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
+
             'addon' => 'core_configuration',
         );
     }

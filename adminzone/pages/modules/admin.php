@@ -605,10 +605,10 @@ class Module_admin
             $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
             $all_options = array();
             foreach ($hooks as $hook => $ob) {
-                $option = $ob->get_details();
-                if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($option['shared_hosting_restricted'] == 0)) {
+                $details = $ob->get_details();
+                if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
                     if ($ob->get_default() !== null) {
-                        $all_options[$hook] = $option;
+                        $all_options[$hook] = $details;
                     }
                 }
             }

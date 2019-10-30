@@ -84,7 +84,7 @@
             /* global Glide:false */
             glide = new Glide(glideContainer, {
                 perView: 6, // A number of slides visible on the single viewport.
-                bound: true, // Stop running perView number of slides from the end. Use this option if you don't want to have an empty space after a slider.
+                bound: true, // Stop running `perView` number of slides from the end. Use this option if you don't want to have an empty space after a slider.
                 breakpoints: { // Collection of options applied at specified media breakpoints.
                     400: {
                         perView: 2
@@ -349,7 +349,7 @@
             }
 
             if (!Element.prototype.requestFullscreen || !document.exitFullscreen) {
-                // Fullscreen API not available, hide button
+                // Full screen API not available, hide button
                 $dom.hide(this.$('.btn-toggle-fullscreen'));
             }
         },
@@ -368,7 +368,7 @@
             /* global Glide:false */
             this.thumbsCarousel = new Glide(this.thumbsCarouselEl, {
                 perView: 12, // A number of slides visible on the single viewport.
-                bound: true, // Stop running perView number of slides from the end. Use this option if you don't want to have an empty space after a slider.
+                bound: true, // Stop running `perView` number of slides from the end. Use this option if you don't want to have an empty space after a slider.
                 keyboard: false, // Disabled. Keyboard navigation is reserved for the slideshow.
                 breakpoints: { // Collection of options applied at specified media breakpoints.
                     300: {

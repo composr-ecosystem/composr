@@ -194,7 +194,7 @@ This should have now added a schedule within Windows scheduler to run the [tt]cr
 In the event your hosting platform does not allow you access to Cron, there are a number of options available to you. These options work to call the [tt]data/cron_bridge.php[/tt] script by URL, rather than via a direct command on the server.
 
  - EasyCron provide direct instructions for Composr, and free and paid plans: https://www.easycron.com/cron-job-tutorials/how-to-set-up-cron-job-for-composr
- - Other free options are http://www.mywebcron.com/ (up to every 5 minutes), http://www.setcronjob.com/ (up to every 5 minutes but the schedule needs to be re-set every week) and http://www.onlinecronjobs.com/ (up to 5 jobs twice a day).
+ - Other free options are http://www.setcronjob.com/ (up to every 5 minutes but the schedule needs to be re-set every week) and http://www.onlinecronjobs.com/ (up to 5 jobs twice a day).
 
 Simply sign up and  add the URL i.e. [tt]http://yourbaseurl/data/cron_bridge.php[/tt] to the scheduler and set how often you want it to run.
 

@@ -1628,8 +1628,8 @@ class DatabaseConnector
                         $_query = strtoupper($query);
                         $from_pos = strpos($_query, ' FROM ');
                         $where_pos = strpos($_query, ' WHERE ');
-                        $from_in_subquery = ($from_pos !== false) && (strpos(substr($_query, 0, $from_pos), '(SELECT') !== false); // FROM clause seems to be in a subquery, so it's mroe robust for us to work backwards
-                        $where_in_subquery = ($where_pos !== false) && (strpos(substr($_query, 0, $where_pos), '(SELECT') !== false); // WHERE clause seems to be in a subquery, so it's mroe robust for us to work backwards
+                        $from_in_subquery = ($from_pos !== false) && (strpos(substr($_query, 0, $from_pos), '(SELECT') !== false); // FROM clause seems to be in a subquery, so it's more robust for us to work backwards
+                        $where_in_subquery = ($where_pos !== false) && (strpos(substr($_query, 0, $where_pos), '(SELECT') !== false); // WHERE clause seems to be in a subquery, so it's more robust for us to work backwards
                         if ($from_in_subquery || $where_in_subquery) {
                             $from_pos = strrpos($_query, ' FROM ');
                             $where_pos = strrpos($_query, ' WHERE ');

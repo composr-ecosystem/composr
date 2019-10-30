@@ -245,8 +245,8 @@ function version_specific()
             $GLOBALS['SITE_DB']->add_table_field('config', 'c_needs_dereference', 'BINARY', 0);
             $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
             foreach ($hooks as $hook => $ob) {
-                $option = $ob->get_details();
-                $needs_dereference = ($option['type'] == 'transtext' || $option['type'] == 'transline' || $option['type'] == 'comcodetext' || $option['type'] == 'comcodeline') ? 1 : 0;
+                $details = $ob->get_details();
+                $needs_dereference = ($details['type'] == 'transtext' || $details['type'] == 'transline' || $details['type'] == 'comcodetext' || $details['type'] == 'comcodeline') ? 1 : 0;
                 $GLOBALS['SITE_DB']->query_update('config', array('c_needs_dereference' => $needs_dereference), array('c_name' => $hook), '', 1);
             }
             $GLOBALS['SITE_DB']->query_update('zones', array('zone_theme' => 'admin'), array('zone_name' => 'adminzone'), '', 1);

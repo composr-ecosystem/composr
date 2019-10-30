@@ -541,16 +541,16 @@ class Module_admin_cns_forums extends Standard_crud_module
                 require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
                 $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
 
-                $option = $ob->get_details();
-                if ($option['type'] == 'forum') {
-                    if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($option['shared_hosting_restricted'] == 0)) {
+                $details = $ob->get_details();
+                if ($details['type'] == 'forum') {
+                    if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
                         require_code('config2');
                         require_all_lang();
                         $edit_url = config_option_url($hook);
                         $message = do_lang_tempcode(
                             'CANNOT_DELETE_FORUM_OPTION',
                             escape_html($edit_url),
-                            escape_html(do_lang_tempcode($option['human_name']))
+                            escape_html(do_lang_tempcode($details['human_name']))
                         );
                         attach_message($message, 'notice');
                         return false;

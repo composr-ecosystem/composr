@@ -40,9 +40,9 @@ class Hook_config_theme_header_type
             'list_options' => 'modern|side|classic',
             'order_in_category_group' => 2,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
+
             'addon' => 'core_configuration',
         );
     }

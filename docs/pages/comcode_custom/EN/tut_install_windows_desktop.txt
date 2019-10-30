@@ -42,7 +42,6 @@ Here are a few more:
  - [url="EasyPHP"]http://www.easyphp.org/[/url]
  - [url="XAMPP"]https://www.apachefriends.org/index.html[/url]
  - [url="MAMP"]https://www.mamp.info/en/[/url]
- - [url="AMPPS"]http://www.ampps.com/[/url] (which includes Softaculous)
 
 We aren't in a position to tell you which is best at this time, we're just listing some options for you.
 

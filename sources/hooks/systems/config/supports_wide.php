@@ -38,10 +38,11 @@ class Hook_config_supports_wide
             'explanation' => 'CONFIG_OPTION_supports_wide',
             'shared_hosting_restricted' => '1',
             'list_options' => '',
+            'order_in_category_group' => 9,
             'theme_override' => true,
-
             'required' => true,
             'public' => false,
+
             'addon' => 'core_configuration',
         );
     }

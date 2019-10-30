@@ -26,7 +26,7 @@
  * For a simple flat figure it does though.
  *
  * @param  ID_TEXT $tax_code The tax code
- * @param  float $multiplier The multipler
+ * @param  float $multiplier The multiplier
  * @return ID_TEXT The amended tax code
  */
 function tax_multiplier($tax_code, $multiplier)

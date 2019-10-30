@@ -191,6 +191,8 @@ class _broken_links_test_set extends cms_test_case
             'http://dev.twitter.com/apps/new',
             'http://purl.org/dc/elements/1.1/',
             'http://purl.org/dc/terms/',
+            'https://notepad-plus-plus.org/',
+            'https://compo.sr/themeing-changes.htm',
         ))) {
             return;
         }

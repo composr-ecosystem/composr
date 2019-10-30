@@ -76,6 +76,10 @@ class _actionlog_test_set extends cms_test_case
                             $url = $url->evaluate();
                         }
 
+                        if (($this->only !== null) && ($this->only != $hook)) {
+                            continue;
+                        }
+
                         static $done_urls = array();
 
                         if (!array_key_exists($url, $done_urls)) {

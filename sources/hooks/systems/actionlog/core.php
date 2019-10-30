@@ -513,8 +513,8 @@ class Hook_actionlog_core extends Hook_actionlog
                 if ($ob === null) {
                     return $identifier;
                 }
-                $option = $ob->get_details();
-                return do_lang($option['human_name']);
+                $details = $ob->get_details();
+                return do_lang($details['human_name']);
 
             case 'ADD_THEME':
             case 'DELETE_THEME':

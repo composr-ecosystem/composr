@@ -124,7 +124,6 @@ Therefore be aware you'll need to devote a considerable amount of time. However,
 
 You may find the best way to learn is through tutorials. Here are some sites featuring tutorials for Photoshop:
  - http://www.good-tutorials.com/
- - http://www.tutorialized.com/tutorials/Photoshop/1
  - http://www.photoshopstar.com/
  - http://design.tutsplus.com/
 

@@ -255,10 +255,10 @@ class Module_admin_config
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         $categories = array();
         foreach ($hooks as $ob) {
-            $option = $ob->get_details();
-            if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($option['shared_hosting_restricted'] == 0)) {
+            $details = $ob->get_details();
+            if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
                 if ($ob->get_default() !== null) {
-                    $category = $option['category'];
+                    $category = $details['category'];
                     if (!isset($categories[$category])) {
                         $categories[$category] = 0;
                     }
@@ -399,16 +399,16 @@ class Module_admin_config
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         $options = array();
         foreach ($hooks as $hook => $ob) {
-            $option = $ob->get_details();
-            if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($option['shared_hosting_restricted'] == 0)) {
-                if ($category == $option['category']) {
+            $details = $ob->get_details();
+            if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
+                if ($category == $details['category']) {
                     if ($ob->get_default() !== null) {
-                        if (!isset($option['order_in_category_group'])) {
-                            $option['order_in_category_group'] = 100;
+                        if (!isset($details['order_in_category_group'])) {
+                            $details['order_in_category_group'] = 100;
                         }
-                        $option['ob'] = $ob;
-                        $option['name'] = $hook;
-                        $options[$option['group']][$hook] = $option;
+                        $details['ob'] = $ob;
+                        $details['name'] = $hook;
+                        $options[$details['group']][$hook] = $details;
                     }
                 }
             }
@@ -458,11 +458,11 @@ class Module_admin_config
             $options_in_group = $options[$group_codename];
 
             $all_orders_default = true;
-            foreach ($options_in_group as $name => $option) {
-                if ($option['order_in_category_group'] != 100) {
+            foreach ($options_in_group as $name => $details) {
+                if ($details['order_in_category_group'] != 100) {
                     $all_orders_default = false;
                 }
-                $options_in_group[$name]['human_name_trans'] = do_lang($option['human_name']);
+                $options_in_group[$name]['human_name_trans'] = do_lang($details['human_name']);
             }
             if ($all_orders_default) {
                 sort_maps_by($options_in_group, 'human_name_trans', false, true);
@@ -471,191 +471,8 @@ class Module_admin_config
             }
 
             $out = '';
-            foreach ($options_in_group as $name => $option) {
-                // Language strings
-                $human_name = do_lang_tempcode($option['human_name']);
-                $_explanation = do_lang($option['explanation'], isset($option['explanation_param_a']) ? $option['explanation_param_a'] : null, isset($option['explanation_param_b']) ? $option['explanation_param_b'] : null, isset($option['explanation_param_c']) ? $option['explanation_param_c'] : null, null, false);
-                if ($_explanation === null) {
-                    $_explanation = do_lang('CONFIG_GROUP_DEFAULT_DESCRIP_' . $option['group'], null, null, null, null, false);
-                    if ($_explanation === null) {
-                        // So an error shows
-                        $_explanation = do_lang($option['explanation'], isset($option['explanation_param_a']) ? $option['explanation_param_a'] : null, isset($option['explanation_param_b']) ? $option['explanation_param_b'] : null, isset($option['explanation_param_c']) ? $option['explanation_param_c'] : null);
-                        $explanation = do_lang_tempcode($option['explanation'], isset($option['explanation_param_a']) ? $option['explanation_param_a'] : null, isset($option['explanation_param_b']) ? $option['explanation_param_b'] : null, isset($option['explanation_param_c']) ? $option['explanation_param_c'] : null);
-                    } else {
-                        $explanation = do_lang_tempcode('CONFIG_GROUP_DEFAULT_DESCRIP_' . $option['group']);
-                    }
-                } else {
-                    $explanation = do_lang_tempcode($option['explanation'], isset($option['explanation_param_a']) ? $option['explanation_param_a'] : null, isset($option['explanation_param_b']) ? $option['explanation_param_b'] : null, isset($option['explanation_param_c']) ? $option['explanation_param_c'] : null);
-                }
-                if (!empty($option['theme_override'])) {
-                    $explanation = do_lang_tempcode('IS_ALSO_THEME_SETTING', $explanation);
-                }
-                $default = get_default_option($name);
-
-                if (!empty($option['maintenance_code'])) {
-                    $explanation = is_maintained_description($option['maintenance_code'], $explanation);
-                }
-
-                $required = isset($option['required']) ? $option['required'] : false;
-
-                // Render field inputter
-                switch ($option['type']) {
-                    case 'special':
-                        $ob = $option['ob'];
-                        $out .= static_evaluate_tempcode($ob->field_inputter($name, $option, $human_name, $explanation));
-                        break;
-
-                    case 'integer':
-                        $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html($default)));
-                        $out .= static_evaluate_tempcode(form_input_integer($human_name, $explanation_with_default, $name, intval(get_option($name)), $required));
-                        break;
-
-                    case 'float':
-                        $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(float_format(floatval($default)))));
-                        $out .= static_evaluate_tempcode(form_input_float($human_name, $explanation_with_default, $name, floatval(get_option($name)), $required));
-                        break;
-
-                    case 'tax_code':
-                        if (addon_installed('ecommerce')) {
-                            require_code('ecommerce');
-                            $out .= static_evaluate_tempcode(form_input_tax_code($human_name, $explanation, $name, get_option($name), $required));
-                        }
-                        break;
-
-                    case 'line':
-                    case 'transline':
-                        $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html($default)));
-                        $out .= static_evaluate_tempcode(form_input_line($human_name, $explanation_with_default, $name, get_option($name), $required, null, 100000));
-                        break;
-
-                    case 'text':
-                    case 'transtext':
-                        $out .= static_evaluate_tempcode(form_input_text($human_name, $explanation, $name, get_option($name), $required, null, true));
-                        break;
-
-                    case 'comcodeline':
-                        $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : make_string_tempcode(escape_html($default)));
-                        $out .= static_evaluate_tempcode(form_input_line_comcode($human_name, $explanation_with_default, $name, get_option($name), $required));
-                        break;
-
-                    case 'comcodetext':
-                        $out .= static_evaluate_tempcode(form_input_text_comcode($human_name, $explanation, $name, get_option($name), $required, null, true));
-                        break;
-
-                    case 'list':
-                        $_default = make_string_tempcode(escape_html($default));
-                        $list = '';
-                        $_value = get_option($name);
-                        if ($_value == '' || !$required) {
-                            $list .= static_evaluate_tempcode(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                        }
-                        $values = explode('|', $option['list_options']);
-                        foreach ($values as $value) {
-                            $__value = str_replace(' ', '__', $value);
-                            $_option_text = do_lang('CONFIG_OPTION_' . $name . '_VALUE_' . $__value, null, null, null, null, false);
-                            if ($_option_text !== null) {
-                                $option_text = do_lang_tempcode('CONFIG_OPTION_' . $name . '_VALUE_' . $__value);
-                                if ($value == $default) {
-                                    $_default = $option_text;
-                                }
-                            } else {
-                                $option_text = make_string_tempcode($value);
-                            }
-                            $list .= static_evaluate_tempcode(form_input_list_entry($value, $_value == $value, $option_text));
-                        }
-                        $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, ($default == '') ? do_lang_tempcode('BLANK_EM') : $_default);
-                        $out .= static_evaluate_tempcode(form_input_list($human_name, $explanation_with_default, $name, make_string_tempcode($list), null, false, $required));
-                        break;
-
-                    case 'tick':
-                        $explanation_with_default = do_lang_tempcode('EXPLANATION_WITH_DEFAULT', $explanation, escape_html(($default == '1') ? do_lang('YES') : do_lang('NO')));
-                        $out .= static_evaluate_tempcode(form_input_tick($human_name, $explanation_with_default, $name, get_option($name) == '1'));
-                        break;
-
-                    case 'username':
-                        $out .= static_evaluate_tempcode(form_input_username($human_name, $explanation, $name, get_option($name), $required, false));
-                        break;
-
-                    case 'colour':
-                        $out .= static_evaluate_tempcode(form_input_colour($human_name, $explanation, $name, get_option($name), $required));
-                        break;
-
-                    case 'date':
-                        $out .= static_evaluate_tempcode(form_input_date($human_name, $explanation, $name, $required, false, false, (get_option($name) == '') ? null : intval(get_option($name)), 40, intval(date('Y')) - 20, null));
-                        break;
-
-                    case 'datetime':
-                        $out .= static_evaluate_tempcode(form_input_date($human_name, $explanation, $name, $required, false, true, (get_option($name) == '') ? null : intval(get_option($name)), 40, intval(date('Y')) - 20, null));
-                        break;
-
-                    case 'forum':
-                        if ((get_forum_type() == 'cns') && (addon_installed('cns_forum'))) {
-                            $current_setting = get_option($name);
-                            if (!is_numeric($current_setting)) {
-                                $_current_setting = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', array('f_name' => $current_setting));
-                                if ($_current_setting === null) {
-                                    if ($required) {
-                                        $current_setting = strval(db_get_first_id());
-                                        attach_message(do_lang_tempcode('FORUM_CURRENTLY_UNSET', $human_name), 'notice');
-                                    } else {
-                                        $current_setting = null;
-                                    }
-                                } else {
-                                    $current_setting = strval($_current_setting);
-                                }
-                            }
-                            $out .= static_evaluate_tempcode(form_input_tree_list($human_name, $explanation, $name, null, 'choose_forum', array(), $required, $current_setting));
-                        } else {
-                            $out .= static_evaluate_tempcode(form_input_line($human_name, $explanation, $name, get_option($name), $required));
-                        }
-                        break;
-
-                    case 'country':
-                        require_code('locations');
-                        $_list = new Tempcode();
-                        $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                        $_list->attach(create_country_selection_list(array(get_option($name))));
-                        $out .= static_evaluate_tempcode(form_input_list($human_name, $explanation, $name, $_list, null, false, $required));
-                        break;
-
-                    case 'country_multi':
-                        require_code('locations');
-                        $list = static_evaluate_tempcode(create_country_selection_list(explode(',', get_option($name))));
-                        $out .= static_evaluate_tempcode(form_input_multi_list($human_name, $explanation, $name, make_string_tempcode($list)));
-                        break;
-
-                    case 'forum_grouping':
-                        if (get_forum_type() == 'cns') {
-                            $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'id', array('c_title' => get_option($name)));
-
-                            require_code('cns_forums2');
-                            $_list = new Tempcode();
-                            $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                            $_list->attach(cns_create_selection_list_forum_groupings(null, $tmp_value));
-                            $out .= static_evaluate_tempcode(form_input_list($human_name, $explanation, $name, $_list, null, false, $required));
-                        } else {
-                            $out .= static_evaluate_tempcode(form_input_line($human_name, $explanation, $name, get_option($name), $required));
-                        }
-                        break;
-
-                    case 'usergroup':
-                    case 'usergroup_not_guest':
-                        if (get_forum_type() == 'cns') {
-                            $tmp_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array($GLOBALS['FORUM_DB']->translate_field_ref('g_name') => get_option($name)));
-
-                            require_code('cns_groups');
-                            $_list = new Tempcode();
-                            $_list->attach(form_input_list_entry('', false, do_lang_tempcode('NA_EM')));
-                            $_list->attach(cns_create_selection_list_usergroups($tmp_value, $option['type'] == 'usergroup'));
-                            $out .= static_evaluate_tempcode(form_input_list($human_name, $explanation, $name, $_list, null, false, $required));
-                        } else {
-                            $out .= static_evaluate_tempcode(form_input_line($human_name, $explanation, $name, get_option($name), $required));
-                        }
-                        break;
-
-                    default:
-                        fatal_exit('Invalid config option type: ' . $option['type'] . ' (for ' . $option['name'] . ')');
-                }
+            foreach ($options_in_group as $name => $details) {
+                $out .= static_evaluate_tempcode(build_config_inputter($name, $details));
             }
 
             // Render group
@@ -711,68 +528,20 @@ class Module_admin_config
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         $options = array();
         foreach ($hooks as $hook => $ob) {
-            $option = $ob->get_details();
-            if ($category == $option['category']) {
-                if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($option['shared_hosting_restricted'] == 0)) {
+            $details = $ob->get_details();
+            if ($category == $details['category']) {
+                if (($GLOBALS['CURRENT_SHARE_USER'] === null) || ($details['shared_hosting_restricted'] == 0)) {
                     if ($ob->get_default() !== null) {
-                        $option['ob'] = $ob;
-                        $options[$hook] = array($option, $ob);
+                        $details['ob'] = $ob;
+                        $options[$hook] = $details;
                     }
                 }
             }
         }
 
         // Go through all options on the page, saving
-        foreach ($options as $name => $option_parts) {
-            list($option, $ob) = $option_parts;
-
-            // Work out new value
-            if ($option['type'] == 'tax_code') {
-                if (addon_installed('ecommerce')) {
-                    require_code('ecommerce');
-                    $value = post_param_tax_code($name);
-                } else {
-                    $value = post_param_string($name, '0%');
-                }
-            } elseif ($option['type'] == 'float') {
-                $_value = post_param_string($name, '');
-                $value = ($_value == '') ? '' : float_to_raw_string(float_unformat($_value));
-            } elseif ($option['type'] == 'tick') {
-                $value = strval(post_param_integer($name, 0));
-            } elseif (($option['type'] == 'date') || ($option['type'] == 'datetime')) {
-                $date_value = post_param_date($name);
-                $value = ($date_value === null) ? '' : strval($date_value);
-            } elseif ((($option['type'] == 'forum') || ($option['type'] == '?forum')) && (get_forum_type() == 'cns')) {
-                $value = post_param_string($name, null);
-                if (is_numeric($value)) {
-                    $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'f_name', array('id' => post_param_integer($name)));
-                }
-                if ($value === null) {
-                    $value = '';
-                }
-            } elseif (($option['type'] == 'forum_grouping') && (get_forum_type() == 'cns')) {
-                $value = post_param_string($name, null);
-                if (is_numeric($value)) {
-                    $value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forum_groupings', 'c_title', array('id' => post_param_integer($name)));
-                }
-                if ($value === null) {
-                    $value = '';
-                }
-            } elseif ((($option['type'] == 'usergroup') || ($option['type'] == 'usergroup_not_guest')) && (get_forum_type() == 'cns')) {
-                $value = post_param_string($name, null);
-                if (is_numeric($value)) {
-                    $_value = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'g_name', array('id' => post_param_integer($name)));
-                } else {
-                    $_value = ($value === null) ? null : $value;
-                }
-                if ($_value === null) {
-                    $value = '';
-                } else {
-                    $value = get_translated_text($_value);
-                }
-            } else {
-                $value = post_param_string($name, '');
-            }
+        foreach ($options as $name => $details) {
+            $value = get_submitted_config_value($name, $details);
 
             // If the option was changed
             $old_value = get_option($name);

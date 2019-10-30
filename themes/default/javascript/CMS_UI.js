@@ -180,7 +180,7 @@
             if (tabSelectEl) {
                 tabSelectEl.classList.toggle('tab-active', isTabBeingSelected);
 
-                // Subtabs use a horizantal scrolling interface in mobile mode, ensure selected tab is scrolled into view
+                // Sub-tabs use a horizontal scrolling interface in mobile mode, ensure selected tab is scrolled into view
                 // Inspiration credit: https://stackoverflow.com/a/45411081/362006
                 if (isTabBeingSelected && $cms.isCssMode('mobile')) {
                     var subtabHeaders = $dom.parent(tabSelectEl, '.modern-subtab-headers');

@@ -522,26 +522,14 @@ class Module_admin_themes
         }
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '2b82c955e92a4bddad2f57bfe23fc7b0', 'SECTION_HIDDEN' => !$show_theme_option_overrides, 'TITLE' => do_lang_tempcode('THEME__OPTION_OVERRIDES'), 'HELP' => do_lang_tempcode('DESCRIPTION__THEME__OPTION_OVERRIDES'))));
         require_all_lang();
+        require_code('config2');
         foreach (array_keys($hooks) as $hook) {
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
             $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
             $details = $ob->get_details();
             if (!empty($details['theme_override'])) {
                 $current_value = get_theme_option($hook, '', $name);
-
-                switch ($details['type']) {
-                    case 'line':
-                        $fields->attach(form_input_line(do_lang_tempcode($details['human_name']), do_lang_tempcode($details['explanation']), $hook, $current_value, false));
-                        break;
-
-                    case 'tick':
-                        $list = new Tempcode();
-                        $list->attach(form_input_list_entry('', $current_value == '', do_lang_tempcode('NA_EM')));
-                        $list->attach(form_input_list_entry('0', $current_value == '0', do_lang_tempcode('NO')));
-                        $list->attach(form_input_list_entry('1', $current_value == '1', do_lang_tempcode('YES')));
-                        $fields->attach(form_input_list(do_lang_tempcode($details['human_name']), do_lang_tempcode($details['explanation']), $hook, $list, null, false, false));
-                        break;
-                }
+                $fields->attach(build_config_inputter($hook, $details, $current_value, true));
             }
         }
 
@@ -835,11 +823,12 @@ class Module_admin_themes
             $contents .= $themeonly_option . '=' . str_replace("\n", '\n', post_param_string($themeonly_option, '')) . "\n";
             unset($before[$themeonly_option]);
         }
+        require_code('config2');
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
             if (!empty($details['theme_override'])) {
-                $val = post_param_string($hook, '');
+                $val = get_submitted_config_value($hook, $details);
                 if ($val != '') {
                     $contents .= $hook . '=' . $val . "\n";
                 }

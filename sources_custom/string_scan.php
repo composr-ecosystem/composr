@@ -505,7 +505,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         VIDEO_WAS_AUTO_IMPORTED
         CONTACT_US_NOTIFICATION_MESSAGE
         CONTACT_US_NOTIFICATION_SUBJECT
-        WORD_SUBSTR
         SCREEN_DEV_TOOLS
         OR_ONE_OF_THE_BELOW
         SALE_MADE
@@ -739,6 +738,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADD_WARNING
         ADD_WELCOME_EMAIL
         ADD_WORDFILTER
+        EDIT_WORDFILTER
+        DELETE_WORDFILTER
         ADD_ZONE
         POST_ACCESS_IS_RESTRICTED
         ADMIN
@@ -3908,7 +3909,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DELETE_VIDEO
         DELETE_WELCOME_EMAIL
         DELETE_WITHOUT_MERGING
-        DELETE_WORDFILTER
         DELETE_ZONE
         DELETE_ZONE_ERROR
         DELURK_CONFIRM
@@ -4481,7 +4481,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DESCRIPTION_WORDPRESS_DB_USERNAME
         DESCRIPTION_WORDPRESS_HOST_NAME
         DESCRIPTION_WORDPRESS_TABLE_PREFIX
-        DESCRIPTION_WORD_SUBSTR
         DESCRIPTION_ZONE_BASE_URL
         DESCRIPTION_ZONE_RENAME
         DESCRIPTION_ZONE_RENAME_DEFAULT_ZONE
@@ -5353,7 +5352,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         HEADER_TEXT
         HEADER_TEXT_ADMINZONE
         HELP_ADD_NEWSLETTER
-        HELP_ADD_WORDFILTER
         HELP_IMPORTING_ADDON
         HIDDEN_USERGROUP
         SHOW_AWARDEE
@@ -6417,7 +6415,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         POST_REQUIRING_VALIDATION_MAIL_SUBJECT
         POST_TEMPLATES
         POWERED_BY
-        PRESET
         PREVIEW_THEME
         PRIMARY_CORE_INSTALLED
         PRIMARY_MEMBERS_PER_PAGE
@@ -8325,7 +8322,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CCP_ERROR
         CHANGE_HERE
         CHANGE_SETTINGS_BY_RESUBSCRIBING
-        CHANGING_IN
         PRIVACY_YOU_MAY
         EMAIL_US
         FAX_US
@@ -10226,7 +10222,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         STATIC_USERS_ONLINE
         STATISTICS
         STATUS
-        STOPPED
         STOPPED_BY_ANTISPAM
         SUBCATEGORIES_HERE
         SUBFORUMS

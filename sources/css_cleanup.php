@@ -357,7 +357,7 @@ class EmToPx extends CSSCleanup
     {
         // We do our big approximations in here. We assume we can predict all places font-sizes may raise based on html, body, and the trail of our selector, and that nothing compounds across multiple elements matching the same selector.
         // Practically speaking, these approximations are good enough, especially given that:
-        //  (a) we tend to overspecify our selectors for clarity
+        //  (a) we tend to over-specify our selectors for clarity
         //  (b) compounding can't be represented in px anyway
         //  (c) we don't have many places we re-set font size in practice, because consistent font-size is good design practice
 

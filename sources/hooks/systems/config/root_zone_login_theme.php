@@ -38,8 +38,8 @@ class Hook_config_root_zone_login_theme
             'explanation' => 'CONFIG_OPTION_root_zone_login_theme',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
+            'order_in_category_group' => 6,
             'required' => true,
-
             'public' => false,
 
             'addon' => 'core_configuration',

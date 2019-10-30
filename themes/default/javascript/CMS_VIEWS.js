@@ -1057,7 +1057,7 @@
                 if ($cms.getCountry()) {
                     cookieConsentOptions['law'] = {
                         countryCode: $cms.getCountry(),
-                        regionalLaw: false,// "If false, then we only enable the popup if the country has the cookie law. We ignore all other country specific rules."
+                        regionalLaw: false, // "If false, then we only enable the pop-up if the country has the cookie law. We ignore all other country specific rules."
                     };
                 }
 
