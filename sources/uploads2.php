@@ -368,8 +368,7 @@ function clean_empty_upload_directories($upload_directory, $top_level = true)
     closedir($dh);
 
     if ($ok_to_delete) {
-        deldir_contents(get_custom_file_base() . '/' . $upload_directory);
-        @rmdir(get_custom_file_base() . '/' . $upload_directory);
+        deldir_contents(get_custom_file_base() . '/' . $upload_directory, false, true);
     }
 
     return $ok_to_delete;

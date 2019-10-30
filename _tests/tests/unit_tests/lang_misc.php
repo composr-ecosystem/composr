@@ -30,10 +30,12 @@ class lang_misc_test_set extends cms_test_case
 
     public function testLangStringsWork()
     {
+        require_code('files');
+
         $dir = get_file_base() . '/lang_custom/EX';
         $path = $dir . '/global.ini';
         @mkdir($dir, 0777);
-        file_put_contents($path, "[strings]\nSETTINGS=Foo");
+        cms_file_put_contents_safe($path, "[strings]\nSETTINGS=Foo");
 
         // Overridden
         $en = do_lang('SETTINGS', null, null, null, 'EN');
@@ -50,8 +52,10 @@ class lang_misc_test_set extends cms_test_case
         $this->assertTrue(!empty($ex));
         $this->assertTrue($en == $ex);
 
-        @unlink($path);
-        @rmdir($dir);
+        deldir_contents(get_file_base() . '/lang_custom/EX', false, true);
+        @deldir_contents(get_file_base() . '/caches/lang/EX', false, true);
+        @deldir_contents(get_file_base() . '/themes/default/templates_cached/EX/', false, true);
+        @deldir_contents(get_file_base() . '/themes/admin/templates_cached/EX/', false, true);
     }
 
     public function testPluralisation()

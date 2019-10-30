@@ -265,14 +265,15 @@ class Hook_addon_registry_galleries
             'sources/hooks/systems/config/homepage_slider_gallery.php',
             'sources/blocks/main_hero_slider.php',
             'themes/default/templates/BLOCK_MAIN_HERO_SLIDER.tpl',
-            'uploads/galleries/root/homepage_hero_slider/index.html',
-            'uploads/galleries/root/homepage_hero_slider/bastei_bridge.jpg',
-            'uploads/galleries/root/homepage_hero_slider/rustic.jpg',
-            'uploads/galleries/root/homepage_hero_slider/waterfall.jpg',
-            'uploads/galleries_thumbs/root/homepage_hero_slider/index.html',
-            'uploads/galleries_thumbs/root/homepage_hero_slider/bastei_bridge.png',
-            'uploads/galleries_thumbs/root/homepage_hero_slider/rustic.png',
-            'uploads/galleries_thumbs/root/homepage_hero_slider/waterfall.png',
+            'data/images/homepage_hero_slider/index.html',
+            'data/images/homepage_hero_slider/full/index.html',
+            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/full/rustic.jpg',
+            'data/images/homepage_hero_slider/full/waterfall.jpg',
+            'data/images/homepage_hero_slider/thumbs/index.html',
+            'data/images/homepage_hero_slider/thumbs/bastei_bridge.png',
+            'data/images/homepage_hero_slider/thumbs/rustic.png',
+            'data/images/homepage_hero_slider/thumbs/waterfall.png',
         );
     }
 

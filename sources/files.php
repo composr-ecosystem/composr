@@ -891,14 +891,14 @@ function should_ignore_file($path, $bitmask = 0)
 
 /**
  * Delete all the contents of a directory, and any subdirectories of that specified directory (recursively).
- * Does not delete the directory itself.
  *
  * @param  PATH $dir The pathname to the directory to delete
- * @param  boolean $default_preserve Whether to preserve files there by default
- * @param  boolean $just_files Whether to just delete files
+ * @param  boolean $default_preserve Whether to preserve index.html and .htaccess files
+ * @param  boolean $delete_dir_also Whether to delete the $dir at the end
+ * @return boolean Success status
  */
-function deldir_contents($dir, $default_preserve = false, $just_files = false)
+function deldir_contents($dir, $default_preserve = false, $delete_dir_also = false)
 {
     require_code('files2');
-    _deldir_contents($dir, $default_preserve, $just_files);
+    return _deldir_contents($dir, $default_preserve, $delete_dir_also);
 }

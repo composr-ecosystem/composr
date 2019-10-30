@@ -442,8 +442,7 @@ function make_installers($skip_file_grab = false)
         rename($builds_path . '/builds/aps/htdocs/', $builds_path . '/builds/build/' . $version_branch . '/');
 
         // Delete the copied files
-        deldir_contents($builds_path . '/builds/aps/');
-        @rmdir($builds_path . '/builds/aps/');
+        deldir_contents($builds_path . '/builds/aps/', false, true);
 
         chdir(get_file_base());
     }

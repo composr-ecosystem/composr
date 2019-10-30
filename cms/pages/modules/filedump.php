@@ -1191,8 +1191,10 @@ class Module_filedump
                         }
 
                         if ($is_directory) {
-                            deldir_contents($path);
-                            @rmdir($path) or warn_exit(do_lang_tempcode('FOLDER_DELETE_ERROR'));
+                            $success = @deldir_contents($path);
+                            if (!$success) {
+                                warn_exit(do_lang_tempcode('FOLDER_DELETE_ERROR'));
+                            }
 
                             log_it('FILEDUMP_DELETE_FOLDER', $file, $subpath);
                         } else {

@@ -68,8 +68,8 @@ class Module_galleries
 
         require_code('files');
         if (!$GLOBALS['DEV_MODE']) {
-            deldir_contents(get_custom_file_base() . '/uploads/galleries', true, true);
-            deldir_contents(get_custom_file_base() . '/uploads/galleries_thumbs', true, true);
+            deldir_contents(get_custom_file_base() . '/uploads/galleries', true);
+            deldir_contents(get_custom_file_base() . '/uploads/galleries_thumbs', true);
         }
     }
 
@@ -238,9 +238,9 @@ HTML;
                 }
             }
 
-            add_image('Slide 1', 'homepage_hero_slider', trim($slide_1_contents) . "\n", 'uploads/galleries/root/homepage_hero_slider/bastei_bridge.jpg', 'uploads/galleries_thumbs/root/homepage_hero_slider/bastei_bridge.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
-            add_image('Slide 2', 'homepage_hero_slider', trim($slide_2_contents) . "\n", 'uploads/galleries/root/homepage_hero_slider/rustic.jpg', 'uploads/galleries_thumbs/root/homepage_hero_slider/rustic.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
-            add_image('Slide 3', 'homepage_hero_slider', trim($slide_3_contents) . "\n", 'uploads/galleries/root/homepage_hero_slider/waterfall.jpg', 'uploads/galleries_thumbs/root/homepage_hero_slider/waterfall.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
+            add_image('Slide 1', 'homepage_hero_slider', trim($slide_1_contents) . "\n", 'data/images/homepage_hero_slider/full/bastei_bridge.jpg', 'data/images/homepage_hero_slider/thumbs/bastei_bridge.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
+            add_image('Slide 2', 'homepage_hero_slider', trim($slide_2_contents) . "\n", 'data/images/homepage_hero_slider/full/rustic.jpg', 'data/images/homepage_hero_slider/thumbs/rustic.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
+            add_image('Slide 3', 'homepage_hero_slider', trim($slide_3_contents) . "\n", 'data/images/homepage_hero_slider/full/waterfall.jpg', 'data/images/homepage_hero_slider/thumbs/waterfall.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 7)) {

@@ -140,9 +140,10 @@ class Hook_commandr_fs_filedump
 
         if ((is_dir($path)) && (file_exists($path . '/' . $dir_name)) && (cms_is_writable($path . '/' . $dir_name))) {
             require_code('files');
-            deldir_contents($path . '/' . $dir_name);
-            $ret = @rmdir($path . '/' . $dir_name) or warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . '/' . $dir_name)), false, true);
-            sync_file($path . '/' . $dir_name);
+            $success = @deldir_contents($path . '/' . $dir_name);
+            if (!$success) {
+                warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . '/' . $dir_name)), false, true);
+            }
 
             // Cleanup from DB
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('filedump', 'the_description', array('name' => cms_mb_substr($dir_name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)));

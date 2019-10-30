@@ -102,9 +102,10 @@ class Hook_commandr_fs_root
 
         if ((is_dir($path)) && (file_exists($path . $dir_name)) && (cms_is_writable($path . $dir_name))) {
             require_code('files');
-            deldir_contents($path . $dir_name);
-            $ret = @rmdir($path . $dir_name) or warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . $dir_name)), false, true);
-            sync_file($path . $dir_name);
+            $success = @deldir_contents($path . $dir_name);
+            if (!$success) {
+                warn_exit(do_lang_tempcode('WRITE_ERROR', escape_html($path . '/' . $dir_name)), false, true);
+            }
             return true;
         } else {
             return false; // Directory doesn't exist

@@ -270,57 +270,62 @@ function _sync_file_move($old, $new)
 
 /**
  * Delete all the contents of a directory, and any subdirectories of that specified directory (recursively).
- * Does not delete the directory itself.
  *
  * @param  PATH $dir The pathname to the directory to delete
- * @param  boolean $default_preserve Whether to preserve files there by default
- * @param  boolean $just_files Whether to just delete files
+ * @param  boolean $default_preserve Whether to preserve index.html and .htaccess files (only applies to the lowest level directory)
+ * @param  boolean $delete_dir_also Whether to delete the $dir at the end
+ * @return boolean Success status
  *
  * @ignore
  */
-function _deldir_contents($dir, $default_preserve = false, $just_files = false)
+function _deldir_contents($dir, $default_preserve = false, $delete_dir_also = false)
 {
-    $current_dir = @opendir($dir);
-    if ($current_dir !== false) {
-        while (false !== ($entryname = readdir($current_dir))) {
-            if ($default_preserve) {
-                if ($entryname == 'index.html') {
-                    continue;
-                }
-                if ($entryname[0] == '.') {
-                    continue;
-                }
+    $success = true;
 
-                $default_paths = array('uploads/banners/advertise_here.png', 'uploads/banners/donate.png', 'themes/map.ini', 'themes/default');
+    $dh = @opendir($dir);
 
-                $hero_slider_images = array('bastei_bridge', 'rustic', 'waterfall');
-                foreach ($hero_slider_images as $img) {
-                    $default_paths[] = 'uploads/galleries/root/homepage_hero_slider/' . $img . '.jpg';
-                    $default_paths[] = 'uploads/galleries_thumbs/root/homepage_hero_slider/' . $img . '.png';
-                }
-
-                if (in_array(str_replace(get_file_base() . '/', '', $dir) . '/' . $entryname, $default_paths)) {
-                    continue;
-                }
-            }
-            if ((is_dir($dir . '/' . $entryname)) && ($entryname != '.') && ($entryname != '..')) {
-                deldir_contents($dir . '/' . $entryname, $default_preserve, $just_files);
-                if (!$just_files) {
-                    $test = @rmdir($dir . '/' . $entryname);
-                    if (($test === false) && (!$just_files/*tolerate weird locked dirs if we only need to delete files anyways*/) && (function_exists('attach_message'))) {
-                        attach_message(do_lang_tempcode('WRITE_ERROR', escape_html($dir . '/' . $entryname)), 'warn', false, true);
-                    }
-                }
-            } elseif (($entryname != '.') && ($entryname != '..')) {
-                $test = @unlink($dir . '/' . $entryname);
-                if (($test === false) && (function_exists('attach_message'))) {
-                    attach_message(do_lang_tempcode('WRITE_ERROR', escape_html($dir . '/' . $entryname)), 'warn', false, true);
-                }
-            }
-            sync_file($dir . '/' . $entryname);
-        }
-        closedir($current_dir);
+    if ($dh === false) {
+        return false;
     }
+
+    while (($file = readdir($dh)) !== false) {
+        if (in_array($file, array('.', '..'))) {
+            continue;
+        }
+
+        if (($default_preserve) && (in_array($file, array('index.html', '.htaccess')))) {
+            continue;
+        }
+
+        if (is_dir($dir . '/' . $file)) {
+            if (!_deldir_contents($dir . '/' . $file, false, true)) {
+                $success = false;
+            }
+        } else {
+            $test = @unlink($dir . '/' . $file);
+            if ($test === false) {
+                $success = false;
+                if (function_exists('attach_message')) {
+                    attach_message(do_lang_tempcode('WRITE_ERROR', escape_html($dir . '/' . $file)), 'warn', false, true);
+                }
+            }
+        }
+
+        sync_file($dir . '/' . $file);
+    }
+    closedir($dh);
+
+    if ($delete_dir_also) {
+        $test = @rmdir($dir);
+        if ($test === false) {
+            $success = false;
+            if (function_exists('attach_message')) {
+                attach_message(do_lang_tempcode('WRITE_ERROR', escape_html($dir)), 'warn', false, true);
+            }
+        }
+    }
+
+    return $success;
 }
 
 /**

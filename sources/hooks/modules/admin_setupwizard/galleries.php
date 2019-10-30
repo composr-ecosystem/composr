@@ -38,9 +38,9 @@ class Hook_sw_galleries
         $default_homepage_hero_slider_category = 'homepage_hero_slider';
 
         $default_homepage_hero_slides_urls = array(
-            'uploads/galleries/root/homepage_hero_slider/bastei_bridge.jpg',
-            'uploads/galleries/root/homepage_hero_slider/rustic.jpg',
-            'uploads/galleries/root/homepage_hero_slider/waterfall.jpg',
+            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/full/rustic.jpg',
+            'data/images/homepage_hero_slider/full/waterfall.jpg',
         );
 
         $where = array();
@@ -92,9 +92,9 @@ class Hook_sw_galleries
         $default_homepage_hero_slider_category = 'homepage_hero_slider';
 
         $default_homepage_hero_slides_urls = array(
-            'uploads/galleries/root/homepage_hero_slider/bastei_bridge.jpg',
-            'uploads/galleries/root/homepage_hero_slider/rustic.jpg',
-            'uploads/galleries/root/homepage_hero_slider/waterfall.jpg',
+            'data/images/homepage_hero_slider/full/bastei_bridge.jpg',
+            'data/images/homepage_hero_slider/full/rustic.jpg',
+            'data/images/homepage_hero_slider/full/waterfall.jpg',
         );
 
         $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
