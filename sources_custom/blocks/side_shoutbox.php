@@ -129,7 +129,7 @@ class Block_side_shoutbox
                     '_GUID' => 'a6f86aa48af7de7ec78423864c82c626',
                     'MEMBER_ID' => strval($member_id),
                     'MEMBER_URL' => $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id),
-                    'MEMBER' => $member_link,
+                    'MEMBER_LINK' => $member_link,
                     'MESSAGE' => $_message['the_message'],
                     '_TIME' => strval($_message['date_and_time']),
                     'DATE' => $_message['date_and_time_nice'],

@@ -42,9 +42,7 @@
 					{+START,IF,{$ADDON_INSTALLED,recommend}}{+START,IF,{$CONFIG_OPTION,enable_ecards}}{+START,IF_NON_PASSED,VIDEO}
 						<li>
 							{+START,INCLUDE,ICON}NAME=file_types/email_link{+END}
-							<a href="{$PAGE_LINK*,:recommend:browse:subject={!ECARD_FOR_YOU_SUBJECT}:page_title={!SEND_AS_ECARD}:s_message={!ECARD_FOR_YOU,{$SELF_URL},{URL*},{$SITE_NAME}}:ecard=1}">
-								{!SEND_AS_ECARD}
-							</a>
+							<a href="{$PAGE_LINK*,:recommend:browse:subject={!ECARD_FOR_YOU_SUBJECT}:page_title={!SEND_AS_ECARD}:s_message={!ECARD_FOR_YOU,{$SELF_URL},{URL*},{$SITE_NAME}}:ecard=1}">{!SEND_AS_ECARD}</a>
 						</li>
 					{+END}{+END}{+END}
 				</ul>

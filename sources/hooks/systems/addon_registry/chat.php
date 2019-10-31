@@ -347,11 +347,11 @@ class Hook_addon_registry_chat
                 'OLD_MESSAGES' => lorem_phrase(),
                 'AVATAR_URL' => placeholder_avatar(),
                 'STAFF_ACTIONS' => $chat_actions,
-                'MEMBER' => lorem_word(),
-                'MEMBER_ID' => placeholder_number(),
+                'USERNAME' => lorem_word(),
+                'MEMBER_ID' => placeholder_id(),
                 'MESSAGE' => lorem_phrase(),
                 'DATE' => placeholder_date(),
-                '_TIME' => placeholder_date(),
+                '_TIME' => placeholder_date_raw(),
                 'FONT_COLOUR' => '0000FF',
                 'FONT_FACE' => 'Arial',
             )), null, '', true)
@@ -371,7 +371,7 @@ class Hook_addon_registry_chat
             lorem_globalise(do_lorem_template('CHAT_PRIVATE', array(
                 'SYSTEM_MESSAGE' => lorem_phrase(),
                 'MESSAGE' => lorem_phrase_html(),
-                'MEMBER' => lorem_word(),
+                'USERNAME' => lorem_word(),
             )), null, '', true)
         );
     }
@@ -390,9 +390,6 @@ class Hook_addon_registry_chat
                 'USERNAME' => lorem_word(),
                 'CHATROOM' => lorem_phrase(),
                 'LINK' => placeholder_link(),
-                'page' => lorem_phrase(),
-                'type' => lorem_phrase(),
-                'room_id' => placeholder_number(),
             )), null, '', true)
         );
     }
@@ -409,9 +406,9 @@ class Hook_addon_registry_chat
         $tpl = do_lorem_template('BLOCK_SIDE_SHOUTBOX_MESSAGE', array(
             'MEMBER_ID' => placeholder_id(),
             'MEMBER_URL' => placeholder_url(),
-            'MEMBER' => lorem_word(),
+            'MEMBER_LINK' => placeholder_link(),
             'MESSAGE' => lorem_phrase(),
-            '_TIME' => placeholder_date(),
+            '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
         ));
 
@@ -458,7 +455,7 @@ class Hook_addon_registry_chat
         $friends = array();
         foreach (placeholder_array() as $key => $friend) {
             $friends[] = array(
-                'DATE_RAW' => placeholder_date(),
+                'DATE_RAW' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'MEMBER_PROFILE_URL' => placeholder_url(),
                 'MEMBER_ID' => strval($key),
@@ -549,7 +546,7 @@ class Hook_addon_registry_chat
         $friends = array();
         foreach (placeholder_array() as $key => $friend) {
             $friends[] = array(
-                'DATE_RAW' => placeholder_date(),
+                'DATE_RAW' => placeholder_date_raw(),
                 'DATE' => placeholder_date(),
                 'MEMBER_PROFILE_URL' => placeholder_url(),
                 'MEMBER_ID' => strval($key),

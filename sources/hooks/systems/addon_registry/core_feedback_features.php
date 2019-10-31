@@ -639,6 +639,7 @@ class Hook_addon_registry_core_feedback_features
             'CONTENT_TYPE' => lorem_word(),
             'ID' => placeholder_id(),
             'URL' => placeholder_url(),
+            'ALLOW_RATING' => true,
             'ALL_RATING_CRITERIA' => $all_rating_criteria,
             'HAS_RATINGS' => true,
             'SIMPLISTIC' => false,
@@ -657,6 +658,7 @@ class Hook_addon_registry_core_feedback_features
                 'NUM_RATINGS' => placeholder_number(),
                 'OVERALL_NUM_RATINGS' => placeholder_number(),
                 'RATING_FORM' => $rating_form,
+                'TITLE' => lorem_phrase(),
                 'ERROR' => '',
                 'LIKES' => false,
             )), null, '', true)

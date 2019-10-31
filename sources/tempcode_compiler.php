@@ -544,7 +544,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         if (tc_is_all_static($_opener_params)) { // Optimise out for simple case?
                             $tpl_funcs = array();
                             $looked_up = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, array(), $cl);
-                            if (!empty($looked_up)) {
+                            if (!cms_empty_safe($looked_up)) {
                                 $new_line = '"' . php_addslashes($looked_up) . '"';
                             }
                         }

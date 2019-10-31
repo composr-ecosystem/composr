@@ -432,7 +432,7 @@ class Hook_video_syndication_youtube
             return true;
         }
         $refresh_token = get_value('youtube_refresh_token', null, true);
-        if (($refresh_token === null) || ($refresh_token == '')) {
+        if (empty($refresh_token)) {
             return true;
         }
 

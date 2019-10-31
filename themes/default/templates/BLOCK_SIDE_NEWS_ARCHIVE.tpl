@@ -14,12 +14,10 @@
 
 				{+START,IF_NON_EMPTY,{TIMES}}
 					<li class="accordion-trayitem js-tray-accordion-item">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{$?,{$GET,is_current_year},{!CONTRACT},{!EXPAND}}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/{$?,{$GET,is_current_year},contract,expand}
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{$?,{$GET,is_current_year},{!CONTRACT},{!EXPAND}}">{+START,INCLUDE,ICON}
+							NAME=trays/{$?,{$GET,is_current_year},contract,expand}
+							ICON_SIZE=20
+						{+END}</a>
 
 						<span class="js-tray-onclick-toggle-accordion"><strong>{YEAR}</strong></span>:
 

@@ -1093,10 +1093,10 @@ function _download_latest_data_ip_country()
         $from = ip2long($record[0]);
         $to = ip2long($record[1]);
 
-        if (empty($from)) {
+        if (!is_integer($from)) {
             continue;
         }
-        if (empty($to)) {
+        if (!is_integer($to)) {
             continue;
         }
 
@@ -1108,7 +1108,7 @@ function _download_latest_data_ip_country()
         $spreadsheet_data .= strval($from) . ',' . strval($to) . ',' . $record[2] . "\n";
     }
 
-    if (empty($spreadsheet_data)) {
+    if (cms_empty_safe($spreadsheet_data)) {
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
             fatal_exit('Failed to extract MaxMind IP address data - the build process is not regularly tested on Windows - you need to install certain Cygwin tools, even then it may not work');
         }

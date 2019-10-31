@@ -555,7 +555,7 @@ function parse_translated_text($table, &$row, $field_name, $db, $lang, $force, $
                 $result = $db->query_select_value_if_there('translate', 'text_parsed', array('id' => $entry));
             }
 
-            if (($result !== null) && ($result != '')) {
+            if (!cms_empty_safe($result)) {
                 $db->text_lookup_cache[$entry] = new Tempcode();
                 if (!$db->text_lookup_cache[$entry]->from_assembly($result, true)) {
                     $result = null;
@@ -652,7 +652,7 @@ function _comcode_lang_string($lang_code)
                 'string_index__text_parsed' => $comcode_page[0]['text_parsed'],
                 'string_index__source_user' => $comcode_page[0]['source_user'],
             );
-            if (($comcode_page[0]['text_parsed'] !== null) && ($comcode_page[0]['text_parsed'] != '')) {
+            if (!cms_empty_safe($comcode_page[0]['text_parsed'])) {
                 $parsed = new Tempcode();
                 if (!$parsed->from_assembly($comcode_page[0]['text_parsed'], true)) {
                     $ret = get_translated_tempcode('cached_comcode_pages', $comcode_page_row_cached_only, 'string_index');

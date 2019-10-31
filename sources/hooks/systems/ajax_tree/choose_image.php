@@ -84,9 +84,9 @@ class Hook_ajax_tree_choose_image
         }
 
         // Mark parent cats for pre-expansion
-        if (($default !== null) && ($default != '')) {
+        if (!cms_empty_safe($default)) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array('id' => intval($default)));
-            while (($cat !== null) && ($cat != '')) {
+            while (!cms_empty_safe($cat)) {
                 $out .= '<expand>' . $cat . '</expand>';
                 $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'parent_id', array('name' => $cat));
             }

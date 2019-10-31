@@ -31,12 +31,12 @@ function transliterate_string($str)
     if ((get_charset() == 'utf-8') && (get_option('moniker_transliteration') == '1')) {
         if (function_exists('transliterator_transliterate')) {
             $_str = @transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $str);
-            if (!empty($_str)) {
+            if (!cms_empty_safe($_str)) {
                 $str = $_str;
             }
         } elseif ((function_exists('iconv')) && (get_value('disable_iconv') !== '1')) {
             $_str = @iconv('utf-8', 'ASCII//TRANSLIT//IGNORE', $str);
-            if (!empty($_str)) {
+            if (!cms_empty_safe($_str)) {
                 $str = $_str;
             }
         } else {
@@ -360,10 +360,10 @@ function convert_to_internal_encoding($data, $input_charset, $internal_charset =
         // iconv option
 
         $test = @iconv($input_charset, $internal_charset . '//TRANSLIT', $data);
-        if (empty($test)) {
+        if (cms_empty_safe($test)) {
             $test = @iconv($input_charset, $internal_charset . '//IGNORE', $data);
         }
-        if (!empty($test)) {
+        if (!cms_empty_safe($test)) {
             return $test;
         }
     }

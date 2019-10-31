@@ -137,7 +137,7 @@ class Hook_fields_url_multi
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_line_multi($_cf_name, $_cf_description, $input_name, ($actual_value == '') ? array() : explode("\n", $actual_value), ($field['cf_required'] == 1) ? 1 : 0, null, 'url');
     }
 
@@ -161,7 +161,7 @@ class Hook_fields_url_multi
             if (($_value === null) && ($i == 0)) {
                 return $editing ? STRING_MAGIC_NULL : '';
             }
-            if (($_value !== null) && ($_value != '')) {
+            if (!cms_empty_safe($_value)) {
                 if ($_value != STRING_MAGIC_NULL) {
                     $_value = fixup_protocolless_urls($_value);
                 }

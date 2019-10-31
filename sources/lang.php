@@ -406,7 +406,7 @@ function get_lang_member($member_id)
 
     // In forum?
     $lang = $GLOBALS['FORUM_DRIVER']->forum_get_lang($member_id);
-    if (($lang !== null) && ($lang != '')) {
+    if (!cms_empty_safe($lang)) {
         $_lang = strtoupper($lang);
         if (!does_lang_exist($_lang)) {
             require_code('files');

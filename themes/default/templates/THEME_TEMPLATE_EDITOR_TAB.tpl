@@ -9,12 +9,10 @@
 {+START,IF,{INCLUDE_CSS_EDITING}}
 	<div class="template-editing-toolbar" data-toggleable-tray="{ accordion: true }">
 		<h3 class="js-tray-header">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/expand
-					ICON_SIZE=20
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+				NAME=trays/expand
+				ICON_SIZE=20
+			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!CSS_EDITING_TOOLS}</a>
 		</h3>
 		<div class="toggleable-tray js-tray-content" style="display: none" id="c-{FILE_ID*}" aria-expanded="false">
@@ -23,12 +21,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Background Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -69,12 +65,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Border Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -130,12 +124,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Dimension Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -181,12 +173,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">List Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -212,12 +202,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion">Margin/Padding Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -283,12 +271,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Positioning Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -359,12 +345,10 @@
 
 				<div class="accordion-trayitem js-tray-accordion-item">
 					<h4 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!">Text/Font Properties</a>
 					</h4>
 					<div class="toggleable-tray accordion-trayitem-body js-tray-accordion-item-body" style="display: none" aria-expanded="false">
@@ -481,12 +465,10 @@
 {+START,IF,{INCLUDE_TEMPCODE_EDITING}}
 	<div class="template-editing-toolbar" data-toggleable-tray="{}">
 		<h3 class="js-tray-header">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/expand
-					ICON_SIZE=20
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+				NAME=trays/expand
+				ICON_SIZE=20
+			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!SYMBOLS_AND_DIRECTIVES}</a>
 		</h3>
 		<div class="toggleable-tray js-tray-content" style="display: none" id="b-{FILE_ID*}" aria-expanded="false">
@@ -540,12 +522,10 @@
 {+START,IF_NON_EMPTY,{GUIDS}}
 	<div class="guids" data-toggleable-tray="{}">
 		<h3 class="js-tray-header">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/expand
-					ICON_SIZE=20
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+				NAME=trays/expand
+				ICON_SIZE=20
+			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!TEMPLATE_GUIDS}</a>
 		</h3>
 		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">
@@ -587,12 +567,10 @@
 {+START,IF_NON_EMPTY,{RELATED}}
 	<div class="related" data-toggleable-tray="{}">
 		<h3 class="js-tray-header">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/expand
-					ICON_SIZE=20
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+				NAME=trays/expand
+				ICON_SIZE=20
+			{+END}</a>
 			<a class="non-link js-tray-onclick-toggle-tray" href="#!">{!RELATED_TEMPLATES}</a>
 		</h3>
 		<div class="toggleable-tray js-tray-content" style="display: none" aria-expanded="false">

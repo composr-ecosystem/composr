@@ -416,24 +416,24 @@ bar
 	</p>
 
 
-<table><tbody>
+<table class="layout-table"><tbody>
 <tr>
-	<th>Blah</th>
+	<td>Blah</td>
 	<td>
 		{a} {b} {c}
 	</td>
 
-	<th>Blah</th>
+	<td>Blah</td>
 	<td>
 		{a} {b} {c}
 	</td>
 </tr><tr>
-    <th>Blah</th>
+	<td>Blah</td>
 	<td>
 		{a} {b} {c}
 	</td>
 
-	<th>Blah</th>
+	<td>Blah</td>
 	<td>
 		{a} {b} {c}
 	</td>

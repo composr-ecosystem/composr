@@ -155,7 +155,7 @@ class Module_admin_privacy
         $others = isset($_POST['others']) ? $_POST['others'] : array();
 
         // Error if no search parameters given
-        if ((empty($username)) && (empty($ip_addresses)) && (empty($member_id)) && (empty($email_address)) && (empty($others))) {
+        if ((empty($username)) && (empty($ip_addresses)) && (cms_empty_safe($member_id)) && (empty($email_address)) && (empty($others))) {
             warn_exit(do_lang_tempcode('NO_RESULTS')); // Obviously
         }
 

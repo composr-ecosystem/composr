@@ -80,7 +80,7 @@ class Block_main_image_fader
 
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
-        if (empty($map['param'])) {
+        if (@cms_empty_safe($map['param'])) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array(), 'GROUP BY cat ORDER BY COUNT(*) DESC');
             if ($cat === null) {
                 $cat = 'root';

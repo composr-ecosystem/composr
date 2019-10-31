@@ -8,12 +8,10 @@
 			<div class="clearfix">
 				<div class="special-icon">
 					{+START,IF_PASSED,SPECIAL_ICON}
-						<a title="{SPECIAL_TOOLTIP*}">
-							{+START,INCLUDE,ICON}
-								NAME=realtime_rain/{SPECIAL_ICON}
-								ICON_SIZE=36
-							{+END}
-						</a>
+						<a title="{SPECIAL_TOOLTIP*}">{+START,INCLUDE,ICON}
+							NAME=realtime_rain/{SPECIAL_ICON}
+							ICON_SIZE=36
+						{+END}</a>
 					{+END}
 				</div>
 

@@ -23,11 +23,11 @@ require_code('maps');
 $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
-$intensity_label = empty($map['intensity_label']) ? 'Intensity' : $map['intensity_label'];
+$intensity_label = @cms_empty_safe($map['intensity_label']) ? 'Intensity' : $map['intensity_label'];
 
 $color_pool = empty($map['color_pool']) ? null : explode(',', $map['color_pool']);
 
-$show_labels = empty($map['show_labels']) ? false : ($map['show_labels'] == '1');
+$show_labels = !empty($map['show_labels']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/countries_on_map.csv' : $map['file'];
 
@@ -41,7 +41,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
 
     $data[] = array(
         'region' => $line[0],
-        'intensity' => empty($line[1]) ? '' : $line[1],
+        'intensity' => @cms_empty_safe($line[1]) ? '' : $line[1],
         'description' => implode(',', array_slice($line, 2)),
     );
 }

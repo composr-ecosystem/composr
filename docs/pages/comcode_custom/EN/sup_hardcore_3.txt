@@ -178,9 +178,9 @@ function cns_wrapper($title, $content, $show_personal_bar = true, $show_stats = 
 
             $zone_chooser = get_zone_chooser(true);
 
-            $_new_topics = $GLOBALS['FORUM_DB']->query('SELECT COUNT(*) AS mycnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_forum_id IS NOT NULL AND t_cache_first_time>' . (string)intval($member_info['last_visit_time']));
+            $_new_topics = $GLOBALS['FORUM_DB']->query('SELECT COUNT(*) AS mycnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE t_forum_id IS NOT NULL AND t_cache_first_time>' . strval($member_info['last_visit_time']));
             $new_topics = $_new_topics[0]['mycnt'];
-            $_new_posts = $GLOBALS['FORUM_DB']->query('SELECT COUNT(*) AS mycnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_cache_forum_id IS NOT NULL AND p_time>' . (string)intval($member_info['last_visit_time']));
+            $_new_posts = $GLOBALS['FORUM_DB']->query('SELECT COUNT(*) AS mycnt FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts WHERE p_cache_forum_id IS NOT NULL AND p_time>' . strval($member_info['last_visit_time']));
             $new_posts = $_new_posts[0]['mycnt'];
 
             // Any unread PT-PPs?

@@ -128,7 +128,7 @@ function _helper_make_post_forum_topic($this_ref, $forum_name, $topic_identifier
             warn_exit(do_lang_tempcode('MISSING_FORUM', escape_html($forum_name)), false, true);
         }
     } else {
-        $forum_id = (integer)$forum_name;
+        $forum_id = intval($forum_name);
     }
 
     $topic_id = $this_ref->find_topic_id_for_topic_identifier($forum_name, $topic_identifier, $topic_identifier_encapsulation_prefix);

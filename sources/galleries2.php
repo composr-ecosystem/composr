@@ -407,7 +407,10 @@ function add_image($title, $cat, $description, $url, $thumb_url, $validated, $al
         'validated' => $validated,
     );
     $map += insert_lang('title', $title, 2);
+    global $OVERRIDE_MEMBER_ID_COMCODE;
+    $OVERRIDE_MEMBER_ID_COMCODE = $submitter; // Needed for installer, which uses complex HTML
     $map += insert_lang_comcode('the_description', $description, 3);
+    $OVERRIDE_MEMBER_ID_COMCODE = null;
     if ($id !== null) {
         $map['id'] = $id;
     }

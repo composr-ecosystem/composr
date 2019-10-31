@@ -104,7 +104,7 @@ class DecisionTree
                 $required_properties[] = 'next'; // If has 'questions', must also have 'next'
             }
             foreach ($required_properties as $property) {
-                if (empty($screen[$property])) {
+                if (@cms_empty_safe($screen[$property])) {
                     fatal_exit($property . ' parameter required on each screen');
                 }
 
@@ -112,7 +112,7 @@ class DecisionTree
                     foreach ($screen['questions'] as $question_name => $question) {
                         $required_properties = array('label');
                         foreach ($required_properties as $question_property) {
-                            if (empty($question[$question_property])) {
+                            if (@cms_empty_safe($question[$question_property])) {
                                 fatal_exit($question_property . ' parameter required on each question');
                             }
                         }
@@ -249,14 +249,14 @@ class DecisionTree
             }
         }
 
-        if (empty($details['previous'])) {
+        if (@cms_empty_safe($details['previous'])) {
             $back_url = null;
         } else {
             $back_url = $this->build_url($details['previous']);
         }
 
         // What if no questions and no next? No form.
-        if ((empty($details['questions'])) && (empty($details['next']))) {
+        if ((empty($details['questions'])) && (@cms_empty_safe($details['next']))) {
             return inform_screen($title, protect_from_escaping($text), false, $back_url, build_keep_post_fields(array(), true));
         }
 
@@ -297,7 +297,7 @@ class DecisionTree
 
                 list($hook_ob, $field, $default) = $this->get_question_field_details($question_name, $question_details, $i);
 
-                $temp = $hook_ob->get_field_inputter(protect_from_escaping(comcode_to_tempcode($label, null, true)), $description, $field, empty($default) ? null : $default, true);
+                $temp = $hook_ob->get_field_inputter(protect_from_escaping(comcode_to_tempcode($label, null, true)), $description, $field, cms_empty_safe($default) ? null : $default, true);
                 if (is_array($temp)) {
                     $field_details = $temp[0];
                     $hidden->attach($temp[1]);
@@ -327,7 +327,7 @@ class DecisionTree
             $ok = true;
             if (isset($details['questions'])) {
                 foreach ($details['questions'] as $question_details) {
-                    if ((!empty($question_details['comcode_prepend'])) || (!empty($question_details['comcode_append']))) {
+                    if ((!@cms_empty_safe($question_details['comcode_prepend'])) || (!@cms_empty_safe($question_details['comcode_append']))) {
                         $ok = false;
                     }
                 }
@@ -430,15 +430,15 @@ class DecisionTree
         // Comcode prepend/append (only supported for POST fields)
         if ((isset($details['questions'])) && ($_SERVER['REQUEST_METHOD'] == 'POST')) {
             foreach ($details['questions'] as $question_name => $question_details) {
-                if (!empty($_POST[$question_name])) {
+                if (!@cms_empty_safe($_POST[$question_name])) {
                     $val = $_POST[$question_name];
 
                     if (substr($val, 0, 1) != '(' || substr($val, -1) != ')') {
-                        if ((!empty($question_details['comcode_prepend'])) && (substr($val, 0, strlen($question_details['comcode_prepend'])) != $question_details['comcode_prepend'])) {
+                        if ((!@cms_empty_safe($question_details['comcode_prepend'])) && (substr($val, 0, strlen($question_details['comcode_prepend'])) != $question_details['comcode_prepend'])) {
                             $val = $question_details['comcode_prepend'] . $val;
                         }
 
-                        if ((!empty($question_details['comcode_append'])) && (substr($val, -strlen($question_details['comcode_append'])) != $question_details['comcode_append'])) {
+                        if ((!@cms_empty_safe($question_details['comcode_append'])) && (substr($val, -strlen($question_details['comcode_append'])) != $question_details['comcode_append'])) {
                             $val = $val . $question_details['comcode_append'];
                         }
 

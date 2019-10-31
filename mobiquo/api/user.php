@@ -29,7 +29,7 @@ function login_func($raw_params)
     require_once(COMMON_CLASS_PATH_ACL . '/member_acl.php');
 
     $username = $params[0];
-    $password = empty($params[1]) ? '' : $params[1];
+    $password = @cms_empty_safe($params[1]) ? '' : $params[1];
     $invisible = isset($params[2]) && $params[2];
 
     $user_object = new CMSMemberACL();
@@ -203,7 +203,7 @@ function get_user_info_func($raw_params)
     require_once(COMMON_CLASS_PATH_READ . '/user_read.php');
 
     if (!empty($params)) {
-        if (!empty($params[1])) {
+        if (!@cms_empty_safe($params[1])) {
             $user_id = intval($params[1]);
         } else {
             $user_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($params[0]);

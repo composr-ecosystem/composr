@@ -272,7 +272,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
                 }
             }
         } else {
-            $parts->attach(do_template('PAGINATION_PAGE_NUMBER', array('_GUID' => '2396878b836aa8b1b53c13e1bfd1db82', 'P' => strval(($max == 0) ? 1 : ((int)($start / $max) + 1)))));
+            $parts->attach(do_template('PAGINATION_PAGE_NUMBER', array('_GUID' => '2396878b836aa8b1b53c13e1bfd1db82', 'P' => strval(($max == 0) ? 1 : (intval(round(floatval($start) / floatval($max))) + 1)))));
         }
 
         // Indicate that the sequence is incomplete with an ellipsis

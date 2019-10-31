@@ -956,7 +956,7 @@ function find_updated_addons()
 
     require_code('http');
     list($addon_data) = cache_and_carry('cms_http_request', array($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 5/*5 minute cache*/);
-    if (($addon_data === null) || ($addon_data == '')) {
+    if (empty($addon_data)) {
         return array();
         //warn_exit(do_lang('INTERNAL_ERROR'));
     }

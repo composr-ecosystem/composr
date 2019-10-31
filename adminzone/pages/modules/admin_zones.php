@@ -614,7 +614,7 @@ class Module_admin_zones
         }
 
         $base_url = '';
-        if (($zone !== null) && ($zone != '')) {
+        if (!cms_empty_safe($zone)) {
             global $SITE_INFO;
             if (isset($SITE_INFO['ZONE_MAPPING_' . $zone])) {
                 $base_url = (tacit_https() ? 'https://' : 'http://') . $SITE_INFO['ZONE_MAPPING_' . $zone][0] . '/' . $SITE_INFO['ZONE_MAPPING_' . $zone][1];
@@ -679,7 +679,7 @@ class Module_admin_zones
             }
             if (addon_installed('ecommerce')) {
                 require_code('ecommerce_permission_products');
-                $fields .= static_evaluate_tempcode(permission_product_form('zone', empty($zone) ? null : $zone));
+                $fields .= static_evaluate_tempcode(permission_product_form('zone', cms_empty_safe($zone) ? null : $zone));
             }
         }
 

@@ -143,7 +143,7 @@ class Module_authors
 
             $author = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         }
-        if (($author === null) || ($author == '')) {
+        if (empty($author)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR')); // Really don't want to have to search on this
         }
 
@@ -248,10 +248,10 @@ class Module_authors
         }
 
         // (Self?) description
-        $description = empty($details['the_description']) ? new Tempcode() : get_translated_tempcode('authors', $details, 'the_description');
+        $description = cms_empty_safe($details['the_description']) ? new Tempcode() : get_translated_tempcode('authors', $details, 'the_description');
 
         // Skills
-        $skills = empty($details['skills']) ? new Tempcode() : get_translated_tempcode('authors', $details, 'skills');
+        $skills = cms_empty_safe($details['skills']) ? new Tempcode() : get_translated_tempcode('authors', $details, 'skills');
 
         // Search link
         if (addon_installed('search')) {

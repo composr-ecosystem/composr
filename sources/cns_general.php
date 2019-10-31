@@ -406,7 +406,7 @@ function cns_read_in_member_profile($member_id, $need = null, $include_encrypted
             }
         }
         $post_count = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_cache_num_posts');
-        $best_post_fraction = ($post_count == 0) ? do_lang_tempcode('NA_EM') : make_string_tempcode(integer_format(100 * @intval(round((float)$best_yet_forum / (float)$post_count))));
+        $best_post_fraction = ($post_count == 0) ? do_lang_tempcode('NA_EM') : make_string_tempcode(integer_format(100 * @intval(round(floatval($best_yet_forum) / floatval($post_count)))));
         $member_info['most_active_forum'] = ($_most_active_forum === null) ? new Tempcode() : do_lang_tempcode('_MOST_ACTIVE_FORUM', $_most_active_forum, make_string_tempcode(integer_format($best_yet_forum)), array($best_post_fraction));
     }
 

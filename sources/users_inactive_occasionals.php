@@ -230,7 +230,7 @@ function set_session_id($id, $guest_session = false)  // NB: Guests sessions can
  */
 function force_httpauth()
 {
-    if (empty($_SERVER['PHP_AUTH_USER'])) {
+    if (@cms_empty_safe($_SERVER['PHP_AUTH_USER'])) {
         header('WWW-Authenticate: Basic realm="' . escape_header(get_site_name(), true) . '"');
         require_code('global3');
         set_http_status_code(401);

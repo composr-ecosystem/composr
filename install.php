@@ -1010,7 +1010,7 @@ function step_4()
                 is_object($specific['title']) ? $specific['title'] : make_string_tempcode($specific['title']),
                 is_object($specific['description']) ? $specific['description'] : make_string_tempcode($specific['description']),
                 $specific['name'],
-                empty($SITE_INFO[$specific['name']]) ? $specific['default'] : $SITE_INFO[$specific['name']],
+                @cms_empty_safe($SITE_INFO[$specific['name']]) ? $specific['default'] : $SITE_INFO[$specific['name']],
                 strpos($specific['name'], 'password') !== false,
                 array_key_exists('required', $specific) ? $specific['required'] : false
             ));

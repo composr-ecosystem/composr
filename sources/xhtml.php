@@ -407,7 +407,7 @@ function xhtml_substr($html, $from, $length = null, $literal_pos = false, $ellip
                     }
                     $pixels = $width * $height;
                     $pixels_per_character = 15 * 15;
-                    $img_characters = @intval((float)$pixels / (float)$pixels_per_character);
+                    $img_characters = @intval(floatval($pixels) / floatval($pixels_per_character));
                     $c += $img_characters;
                 }
 

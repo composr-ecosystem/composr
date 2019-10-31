@@ -49,9 +49,7 @@
 					</th>
 					<th>
 						{!MATCH_KEY_MESSAGE_FIELD}
-						<a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,:userguide_comcode}">
-							{+START,INCLUDE,ICON}NAME=editor/comcode{+END}
-						</a>
+						<a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,:userguide_comcode}">{+START,INCLUDE,ICON}NAME=editor/comcode{+END}</a>
 					</th>
 				</tr>
 				</thead>

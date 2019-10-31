@@ -51,7 +51,7 @@ class Block_main_db_notes
     {
         $block_id = get_block_id($map);
 
-        $file = empty($map['param']) ? 'admin_notes' : $map['param'];
+        $file = @cms_empty_safe($map['param']) ? 'admin_notes' : $map['param'];
         $title = array_key_exists('title', $map) ? $map['title'] : do_lang('NOTES');
         $scrolls = array_key_exists('scrolls', $map) ? $map['scrolls'] : '0';
 

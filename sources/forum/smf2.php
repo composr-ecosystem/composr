@@ -1079,7 +1079,7 @@ class Forum_driver_smf2 extends Forum_driver_base
             $usergroups = array();
         }
         $primary_group = $this->get_member_row_field($member, 'id_group');
-        if ($primary_group != 0) {
+        if (!empty($primary_group)) {
             $usergroups[] = $primary_group;
         }
         $usergroups[] = $this->get_member_row_field($member, 'id_post_group');

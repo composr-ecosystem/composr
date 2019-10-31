@@ -263,7 +263,7 @@ function option_value_from_field_array($field, $name, $default = '')
     } else {
         $options = parse_field_options($field['cf_options']);
     }
-    if (empty($options[$name])) {
+    if (@cms_empty_safe($options[$name])) {
         return $default;
     }
     return $options[$name];

@@ -806,7 +806,7 @@ function filtercode_to_sql($db, $filters, $content_type = null, $context = null,
         $disallowed_fields = array_merge($disallowed_fields, $info['filtercode_protected_fields']);
     }
     $configured_protected_fields = get_value('filtercode_protected_fields');
-    if (($configured_protected_fields !== null) && ($configured_protected_fields != '')) {
+    if (!cms_empty_safe($configured_protected_fields)) {
         $disallowed_fields = array_merge($disallowed_fields, explode(',', $configured_protected_fields));
     }
 

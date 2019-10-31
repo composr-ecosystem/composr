@@ -116,7 +116,7 @@ class Hook_fields_state
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
 
         $definitely_usa = (get_option('cpf_enable_country') == '0') && (get_option('business_country') == 'US');

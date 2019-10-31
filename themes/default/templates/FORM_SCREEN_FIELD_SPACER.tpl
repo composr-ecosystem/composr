@@ -3,13 +3,11 @@
 	<th colspan="2" class="table-heading-cell vertical-alignment">
 		{+START,IF_PASSED,TITLE}
 			{+START,IF_NON_PASSED_OR_FALSE,FORCE_OPEN}
-				<a class="toggleable-tray-button js-click-toggle-subord-fields js-keypress-toggle-subord-fields" id="fes-{TITLE|}" href="#!" title="{!CONTRACT}">
-					{+START,INCLUDE,ICON}
-						NAME=trays/contract
-						ICON_CLASS=right
-						ICON_SIZE=20
-					{+END}
-				</a>
+				<a class="toggleable-tray-button js-click-toggle-subord-fields js-keypress-toggle-subord-fields" id="fes-{TITLE|}" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
+					NAME=trays/contract
+					ICON_CLASS=right
+					ICON_SIZE=20
+				{+END}</a>
 			{+END}
 
 			<span class="h3 {+START,IF_NON_PASSED_OR_FALSE,FORCE_OPEN} toggleable-tray-button js-click-toggle-subord-fields js-keypress-toggle-subord-fields{+END}">{TITLE*}</span>

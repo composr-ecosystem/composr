@@ -23,13 +23,13 @@ require_code('graphs');
 $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
-$x_axis_label = empty($map['x_axis_label']) ? '' : $map['x_axis_label'];
-$y_axis_label = empty($map['y_axis_label']) ? '' : $map['y_axis_label'];
+$x_axis_label = @cms_empty_safe($map['x_axis_label']) ? '' : $map['x_axis_label'];
+$y_axis_label = @cms_empty_safe($map['y_axis_label']) ? '' : $map['y_axis_label'];
 
-$begin_at_zero = empty($map['begin_at_zero']) ? true : ($map['begin_at_zero'] == '1');
-$show_data_labels = empty($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
+$begin_at_zero = !empty($map['begin_at_zero']);
+$show_data_labels = !empty($map['show_data_labels']);
 
-$color_pool = empty($map['color_pool']) ? array() : explode(',', $map['color_pool']);
+$color_pool = @cms_empty_safe($map['color_pool']) ? array() : explode(',', $map['color_pool']);
 
 $file = empty($map['file']) ? 'uploads/website_specific/graph_test/bar_chart.csv' : $map['file'];
 

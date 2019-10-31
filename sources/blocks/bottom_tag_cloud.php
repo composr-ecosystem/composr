@@ -158,7 +158,7 @@ PHP;
 
             $tpl_tags[] = array(
                 'TAG' => $tag,
-                'LINK' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'days' => -1, 'only_search_meta' => '1') + $search_limiter, $zone),
+                'URL' => build_url(array('page' => 'search', 'type' => 'results', 'content' => '"' . $tag . '"', 'days' => -1, 'only_search_meta' => '1') + $search_limiter, $zone),
             );
         }
 

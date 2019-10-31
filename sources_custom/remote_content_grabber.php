@@ -191,7 +191,7 @@ class RemoteContentGrabber
                 $filename = call_user_func($opts['filename_extractor'], $referenced_url);
             }
 
-            if (empty($filename)) {
+            if (cms_empty_safe($filename)) {
                 $this->log('Empty filename for ' . $referenced_url . ' (while processing ' . $_id . ')');
                 continue;
             }
@@ -205,7 +205,7 @@ class RemoteContentGrabber
                 $this->log('Already downloaded URL ' . $referenced_url . ' as ' . $filename . ' (while processing ' . $_id . ')');
             } else {
                 $data = http_get_contents($download_url, array('trigger_error' => false));
-                if (empty($data)) {
+                if (cms_empty_safe($data)) {
                     $this->log('Could not download URL ' . $referenced_url . ' (while processing ' . $_id . ')');
                     continue;
                 } else {

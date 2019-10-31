@@ -6,12 +6,10 @@
 		{+START,IF_PASSED,DESCRIPTION}
 			{+START,IF,{$DESKTOP}}
 				<span class="inline-desktop">
-					<a class="button-icon" data-cms-tooltip="{DESCRIPTION=}">
-						{+START,INCLUDE,ICON}
-							NAME=help
-							ICON_SIZE=24
-						{+END}
-					</a>
+					<a class="button-icon" data-cms-tooltip="{DESCRIPTION=}">{+START,INCLUDE,ICON}
+						NAME=help
+						ICON_SIZE=24
+					{+END}</a>
 				</span>
 			{+END}
 

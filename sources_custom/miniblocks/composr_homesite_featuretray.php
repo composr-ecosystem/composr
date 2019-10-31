@@ -733,7 +733,7 @@ foreach (($map['param'] == '') ? array_keys($collapsed_tree) : explode(',', $map
         } else {
             $subsection_caption = '';
         }
-        if (($subsection_caption !== null) && ($subsection_caption != '')) {
+        if (!cms_empty_safe($subsection_caption)) {
             echo '<p class="subsectionCaption">' . $subsection_caption . '.</p>';
         }
 

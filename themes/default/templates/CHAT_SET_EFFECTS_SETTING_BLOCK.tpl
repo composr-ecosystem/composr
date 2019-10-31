@@ -4,12 +4,10 @@
 	{+START,IF_PASSED,USERNAME}{+START,IF_PASSED,MEMBER_ID}
 		<div class="toggleable-tray-title js-tray-header">
 			{!OVERRIDES_FOR_FRIEND,{USERNAME*}}
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{HAS_SOME},{!CONTRACT},{!EXPAND}}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/{$?,{HAS_SOME},contract,expand}
-					ICON_SIZE=20
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{HAS_SOME},{!CONTRACT},{!EXPAND}}">{+START,INCLUDE,ICON}
+				NAME=trays/{$?,{HAS_SOME},contract,expand}
+				ICON_SIZE=20
+			{+END}</a>
 		</div>
 	{+END}{+END}
 

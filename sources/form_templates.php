@@ -1651,7 +1651,7 @@ function make_previewable_url_absolute($url)
     $_url = $url;
     $is_image = false;
 
-    if (($_url !== null) && ($_url != '')) {
+    if (!cms_empty_safe($_url)) {
         if (url_is_local($_url)) {
             $image_path = get_custom_file_base() . '/' . dirname(rawurldecode($_url));
             if (!is_file($image_path)) {
@@ -2922,7 +2922,7 @@ function get_form_field_tabindex($tabindex = null)
  */
 function handle_default_comcode_text(&$default)
 {
-    if (empty($default)) {
+    if (cms_empty_safe($default)) {
         $_dct = get_value('default_comcode_text', '');
         if ($_dct != '') {
             $default = str_replace('{content}', '', $_dct);

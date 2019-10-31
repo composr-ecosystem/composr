@@ -23,7 +23,7 @@ require_code('graphs');
 $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
-$show_data_labels = empty($map['show_data_labels']) ? true : ($map['show_data_labels'] == '1');
+$show_data_labels = !empty($map['show_data_labels']);
 
 $color_pool = empty($map['color_pool']) ? array() : explode(',', $map['color_pool']);
 

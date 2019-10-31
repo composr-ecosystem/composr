@@ -1,10 +1,8 @@
 <div class="top-button-wrapper" data-tpl="blockTopPersonalStats">
-	<a title="{$STRIP_TAGS,{!LOGGED_IN_AS,{USERNAME*}}} ({$IP_ADDRESS*}, #{MEMBER_ID*})" id="top-personal-stats-button" class="top-button js-click-toggle-button-popup" data-click-pd="1" href="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}">
-		{+START,INCLUDE,ICON}
-			NAME=content_types/member
-			ICON_SIZE=24
-		{+END}
-	</a>
+	<a title="{$STRIP_TAGS,{!LOGGED_IN_AS,{USERNAME*}}} ({$IP_ADDRESS*}, #{MEMBER_ID*})" id="top-personal-stats-button" class="top-button js-click-toggle-button-popup" data-click-pd="1" href="{$MEMBER_PROFILE_URL*,{MEMBER_ID}}">{+START,INCLUDE,ICON}
+		NAME=content_types/member
+		ICON_SIZE=24
+	{+END}</a>
 	<div class="top-button-popup" id="top-personal-stats-rel" style="display: none">
 		<div class="box box-arrow box--block-top-personal-stats"><div class="box-inner"><div>
 			{+START,IF_NON_EMPTY,{AVATAR_URL}}

@@ -34,7 +34,7 @@ function cns_render_topic($topic, $has_topic_marking, $pt = false, $show_forum =
         return $ret;
     }
 
-    if (empty($topic['forum_id'])) {
+    if ((!isset($topic['forum_id'])) || (!is_numeric($topic['forum_id']))) {
         return $ret;
     }
 

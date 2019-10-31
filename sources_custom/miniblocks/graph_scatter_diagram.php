@@ -23,10 +23,10 @@ require_code('graphs');
 $width = empty($map['width']) ? null : $map['width'];
 $height = empty($map['height']) ? null : $map['height'];
 
-$x_axis_label = empty($map['x_axis_label']) ? '' : $map['x_axis_label'];
-$y_axis_label = empty($map['y_axis_label']) ? '' : $map['y_axis_label'];
+$x_axis_label = @cms_empty_safe($map['x_axis_label']) ? '' : $map['x_axis_label'];
+$y_axis_label = @cms_empty_safe($map['y_axis_label']) ? '' : $map['y_axis_label'];
 
-$begin_at_zero = empty($map['begin_at_zero']) ? true : ($map['begin_at_zero'] == '1');
+$begin_at_zero = !empty($map['begin_at_zero']);
 
 $color = empty($map['color']) ? null : $map['color'];
 

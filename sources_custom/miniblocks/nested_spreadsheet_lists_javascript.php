@@ -47,7 +47,7 @@ foreach ($spreadsheet_structure['spreadsheet_files'] as $spreadsheet_filename =>
     'use strict';
 
     /** @type {Object} */
-    window.nestedCsvStructure = <?= json_encode((array)$spreadsheet_structure) ?>;
+    window.nestedCsvStructure = <?= json_encode($spreadsheet_structure) ?>;
 
     $dom.ready.then(function () {
         var forms = document.getElementsByTagName('form');

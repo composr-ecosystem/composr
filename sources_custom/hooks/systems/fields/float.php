@@ -160,7 +160,7 @@ class Hook_fields_float
             $actual_value = null;
         }
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         if ((addon_installed('data_mappr')) || (addon_installed('user_mappr'))) {
             if ($_cf_name == do_lang('LONGITUDE') || $_cf_name == 'cms_longitude') { // Assumes there is a Latitude field too, although not critical
@@ -172,10 +172,10 @@ class Hook_fields_float
                 $longitude = '';
 
                 global $LATITUDE;
-                if ((!empty($LATITUDE)) && ($LATITUDE != do_lang('NA'))) {
+                if ((isset($LATITUDE)) && (is_numeric($LATITUDE))) {
                     $latitude = float_to_raw_string(floatval($LATITUDE), 10, true);
                 }
-                if ((!empty($actual_value)) && ($actual_value != do_lang('NA'))) {
+                if ((isset($actual_value)) && (is_numeric($actual_value))) {
                     $longitude = float_to_raw_string(floatval($actual_value), 10, true);
                 }
 

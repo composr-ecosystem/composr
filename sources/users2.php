@@ -256,13 +256,13 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
     member_tracking_update($page, $type, $id);
 
     $map = array();
-    if (($page !== null) && ($page != '')) {
+    if (!cms_empty_safe($page)) {
         $map['mt_page'] = $page;
     }
-    if (($type !== null) && ($type != '')) {
+    if (!cms_empty_safe($type)) {
         $map['mt_type'] = $type;
     }
-    if (($id !== null) && ($id != '')) {
+    if (!cms_empty_safe($id)) {
         $map['mt_id'] = $id;
     }
     $map['session_invisible'] = 0;

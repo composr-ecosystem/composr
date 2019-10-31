@@ -342,7 +342,7 @@ class Module_cms_calendar extends Standard_crud_module
 
         unset($content);
 
-        if (($timezone === null) || ($timezone == '')) {
+        if (empty($timezone)) {
             $timezone = get_users_timezone();
         }
 

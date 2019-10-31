@@ -1158,7 +1158,7 @@ function tidy_theme_img_code($new, $old, $table, $field, $db = null)
     }
 
     $url = ($old == '') ? null : find_theme_image($old, true, true);
-    if (($url === null) || ($url == '')) {
+    if (empty($url)) {
         return;
     }
 

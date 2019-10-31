@@ -76,7 +76,7 @@ class Block_side_galleries
 
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
-        $parent_id = empty($map['param']) ? 'root' : $map['param'];
+        $parent_id = @cms_empty_safe($map['param']) ? 'root' : $map['param'];
 
         $zone = array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('galleries');
 

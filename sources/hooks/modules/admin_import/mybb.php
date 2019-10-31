@@ -134,81 +134,81 @@ class Hook_import_mybb
         );
 
         foreach ($rows as $row) {
-            if (isset($row['name']) && $row['name'] == 'boardclosed') {
+            if ($row['name'] == 'boardclosed') {
                 $config_remapping['site_closed'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'boardclosed_reason') {
+            if ($row['name'] == 'boardclosed_reason') {
                 $config_remapping['closed'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'adminemail') {
+            if ($row['name'] == 'adminemail') {
                 $config_remapping['staff_address'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'homename') {
+            if ($row['name'] == 'homename') {
                 $config_remapping['site_name'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'postsperpage') {
+            if ($row['name'] == 'postsperpage') {
                 $config_remapping['forum_posts_per_page'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'gzipoutput') {
+            if ($row['name'] == 'gzipoutput') {
                 $config_remapping['gzip_output'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'captchaimage') {
+            if ($row['name'] == 'captchaimage') {
                 $config_remapping['use_captchas'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'timezoneoffset') {
+            if ($row['name'] == 'timezoneoffset') {
                 $config_remapping['timezone'] = $row['value'];
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'quickreply') {
+            if ($row['name'] == 'quickreply') {
                 $additional_data['quickreply'] = intval($row['value']);
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'maxattachments') {
+            if ($row['name'] == 'maxattachments') {
                 $additional_data['maxattachments'] = intval($row['value']);
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'postmaxavatarsize') {
+            if ($row['name'] == 'postmaxavatarsize') {
                 $avatar_dimensions = explode('x', $row['value']);
-                if (isset($avatar_dimensions[0]) && isset($avatar_dimensions[1]) && ($avatar_dimensions[0] !== null) && ($avatar_dimensions[1] !== null)) {
+                if ((!empty($avatar_dimensions[0])) && (!empty($avatar_dimensions[1]))) {
                     $additional_data['avatar_max_width'] = intval($avatar_dimensions[0]);
                     $additional_data['avatar_max_height'] = intval($avatar_dimensions[1]);
                 }
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'disableregs') {
+            if (($row['name']) && $row['name'] == 'disableregs') {
                 $page_remap_data['enableregs'] = 1 - intval($row['value']);
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'portal_showsearch') {
+            if ($row['name'] == 'portal_showsearch') {
                 $page_remap_data['portal_showsearch'] = intval($row['value']);
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'enablememberlist') {
+            if ($row['name'] == 'enablememberlist') {
                 $page_remap_data['enablememberlist'] = intval($row['value']);
                 continue;
             }
 
-            if (isset($row['name']) && $row['name'] == 'bburl') {
+            if ($row['name'] == 'bburl') {
                 $board_url = $row['value'];
                 continue;
             }
@@ -265,7 +265,7 @@ class Hook_import_mybb
         }
 
         $avatar_dimensions = explode('x', $PROBED_FORUM_CONFIG['postmaxavatarsize']);
-        if (isset($avatar_dimensions[0]) && isset($avatar_dimensions[1]) && ($avatar_dimensions[0] !== null) && ($avatar_dimensions[1] !== null)) {
+        if ((!empty($avatar_dimensions[0])) && (!empty($avatar_dimensions[1]))) {
             $avatar_max_width = intval($avatar_dimensions[0]);
             $avatar_max_height = intval($avatar_dimensions[1]);
         } else {
@@ -359,9 +359,9 @@ class Hook_import_mybb
                 if ($row['birthday'] != '') {
                     $birthdate = date('Y-m-d', strtotime($row['birthday']));
                     $birthdata = array_map('intval', explode('-', $birthdate));
-                    $bday_day = (isset($birthdata[0]) && ($birthdata[0] != 0)) ? $birthdata[0] : null;
-                    $bday_month = (isset($birthdata[1]) && ($birthdata[1] != 0)) ? $birthdata[1] : null;
-                    $bday_year = (isset($birthdata[2]) && ($birthdata[2] != 0)) ? $birthdata[2] : null;
+                    $bday_day = (!empty($birthdata[0])) ? $birthdata[0] : null;
+                    $bday_month = (!empty($birthdata[1])) ? $birthdata[1] : null;
+                    $bday_year = (!empty($birthdata[2])) ? $birthdata[2] : null;
                 } else {
                     list($bday_day, $bday_month, $bday_year) = array(null, null, null);
                 }
@@ -563,11 +563,11 @@ class Hook_import_mybb
             } else {
                 // Calculate the ban period
                 $period_array = array_map('intval', explode('-', $ban_period));
-                if (isset($period_array[0]) && ($period_array[0] > 0)) {
+                if (!empty($period_array[0])) {
                     $ban_till = $ban_time + strtotime("+ " . $period_array[0] . " day", strtotime($ban_time)); // The user is banned till this date/time
-                } elseif (isset($period_array[1]) && ($period_array[1] > 0)) {
+                } elseif (!empty($period_array[1])) {
                     $ban_till = $ban_time + strtotime("+ " . $period_array[1] . " month", strtotime($ban_time)); // The user is banned till this date/time
-                } elseif (isset($period_array[2]) && ($period_array[2] > 0)) {
+                } elseif (!empty($period_array[2])) {
                     $ban_till = $ban_time + strtotime("+ " . $period_array[2] . " year", strtotime($ban_time)); // The user is banned till this date/time
                 }
             }
@@ -989,7 +989,7 @@ class Hook_import_mybb
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['uid'];
-                if (($member_id !== null) && ($member_id != 0)) {
+                if (!empty($member_id)) {
                     if ($row2['voteoption'] == 0) {
                         $answer = -1;
                     } else {
@@ -1286,7 +1286,7 @@ class Hook_import_mybb
             $recurrences = null;
 
             $event_repeat_data = unserialize($row['repeats']);
-            $event_repeats = (isset($event_repeat_data['repeats']) && ($event_repeat_data['repeats'] != 0)) ? $event_repeat_data['repeats'] : 0;
+            $event_repeats = (!empty($event_repeat_data['repeats'])) ? $event_repeat_data['repeats'] : 0;
 
             switch ($event_repeats) {
                 case 1:
@@ -1373,13 +1373,13 @@ class Hook_import_mybb
     {
         $rows = $db->query_select('modtools', array('*'), array('type' => 't'));
         foreach ($rows as $row) {
-            $mm_forum_multi_code = (isset($row['forums']) && (strlen($row['forums']) > 0)) ? ('+' . $row['forums']) : '*'; //'mm_forum_multi_code'
+            $mm_forum_multi_code = (!cms_empty_safe($row['forums'])) ? ('+' . $row['forums']) : '*'; //'mm_forum_multi_code'
             $mm_name = $row['name'];
 
             $topic_options = unserialize($row['threadoptions']);
 
             $mm_open_state = ($topic_options['openthread'] == 'open') ? 1 : (($topic_options['openthread'] == 'close') ? 0 : null);
-            $mm_move_to = ($topic_options['movethread'] != 0) ? $topic_options['movethread'] : null;
+            $mm_move_to = (!empty($topic_options['movethread'])) ? $topic_options['movethread'] : null;
 
             $mm_title_suffix = ($topic_options['newsubject'] != '{subject}') ? preg_replace('#\{username\}#', '', $topic_options['newsubject']) : '';
 

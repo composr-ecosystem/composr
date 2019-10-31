@@ -230,13 +230,7 @@ HTML;
                 </div>[/semihtml]
 HTML;
 
-            $image_owner_id = null;
-            if (isset($GLOBALS['FORUM_DB'])) {
-                $super_group_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array('g_is_super_admin' => 1));
-                if ($super_group_id !== null) {
-                    $image_owner_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_primary_group' => $super_group_id));
-                }
-            }
+            $image_owner_id = get_first_admin_user();
 
             add_image('Slide 1', 'homepage_hero_slider', trim($slide_1_contents) . "\n", 'data/images/homepage_hero_slider/full/bastei_bridge.jpg', 'data/images/homepage_hero_slider/thumbs/bastei_bridge.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);
             add_image('Slide 2', 'homepage_hero_slider', trim($slide_2_contents) . "\n", 'data/images/homepage_hero_slider/full/rustic.jpg', 'data/images/homepage_hero_slider/thumbs/rustic.png', 1, 0, 0, 0, '', $image_owner_id, null, null, 0);

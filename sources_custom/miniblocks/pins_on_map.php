@@ -38,7 +38,7 @@ while (($line = $sheet_reader->read_row()) !== false) {
     $data[] = array(
         'latitude' => $line[0],
         'longitude' => $line[1],
-        'intensity' => empty($line[2]) ? '' : $line[2],
+        'intensity' => @cms_empty_safe($line[2]) ? '' : $line[2],
         'label' => empty($line[3]) ? '' : $line[3],
         'description' => implode(',', array_slice($line, 4)),
     );

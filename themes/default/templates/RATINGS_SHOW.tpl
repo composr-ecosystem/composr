@@ -6,12 +6,10 @@
 				{$SET,rating_loop,0}
 				{+START,SET,rating_stars}{$ROUND,{$DIV_FLOAT,{RATING},2}}{+END}
 				{+START,WHILE,{$LT,{$GET,rating_loop},{$GET,rating_stars}}}
-					<a {$?,{$EQ,{$GET,rating_loop},0},title="{$GET*,rating_stars}/5"}>
-						{+START,INCLUDE,ICON}
-							NAME=feedback/rating
-							ICON_SIZE=14
-						{+END}
-					</a>
+					<a {$?,{$EQ,{$GET,rating_loop},0},title="{$GET*,rating_stars}/5"}>{+START,INCLUDE,ICON}
+						NAME=feedback/rating
+						ICON_SIZE=14
+					{+END}</a>
 					{$INC,rating_loop}
 				{+END}
 			</span>

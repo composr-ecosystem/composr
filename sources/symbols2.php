@@ -34,7 +34,7 @@ function ecv2_MAKE_URL_ABSOLUTE($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $value = $param[0];
         if (url_is_local($value)) {
             $value = get_custom_base_url() . '/' . $value;
@@ -85,7 +85,7 @@ function ecv2_ADD($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
         $_value = 0.0;
 
         foreach ($param as $p) {
@@ -115,7 +115,7 @@ function ecv2_SUBTRACT($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
         $_value = 0.0;
 
         foreach ($param as $i => $p) {
@@ -150,7 +150,7 @@ function ecv2_ALREADY_RATED($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('feedback');
         $value = (already_rated(array($param[0]), $param[1]) ? '1' : '0');
     }
@@ -178,7 +178,7 @@ function ecv2_ANCHOR($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!@cms_empty_safe($param[0])) {
         $_value = do_template('ANCHOR', array('_GUID' => '8795c70c9dd7c6217bb765264ac24092', 'NAME' => $param[0]));
         $value = $_value->evaluate();
     }
@@ -206,7 +206,7 @@ function ecv2_AT($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
         $value = cms_mb_substr($param[0], intval($param[1]), 1);
     }
 
@@ -234,9 +234,9 @@ function ecv2_ATTACHMENT_DOWNLOADS($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         $db = $GLOBALS['SITE_DB'];
-        if ((isset($param[1])) && ($param[1] == '1') && (get_forum_type() == 'cns')) {
+        if ((!empty($param[1])) && (get_forum_type() == 'cns')) {
             $db = $GLOBALS['FORUM_DB'];
         }
         $_value = $db->query_select_value_if_there('attachments', 'a_num_downloads', array('id' => intval($param[0])));
@@ -265,7 +265,7 @@ function ecv2_AVAILABLE_POINTS($lang, $escaped, $param)
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(available_points(isset($param[0]) ? intval($param[0]) : get_member()));
+        $value = strval(available_points(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -288,14 +288,12 @@ function ecv2_AWARD_ID($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
-        if ($param[0] != '') {
-            static $awarded_content_ids = array();
-            if (!isset($awarded_content_ids[intval($param[0])])) {
-                $awarded_content_ids[intval($param[0])] = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', array('a_type_id' => intval($param[0])), 'ORDER BY date_and_time DESC');
-            }
-            $value = isset($awarded_content_ids[intval($param[0])]) ? $awarded_content_ids[intval($param[0])] : '';
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
+        static $awarded_content_ids = array();
+        if (!isset($awarded_content_ids[intval($param[0])])) {
+            $awarded_content_ids[intval($param[0])] = $GLOBALS['SITE_DB']->query_select_value_if_there('award_archive', 'content_id', array('a_type_id' => intval($param[0])), 'ORDER BY date_and_time DESC');
         }
+        $value = isset($awarded_content_ids[intval($param[0])]) ? $awarded_content_ids[intval($param[0])] : '';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -365,10 +363,9 @@ function ecv2_CLEAN_FILE_SIZE($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
-        $bytes = is_numeric($param[0]) ? intval($param[0]) : null;
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         require_code('files');
-        $value = clean_file_size($bytes);
+        $value = clean_file_size(intval($param[0]));
     }
 
     if ($escaped !== array()) {
@@ -427,7 +424,7 @@ function ecv2_COMMA_LIST_FROM_BREADCRUMBS($lang, $escaped, $param)
     if (isset($param[0])) {
         $separator = do_template('BREADCRUMB_SEPARATOR', array('_GUID' => 'y28e21cdbc38a3037d083f619bb311ae',));
         $value = '=' . str_replace($separator->evaluate(), ',=', str_replace(',', '&#44;', $param[0]));
-        if ((!array_key_exists(1, $param)) || ($param[1] == '0')) {
+        if ((!isset($param[1])) || ($param[1] == '0')) {
             $value = strip_tags($value);
         } else {
             $value = cms_strip_tags($value, '<a>');
@@ -682,7 +679,7 @@ function ecv2_CSS_DIMENSION_REDUCE($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
         $value = $param[0];
         if (substr($value, -2) == 'px') {
             $b = $param[1];
@@ -732,9 +729,6 @@ function ecv2_CURRENTLY_INVISIBLE($lang, $escaped, $param)
 function ecv2_DEC($lang, $escaped, $param)
 {
     $value = '';
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
-    }
 
     if (isset($param[0])) {
         global $TEMPCODE_SETGET;
@@ -764,12 +758,8 @@ function ecv2_DIV_CEIL($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
-        if (floatval($param[1]) == 0.0) {
-            $value = 'divide-by-zero';
-        } else {
-            $value = strval(intval(ceil(floatval($param[0]) / floatval($param[1]))));
-        }
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
+        $value = strval(intval(ceil(floatval($param[0]) / floatval($param[1]))));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -827,8 +817,8 @@ function ecv2_ESCAPE($lang, $escaped, $param)
     }
 
     if (isset($param[0])) {
-        $d_escaping = array(isset($param[1]) ? constant($param[1]) : ENTITY_ESCAPED);
-        for ($i = 0; $i < max(1, array_key_exists(2, $param) ? intval($param[2]) : 1); $i++) {
+        $d_escaping = array((!empty($param[1])) ? constant($param[1]) : ENTITY_ESCAPED);
+        for ($i = 0; $i < max(1, ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : 1); $i++) {
             if (is_string($param[0])) {
                 apply_tempcode_escaping($d_escaping, $param[0]);
             }
@@ -863,7 +853,7 @@ function ecv2_FIND_GUID_VIA_ID($lang, $escaped, $param)
         return $value;
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('resource_fs');
         $value = find_guid_via_id($param[0], $param[1]);
         if ($value === null) {
@@ -898,7 +888,7 @@ function ecv2_FIND_ID_VIA_GUID($lang, $escaped, $param)
         return $value;
     }
 
-    if (isset($param[0])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('resource_fs');
         $value = find_id_via_guid($param[0]);
         if ($value === null) {
@@ -933,9 +923,9 @@ function ecv2_FIND_ID_VIA_LABEL($lang, $escaped, $param)
         return $value;
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('resource_fs');
-        $value = find_id_via_label($param[0], $param[1], array_key_exists(2, $param) ? $param[2] : null);
+        $value = find_id_via_label($param[0], $param[1], (!empty($param[2])) ? $param[2] : null);
         if ($value === null) {
             $value = '';
         }
@@ -968,7 +958,7 @@ function ecv2_FIND_ID_VIA_COMMANDR_FS_FILENAME($lang, $escaped, $param)
         return $value;
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('resource_fs');
         $value = find_id_via_commandr_fs_filename($param[0], $param[1]);
         if ($value === null) {
@@ -999,7 +989,7 @@ function ecv2_FIND_ID_VIA_URL_MONIKER($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('urls2');
         $value = find_id_via_url_moniker($param[0], $param[1]);
     }
@@ -1031,7 +1021,7 @@ function ecv2_FIND_LABEL_VIA_ID($lang, $escaped, $param)
         return $value;
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('resource_fs');
         $value = find_label_via_id($param[0], $param[1]);
         if ($value === null) {
@@ -1066,7 +1056,7 @@ function ecv2_FIND_COMMANDR_FS_FILENAME_VIA_ID($lang, $escaped, $param)
         return $value;
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         require_code('resource_fs');
         $value = find_commandr_fs_filename_via_id($param[0], $param[1]);
         if ($value === null) {
@@ -1097,8 +1087,8 @@ function ecv2_FIND_URL_MONIKER_VIA_ID($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
-        $value = find_id_moniker(array('page' => $param[0], 'type' => $param[1], 'id' => $param[1]), array_key_exists(2, $param) ? $param[2] : '');
+    if ((!@cms_empty_safe($param[0])) && (!@cms_empty_safe($param[1]))) {
+        $value = find_id_moniker(array('page' => $param[0], 'type' => $param[1], 'id' => $param[1]), isset($param[2]) ? $param[2] : '');
         if ($value === null) {
             $value = '';
         }
@@ -1127,8 +1117,8 @@ function ecv2_FLOAT_FORMAT($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
-        $value = float_format(floatval($param[0]), isset($param[1]) ? intval($param[1]) : 2, array_key_exists(2, $param) && $param[2] == '1');
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
+        $value = float_format(floatval($param[0]), ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : 2, !empty($param[2]));
     }
 
     if ($escaped !== array()) {
@@ -1172,7 +1162,7 @@ function ecv2_GEOLOCATE($lang, $escaped, $param)
 {
     require_code('locations');
 
-    $value = geolocate_ip(isset($param[0]) ? $param[0] : null);
+    $value = geolocate_ip((!empty($param[0])) ? $param[0] : null);
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
@@ -1197,9 +1187,9 @@ function ecv2_GROUP_NAME($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups(isset($param[1]) ? intval($param[1]) : get_member());
-    $i = isset($param[0]) ? intval($param[0]) : 0;
-    if (array_key_exists($i, $groups)) {
+    $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups(((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member());
+    $i = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : 0;
+    if (isset($groups[$i])) {
         $all_usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
         $value = $all_usergroups[$groups[$i]];
     }
@@ -1224,8 +1214,8 @@ function ecv2_HAS_CATEGORY_ACCESS($lang, $escaped, $param)
 {
     $value = '';
 
-    if ((isset($param[0])) && (function_exists('has_category_access'))) {
-        $value = has_category_access(((isset($param[2]))) ? intval($param[2]) : get_member(), $param[0], $param[1]) ? '1' : '0';
+    if ((!empty($param[0])) && (function_exists('has_category_access'))) {
+        $value = has_category_access(((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member(), $param[0], $param[1]) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -1247,9 +1237,9 @@ function ecv2_HAS_CATEGORY_ACCESS($lang, $escaped, $param)
 function ecv2_SUPPORTS_FRACTIONAL_EDITABLE($lang, $escaped, $param)
 {
     $value = '0';
-    if (isset($param[1])) {
+    if (!empty($param[0])) {
         $edit_pagelink = $param[0];
-        $has_permission = (isset($param[1]) ? $param[1] : null) === '1';
+        $has_permission = ((!empty($param[1])) ? $param[1] : null) === '1';
 
         list($zone, $attributes,) = page_link_decode($edit_pagelink);
         if ($zone == '_SEARCH') {
@@ -1280,12 +1270,12 @@ function ecv2_HAS_PAGE_ACCESS($lang, $escaped, $param)
 {
     $value = '';
 
-    if ((isset($param[0])) && (function_exists('has_page_access'))) {
+    if ((!empty($param[0])) && (function_exists('has_page_access'))) {
         if (!isset($param[1])) {
             $param[1] = '_SEARCH';
         }
 
-        $value = has_page_access(((isset($param[2]))) ? intval($param[2]) : get_member(), $param[0], $param[1], ((isset($param[3]))) ? ($param[3] == '1') : false) ? '1' : '0';
+        $value = has_page_access(((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member(), $param[0], $param[1], !empty($param[3])) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -1308,12 +1298,12 @@ function ecv2_HAS_SUBMIT_PERMISSION($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $range = strtolower($param[0]);
         $ip_address = $param[1];
-        $member_id = ((isset($param[2]))) ? intval($param[2]) : get_member();
-        $cms_page = ((isset($param[3]))) ? $param[3] : get_page_name();
-        if (array_key_exists(5, $param)) {
+        $member_id = ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member();
+        $cms_page = (!@cms_empty_safe($param[3])) ? $param[3] : get_page_name();
+        if (isset($param[6])) {
             $value = has_submit_permission($range, $member_id, $ip_address, $cms_page, array($param[5], $param[6])) ? '1' : '0';
         } else {
             $value = has_submit_permission($range, $member_id, $ip_address, $cms_page) ? '1' : '0';
@@ -1340,7 +1330,7 @@ function ecv2_ISSET($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         global $TEMPCODE_SETGET;
         $value = (isset($TEMPCODE_SETGET[$param[0]])) ? '1' : '0';
     }
@@ -1365,10 +1355,10 @@ function ecv2_IS_FRIEND($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         if (addon_installed('chat')) {
             require_code('chat');
-            $test = member_befriended(intval($param[0]), isset($param[1]) ? intval($param[1]) : get_member());
+            $test = member_befriended(intval($param[0]), ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member());
             $value = ($test ? '0' : '1');
         } else {
             $value = '0';
@@ -1438,7 +1428,7 @@ function ecv2_MOD($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1])))) {
         $value = strval(max(intval($param[0]), -intval($param[0])));
     }
 
@@ -1488,7 +1478,7 @@ function ecv2_NEGATE($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         $value = strval(-intval($param[0]));
     }
 
@@ -1512,9 +1502,9 @@ function ecv2_MEMBER_DATA($lang, $escaped, $param)
 {
     $value = '';
 
-    if (get_forum_type() == 'cns' && isset($param[0])) {
+    if ((get_forum_type() == 'cns') && (!@cms_empty_safe($param[0]))) {
         require_code('cns_general');
-        $member_id = isset($param[1]) ? intval($param[1]) : get_member();
+        $member_id = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
         $setting = $param[0];
         $member_info = cns_read_in_member_profile($member_id, array($setting));
         if (isset($member_info[$setting])) {
@@ -1557,7 +1547,7 @@ function ecv2_RATING($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         static $cache_rating = array();
         $cache_key = serialize($param);
         if (isset($cache_rating[$cache_key])) {
@@ -1566,14 +1556,14 @@ function ecv2_RATING($lang, $escaped, $param)
             global $DISPLAYED_TITLE;
 
             require_code('feedback');
-            $display_tpl = empty($param[5]) ? 'RATING_FORM' : $param[5];
+            $display_tpl = (!empty($param[5])) ? 'RATING_FORM' : $param[5];
             $rating = get_rating_simple_array(
                 empty($param[3]) ? get_self_url(true) : $param[3], // content_url
-                empty($param[4]) ? (($DISPLAYED_TITLE === null) ? '' : $DISPLAYED_TITLE->evaluate()) : $param[4], // content_title
+                @cms_empty_safe($param[4]) ? (($DISPLAYED_TITLE === null) ? '' : $DISPLAYED_TITLE->evaluate()) : $param[4], // content_title
                 $param[0], // content_type
                 $param[1], // content_id
                 'RATING_FORM', // form_tpl
-                empty($param[2]) ? null : intval($param[2]) // submitter
+                ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : null // submitter
             );
             if ($rating !== null) {
                 if (empty($param[5])) {
@@ -1610,7 +1600,7 @@ function ecv2_NUM_RATINGS($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (!@cms_empty_safe($param[1]))) {
         global $DISPLAYED_TITLE;
 
         static $cache_num_ratings = array();
@@ -1619,7 +1609,7 @@ function ecv2_NUM_RATINGS($lang, $escaped, $param)
             $value = $cache_num_ratings[$cache_key];
         } else {
             require_code('feedback');
-            $rating = get_rating_simple_array(empty($param[3]) ? get_self_url(true) : $param[3], empty($param[4]) ? (($DISPLAYED_TITLE === null) ? '' : $DISPLAYED_TITLE->evaluate()) : $param[4], $param[0], $param[1], empty($param[5]) ? 'RATING_FORM' : $param[5], empty($param[2]) ? null : $param[2]);
+            $rating = get_rating_simple_array(empty($param[3]) ? get_self_url(true) : $param[3], @cms_empty_safe($param[4]) ? (($DISPLAYED_TITLE === null) ? '' : $DISPLAYED_TITLE->evaluate()) : $param[4], $param[0], $param[1], empty($param[5]) ? 'RATING_FORM' : $param[5], empty($param[2]) ? null : $param[2]);
             if ($rating !== null) {
                 $value = $rating['ALL_RATING_CRITERIA'][key($rating['ALL_RATING_CRITERIA'])]['NUM_RATINGS'];
             }
@@ -1682,7 +1672,7 @@ function ecv2_CNS_MEMBER_HTML($lang, $escaped, $param)
     if (get_forum_type() == 'cns') {
         require_code('cns_members');
         require_code('cns_members2');
-        $_value = render_member_box(isset($param[0]) ? intval($param[0]) : get_member(), false, true, array(), false);
+        $_value = render_member_box(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member(), false, true, array(), false);
         $value = $_value->evaluate();
     }
 
@@ -1709,8 +1699,8 @@ function ecv2_PAD_LEFT($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
-        $value = str_pad($param[0], intval($param[1]), array_key_exists(2, $param) ? $param[2] : ' ', STR_PAD_LEFT);
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
+        $value = str_pad($param[0], intval($param[1]), (!empty($param[2])) ? $param[2] : ' ', STR_PAD_LEFT);
     }
 
     if ($escaped !== array()) {
@@ -1736,8 +1726,8 @@ function ecv2_PAD_RIGHT($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
-        $value = str_pad($param[0], intval($param[1]), array_key_exists(2, $param) ? $param[2] : ' ', STR_PAD_RIGHT);
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
+        $value = str_pad($param[0], intval($param[1]), (!empty($param[2])) ? $param[2] : ' ', STR_PAD_RIGHT);
     }
 
     if ($escaped !== array()) {
@@ -1762,7 +1752,7 @@ function ecv2_POINTS_USED($lang, $escaped, $param)
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(points_used(isset($param[0]) ? intval($param[0]) : get_member()));
+        $value = strval(points_used(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -1805,10 +1795,8 @@ function ecv2_REM($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
-        if (intval($param[1]) != 0) {
-            $value = strval(intval($param[0]) % intval($param[1]));
-        }
+    if ((isset($param[0])) && (is_numeric($param[0])) && (!empty($param[1]))) {
+        $value = strval(intval($param[0]) % intval($param[1]));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -1859,8 +1847,8 @@ function ecv2_ROUND($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
-        $amount = isset($param[1]) ? intval($param[1]) : 0;
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
+        $amount = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : 0;
         if ($amount > 0) {
             $value = float_format(floatval($param[0]), $amount);
         } else {
@@ -1891,7 +1879,7 @@ function ecv2_SECONDS_PERIOD($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         $value = display_seconds_period(intval($param[0]));
     }
 
@@ -2021,7 +2009,7 @@ function ecv2_STRPOS($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if (!@cms_empty_safe($param[1])) {
         $t_value = strpos($param[0], $param[1]);
         $value = ($t_value === false) ? '0' : strval($t_value);
     }
@@ -2046,7 +2034,7 @@ function ecv2_STARTS_WITH($lang, $escaped, $param)
 {
     $value = '1';
 
-    if (isset($param[1]) && ($param[1] !== '')) {
+    if (!@cms_empty_safe($param[1])) {
         $value = (substr($param[0], 0, strlen($param[1])) === $param[1]) ? '1' : '0';
     }
 
@@ -2071,7 +2059,7 @@ function ecv2_ENDS_WITH($lang, $escaped, $param)
 {
     $value = '1';
 
-    if (isset($param[1]) && ($param[1] !== '')) {
+    if (!@cms_empty_safe($param[1])) {
         $value = (substr($param[0], -strlen($param[1])) === $param[1]) ? '1' : '0';
     }
 
@@ -2126,7 +2114,7 @@ function ecv2_MATURITY_FILTER_REQUESTED($lang, $escaped, $param)
     $safe = '';
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
-        if (array_key_exists('prefer', $headers)) {
+        if (isset($headers['prefer'])) {
             $safe = $headers['prefer'];
         }
     } elseif (isset($_SERVER['HTTP_PREFER'])) {
@@ -2155,7 +2143,7 @@ function ecv2_TIME_PERIOD($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         $value = display_time_period(intval($param[0]));
     }
 
@@ -2181,7 +2169,7 @@ function ecv2_TOTAL_POINTS($lang, $escaped, $param)
 
     if (addon_installed('points')) {
         require_code('points');
-        $value = strval(total_points(isset($param[0]) ? intval($param[0]) : get_member()));
+        $value = strval(total_points(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -2202,9 +2190,9 @@ function ecv2_TOTAL_POINTS($lang, $escaped, $param)
  */
 function ecv2_TO_TIMESTAMP($lang, $escaped, $param)
 {
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $value = strval(strtotime($param[0]));
-        if ((array_key_exists(1, $param)) && ($param[1] == '1')) {
+        if (!empty($param[1])) {
             $value = strval(usertime_to_utctime(intval($value))); // '1' means date was in user-time so needs converting to a UTC timestamp
         }
     } else {
@@ -2302,7 +2290,7 @@ function ecv2_VIEWS($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[2])) {
+    if ((!empty($param[0])) && (!empty($param[1])) && (isset($param[2]))) {
         $id_field = /*isset($param[4]) ? $param[4] : */'id'; // Not allowed on fields other than 'id', for security reasons
         if (preg_match('#^\w*views\w*$#', $param[1]) != 0) {
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there($param[0], $param[1], array($id_field => $param[2]));
@@ -2335,8 +2323,8 @@ function ecv2_WORDWRAP($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
-        $cut = isset($param[3]) && ($param[3] == '1');
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
+        $cut = (!empty($param[3]));
         $value = wordwrap($param[0], intval($param[1]), isset($param[2]) ? $param[2] : '<br />', $cut);
     }
 
@@ -2444,7 +2432,7 @@ function ecv2_SET_TUTORIAL_LINK($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if ((array_key_exists(1, $param)) && ($param[1] != '') && ($param[1][0] != '#')) {
+    if ((!empty($param[1])) && ($param[1][0] != '#')) {
         require_code('comcode_renderer');
         set_tutorial_link($param[0], $param[1]);
     }
@@ -2465,7 +2453,7 @@ function ecv2_SET_TUTORIAL_LINK($lang, $escaped, $param)
 function ecv2_DISPLAY_CONCEPT($lang, $escaped, $param)
 {
     $value = '';
-    if (array_key_exists(0, $param)) {
+    if (!empty($param[0])) {
         $key = $param[0];
         require_code('comcode_renderer');
         $_key = 'concept__' . preg_replace('#[^\w]#', '_', $key);
@@ -2511,15 +2499,20 @@ function ecv2_CSS_INHERIT(&$value, $lang, $escaped, $param)
         require_code('web_resources2');
 
         $css_file = $param[0]->evaluate();
-        $theme = isset($param[1]) ? $param[1]->evaluate() : 'default';
-        $seed = isset($param[2]) ? $param[2]->evaluate() : null;
-        if ($seed == '') {
-            $seed = null;
-        }
-        $dark = isset($param[3]) ? ($param[3]->evaluate() == '1') : false;
-        $algorithm = isset($param[4]) ? ($param[4]->evaluate()) : 'equations';
+        if ($css_file != '') {
+            $theme = isset($param[1]) ? $param[1]->evaluate() : 'default';
+            if ($theme == '') {
+                $theme = 'default';
+            }
+            $seed = isset($param[2]) ? $param[2]->evaluate() : null;
+            if ($seed == '') {
+                $seed = null;
+            }
+            $dark = isset($param[3]) ? ($param[3]->evaluate() == '1') : false;
+            $algorithm = (!empty($param[4])) ? ($param[4]->evaluate()) : 'equations';
 
-        $value = css_inherit($css_file, $theme, $GLOBALS['FORUM_DRIVER']->get_theme(), $seed, $dark, $algorithm);
+            $value = css_inherit($css_file, $theme, $GLOBALS['FORUM_DRIVER']->get_theme(), $seed, $dark, $algorithm);
+        }
     }
 }
 
@@ -2792,13 +2785,133 @@ function ecv2_DO_NOT_TRACK_REQUESTED($lang, $escaped, $param)
     $safe = '';
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
-        if (array_key_exists('DNT', $headers)) {
+        if (isset($headers['DNT'])) {
             $dnt = $headers['DNT'];
         }
     } elseif (isset($_SERVER['DNT'])) {
         $dnt = $_SERVER['DNT'];
     }
     return $dnt;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string
+ */
+function ecv2_COLOR_RGBA($lang, $escaped, $param)
+{
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if (!empty($param[0])) {
+        $hex_color = $param[0];
+        $red   = hexdec(substr($hex_color, 1, 2));
+        $green = hexdec(substr($hex_color, 3, 2));
+        $blue  = hexdec(substr($hex_color, 5, 2));
+        $alpha = ((isset($param[1])) && (is_numeric($param[1]))) ? floatval($param[1]) : '1.0';
+
+        $value = 'rgba(' . strval($red) . ', ' . strval($green) . ', ' . strval($blue) . ', ' . float_to_raw_string($alpha) . ')';
+    }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string
+ */
+function ecv2_COLOR_LIGHTEN($lang, $escaped, $param)
+{
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if ((!empty($param[0])) && (isset($param[1])) && (is_numeric($param[1]))) {
+        require_code('themes');
+
+        $hex_color = $param[0];
+        $red   = hexdec(substr($hex_color, 1, 2));
+        $green = hexdec(substr($hex_color, 3, 2));
+        $blue  = hexdec(substr($hex_color, 5, 2));
+
+        $lighten_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
+
+        list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
+
+        $l = min(1, max(0, ($l + $lighten_by)));
+
+        list($red, $green, $blue) = hsl_to_rgb($h, $s, $l);
+
+        $value = sprintf("#%02x%02x%02x", $red, $green, $blue);
+    }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string
+ */
+function ecv2_COLOR_DARKEN($lang, $escaped, $param)
+{
+    $value = '';
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+
+    if ((!empty($param[0])) && (isset($param[1])) && (is_numeric($param[1]))) {
+        require_code('themes');
+
+        $hex_color = $param[0];
+        $red   = hexdec(substr($hex_color, 1, 2));
+        $green = hexdec(substr($hex_color, 3, 2));
+        $blue  = hexdec(substr($hex_color, 5, 2));
+
+        $darken_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
+
+        list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
+
+        $l = min(1, max(0, ($l - $darken_by)));
+
+        list($red, $green, $blue) = hsl_to_rgb($h, $s, $l);
+
+        $value = sprintf("#%02x%02x%02x", $red, $green, $blue);
+    }
+
+    if ($escaped !== array()) {
+        apply_tempcode_escaping($escaped, $value);
+    }
+
+    return $value;
 }
 
 /**
@@ -2823,103 +2936,4 @@ function ecv2_WHILE(&$value, $lang, $escaped, $param)
             $value .= $put;
         }
     }
-}
-
-/**
- * Evaluate a particular Tempcode directive.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string
- */
-function ecv2_COLOR_RGBA($lang, $escaped, $param)
-{
-    $hex_color = $param[0];
-    $red   = hexdec(substr($hex_color, 1, 2));
-    $green = hexdec(substr($hex_color, 3, 2));
-    $blue  = hexdec(substr($hex_color, 5, 2));
-    $alpha = floatval($param[1]);
-
-    $value = 'rgba(' . strval($red) . ', ' . strval($green) . ', ' . strval($blue) . ', ' . float_to_raw_string($alpha) . ')';
-
-    if ($escaped !== array()) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode directive.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string
- */
-function ecv2_COLOR_LIGHTEN($lang, $escaped, $param)
-{
-    require_code('themes');
-
-    $hex_color = $param[0];
-    $red   = hexdec(substr($hex_color, 1, 2));
-    $green = hexdec(substr($hex_color, 3, 2));
-    $blue  = hexdec(substr($hex_color, 5, 2));
-
-    $lighten_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
-
-    list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
-
-    $l = min(1, max(0, ($l + $lighten_by)));
-
-    list($red, $green, $blue) = hsl_to_rgb($h, $s, $l);
-
-    $value = sprintf("#%02x%02x%02x", $red, $green, $blue);
-
-    if ($escaped !== array()) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode directive.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string
- */
-function ecv2_COLOR_DARKEN($lang, $escaped, $param)
-{
-    require_code('themes');
-
-    $hex_color = $param[0];
-    $red   = hexdec(substr($hex_color, 1, 2));
-    $green = hexdec(substr($hex_color, 3, 2));
-    $blue  = hexdec(substr($hex_color, 5, 2));
-
-    $darken_by = floatval(substr($param[1], 0, -1)) / 100; // Remove trailing '%' sign
-
-    list($h, $s, $l) = rgb_to_hsl($red, $green, $blue);
-
-    $l = min(1, max(0, ($l - $darken_by)));
-
-    list($red, $green, $blue) = hsl_to_rgb($h, $s, $l);
-
-    $value = sprintf("#%02x%02x%02x", $red, $green, $blue);
-
-    if ($escaped !== array()) {
-        apply_tempcode_escaping($escaped, $value);
-    }
-
-    return $value;
 }

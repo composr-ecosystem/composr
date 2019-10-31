@@ -109,15 +109,15 @@ function search_func($raw_params)
     $start = ($page - 1) * $max;
 
     $keywords = !empty($filter['keywords']) ? $filter['keywords'] : '';
-    $userid = !empty($filter['userid']) ? intval($filter['userid']) : null;
-    $searchuser = !empty($filter['searchuser']) ? $filter['searchuser'] : null;
-    $forumid = !empty($filter['forumid']) ? intval($filter['forumid']) : null;
-    $threadid = !empty($filter['threadid']) ? intval($filter['threadid']) : null;
+    $userid = !@cms_empty_safe($filter['userid']) ? intval($filter['userid']) : null;
+    $searchuser = !@cms_empty_safe($filter['searchuser']) ? $filter['searchuser'] : null;
+    $forumid = !@cms_empty_safe($filter['forumid']) ? intval($filter['forumid']) : null;
+    $threadid = !@cms_empty_safe($filter['threadid']) ? intval($filter['threadid']) : null;
     $titleonly = !isset($filter['titleonly']) || ($filter['titleonly'] == 1);
     $showposts = (isset($filter['showposts']) && $filter['showposts'] == 0) ? 0 : 1;
     $searchtime = !empty($filter['searchtime']) ? @intval($filter['searchtime']) : null;
-    $only_in = !empty($filter['only_in']) ? $filter['only_in'] : null;
-    $not_in = !empty($filter['not_in']) ? $filter['not_in'] : null;
+    $only_in = !@cms_empty_safe($filter['only_in']) ? $filter['only_in'] : null;
+    $not_in = !@cms_empty_safe($filter['not_in']) ? $filter['not_in'] : null;
 
     if ($showposts == 0) {
         list($total_topic_num, $_topics) = $search_object->search_topics($keywords, $start, $max, $userid, $searchuser, $forumid, $titleonly, $searchtime, $only_in, $not_in);

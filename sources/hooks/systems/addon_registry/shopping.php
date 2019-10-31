@@ -353,7 +353,7 @@ class Hook_addon_registry_shopping
         return array(
             lorem_globalise(do_lorem_template('CATALOGUE_products_CATEGORY_SCREEN', $map + array(
                 'ID' => placeholder_id(),
-                'ADD_DATE_RAW' => placeholder_date(),
+                'ADD_DATE_RAW' => placeholder_date_raw(),
                 'TITLE' => lorem_title(),
                 '_TITLE' => lorem_phrase(),
                 'CATALOGUE_TITLE' => lorem_phrase(),
@@ -609,9 +609,9 @@ class Hook_addon_registry_shopping
                 $product_image,
                 $product_link,
                 $edit_qnty,
-                $currency . (string)placeholder_number(),
-                $currency . (string)placeholder_number(),
-                $currency . (string)placeholder_number(),
+                $currency . placeholder_number(),
+                $currency . placeholder_number(),
+                $currency . placeholder_number(),
                 $currency . placeholder_number(),
                 $del_item,
             );

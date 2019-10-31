@@ -55,7 +55,7 @@ function deep_clean($d, $heading = '')
     }
 
     // Strip heading if it appears at the top
-    if (!empty($heading)) {
+    if (!cms_empty_safe($heading)) {
         if ($is_html) {
             $d = cms_preg_replace_safe('#^\s*<h\d[^<>]*>\s*' . preg_quote($heading, '') . '\s*</h\d>#', '', $d);
             $d = cms_preg_replace_safe('#^\s*' . preg_quote($heading, '') . '\s*([^\w])#', '$1', $d);
@@ -116,7 +116,7 @@ function deep_clean($d, $heading = '')
                         $non_matches++;
                     }
                 }
-                if ((count($versions) == 1) && ((float)$non_matches < 0.2 * (float)$count)) {
+                if ((count($versions) == 1) && (floatval($non_matches) < 0.2 * floatval($count))) {
                     $d = preg_replace('#"\s*' . preg_quote($property, '#') . ':[^;"]*"\s*#', '""', $d); // Only property
                     $d = preg_replace('#"\s*' . preg_quote($property, '#') . ':[^;"]*;\s*#', '"', $d); // First property
                     $d = preg_replace('#\s*;\s*' . preg_quote($property, '#') . ':[^;"]*;?"#', '"', $d); // Last property
@@ -166,14 +166,14 @@ function column_cleanup(&$text)
         foreach ($lines as $line) {
             $lengths[] = strlen($line);
         }
-        $mean_length = (int)(array_sum($lengths) / count($lengths));
+        $mean_length = intval(round(floatval(array_sum($lengths)) / floatval(count($lengths))));
         if ($mean_length > 5) { // Statistically significant
             $dist = 0;
             foreach ($lines as $line) {
                 $dist += abs(strlen($line) - $mean_length);
             }
-            $sd = ((float)$dist) / ((float)count($lines));
-            if ($sd < 0.6 * (float)$mean_length) { // Standard deviation within 60%
+            $sd = floatval($dist) / floatval(count($lines));
+            if ($sd < 0.6 * floatval($mean_length)) { // Standard deviation within 60%
                 $sentence_ends = array('!', '?', '.', '>');
 
                 $lines = explode('<br />', $text);

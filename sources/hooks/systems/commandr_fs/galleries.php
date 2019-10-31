@@ -121,7 +121,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $description = $this->_default_property_str($properties, 'description');
         $notes = $this->_default_property_str($properties, 'notes');
         $parent_id = $category;
-        if (empty($parent_id)) {
+        if (cms_empty_safe($parent_id)) {
             $parent_id = 'root';
         }
         $accept_images = $this->_default_property_int_modeavg($properties, 'accept_images', 'galleries', 1);
@@ -214,7 +214,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
         $description = $this->_default_property_str($properties, 'description');
         $notes = $this->_default_property_str($properties, 'notes');
         $parent_id = $category;
-        if (($resource_id != 'root') && (empty($parent_id))) {
+        if (($resource_id != 'root') && (cms_empty_safe($parent_id))) {
             $parent_id = 'root';
         }
         $accept_images = $this->_default_property_int_modeavg($properties, 'accept_images', 'galleries', 1);

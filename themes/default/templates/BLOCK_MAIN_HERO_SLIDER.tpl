@@ -8,12 +8,12 @@
 		</ol>
 	{+END}
 	{+START,IF_PASSED_AND_TRUE,SHOW_SCROLL_DOWN}
-		<a href="#!" class="cms-slider-scroll-button" style="display: none;">
+		<a href="#!" class="cms-slider-scroll-button" style="display: none;">{+START,TRIM}
 			<div class="cms-slider-scroll-button-icon">
 				{+START,INCLUDE,ICON}NAME=results/sortablefield_desc{+END}
 			</div>
 			<div class="cms-slider-scroll-button-caption">{!SCROLL_DOWN*}</div>
-		</a>
+		{+END}</a>
 	{+END}
 
 	<div class="cms-slider-inner">
@@ -39,14 +39,8 @@
 			</div>
 		{+END}
 	</div>
-	<a class="cms-slider-control-prev" href="#{$GET*,id}" role="button" data-slide="prev">
-		<span class="cms-slider-control-prev-icon" aria-hidden="true"></span>
-		<span class="sr-only">{!PREVIOUS*}</span>
-	</a>
-	<a class="cms-slider-control-next" href="#{$GET*,id}" role="button" data-slide="next">
-		<span class="cms-slider-control-next-icon" aria-hidden="true"></span>
-		<span class="sr-only">{!NEXT*}</span>
-	</a>
+	<a class="cms-slider-control-prev" href="#{$GET*,id}" role="button" data-slide="prev"><span class="cms-slider-control-prev-icon" aria-hidden="true"></span><span class="sr-only">{!PREVIOUS*}</span></a>
+	<a class="cms-slider-control-next" href="#{$GET*,id}" role="button" data-slide="next"><span class="cms-slider-control-next-icon" aria-hidden="true"></span><span class="sr-only">{!NEXT*}</span></a>
 	<!-- Slider progress bar becomes visible when the "interval" parameter to [data-cms-slider] is set -->
 	<div class="cms-slider-progress-bar">
 		<div class="cms-slider-progress-bar-fill"></div>

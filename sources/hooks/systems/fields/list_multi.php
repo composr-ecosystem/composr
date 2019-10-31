@@ -173,7 +173,7 @@ class Hook_fields_list_multi extends ListFieldHook
 
         $list = $this->get_input_list_map($field);
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
 

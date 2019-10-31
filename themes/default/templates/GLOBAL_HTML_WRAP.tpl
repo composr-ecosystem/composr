@@ -127,54 +127,44 @@
 						{+START,SET,FOOTER_BUTTONS}
 							{+START,IF,{$CONFIG_OPTION,bottom_show_top_button}}
 								<li>
-									<a rel="back_to_top" accesskey="g" href="#" title="{!BACK_TO_TOP}">
-										{+START,INCLUDE,ICON}
-											NAME=tool_buttons/top
-											SIZE=24
-										{+END}
-									</a>
+									<a rel="back_to_top" accesskey="g" href="#" title="{!BACK_TO_TOP}">{+START,INCLUDE,ICON}
+										NAME=tool_buttons/top
+										SIZE=24
+									{+END}</a>
 								</li>
 							{+END}
 							{+START,IF,{$ADDON_INSTALLED,realtime_rain}}{+START,IF,{$CONFIG_OPTION,bottom_show_realtime_rain_button,1}}{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_realtime_rain}}{+START,IF,{$NEQ,{$ZONE}:{$PAGE},adminzone:admin_realtime_rain}}
 								<li>
-									<a id="realtime-rain-button" data-btn-load-realtime-rain="{}" title="{!realtime_rain:REALTIME_RAIN}" href="{$PAGE_LINK*,adminzone:admin_realtime_rain}">
-										{+START,INCLUDE,ICON}
-											NAME=tool_buttons/realtime_rain_on
-											ICON_ID=realtime-rain-img
-											ICON_SIZE=24
-										{+END}
-									</a>
+									<a id="realtime-rain-button" data-btn-load-realtime-rain="{}" title="{!realtime_rain:REALTIME_RAIN}" href="{$PAGE_LINK*,adminzone:admin_realtime_rain}">{+START,INCLUDE,ICON}
+										NAME=tool_buttons/realtime_rain_on
+										ICON_ID=realtime-rain-img
+										ICON_SIZE=24
+									{+END}</a>
 								</li>
 							{+END}{+END}{+END}{+END}
 							{+START,IF,{$HAS_ZONE_ACCESS,adminzone}}
 								{+START,IF,{$ADDON_INSTALLED,commandr}}{+START,IF,{$HAS_ACTUAL_PAGE_ACCESS,admin_commandr}}{+START,IF,{$CONFIG_OPTION,bottom_show_commandr_button,1}}{+START,IF,{$NEQ,{$ZONE}:{$PAGE},adminzone:admin_commandr}}
 									<li>
-										<a id="commandr-button" title="{!commandr:COMMANDR_DESCRIPTIVE_TITLE*}" accesskey="o"{+START,IF,{$DESKTOP}} data-btn-load-commandr="{}" {+END} href="{$PAGE_LINK*,adminzone:admin_commandr}">
-											{+START,INCLUDE,ICON}
-												NAME=tool_buttons/commandr_on
-												ICON_CLASS=commandr-img
-												ICON_SIZE=24
-											{+END}
-										</a>
+										<a id="commandr-button" title="{!commandr:COMMANDR_DESCRIPTIVE_TITLE*}" accesskey="o"{+START,IF,{$DESKTOP}} data-btn-load-commandr="{}" {+END} href="{$PAGE_LINK*,adminzone:admin_commandr}">{+START,INCLUDE,ICON}
+											NAME=tool_buttons/commandr_on
+											ICON_CLASS=commandr-img
+											ICON_SIZE=24
+										{+END}</a>
 									</li>
 								{+END}{+END}{+END}{+END}
 								<li>
-									<a href="{$PAGE_LINK*,adminzone:,,,,keep_theme}" title="{!ADMIN_ZONE*}">
-										{+START,INCLUDE,ICON}
-											NAME=menu/adminzone/adminzone
-											ICON_SIZE=24
-										{+END}
-									</a>
+									<a href="{$PAGE_LINK*,adminzone:,,,,keep_theme}" title="{!ADMIN_ZONE*}">{+START,INCLUDE,ICON}
+										NAME=menu/adminzone/adminzone
+										ICON_SIZE=24
+									{+END}</a>
 								</li>
 								{+START,IF,{$DESKTOP}}{+START,IF,{$EQ,{$BRAND_NAME},Composr}}
 									<li>
-										<a id="software-chat-button" title="{!SOFTWARE_CHAT*}" accesskey="-" href="#!" class="js-global-click-load-software-chat">
-											{+START,INCLUDE,ICON}
-												NAME=tool_buttons/software_chat
-												ICON_CLASS=software-chat-img
-												ICON_SIZE=24
-											{+END}
-										</a>
+										<a id="software-chat-button" title="{!SOFTWARE_CHAT*}" accesskey="-" href="#!" class="js-global-click-load-software-chat">{+START,INCLUDE,ICON}
+											NAME=tool_buttons/software_chat
+											ICON_CLASS=software-chat-img
+											ICON_SIZE=24
+										{+END}</a>
 									</li>
 								{+END}{+END}
 							{+END}

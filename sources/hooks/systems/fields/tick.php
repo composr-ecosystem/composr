@@ -124,7 +124,7 @@ class Hook_fields_tick
             $actual_value = null;
         }
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         if ($field['cf_required'] == 1) {
             return form_input_tick($_cf_name, $_cf_description, $input_name, $actual_value == '1');
         }

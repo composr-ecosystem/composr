@@ -16,10 +16,7 @@
 				{CONTENT}
 
 				<li class="menu-dropdown-item toplevel non-current {$?,{$GET,HAS_CHILDREN},has-children} last">
-					<a href="{$TUTORIAL_URL*,tutorials}" class="menu-dropdown-item-a toplevel-link" title="{!menus:MM_TOOLTIP_DOCS}">
-						<span class="menu-dropdown-item-icon">{+START,INCLUDE,ICON}NAME=help{+END}</span>
-						<span class="menu-dropdown-item-caption">{!HELP}</span>
-					</a>
+					<a href="{$TUTORIAL_URL*,tutorials}" class="menu-dropdown-item-a toplevel-link" title="{!menus:MM_TOOLTIP_DOCS}"><span class="menu-dropdown-item-icon">{+START,INCLUDE,ICON}NAME=help{+END}</span><span class="menu-dropdown-item-caption">{!HELP}</span></a>
 					{+START,IF,{$GET,HAS_CHILDREN}}
 						<div aria-haspopup="true" class="menu-dropdown-items menu-dropdown-item-popup nlevel menu-help-section" style="display: none">
 							{+START,INCLUDE,ADMIN_ZONE_SEARCH}{+END}

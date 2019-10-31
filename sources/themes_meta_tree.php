@@ -570,7 +570,7 @@ class Meta_tree_builder
                 continue; // No zone
             }
 
-            if (!empty($page_link_parts[1])) {
+            if (!@cms_empty_safe($page_link_parts[1])) {
                 require_code('site');
                 $found = _request_page($page_link_parts[1], $zone);
                 if ($found === false) {

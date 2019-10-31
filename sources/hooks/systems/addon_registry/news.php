@@ -649,6 +649,7 @@ class Hook_addon_registry_news
         foreach (placeholder_array() as $k => $v) {
             $news_items[] = array(
                 'DATE' => placeholder_date(),
+                '_DATE' => placeholder_date_raw(),
                 'FULL_URL' => placeholder_url(),
                 'NEWS_TITLE' => lorem_word(),
                 'IMG_URL' => placeholder_image_url(),
@@ -683,10 +684,10 @@ class Hook_addon_registry_news
                 'ID' => strval(placeholder_random_id()),
                 'TRUNCATE' => false,
                 'BLOG' => false,
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'CATEGORY' => lorem_word(),
                 'CATEGORY_URL' => placeholder_url(),
-                '_CATEGORY' => strval(lorem_word()),
+                '_CATEGORY' => placeholder_id(),
                 'IMG' => placeholder_image_url(),
                 '_IMG' => placeholder_image_url(),
                 'IMG_LARGE' => placeholder_image_url(),
@@ -714,6 +715,7 @@ class Hook_addon_registry_news
                 'RSS_URL' => placeholder_url(),
                 'ATOM_URL' => placeholder_url(),
                 'PAGINATION' => false,
+                'BLOCK_PARAMS' => '',
             )), null, '', true)
         );
     }

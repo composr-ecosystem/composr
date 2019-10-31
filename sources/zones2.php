@@ -54,7 +54,7 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
         }
     }
 
-    $tag_attribute_stuff = empty($matches[1]) ? '' : $matches[1];
+    $tag_attribute_stuff = @cms_empty_safe($matches[1]) ? '' : $matches[1];
 
     if (preg_match('#^(.*\sparam)?=?"[2-9]"?#', $tag_attribute_stuff) != 0) {
         // Wrong title level
@@ -81,8 +81,8 @@ function get_comcode_page_title_from_disk($path, $include_subtitle = false, $in_
     if ($include_subtitle) {
         $matches2 = array();
         if (preg_match('#\ssub="([^"]*)"#', $tag_attribute_stuff, $matches2) != 0) {
-            $subtitle = empty($matches2[1]) ? '' : $matches2[1];
-            if (!empty($subtitle)) {
+            $subtitle = $matches2[1];
+            if (!cms_empty_safe($subtitle)) {
                 if (stripos($subtitle, $raw_title) !== false) {
                     $raw_title = ucfirst($subtitle);
                 } else {

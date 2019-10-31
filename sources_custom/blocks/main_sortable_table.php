@@ -127,17 +127,17 @@ class Block_main_sortable_table
             '25',
             '26',
         );
-        if (!empty($map['columns_display'])) {
+        if (!@cms_empty_safe($map['columns_display'])) {
             $map['columns_display'] = str_replace($letters, $numbers, $map['columns_display']);
         }
-        if (!empty($map['columns_tooltip'])) {
+        if (!@cms_empty_safe($map['columns_tooltip'])) {
             $map['columns_tooltip'] = str_replace($letters, $numbers, $map['columns_tooltip']);
         }
 
-        $labels = empty($map['labels']) ? array() : array_map('trim', explode(',', $map['labels']));
-        $labels_tooltip = empty($map['labels_tooltip']) ? array() : array_map('trim', explode(',', $map['labels_tooltip']));
-        $columns_display = empty($map['columns_display']) ? array() : array_map('intval', array_map('trim', explode(',', $map['columns_display'])));
-        $columns_tooltip = empty($map['columns_tooltip']) ? array() : array_map('intval', array_map('trim', explode(',', $map['columns_tooltip'])));
+        $labels = @cms_empty_safe($map['labels']) ? array() : array_map('trim', explode(',', $map['labels']));
+        $labels_tooltip = @cms_empty_safe($map['labels_tooltip']) ? array() : array_map('trim', explode(',', $map['labels_tooltip']));
+        $columns_display = @cms_empty_safe($map['columns_display']) ? array() : array_map('intval', array_map('trim', explode(',', $map['columns_display'])));
+        $columns_tooltip = @cms_empty_safe($map['columns_tooltip']) ? array() : array_map('intval', array_map('trim', explode(',', $map['columns_tooltip'])));
 
         $stylings = empty($map['stylings']) ? array() : array_map('trim', explode(',', $map['stylings']));
         $classes = empty($map['classes']) ? array() : array_map('trim', explode(',', $map['classes']));

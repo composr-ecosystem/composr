@@ -30,12 +30,10 @@
 			<h2 class="toggleable-tray-title js-tray-header">
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!SETTINGS}</a>
 				{+START,IF_NON_EMPTY,{RESULTS}}
-					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!SHOW_SEARCH_FORM}">
-						{+START,INCLUDE,ICON}
-							NAME=trays/expand
-							ICON_SIZE=24
-						{+END}
-					</a>
+					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!SHOW_SEARCH_FORM}">{+START,INCLUDE,ICON}
+						NAME=trays/expand
+						ICON_SIZE=24
+					{+END}</a>
 				{+END}
 			</h2>
 		{+END}

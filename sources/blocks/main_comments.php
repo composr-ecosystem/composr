@@ -75,7 +75,7 @@ class Block_main_comments
         $submitted = ((post_param_integer('_comment_form_post', 0) == 1) && (post_param_string('_block_id', '') == $block_id));
 
         $self_url = build_url(array('page' => '_SELF'), '_SELF', array(), true, false, true);
-        $self_title = empty($map['title']) ? $page : $map['title'];
+        $self_title = @cms_empty_safe($map['title']) ? $page : $map['title'];
         $test_changed = post_param_string('title', null);
         if ($test_changed !== null) {
             delete_cache_entry('main_comments');

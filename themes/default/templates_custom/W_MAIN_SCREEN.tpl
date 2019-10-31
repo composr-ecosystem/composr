@@ -139,7 +139,7 @@
 						<option value="0">
 							{!W_EVERYONE}
 						</option>
-					</select> <button class="btn btn-primary btn-scri buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END}{!SEND_MESSAGE}</button></div>
+					</select> <button class="btn btn-primary btn-scri buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END} {!SEND_MESSAGE}</button></div>
 				</form>
 			</div>
 
@@ -249,12 +249,10 @@
 			<div class="box-inner">
 				<h2 class="toggleable-tray-title js-tray-header">
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_ACTIONS}</a>
-					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-						{+START,INCLUDE,ICON}
-							NAME=trays/expand
-							ICON_SIZE=24
-						{+END}
-					</a>
+					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+						NAME=trays/expand
+						ICON_SIZE=24
+					{+END}</a>
 				</h2>
 
 				<div class="toggleable-tray js-tray-content" style="{HIDE_ACTIONS*}"{+START,IF,{HIDE_ACTIONS}} aria-expanded="false"{+END}>
@@ -549,12 +547,10 @@
 				<div class="box-inner">
 					<h2 class="toggleable-tray-title js-tray-header">
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_ADDITIONS}</a>
-						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=24
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=24
+						{+END}</a>
 					</h2>
 
 					<div class="toggleable-tray js-tray-content" style="{HIDE_ADDITIONS*}"{+START,IF,{HIDE_ADDITIONS}} aria-expanded="false"{+END}>
@@ -586,12 +582,10 @@
 			<div class="box-inner">
 				<h2 class="toggleable-tray-title js-tray-header">
 					<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!W_ENVIRONMENT_MODIFICATIONS}</a>
-					<a class="js-click-set-hidemod-cookie toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-						{+START,INCLUDE,ICON}
-							NAME=trays/expand
-							ICON_SIZE=24
-						{+END}
-					</a>
+					<a class="js-click-set-hidemod-cookie toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+						NAME=trays/expand
+						ICON_SIZE=24
+					{+END}</a>
 				</h2>
 
 				<div class="toggleable-tray js-tray-content" style="{HIDE_MODIFICATIONS*}"{+START,IF,{HIDE_MODIFICATIONS}} aria-expanded="false"{+END}>

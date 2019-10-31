@@ -42,7 +42,7 @@ class Hook_spam_heuristics_repetition
             $cma_info = $cma_ob->info();
             if (!empty($cma_info['support_spam_heuristics'])) {
                 $data = post_param_string($cma_info['support_spam_heuristics'], null);
-                if (!empty($data)) {
+                if (!cms_empty_safe($data)) {
                     $where = array(
                         $cma_info['submitter_field'] => get_member(),
                     );

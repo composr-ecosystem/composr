@@ -150,7 +150,7 @@ class Hook_fields_member_multi
                 $usernames[] = $GLOBALS['FORUM_DRIVER']->get_username(intval($actual_value), false, USERNAME_DEFAULT_BLANK);
             }
         }
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_username_multi($_cf_name, $_cf_description, $input_name, $usernames, ($field['cf_required'] == 1) ? 1 : 0, true);
     }
 
@@ -174,7 +174,7 @@ class Hook_fields_member_multi
             if (($_value === null) && ($i == 0)) {
                 return $editing ? STRING_MAGIC_NULL : '';
             }
-            if (($_value !== null) && ($_value != '')) {
+            if (!cms_empty_safe($_value)) {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_value);
                 if ($value != '') {
                     $value .= "\n";

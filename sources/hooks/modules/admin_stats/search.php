@@ -104,7 +104,7 @@ class Hook_admin_stats_search
         require_code('templates_results_table');
         $header_row = results_header_row(array(do_lang_tempcode('KEYWORD'), do_lang_tempcode('COUNT_VIEWS')), $sortables, 'sort', $sortable . ' ' . $sort_order);
         $result_entries = new Tempcode();
-        $degrees = 360 / $total;
+        $degrees = 360.0 / floatval($total);
         $done_total = 0;
         $data = array();
         $i = 0;
@@ -127,9 +127,9 @@ class Hook_admin_stats_search
             $done_total += $data[$keyword];
             $i++;
         }
-        if ((360 - $done_total) > 0) {
-            $data[do_lang('OTHER')] = 360 - $done_total;
-            $result_entries->attach(results_entry(array(do_lang('OTHER'), integer_format((int)((360 - $done_total) / $degrees))), true));
+        if (360.0 - $done_total > 0.0) {
+            $data[do_lang('OTHER')] = 360.0 - $done_total;
+            $result_entries->attach(results_entry(array(do_lang('OTHER'), integer_format(intval(round((360.0 - $done_total) / $degrees)))), true));
         }
         $list = results_table(do_lang_tempcode('SEARCH_STATISTICS'), $start, 'start', $max, 'max', count($keywords), $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
 

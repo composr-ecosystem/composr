@@ -6,12 +6,10 @@
 
 {+START,IF,{$DESKTOP}}
 	<span class="inline-desktop">
-		<a data-tpl="revisionsDiffIcon" class="button-icon" data-cms-tooltip="{ contents: '{$GET;^*,tooltip}', width: '500px', delay: 0, position: 'bottom' }" href="#!">
-			{+START,INCLUDE,ICON}
-				NAME=help
-				ICON_SIZE=24
-			{+END}
-		</a>
+		<a data-tpl="revisionsDiffIcon" class="button-icon" data-cms-tooltip="{ contents: '{$GET;^*,tooltip}', width: '500px', delay: 0, position: 'bottom' }" href="#!">{+START,INCLUDE,ICON}
+			NAME=help
+			ICON_SIZE=24
+		{+END}</a>
 	</span>
 {+END}
 <div class="block-mobile">

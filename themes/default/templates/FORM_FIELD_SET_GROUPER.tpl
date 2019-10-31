@@ -1,12 +1,10 @@
 <div class="box box---form-field-set-grouper" data-toggleable-tray="{}">
 	<div class="box-inner">
 		<h2 class="toggleable-tray-title js-tray-header">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{+START,IF_PASSED_AND_TRUE,VISIBLE}{!CONTRACT}{+END}{+START,IF_NON_PASSED_OR_FALSE,VISIBLE}{!EXPAND}{+END}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/{+START,IF_PASSED_AND_TRUE,VISIBLE}contract{+END}{+START,IF_NON_PASSED_OR_FALSE,VISIBLE}expand{+END}
-					ICON_SIZE=20
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{+START,IF_PASSED_AND_TRUE,VISIBLE}{!CONTRACT}{+END}{+START,IF_NON_PASSED_OR_FALSE,VISIBLE}{!EXPAND}{+END}">{+START,INCLUDE,ICON}
+				NAME=trays/{+START,IF_PASSED_AND_TRUE,VISIBLE}contract{+END}{+START,IF_NON_PASSED_OR_FALSE,VISIBLE}expand{+END}
+				ICON_SIZE=20
+			{+END}</a>
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{NAME*}</a>
 		</h2>
 

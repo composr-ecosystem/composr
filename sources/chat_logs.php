@@ -78,7 +78,7 @@ function chat_logs_script()
             'SYSTEM_MESSAGE' => strval($_message['system_message']),
             'AVATAR_URL' => '',
             'STAFF_ACTIONS' => '',
-            'MEMBER' => escape_html($_message['username']),
+            'MEMBER_LINK' => escape_html($_message['username']),
             'MESSAGE' => $_message['the_message'],
             'DATE' => $_message['date_and_time_nice'],
             '_TIME' => strval($_message['date_and_time']),

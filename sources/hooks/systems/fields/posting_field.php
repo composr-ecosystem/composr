@@ -122,7 +122,7 @@ class Hook_fields_posting_field
             $_maxlength = option_value_from_field_array($field, 'maxlength', '');
             $maxlength = ($_maxlength == '') ? null : intval($_maxlength);
 
-            $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+            $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
             return form_input_text_comcode($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1, null, !$wysiwyg, '', null, !$wordwrap, $input_size);
         }
 
@@ -141,7 +141,7 @@ class Hook_fields_posting_field
 
         $tabindex = get_form_field_tabindex();
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         $actual_value = filter_form_field_default($_cf_name, $actual_value);
 

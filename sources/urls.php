@@ -419,7 +419,7 @@ function has_keep_parameters()
  */
 function build_url($parameters, $zone_name = '_SEARCH', $skip = array(), $keep_all = false, $avoid_remap = false, $skip_keep = false, $hash = '')
 {
-    if (empty($parameters['page']) && running_script('index')) { // For SEO purposes we need to make sure we get the right URL
+    if (@cms_empty_safe($parameters['page']) && running_script('index')) { // For SEO purposes we need to make sure we get the right URL
         $parameters['page'] = get_zone_default_page($zone_name);
         if ($parameters['page'] === null) {
             $parameters['page'] = DEFAULT_ZONE_PAGE_NAME;

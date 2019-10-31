@@ -88,7 +88,7 @@ class Hook_task_import_rss
 
             // Post name
             $post_name = $item['title'];
-            if (!empty($item['extra']['HTTP://WORDPRESS.ORG/EXPORT/1.2/:POST_NAME'])) {
+            if (!@cms_empty_safe($item['extra']['HTTP://WORDPRESS.ORG/EXPORT/1.2/:POST_NAME'])) {
                 $post_name = $item['extra']['HTTP://WORDPRESS.ORG/EXPORT/1.2/:POST_NAME'];
             }
 

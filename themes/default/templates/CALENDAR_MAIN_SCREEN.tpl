@@ -66,12 +66,10 @@
 <div class="box box---calendar-main-screen-interests" data-toggleable-tray="{}">
 	<div class="box-inner">
 		<h2 class="toggleable-tray-title js-tray-header">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/expand
-					ICON_SIZE=24
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+				NAME=trays/expand
+				ICON_SIZE=24
+			{+END}</a>
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!INTERESTS}</a>
 		</h2>
 
@@ -123,12 +121,10 @@
 	<div class="box box---calendar-main-screen-feeds-to-overlay" data-toggleable-tray="{}">
 		<div class="box-inner">
 			<h2 class="toggleable-tray-title js-tray-header">
-				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-					{+START,INCLUDE,ICON}
-						NAME=trays/expand
-						ICON_SIZE=24
-					{+END}
-				</a>
+				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+					NAME=trays/expand
+					ICON_SIZE=24
+				{+END}</a>
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!FEEDS_TO_OVERLAY}</a>
 			</h2>
 

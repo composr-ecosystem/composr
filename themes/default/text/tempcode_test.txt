@@ -388,9 +388,9 @@
 	</p>
 {+END}
 
-<table><tbody>
+<table class="layout-table"><tbody>
 {+START,LOOP,ARRAY,2,<tr>,</tr>,A,DESC}
-	<th>Blah</th>
+	<td>Blah</td>
 	<td>
 		{a} {b} {c}
 	</td>

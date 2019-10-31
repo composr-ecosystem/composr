@@ -729,10 +729,10 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
             $errors[] = array('WCAG_DODGY_LINK', $A_LINKS[$title][$content]);
         }
         $bad_strings = array('click'/*,'here'*/);
-        $_content = strip_tags($content);
-        if (trim($_content) != $_content) {
+        if (trim($content) != $content) {
             $errors[] = array('XHTML_A_SPACES');
         }
+        $_content = strip_tags($content);
         if (($_content == $content) && (strlen($content) < 12)) {
             $in_strings = str_word_count($_content, 1);
             foreach ($bad_strings as $string) {

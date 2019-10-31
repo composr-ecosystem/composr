@@ -111,7 +111,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
         switch ($above) {
             case '':
             case 'forum':
-                if (($under == 'topic') && (empty($above))) {
+                if (($under == 'topic') && (cms_empty_safe($above))) {
                     return null;
                 }
 

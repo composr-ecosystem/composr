@@ -42,7 +42,7 @@ function current_share_user()
         $slash = strpos($path, '/');
         if ($slash !== false) {
             $path = substr($path, 0, $slash);
-            if (!empty($SITE_INFO['custom_user_' . $path])) {
+            if (!@cms_empty_safe($SITE_INFO['custom_user_' . $path])) {
                 $CURRENT_SHARE_USER = $path;
                 return $CURRENT_SHARE_USER;
             }
@@ -55,7 +55,7 @@ function current_share_user()
         }
         // Get from subdomain
         $domain = substr($domain, 0, -strlen($custom_share_domain) - 1);
-        if (!empty($SITE_INFO['custom_user_' . $domain])) {
+        if (!@cms_empty_safe($SITE_INFO['custom_user_' . $domain])) {
             $CURRENT_SHARE_USER = $domain;
             return $domain;
         }
@@ -67,7 +67,7 @@ function current_share_user()
     }
 
     header('Content-type: text/plain; charset=' . get_charset());
-    if ((!empty($SITE_INFO['no_website_redirect'])) && ($SITE_INFO['no_website_redirect'] == '1')) {
+    if (!empty($SITE_INFO['no_website_redirect'])) {
         header('Location: ' . $SITE_INFO['no_website_redirect']); // assign_refresh not used, as it is a pre-page situation
     }
     exit('No such website on the server, ' . $domain);

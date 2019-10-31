@@ -131,18 +131,18 @@ class Module_users_online
                 if (is_guest($member_id)) {
                     if (addon_installed('stats')) {
                         $test = ($row['the_session'] == '') ? null : $GLOBALS['SITE_DB']->query_select_value_if_there('stats', 'ip', array('session_id' => $row['the_session']));
-                        if (($test !== null) && ($test != '')) {
+                        if (!empty($test)) {
                             $ip = $test;
                         } else {
                             $test = $GLOBALS['SITE_DB']->query_value_if_there('SELECT ip FROM ' . get_table_prefix() . 'stats WHERE ip LIKE \'' . db_encode_like(str_replace('*', '%', $ip)) . '\' AND date_and_time>=' . strval(time() - intval(60.0 * 60.0 * floatval(get_option('session_expiry_time')))) . ' ORDER BY date_and_time DESC');
-                            if (($test !== null) && ($test != '')) {
+                            if (!empty($test)) {
                                 $ip = $test;
                             }
                         }
                     }
                 } else {
                     $test = $GLOBALS['FORUM_DRIVER']->get_member_ip($member_id);
-                    if (($test !== null) && ($test != '')) {
+                    if (!empty($test)) {
                         $ip = $test;
                     }
                 }

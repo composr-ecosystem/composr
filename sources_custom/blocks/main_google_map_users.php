@@ -165,7 +165,7 @@ class Block_main_google_map_users
         $member_longitude = @floatval(get_cms_cpf('longitude', get_member()));
         $member_latitude = @floatval(get_cms_cpf('latitude', get_member()));
         $set_coord_url = get_base_url() . '/data_custom/set_coordinates.php?mid=' . strval(get_member()) . '&coord=';
-        if ((!empty($member_longitude) && !empty($member_latitude)) || (is_guest())) {
+        if (((!empty($member_longitude)) && (!empty($member_latitude))) || (is_guest())) {
             $set_coord_url = '';
         }
 

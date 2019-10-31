@@ -56,11 +56,11 @@ class _config_test_set extends cms_test_case
 
             switch ($details['type']) {
                 case 'list':
-                    $this->assertTrue(!empty($details['list_options']), 'List options expected, for ' . $hook);
+                    $this->assertTrue(!cms_empty_safe($details['list_options']), 'List options expected, for ' . $hook);
                     break;
 
                 default:
-                    $this->assertTrue(empty($details['list_options']), 'No list options expected, for ' . $hook);
+                    $this->assertTrue(cms_empty_safe($details['list_options']), 'No list options expected, for ' . $hook);
                     break;
             }
         }

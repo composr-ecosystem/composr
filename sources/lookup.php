@@ -318,7 +318,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
                     $location_data[$lang_str] = $json[$desired_key];
                 }
             }
-            if (!empty($json['latitude'])) {
+            if (!@cms_empty_safe($json['latitude'])) {
                 $location_data['GPS'] = float_format($json['latitude'], 6) . ',' . float_format($json['longitude'], 6);
             }
 

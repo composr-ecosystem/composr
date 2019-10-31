@@ -40,10 +40,10 @@ class microformats_test_set extends cms_test_case
         $this->assertTrue($result['items'][0]['type'][0] == 'h-event');
         $this->assertTrue(!empty($result['items'][0]['properties']['start']));
         $this->assertTrue(!empty($result['items'][0]['properties']['end']));
-        $this->assertTrue(!empty($result['items'][0]['properties']['category']));
-        //$this->assertTrue(!empty($result['items'][0]['properties']['summary'])); Validator cannot find, but exists in title
+        $this->assertTrue(!@cms_empty_safe($result['items'][0]['properties']['category']));
+        //$this->assertTrue(!@cms_empty_safe($result['items'][0]['properties']['summary'])); Validator cannot find, but exists in title
         $this->assertTrue(strpos($tpl->evaluate(), 'class="summary"') !== false);
-        $this->assertTrue(!empty($result['items'][0]['properties']['description']));
+        $this->assertTrue(!@cms_empty_safe($result['items'][0]['properties']['description']));
     }
 
     public function testHCalendarSideBlock()
@@ -56,7 +56,7 @@ class microformats_test_set extends cms_test_case
         $result = $this->do_validation($tpl->evaluate());
         $this->assertTrue($result['items'][0]['type'][0] == 'h-event');
         $this->assertTrue(!empty($result['items'][0]['properties']['start']));
-        //$this->assertTrue(!empty($result['items'][0]['properties']['summary'])); Validator cannot find, but exists in title
+        //$this->assertTrue(!@cms_empty_safe($result['items'][0]['properties']['summary'])); Validator cannot find, but exists in title
         $this->assertTrue(strpos($tpl->evaluate(), 'class="summary"') !== false);
     }
 

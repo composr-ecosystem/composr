@@ -62,12 +62,10 @@
 			{+START,IF,{$NOT,{SHOW_POSTS}}}
 				<div data-toggleable-tray="{}">
 					<p class="toggleable-tray-title js-tray-header">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" title="{!DISCUSSION}: {!EXPAND}/{!CONTRACT}" href="#!">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=20
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" title="{!DISCUSSION}: {!EXPAND}/{!CONTRACT}" href="#!">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=20
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" title="{!DISCUSSION}: {!EXPAND}/{!CONTRACT}" href="#!">{!DISCUSSION}</a> ({!POST_PLU,{NUM_POSTS*}})
 					</p>
 					<div class="toggleable-tray js-tray-content" id="hidden-posts" style="display: {$JS_ON,none,block}" aria-expanded="false">

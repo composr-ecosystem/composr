@@ -350,7 +350,7 @@ function generate_logo($name, $font_choice = null, $logo_theme_image = 'logo/def
     }
     foreach ($do as $i => $doing) {
         if (has_ttf()) {
-            imagettftext($im_canvas, (float)($doing[3]), 0.0, $doing[1], $doing[2], $doing[5], $doing[4], convert_to_html_encoding($doing[0]));
+            imagettftext($im_canvas, floatval($doing[3]), 0.0, $doing[1], $doing[2], $doing[5], $doing[4], convert_to_html_encoding($doing[0]));
         } else {
             // @ needed for bizarre reasons due to type juggling in PHP (brought up by ocProducts PHP only)
             @imagestring($im_canvas, ($doing[3] == intval($logowizard_details['site_name_font_size_small'])) ? intval($logowizard_details['site_name_font_size_nonttf']) : $font, $doing[1], $doing[2] - 11, $doing[0], $doing[5]);

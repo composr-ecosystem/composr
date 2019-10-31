@@ -94,7 +94,7 @@ class Hook_ajax_tree_choose_filedump_file
             }
 
             // Mark parent cats for pre-expansion
-            if (($default !== null) && ($default != '')) {
+            if (!cms_empty_safe($default)) {
                 $cat = '';
                 foreach (explode('/', $default) as $_cat) {
                     if ($_cat != '') {

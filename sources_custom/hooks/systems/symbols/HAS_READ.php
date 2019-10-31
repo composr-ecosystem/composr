@@ -24,7 +24,7 @@ class Hook_symbol_HAS_READ
             return '';
         }
 
-        if (!isset($param[1])) {
+        if ((empty($param[0])) || (!isset($param[1]))) {
             return '1'; // Not enough parameters
         }
         if (is_guest()) {
@@ -45,7 +45,7 @@ class Hook_symbol_HAS_READ
         }
 
         // First check this isn't really old content that we no longer track
-        if (isset($param[3])) {
+        if ((!empty($param[2])) && (!empty($param[3]))) {
             $cleanup_days = intval($param[2]);
             $content_time = intval($param[3]);
             if ($content_time < time() - 60 * 60 * 24 * $cleanup_days) {

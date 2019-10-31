@@ -67,7 +67,7 @@ class Hook_notification_comment_posted extends Hook_Notification
             if (preg_match('#^([^_]*)_(.*)$#', preg_replace('#^catalogues__[' . URL_CONTENT_REGEXP . ']+_#', 'catalogues_', $c['id']), $matches) != 0) {
                 $details = get_details_behind_feedback_code($matches[1], $matches[2]);
                 $new_title = $details[0];
-                if (($new_title !== null) && ($new_title != '')) {
+                if (!cms_empty_safe($new_title)) {
                     $categories[$i]['title'] = $new_title;
                     $num_done++;
                     if ($num_done > 200) { // Reasonable limit

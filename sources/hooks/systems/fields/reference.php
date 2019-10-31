@@ -142,7 +142,7 @@ class Hook_fields_reference
         }
         require_code('content');
         list($nice_label) = content_get_details('catalogue_entry', $actual_value);
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_tree_list($_cf_name, $_cf_description, $input_name, null, 'choose_catalogue_entry', $options, $field['cf_required'] == 1, $actual_value, false, null, false, $nice_label);
     }
 

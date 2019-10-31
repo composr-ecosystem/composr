@@ -69,7 +69,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
         }
 
         $setting = get_cfg_var('memory_limit');
-        $low_memory = (!empty($setting)) && ($setting != '-1') && ($setting != '0') && (intval(trim(str_replace('M', '', $setting))) < 128);
+        $low_memory = (!empty($setting)) && ($setting != '-1') && (intval(trim(str_replace('M', '', $setting))) < 128);
         $this->assertTrue(!$low_memory, do_lang('LOW_MEMORY_LIMIT'));
     }
 

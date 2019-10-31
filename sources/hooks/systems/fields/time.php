@@ -160,7 +160,7 @@ class Hook_fields_time
     {
         $time = mixed();
 
-        if (($actual_value === null) || ($actual_value == '') || ($actual_value[0] == ':')) {
+        if ((empty($actual_value)) || ($actual_value[0] == ':')) {
             $time = null;
         } elseif ($actual_value == 'NOW') {
             $time = time();
@@ -176,7 +176,7 @@ class Hook_fields_time
 
             $time = array(intval($time_bits[1]), @intval($time_bits[0]), intval(date('m')), intval(date('d')), intval(date('Y')));
         }
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($time === null), true, $time, 1, 1900, null, false, null, false);
     }
 

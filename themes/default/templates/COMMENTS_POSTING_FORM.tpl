@@ -37,12 +37,10 @@
 							{TITLE*}
 						{+END}
 						{+START,IF_PASSED,EXPAND_TYPE}
-							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{$EQ,{EXPAND_TYPE},contract},{!CONTRACT},{!EXPAND}}">
-								{+START,INCLUDE,ICON}
-									NAME=trays/{EXPAND_TYPE}
-									ICON_SIZE=24
-								{+END}
-							</a>
+							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{$?,{$EQ,{EXPAND_TYPE},contract},{!CONTRACT},{!EXPAND}}">{+START,INCLUDE,ICON}
+								NAME=trays/{EXPAND_TYPE}
+								ICON_SIZE=24
+							{+END}</a>
 							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{TITLE*}</a>
 						{+END}
 					</h3>
@@ -177,9 +175,7 @@
 										{$SET,needs_msg_label,{$OR,{$GET,GET_NAME},{GET_EMAIL},{GET_TITLE}}}
 										{+START,IF,{$GET,needs_msg_label}}
 											<div class="vertical-alignment">
-												<a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,_SEARCH:userguide_comcode}">
-													{+START,INCLUDE,ICON}NAME=editor/comcode{+END}
-												</a>
+												<a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,_SEARCH:userguide_comcode}">{+START,INCLUDE,ICON}NAME=editor/comcode{+END}</a>
 												<label for="post">{!POST_COMMENT}:</label>
 											</div>
 										{+END}
@@ -198,9 +194,7 @@
 
 										{+START,IF,{$NOT,{$GET,needs_msg_label}}}
 											<div>
-												<a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,_SEARCH:userguide_comcode}">
-													{+START,INCLUDE,ICON}NAME=editor/comcode{+END}
-												</a>
+												<a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,_SEARCH:userguide_comcode}">{+START,INCLUDE,ICON}NAME=editor/comcode{+END}</a>
 												<label for="post" class="vertical-alignment">{!POST_COMMENT}:</label>
 											</div>
 										{+END}

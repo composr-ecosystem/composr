@@ -8,7 +8,7 @@
 				{+START,IF_EMPTY,{I_TITLE}}{!IOTD}{+END}
 			{+END}
 			{+START,IF,{$NOT,{$GET,skip_content_box_title}}}
-				<h3>{+START,IF_NON_EMPTY,{VIEW_URL}}<a class="subtle-link" href="{VIEW_URL*}">{+END}{$GET,content_box_title}{+START,IF_NON_EMPTY,{VIEW_URL}}</a>{+END}</h3>
+				<h3>{+START,IF_NON_EMPTY,{VIEW_URL}}<a class="subtle-link" href="{VIEW_URL*}">{+END}{$TRIM,{$GET,content_box_title}}{+START,IF_NON_EMPTY,{VIEW_URL}}</a>{+END}</h3>
 			{+END}
 		{+END}
 

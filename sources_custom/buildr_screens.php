@@ -170,10 +170,10 @@ function output_room_screen($member_id)
     }
     $realm_name = $GLOBALS['SITE_DB']->query_select_value('w_realms', 'name', array('id' => $realm));
 
-    $has_up_room = ($up_room !== null) && ($up_room != '') && ($locked_up == 0);
-    $has_left_room = ($left_room !== null) && ($left_room != '') && ($locked_left == 0);
-    $has_right_room = ($right_room !== null) && ($right_room != '') && ($locked_right == 0);
-    $has_down_room = ($down_room !== null) && ($down_room != '') && ($locked_down == 0);
+    $has_up_room = (!cms_empty_safe($up_room)) && ($locked_up == 0);
+    $has_left_room = (!cms_empty_safe($left_room)) && ($locked_left == 0);
+    $has_right_room = (!cms_empty_safe($right_room)) && ($locked_right == 0);
+    $has_down_room = (!cms_empty_safe($down_room)) && ($locked_down == 0);
 
     $rows = $GLOBALS['SITE_DB']->query_select('w_portals', array('name', 'end_location_realm', 'owner'), array('start_location_x' => $x, 'start_location_y' => $y, 'start_location_realm' => $realm), 'ORDER BY name');
     $portals = new Tempcode();

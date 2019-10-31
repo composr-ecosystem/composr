@@ -290,7 +290,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
                 'gender' => do_lang('DEFAULT_CPF_gender_NAME'),
             );
             foreach ($mappings as $facebook_field => $composr_field_title) {
-                if (!empty($details[$facebook_field])) {
+                if (!@cms_empty_safe($details[$facebook_field])) {
                     $composr_field_id = find_cms_cpf_field_id($composr_field_title);
                     if ($composr_field_id !== null) {
                         switch ($facebook_field) {
@@ -308,7 +308,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
                 }
             }
             $facebook_field = 'location'; // Could also be 'hometown', but tends to get left outdated
-            if (!empty($details[$facebook_field])) {
+            if (!@cms_empty_safe($details[$facebook_field])) {
                 try {
                     $details3 = $FACEBOOK_CONNECT->api('/' . $details[$facebook_field], array('fields' => 'location'));
 
@@ -320,7 +320,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
                         'country' => 'cms_country',
                     );
                     foreach ($mappings as $facebook_field => $composr_field_title) {
-                        if (!empty($details3[$facebook_field])) {
+                        if (!@cms_empty_safe($details3[$facebook_field])) {
                             $composr_field_id = find_cms_cpf_field_id($composr_field_title);
                             if ($composr_field_id !== null) {
                                 $changes['field_' . strval($composr_field_id)] = $details3[$facebook_field];

@@ -12,15 +12,11 @@
 			<div class="modern-tab-headers" role="tablist">
 				{+START,LOOP,TABS}
 					<div id="t-{TAB_CODE*}"{+START,IF,{TAB_FIRST}} class="tab-active"{+END}>
-						<a aria-controls="g-{TAB_CODE*}" role="tab" href="#!" class="js-click-select-tab-g" data-vw-tab="{TAB_CODE*}">
-							{+START,IF_NON_EMPTY,{TAB_ICON}}
-								{+START,INCLUDE,ICON}
-									NAME={TAB_ICON}
-									ICON_SIZE=24
-								{+END}
-							{+END}
-							<span>{TAB_TITLE*}</span>
-						</a>
+						<a aria-controls="g-{TAB_CODE*}" role="tab" href="#!" class="js-click-select-tab-g" data-vw-tab="{TAB_CODE*}">{+START,IF_NON_EMPTY,{TAB_ICON}}{+START,INCLUDE,ICON}
+							NAME={TAB_ICON}
+							ICON_SIZE=24
+						{+END}{+END}
+						<span>{TAB_TITLE*}</span></a>
 					</div>
 				{+END}
 			</div>

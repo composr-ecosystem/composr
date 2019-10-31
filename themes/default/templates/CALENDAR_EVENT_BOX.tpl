@@ -9,7 +9,7 @@
 		{+END}
 	{+END}
 	{+START,IF,{$NOT,{$GET,skip_content_box_title}}}
-		<h3>{+START,IF_NON_EMPTY,{URL}}<a class="subtle-link" href="{URL*}">{+END}{$GET,content_box_title}{+START,IF_NON_EMPTY,{URL}}</a>{+END}</h3>
+		<h3>{+START,IF_NON_EMPTY,{URL}}<a class="subtle-link" href="{URL*}">{+END}{$TRIM,{$GET,content_box_title}}{+START,IF_NON_EMPTY,{URL}}</a>{+END}</h3>
 	{+END}
 
 	{+START,IF_NON_EMPTY,{SUMMARY}}

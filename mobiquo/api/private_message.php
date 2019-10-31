@@ -56,7 +56,7 @@ function create_message_func($raw_params)
     $subject = $params[1];
     $message = $params[2];
     $action = isset($params[3]) ? $params[3] : (CMSPmWrite::TAPATALK_MESSAGE_NEW);
-    $post_id = empty($params[4]) ? null : $params[4];
+    $post_id = @cms_empty_safe($params[4]) ? null : $params[4];
 
     $first_new_post_id = $pm_object->create_message($user_name_list, $subject, $message, $action, $post_id);
 

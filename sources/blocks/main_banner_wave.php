@@ -73,7 +73,7 @@ class Block_main_banner_wave
 
         $b_type = isset($map['param']) ? $map['param'] : '';
 
-        $name = empty($map['name']) ? null : $map['name'];
+        $name = @cms_empty_safe($map['name']) ? null : $map['name'];
 
         $region = empty($map['region']) ? null : $map['region'];
 

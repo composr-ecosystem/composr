@@ -326,7 +326,7 @@ class Forum_driver_wbb22 extends Forum_driver_base
     public function get_member_avatar_url($member)
     {
         $avatar = $this->db->query_select_value_if_there('avatars', 'avatarname', array('userid' => $member));
-        if (($avatar === null) || ($avatar == '') || (!url_is_local($avatar))) {
+        if ((empty($avatar)) || (!url_is_local($avatar))) {
             return $avatar;
         }
         return get_forum_base_url() . '/images/avatars/' . $avatar;

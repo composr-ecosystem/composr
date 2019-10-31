@@ -51,7 +51,7 @@ class Hook_symbol_BETA_CSS_PROPERTY
 
         $value = '';
 
-        if (isset($param[0])) {
+        if (!empty($param[0])) {
             // No prefixing needed for these
             $is_supported = array(
                 '-o-' => array(

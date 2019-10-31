@@ -87,7 +87,7 @@ function get_region()
 
         if (!is_guest()) {
             $state = get_cms_cpf('state');
-            if (!empty($state)) {
+            if (!cms_empty_safe($state)) {
                 return 'US_' . $state;
             }
         }

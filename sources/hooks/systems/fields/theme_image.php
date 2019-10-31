@@ -148,7 +148,7 @@ class Hook_fields_theme_image
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
         $ids = get_all_image_ids_type(substr($field['cf_type'], 3), true);
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_theme_image($_cf_name, $_cf_description, $input_name, $ids, null, $actual_value, null, $field['cf_required'] == 0);
     }
 

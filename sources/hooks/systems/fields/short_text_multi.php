@@ -120,7 +120,7 @@ class Hook_fields_short_text_multi
 
         $cms_type = option_value_from_field_array($field, 'cms_type', 'line');
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_line_multi($_cf_name, $_cf_description, $input_name, explode("\n", $actual_value), $num_required, null, $cms_type);
     }
 
@@ -144,7 +144,7 @@ class Hook_fields_short_text_multi
             if (($_value === null) && ($i == 0)) {
                 return $editing ? STRING_MAGIC_NULL : '';
             }
-            if (($_value !== null) && ($_value != '')) {
+            if (!cms_empty_safe($_value)) {
                 if ($value != '') {
                     $value .= "\n";
                 }

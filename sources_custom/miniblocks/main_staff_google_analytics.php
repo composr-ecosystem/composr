@@ -25,9 +25,9 @@ if (!empty($map['param'])) {
     set_value('ga_property_id', $property_id, true);
 }
 
-$metric = empty($map['metric']) ? null : $map['metric'];
+$metric = @cms_empty_safe($map['metric']) ? null : $map['metric'];
 
-$id = empty($map['id']) ? null : $map['id'];
+$id = @cms_empty_safe($map['id']) ? null : $map['id'];
 
 $days = empty($map['days']) ? 31 : intval($map['days']);
 

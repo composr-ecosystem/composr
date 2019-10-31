@@ -193,6 +193,10 @@ function ecv($lang, $escaped, $type, $name, $param)
                 ecv2_CSS_INHERIT($value, $lang, $escaped, $param);
                 break;
 
+            case 'TRIM':
+                $value = trim($param[0]->evaluate());
+                break;
+
             case 'FRACTIONAL_EDITABLE':
                 require_javascript('fractional_edit');
 
@@ -1088,9 +1092,9 @@ function ecv_PAGE_LINK($lang, $escaped, $param)
         $skip = array();
 
         if (isset($param[1])) {
-            $avoid_remap = ($param[1] == '1');
-            $skip_keep = isset($param[2]) && ($param[2] == '1');
-            $keep_all = isset($param[3]) && ($param[3] == '1');
+            $avoid_remap = !empty($param[1]);
+            $skip_keep = !empty($param[2]);
+            $keep_all = !empty($param[3]);
             if (isset($param[4])) {
                 $skip = array_flip(explode('|', $param[4]));
             }
@@ -1219,30 +1223,6 @@ function ecv_GET($lang, $escaped, $param)
  * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
  * @return string The result
  */
-function ecv_HAS_ACTUAL_PAGE_ACCESS($lang, $escaped, $param)
-{
-    $value = '';
-
-    if (isset($param[0])) {
-        $value = (function_exists('get_member') && has_actual_page_access(((isset($param[2]))) ? intval($param[2]) : get_member(), $param[0], isset($param[1]) ? $param[1] : null)) ? '1' : '0';
-    }
-
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
-    }
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result
- */
 function ecv_TERNARY($lang, $escaped, $param)
 {
     $value = '';
@@ -1277,9 +1257,9 @@ function ecv_IMG($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         if ((isset($GLOBALS['SITE_DB'])) && (function_exists('find_theme_image')) && (!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($GLOBALS['FORUM_DRIVER'] !== null)) {
-            $value = find_theme_image($param[0], ((isset($param[3])) && ($param[3] === '1')), false, (isset($param[2]) && $param[2] !== '') ? $param[2] : null, null, ((isset($param[1])) && ($param[1] === '1') && (get_forum_type() == 'cns')) ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
+            $value = find_theme_image($param[0], !empty($param[3]), false, (isset($param[2]) && $param[2] !== '') ? $param[2] : null, null, ((!empty($param[1])) && (get_forum_type() == 'cns')) ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
         } else {
             $value = 'themes/default/images/' . $param[0] . '.png';
             if (!is_file(get_file_base() . '/' . $value)) {
@@ -1314,9 +1294,9 @@ function ecv_IMG_INLINE($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         if ((isset($GLOBALS['SITE_DB'])) && (function_exists('find_theme_image')) && (!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($GLOBALS['FORUM_DRIVER'] !== null)) {
-            $value = find_theme_image($param[0], true, true, empty($param[2]) ? null : $param[2], null, ((isset($param[1])) && ($param[1] == '1') && (get_forum_type() == 'cns')) ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
+            $value = find_theme_image($param[0], true, true, @cms_empty_safe($param[2]) ? null : $param[2], null, ((!empty($param[1])) && (get_forum_type() == 'cns')) ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
         } else {
             $value = 'themes/default/images/' . $param[0] . '.png';
             if (!is_file(get_file_base() . '/' . $value)) {
@@ -1355,7 +1335,7 @@ function ecv_IMG_MTIME($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $path = find_theme_image($param[0], true, true);
         if ($path != '') {
             $full_path = get_custom_file_base() . '/' . $path;
@@ -1434,13 +1414,13 @@ function _symbol_image_dims($param)
         return $value;
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $url = $param[0];
         if ($url == '') {
             return $value;
         }
 
-        $cacheable = (isset($param[1]) && $param[1] == '1');
+        $cacheable = !empty($param[1]);
 
         if ($cacheable) {
             $cache = persistent_cache_get('IMAGE_DIMS');
@@ -1449,7 +1429,7 @@ function _symbol_image_dims($param)
             }
         }
 
-        $only_if_local = (isset($param[2]) && $param[2] == '1');
+        $only_if_local = !empty($param[2]);
 
         $details = cms_getimagesize_url($url);
 
@@ -1535,7 +1515,7 @@ function ecv_CSS_MODE($lang, $escaped, $param)
  */
 function ecv_HAS_FORUM($lang, $escaped, $param)
 {
-    if ((isset($param[0])) && ($param[0] == '1')) {
+    if (!empty($param[0])) {
         $value = (get_forum_type() == 'none') ? '0' : '1';
     } else {
         $value = has_no_forum() ? '0' : '1';
@@ -1582,8 +1562,8 @@ function ecv_REFRESH($lang, $escaped, $param)
 
     // Is this refreshing?
     global $REFRESH_URL;
-    if ((array_key_exists(0, $REFRESH_URL)) && ($REFRESH_URL[0] != '')) { // The page itself has actually told it to refresh itself
-        if (!array_key_exists(1, $REFRESH_URL)) {
+    if (!empty($REFRESH_URL[0])) { // The page itself has actually told it to refresh itself
+        if (!isset($REFRESH_URL[1])) {
             $REFRESH_URL[1] = 1;
         }
         $refresh = do_template('META_REFRESH_LINE', array('_GUID' => '6ee20694dfa474f160481a3ab5331d87', 'URL' => $REFRESH_URL[0], 'TIME' => integer_format($REFRESH_URL[1])));
@@ -1656,7 +1636,7 @@ function ecv_METADATA($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         global $METADATA, $BREADCRUMB_SET_SELF;
 
         switch ($param[0]) {
@@ -1694,14 +1674,14 @@ function ecv_METADATA($lang, $escaped, $param)
                 break;
 
             case 'meta_description':
-                if (isset($param[2])) {
+                if ((!empty($param[1])) && (isset($param[2]))) {
                     // Getting specified
                     list(, $value) = seo_meta_get_for($param[1], $param[2]);
                 } else {
                     // Getting contextual
                     global $SEO_DESCRIPTION;
                     if (($SEO_DESCRIPTION === null) || ($SEO_DESCRIPTION == '')) {
-                        if (!empty($METADATA['description'])) {
+                        if (!@cms_empty_safe($METADATA['description'])) {
                             $value = strip_comcode($METADATA['description']);
                         } else {
                             $value = get_option('description');
@@ -1723,7 +1703,7 @@ function ecv_METADATA($lang, $escaped, $param)
                 break;
 
             case 'keywords':
-                if (isset($param[2])) {
+                if ((!empty($param[1])) && (isset($param[2]))) {
                     // Getting specified
                     list($value,) = seo_meta_get_for($param[1], $param[2]);
                 } else {
@@ -1844,13 +1824,13 @@ function keep_symbol($param)
 {
     $value = '';
     $get_vars = $_GET;
-    if ((isset($param[1])) && ($param[1] === '1') && (get_bot_type() === null) && (!isset($get_vars['keep_session']))) {
+    if ((!empty($param[1])) && (get_bot_type() === null) && (!isset($get_vars['keep_session']))) {
         $get_vars['keep_session'] = get_session_id();
     }
 
-    $first = ((isset($param[0])) && ($param[0] === '1'));
+    $first = !empty($param[0]);
     foreach ($get_vars as $key => $val) {
-        if ((@$key[0] == 'k') && (substr($key, 0, 5) === 'keep_') && ((!skippable_keep($key, $val)) || (($key === 'keep_session') && (get_bot_type() === null) && (isset($param[1])) && ($param[1] === '1'))) && (is_string($val))) {
+        if ((@$key[0] == 'k') && (substr($key, 0, 5) === 'keep_') && ((!skippable_keep($key, $val)) || (($key === 'keep_session') && (get_bot_type() === null) && (!empty($param[1])))) && (is_string($val))) {
             $value .= ($first ? '?' : '&') . urlencode($key) . '=' . cms_urlencode($val);
             $first = false;
         }
@@ -1873,7 +1853,7 @@ function ecv_BROWSER($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if (!empty($param[1])) {
         $q = false;
         foreach (explode('|', $param[0]) as $browser) {
             $q = browser_matches($browser);
@@ -1906,7 +1886,7 @@ function ecv_BROWSER($lang, $escaped, $param)
  */
 function ecv_REQUIRE_JAVASCRIPT($lang, $escaped, $param)
 {
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         global $JAVASCRIPTS;
         if (!isset($JAVASCRIPTS[$param[0]])) {
             require_javascript($param[0]);
@@ -1937,7 +1917,7 @@ function ecv_FACILITATE_AJAX_BLOCK_CALL($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         require_code('blocks');
         $_block_constraints = block_params_to_block_signature(block_params_str_to_arr($param[0]));
         if (isset($param[1])) {
@@ -2022,7 +2002,7 @@ function ecv_STRIP_TAGS($lang, $escaped, $param)
     $value = '';
 
     if (isset($param[0])) {
-        if ((isset($param[1])) && ($param[1] == '1')) {
+        if (!empty($param[1])) {
             $value = strip_tags(str_replace('))', ')', str_replace('((', '(', str_replace('<em>', '(', str_replace('</em>', ')', $param[0])))));
         } else {
             if (strpos($param[0], '<') === false) { // optimisation
@@ -2031,10 +2011,10 @@ function ecv_STRIP_TAGS($lang, $escaped, $param)
                 $value = cms_strip_tags($param[0], isset($param[2]) ? $param[2] : '');
             }
         }
-        if ((isset($param[1])) && ($param[1] == '1')) {
+        if (!empty($param[1])) {
             $value = @html_entity_decode($value, ENT_QUOTES);
         }
-        if ((!isset($param[2])) || ($param[2] == '0')) {
+        if (empty($param[2])) {
             $value = trim(cms_preg_replace_safe('#(\s|&nbsp;)+#', ' ', $value));
         }
     }
@@ -2114,8 +2094,8 @@ function symbol_truncator($param, $type, $tooltip_if_truncated = null)
         $is_escaped = ocp_is_escaped($param[0]);
     }
 
-    $amount = intval(isset($param[1]) ? $param[1] : '60');
-    $is_html = ((isset($param[3])) && ($param[3] == '1'));
+    $amount = intval((!empty($param[1])) ? $param[1] : '60');
+    $is_html = (!empty($param[3]));
 
     if (strlen($param[0]) < $amount) {
         if ($is_html) {
@@ -2142,9 +2122,9 @@ function symbol_truncator($param, $type, $tooltip_if_truncated = null)
     }
 
     if ((isset($not_html[$amount])/*optimisation*/) && ((cms_mb_strlen($not_html) > $amount)) || (stripos($html, '<img') !== false)) {
-        $tooltip = ((isset($param[2])) && ($param[2] == '1'));
-        $literal_pos = isset($param[4]) ? ($param[4] == '1') : false;
-        $grammar_completeness_tolerance = isset($param[5]) ? floatval($param[5]) : 0.0;
+        $tooltip = (!empty($param[2]));
+        $literal_pos = (!empty($param[4]));
+        $grammar_completeness_tolerance = (!empty($param[5])) ? floatval($param[5]) : 0.0;
 
         if ($is_html || $grammar_completeness_tolerance != 0.0) {
             require_code('xhtml');
@@ -2329,7 +2309,7 @@ function ecv_CDN_FILTER($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $value = cdn_filter($param[0]);
     }
 
@@ -2761,7 +2741,7 @@ function ecv_LATE_MESSAGES($lang, $escaped, $param)
  */
 function ecv_BREADCRUMBS($lang, $escaped, $param)
 {
-    $show_self = (!isset($param[0]) || $param[0] == '1');
+    $show_self = !empty($param[0]);
     if (!$show_self) {
         $GLOBALS['BREADCRUMBS'] = null;
     }
@@ -2966,27 +2946,29 @@ function ecv_CPF_VALUE($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!@cms_empty_safe($param[0])) {
         $_value = '';
+
+        $member_id = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
 
         if (is_numeric($param[0])) {
             require_code('cns_members');
-            $custom_fields = cns_get_all_custom_fields_match_member(isset($param[1]) ? intval($param[1]) : get_member());
+            $custom_fields = cns_get_all_custom_fields_match_member($member_id);
             foreach ($custom_fields as $custom_field) {
                 if ($custom_field['FIELD_ID'] == $param[0]) {
                     $_value = $custom_field['RAW'];
                 }
             }
         } elseif ((substr($param[0], 0, 2) == 'm_') && (stripos($param[0], 'hash') === false) && (stripos($param[0], 'salt') === false)) {
-            $_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field(isset($param[1]) ? intval($param[1]) : get_member(), $param[0]);
+            $_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, $param[0]);
         } else {
             if (preg_match('#^\w*$#', $param[0]) != 0) {
-                $_value = get_cms_cpf($param[0], isset($param[1]) ? intval($param[1]) : null);
+                $_value = get_cms_cpf($param[0], ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : null);
             } else {
                 require_code('cns_members');
                 $cpf_id = find_cpf_field_id($param[0]);
                 if ($cpf_id !== null) {
-                    $custom_fields = cns_get_all_custom_fields_match_member(isset($param[1]) ? intval($param[1]) : get_member());
+                    $custom_fields = cns_get_all_custom_fields_match_member($member_id);
                     foreach ($custom_fields as $custom_field) {
                         if ($custom_field['FIELD_ID'] == strval($cpf_id)) {
                             $_value = $custom_field['RAW'];
@@ -3028,7 +3010,7 @@ function ecv_BANNER($lang, $escaped, $param)
 
     if (addon_installed('banners')) {
         global $SITE_INFO;
-        $is_on_banners = ((isset($param[1])) && ($param[1] == '1')) || (((!has_privilege(get_member(), 'banner_free')) || (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_option('admin_banners') == '1')) || ($GLOBALS['CURRENT_SHARE_USER'] !== null)));
+        $is_on_banners = (!empty($param[1])) || (((!has_privilege(get_member(), 'banner_free')) || (($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) && (get_option('admin_banners') == '1')) || ($GLOBALS['CURRENT_SHARE_USER'] !== null)));
         if (!empty($SITE_INFO['throttle_bandwidth_registered'])) {
             $views_till_now = intval(get_value('page_views'));
             $bandwidth_allowed = $SITE_INFO['throttle_bandwidth_registered'];
@@ -3044,8 +3026,8 @@ function ecv_BANNER($lang, $escaped, $param)
             if (!$GLOBALS['STATIC_TEMPLATE_TEST_MODE']) { // Normal operation
                 $width = empty($param[1]) ? null : intval($param[1]);
                 $height = empty($param[2]) ? null : intval($param[2]);
-                $region = isset($param[3]) ? $param[3] : null;
-                $name = isset($param[4]) ? $param[4] : null;
+                $region = (!empty($param[3])) ? $param[3] : null;
+                $name = (!@cms_empty_safe($param[4])) ? $param[4] : null;
                 $_value = banners_script(true, '', $name, $b_type, '', $width, $height, $region);
                 $value = trim($_value->evaluate());
             } else { // Been told to behave statically
@@ -3072,7 +3054,7 @@ function ecv_BANNER($lang, $escaped, $param)
  */
 function ecv_AVATAR($lang, $escaped, $param)
 {
-    $value = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url(isset($param[0]) ? intval($param[0]) : get_member());
+    $value = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member());
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
@@ -3092,7 +3074,7 @@ function ecv_AVATAR($lang, $escaped, $param)
  */
 function ecv_IS_GUEST($lang, $escaped, $param)
 {
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         $value = (is_guest(intval($param[0]))) ? '1' : '0';
     } else {
         $value = is_guest() ? '1' : '0';
@@ -3116,7 +3098,7 @@ function ecv_IS_GUEST($lang, $escaped, $param)
  */
 function ecv_MEMBER($lang, $escaped, $param)
 {
-    if (!isset($param[0])) {
+    if (empty($param[0])) {
         $value = strval(get_member());
     } else {
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($param[0]);
@@ -3141,7 +3123,7 @@ function ecv_MEMBER($lang, $escaped, $param)
  */
 function ecv_REQUIRE_CSS($lang, $escaped, $param)
 {
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         require_css($param[0]);
     }
 
@@ -3184,7 +3166,7 @@ function ecv_IS_HTTPAUTH_LOGIN($lang, $escaped, $param)
  */
 function ecv_MEMBER_PROFILE_URL($lang, $escaped, $param)
 {
-    $member_id = (($param !== null) && (isset($param[0]))) ? intval($param[0]) : get_member();
+    $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();
     $value = $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true);
     if (is_object($value)) {
         $value = $value->evaluate();
@@ -3211,8 +3193,8 @@ function ecv_MEMBER_PROFILE_URL($lang, $escaped, $param)
  */
 function ecv_USERNAME($lang, $escaped, $param)
 {
-    $member_id = (isset($param[0])) ? intval($param[0]) : get_member();
-    $value = $GLOBALS['FORUM_DRIVER']->get_username($member_id, (isset($param[1])) && ($param[1] == '1'));
+    $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();
+    $value = $GLOBALS['FORUM_DRIVER']->get_username($member_id, !empty($param[1]));
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
@@ -3237,7 +3219,7 @@ function ecv_DISPLAYED_USERNAME($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $value = get_displayname($param[0]);
     }
 
@@ -3358,11 +3340,7 @@ function ecv_THUMBNAIL($lang, $escaped, $param)
         $background = $param[7];
     }
 
-    if (empty($param[8])) {
-        $only_make_smaller = false;
-    } else {
-        $only_make_smaller = ($param[8] == '1');
-    }
+    $only_make_smaller = !empty($param[8]);
 
     require_code('images');
     require_code('images2');
@@ -3450,7 +3428,7 @@ function ecv_IS_IN_GROUP($lang, $escaped, $param)
 function ecv_IS_STAFF($lang, $escaped, $param)
 {
     if ((isset($GLOBALS['FORUM_DRIVER'])) && (function_exists('get_member'))) {
-        $value = $GLOBALS['FORUM_DRIVER']->is_staff((($param !== null) && (isset($param[0]))) ? intval($param[0]) : get_member()) ? '1' : '0';
+        $value = $GLOBALS['FORUM_DRIVER']->is_staff(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()) ? '1' : '0';
     } else {
         $value = '0';
     }
@@ -3474,7 +3452,7 @@ function ecv_IS_STAFF($lang, $escaped, $param)
 function ecv_IS_ADMIN($lang, $escaped, $param)
 {
     if ((isset($GLOBALS['FORUM_DRIVER'])) && (function_exists('get_member'))) {
-        $value = $GLOBALS['FORUM_DRIVER']->is_super_admin((($param !== null) && (isset($param[0]))) ? intval($param[0]) : get_member()) ? '1' : '0';
+        $value = $GLOBALS['FORUM_DRIVER']->is_super_admin(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member()) ? '1' : '0';
     } else {
         $value = '0';
     }
@@ -3502,7 +3480,7 @@ function ecv_PHOTO($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    $value = $GLOBALS['FORUM_DRIVER']->get_member_photo_url(isset($param[0]) ? intval($param[0]) : get_member(), (isset($param[1])) && ($param[1] == '1'));
+    $value = $GLOBALS['FORUM_DRIVER']->get_member_photo_url(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member(), !empty($param[1]));
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
@@ -3530,7 +3508,7 @@ function ecv_CNS_RANK_IMAGE($lang, $escaped, $param)
     if (addon_installed('cns_forum')) {
         require_code('cns_groups');
         $rank_images = new Tempcode();
-        $member_id = isset($param[0]) ? intval($param[0]) : get_member();
+        $member_id = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member();
         $posters_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id, true);
         foreach ($posters_groups as $group) {
             $rank_image = cns_get_group_property($group, 'rank_image');
@@ -3567,15 +3545,15 @@ function ecv_URL_FOR_GET_FORM($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $url_bits = parse_url($param[0]);
-        if (array_key_exists('scheme', $url_bits)) {
-            $value = $url_bits['scheme'] . '://' . (array_key_exists('host', $url_bits) ? $url_bits['host'] : 'localhost');
-            if ((array_key_exists('port', $url_bits)) && ($url_bits['port'] != 80)) {
+        if (isset($url_bits['scheme'])) {
+            $value = $url_bits['scheme'] . '://' . (isset($url_bits['host']) ? $url_bits['host'] : 'localhost');
+            if ((isset($url_bits['port'])) && ($url_bits['port'] != 80)) {
                 $value .= ':' . strval($url_bits['port']);
             }
         }
-        if (array_key_exists('path', $url_bits)) {
+        if (isset($url_bits['path'])) {
             $value .= $url_bits['path'];
         }
     }
@@ -3600,7 +3578,7 @@ function ecv_HIDDENS_FOR_GET_FORM($lang, $escaped, $param)
 {
     $_value = new Tempcode();
     $url_bits = parse_url($param[0]);
-    if ((array_key_exists('query', $url_bits)) && ($url_bits['query'] != '')) {
+    if (!@cms_empty_safe($url_bits['query'])) {
         foreach (explode('&', $url_bits['query']) as $exp) {
             $parts = explode('=', $exp, 2);
             if (count($parts) == 2) {
@@ -3632,9 +3610,9 @@ function ecv_NOTIFICATIONS_ENABLED($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         require_code('notifications');
-        $value = notifications_enabled(array_key_exists(1, $param) ? $param[1] : get_page_name(), $param[0]) ? '1' : '0';
+        $value = notifications_enabled((isset($param[1])) ? $param[1] : get_page_name(), $param[0]) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -3656,7 +3634,7 @@ function ecv_NOTIFICATIONS_ENABLED($lang, $escaped, $param)
 function ecv_NOTIFICATIONS_AVAILABLE($lang, $escaped, $param)
 {
     $value = '1';
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $notification_code = $param[0];
 
         require_code('notifications');
@@ -3689,12 +3667,12 @@ function ecv_MAKE_RELATIVE_DATE($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
-        if ((get_option('use_contextual_dates') == '0') && ((!array_key_exists(1, $param)) || ($param[1] != '1'))) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
+        if ((get_option('use_contextual_dates') == '0') && (empty($param[1]))) {
             $value = get_timezoned_date_time(intval($param[0]));
         } else {
             $value = display_time_period(time() - intval($param[0]));
-            if ((array_key_exists(2, $param)) && ($param[2] == '1')) {
+            if (!empty($param[2])) {
                 $value = do_lang('_AGO', $value);
             }
         }
@@ -3754,7 +3732,7 @@ function ecv_RUNNING_SCRIPT($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!@cms_empty_safe($param[0])) {
         $value = running_script($param[0]) ? '1' : '0';
     }
 
@@ -3781,7 +3759,7 @@ function ecv_MATCH_KEY_MATCH($lang, $escaped, $param)
         if (($match_key == '1') || ($match_key == '0') || ($match_key == '')) {
             continue;
         }
-        if (match_key_match($match_key, ((isset($param[1])) && ($match_key == '1')))) {
+        if (match_key_match($match_key, (!empty($param[1])))) {
             $value = '1';
         }
     }
@@ -3913,7 +3891,7 @@ function ecv_PREVIEW_URL($lang, $escaped, $param)
  */
 function ecv_HIDE_HELP_PANEL($lang, $escaped, $param)
 {
-    $value = ((array_key_exists('hide_helper_panel', $_COOKIE)) && ($_COOKIE['hide_helper_panel'] == '1')) ? '1' : '0';
+    $value = (!empty($_COOKIE['hide_helper_panel'])) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
@@ -3961,8 +3939,8 @@ function ecv_FIND_SCRIPT($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if ((isset($param[0])) && (function_exists('find_script'))) {
-        $value = find_script($param[0], false, isset($param[1]) ? intval($param[1]) : 0);
+    if ((!empty($param[0])) && (function_exists('find_script'))) {
+        $value = find_script($param[0], false, (!empty($param[1])) ? intval($param[1]) : 0);
     } else { // Running from installer's compilation of JS, so let's assume it's a simple case
         $value = get_base_url() . '/data/' . $param[0] . '.php';
     }
@@ -4090,7 +4068,7 @@ function ecv_EXTRA_FOOT($lang, $escaped, $param)
     if ($GLOBALS['EXTRA_FOOT'] !== null) {
         $_value = $GLOBALS['EXTRA_FOOT'];
 
-        if (array_key_exists(0, $param)) { // Set
+        if (!@cms_empty_safe($param[0])) { // Set
             $GLOBALS['EXTRA_FOOT']->attach($param[0]);
         } else { // Get
             $value = $_value->evaluate();
@@ -4140,7 +4118,7 @@ function ecv_NUMBER_FORMAT($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if ((isset($param[0])) && (is_numeric($param[0]))) {
         $value = integer_format(intval($param[0]));
     }
 
@@ -4163,10 +4141,10 @@ function ecv_NUMBER_FORMAT($lang, $escaped, $param)
 function ecv_RAND($lang, $escaped, $param)
 {
     if (!$GLOBALS['STATIC_TEMPLATE_TEST_MODE']) { // Normal operation
-        if (isset($param[1])) {
+        if ((isset($param[1])) && (is_numeric($param[1]))) {
             $min = intval($param[0]);
             $max = intval($param[1]);
-        } elseif (isset($param[0])) {
+        } elseif ((isset($param[0])) && (is_numeric($param[0]))) {
             $min = 0;
             $max = intval($param[0]);
         } else {
@@ -4249,7 +4227,7 @@ function ecv_SET_RAND($lang, $escaped, $param)
  */
 function ecv_MEMBER_EMAIL($lang, $escaped, $param)
 {
-    $value = $GLOBALS['FORUM_DRIVER']->get_member_email_address(isset($param[0]) ? intval($param[0]) : get_member());
+    $value = $GLOBALS['FORUM_DRIVER']->get_member_email_address(((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : get_member());
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
@@ -4271,8 +4249,34 @@ function ecv_HAS_PRIVILEGE($lang, $escaped, $param)
 {
     $value = '';
 
-    if ((isset($param[0])) && (function_exists('has_privilege'))) {
-        $value = has_privilege((($param !== null) && (isset($param[1]))) ? intval($param[1]) : get_member(), $param[0], isset($param[2]) ? $param[2] : null, empty($param[3]) ? null : explode('|', $param[3])) ? '1' : '0';
+    if ((!empty($param[0])) && (function_exists('has_privilege'))) {
+        $member_id = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
+
+        $value = has_privilege($member_id, $param[0], isset($param[2]) ? $param[2] : null, empty($param[3]) ? null : explode('|', $param[3])) ? '1' : '0';
+    }
+
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv_HAS_ACTUAL_PAGE_ACCESS($lang, $escaped, $param)
+{
+    $value = '';
+
+    if (!@cms_empty_safe($param[0])) {
+        $value = (function_exists('get_member') && has_actual_page_access(((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member(), $param[0], isset($param[1]) ? $param[1] : null)) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -4296,7 +4300,41 @@ function ecv_HAS_ZONE_ACCESS($lang, $escaped, $param)
     $value = '';
 
     if ((isset($param[0])) && (function_exists('has_zone_access'))) {
-        $value = has_zone_access((($param !== null) && (isset($param[1]))) ? intval($param[1]) : get_member(), $param[0]) ? '1' : '0';
+        $member_id = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
+
+        $value = has_zone_access($member_id, $param[0]) ? '1' : '0';
+    }
+
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv_HAS_EDIT_PERMISSION($lang, $escaped, $param)
+{
+    $value = '';
+
+    if (!empty($param[0])) {
+        $range = strtolower($param[0]);
+        $owner = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
+        $member_id = ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member();
+        $cms_page = ((!@cms_empty_safe($param[3]))) ? $param[3] : get_page_name();
+        if (isset($param[5])) {
+            $value = has_edit_permission($range, $member_id, $owner, $cms_page, array($param[4], $param[5])) ? '1' : '0';
+        } else {
+            $value = has_edit_permission($range, $member_id, $owner, $cms_page) ? '1' : '0';
+        }
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -4319,12 +4357,12 @@ function ecv_HAS_DELETE_PERMISSION($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if (!empty($param[0])) {
         $range = strtolower($param[0]);
-        $owner = intval($param[1]);
-        $member_id = (($param !== null) && (isset($param[2]))) ? intval($param[2]) : get_member();
-        $cms_page = (($param !== null) && (isset($param[3]))) ? $param[3] : get_page_name();
-        if (array_key_exists(5, $param)) {
+        $owner = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
+        $member_id = ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : get_member();
+        $cms_page = ((!@cms_empty_safe($param[3]))) ? $param[3] : get_page_name();
+        if (isset($param[5])) {
             $value = has_delete_permission($range, $member_id, $owner, $cms_page, array($param[5], $param[6])) ? '1' : '0';
         } else {
             $value = has_delete_permission($range, $member_id, $owner, $cms_page) ? '1' : '0';
@@ -4349,10 +4387,10 @@ function ecv_HAS_DELETE_PERMISSION($lang, $escaped, $param)
  */
 function ecv_DATE_TIME($lang, $escaped, $param)
 {
-    $time = empty($param[0]) ? time() : intval($param[0]);
+    $time = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : time();
     $use_contextual_dates = (!isset($param[1]) || ($param[1] == '1'));
-    $utc_time = (isset($param[2]) && ($param[2] == '1'));
-    $member_id = isset($param[3]) ? intval($param[3]) : null;
+    $utc_time = (!empty($param[2]));
+    $member_id = ((isset($param[3])) && (is_numeric($param[3]))) ? intval($param[3]) : null;
     $value = get_timezoned_date_time($time, $use_contextual_dates, $utc_time, $member_id);
 
     if ($escaped !== array()) {
@@ -4373,10 +4411,10 @@ function ecv_DATE_TIME($lang, $escaped, $param)
  */
 function ecv_DATE($lang, $escaped, $param)
 {
-    $time = empty($param[0]) ? time() : intval($param[0]);
+    $time = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : time();
     $use_contextual_dates = (!isset($param[1]) || ($param[1] == '1'));
-    $utc_time = (isset($param[2]) && ($param[2] == '1'));
-    $member_id = isset($param[3]) ? intval($param[3]) : null;
+    $utc_time = (!empty($param[2]));
+    $member_id = ((isset($param[3])) && (is_numeric($param[3]))) ? intval($param[3]) : null;
     $value = get_timezoned_date($time, $use_contextual_dates, $utc_time, $member_id);
 
     if ($escaped !== array()) {
@@ -4397,10 +4435,10 @@ function ecv_DATE($lang, $escaped, $param)
  */
 function ecv_TIME($lang, $escaped, $param)
 {
-    $time = (!empty($param[0])) ? intval($param[0]) : time();
-    $use_contextual_times = (isset($param[1]) && ($param[1] === '1'));
-    $utc_time = (isset($param[2]) && ($param[2] === '1'));
-    $member_id = isset($param[3]) ? intval($param[3]) : null;
+    $time = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : time();
+    $use_contextual_times = (!empty($param[1]));
+    $utc_time = (!empty($param[2]));
+    $member_id = ((isset($param[3])) && (is_numeric($param[3]))) ? intval($param[3]) : null;
     $value = get_timezoned_time($time, $use_contextual_times, $utc_time, $member_id);
 
     if ($escaped !== array()) {
@@ -4421,15 +4459,15 @@ function ecv_TIME($lang, $escaped, $param)
  */
 function ecv_FROM_TIMESTAMP($lang, $escaped, $param)
 {
-    if (isset($param[0])) {
-        $timestamp = (!empty($param[1])) ? intval($param[1]) : time();
+    if (!empty($param[0])) {
+        $timestamp = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : time();
 
         if ($GLOBALS['STATIC_TEMPLATE_TEST_MODE']) {
             require_code('lorem');
             $timestamp = intval(placeholder_date_raw());
         }
 
-        if ((!array_key_exists(2, $param)) || ($param[2] === '1')) {
+        if ((!isset($param[2])) || ($param[2] === '1')) {
             $timestamp = utctime_to_usertime($timestamp);
         }
         $value = cms_strftime($param[0], $timestamp);
@@ -4486,7 +4524,7 @@ function ecv_BROWSER_MATCHES($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $q = false;
         foreach (explode('|', $param[0]) as $browser) {
             $q = browser_matches($browser);
@@ -4550,7 +4588,7 @@ function ecv_INC($lang, $escaped, $param)
             $TEMPCODE_SETGET[$param[0]] = '0';
         }
 
-        if ((isset($param[1])) && ($param[1] == '1')) {
+        if (!empty($param[1]))  {
             $value = $TEMPCODE_SETGET[$param[0]];
         }
 
@@ -4661,7 +4699,7 @@ function ecv_MAX($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
         $value = strval(max(intval($param[0]), intval($param[1])));
     }
 
@@ -4685,7 +4723,7 @@ function ecv_MIN($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
         $value = strval(min(intval($param[0]), intval($param[1])));
     }
 
@@ -4709,12 +4747,8 @@ function ecv_DIV_FLOAT($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
-        if (floatval($param[1]) == 0.0) {
-            $value = 'divide-by-zero';
-        } else {
-            $value = float_to_raw_string(floatval($param[0]) / floatval($param[1]), 20, true);
-        }
+    if ((isset($param[0])) && (is_numeric($param[0])) && (!empty($param[1]))) {
+        $value = float_to_raw_string(floatval($param[0]) / floatval($param[1]), 20, true);
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -4737,12 +4771,8 @@ function ecv_DIV($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
-        if (floatval($param[1]) == 0.0) {
-            $value = 'divide-by-zero';
-        } else {
-            $value = strval(intval(floor(floatval($param[0]) / floatval($param[1]))));
-        }
+    if ((isset($param[0])) && (is_numeric($param[0])) && (!empty($param[1]))) {
+        $value = strval(intval(floor(floatval($param[0]) / floatval($param[1]))));
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -4804,7 +4834,7 @@ function ecv_UCASE($lang, $escaped, $param)
     }
 
     if (isset($param[0])) {
-        if ((isset($param[1])) && ($param[1] == '1')) {
+        if (!empty($param[1])) {
             $value = cms_mb_strtoupper(cms_mb_substr($param[0], 0, 1)) . cms_mb_substr($param[0], 1); // ucfirst
         } else {
             $value = cms_mb_strtoupper($param[0]);
@@ -4866,7 +4896,7 @@ function ecv__POST($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!@cms_empty_safe($param[0])) {
         $value = post_param_string($param[0], isset($param[1]) ? $param[1] : '');
     }
 
@@ -4992,8 +5022,8 @@ function ecv_SUBSTR($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
-        $value = cms_mb_substr($param[0], intval($param[1]), isset($param[2]) ? intval($param[2]) : strlen($param[0]));
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
+        $value = cms_mb_substr($param[0], intval($param[1]), ((isset($param[2])) && (is_numeric($param[2]))) ? intval($param[2]) : strlen($param[0]));
     }
 
     if ($escaped !== array()) {
@@ -5019,9 +5049,9 @@ function ecv_ALTERNATOR_TRUNCATED($lang, $escaped, $param) // Alternate values a
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[3])) {
+    if ((isset($param[1])) && (is_numeric($param[1])) && (isset($param[3]))) {
         $amount = intval($param[1]);
-        $is_html = ((isset($param[4])) && ($param[4] == '1'));
+        $is_html = (!empty($param[4]));
         if (strlen($is_html ? strip_tags($param[0]) : $param[0]) > $amount) {
             $value = $param[3];
         } else {
@@ -5252,7 +5282,7 @@ function ecv_LT($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
         $value = (intval($param[0]) < intval($param[1])) ? '1' : '0';
     }
 
@@ -5276,7 +5306,7 @@ function ecv_GT($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
         $value = (intval($param[0]) > intval($param[1])) ? '1' : '0';
     }
 
@@ -5332,7 +5362,7 @@ function ecv_INSERT_SPAMMER_BLACKHOLE($lang, $escaped, $param)
     if (!$GLOBALS['STATIC_TEMPLATE_TEST_MODE']) {
         if (get_option('spam_blackhole_detection') == '1' && !$done_once && get_page_name() != 'members'/*in case of some weird autocomplete issue when changing your password*/) {
             $field_name = 'y' . md5(get_site_name() . ': antispam');
-            $tag = ((isset($param[0])) && ($param[0] == '1')) ? 'span' : 'div';
+            $tag = ((!empty($param[0])) ) ? 'span' : 'div';
             $value .= '<' . $tag . ' id="' . escape_html($field_name) . '-wrap" style="display:none" ' . ($GLOBALS['SEMI_DEV_MODE'] ? '' : 'data-remove-if-js-enabled="1"') . '>' .
                 '<label for="' . escape_html($field_name) . '">' . do_lang('DO_NOT_FILL_ME_SPAMMER_BLACKHOLE') . '</label><input id="' . escape_html($field_name) . '" name="' . escape_html($field_name) . '" value="" type="text" /></' . $tag . '>';
             $done_once = true;
@@ -5430,7 +5460,7 @@ function ecv_COMMENT_COUNT($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (isset($param[1]))) {
         static $cache_comment_count = array();
         $cache_key = $param[0] . '_' . $param[1];
         if (isset($cache_comment_count[$cache_key])) {
@@ -5439,7 +5469,7 @@ function ecv_COMMENT_COUNT($lang, $escaped, $param)
             if (get_option('is_on_comments') == '1') {
                 $count = 0;
                 $_comments = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(get_option('comments_forum_name'), $cache_key, do_lang('COMMENT')), $count, 0, 0, false);
-                if (($count != 0) || (!array_key_exists(2, $param)) || ($param[2] == '0')) {
+                if (($count != 0) || (empty($param[2]))) {
                     if (is_array($_comments)) {
                         $_value = do_lang_tempcode('_COMMENTS', escape_html(integer_format($count)));
                     } else {
@@ -5491,9 +5521,9 @@ function ecv_SELF_URL($lang, $escaped, $param)
             $i++;
         }
     }
-    $root_if_posted = (isset($param[0])) && ($param[0] == '1');
-    $posted_too = (isset($param[1])) && ($param[1] == '1');
-    $avoid_remap = (isset($param[2])) && ($param[2] == '1');
+    $root_if_posted = (!empty($param[0]));
+    $posted_too = (!empty($param[1]));
+    $avoid_remap = (!empty($param[2]));
     $value = get_self_url(true, $root_if_posted, $extra_params, $posted_too, $avoid_remap);
 
     if ($escaped !== array()) {
@@ -5519,10 +5549,10 @@ function ecv_REVIEW_STATUS($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
+    if ((!empty($param[0])) && (isset($param[1]))) {
         if (addon_installed('content_reviews')) {
             require_code('content_reviews');
-            $value = show_content_reviews($param[0], $param[1], array_key_exists(2, $param) ? intval($param[2]) : 0);
+            $value = show_content_reviews($param[0], $param[1], (!empty($param[2])) ? intval($param[2]) : 0);
         }
     }
 
@@ -5581,7 +5611,7 @@ function ecv_EXTEND_URL($lang, $escaped, $param)
  */
 function ecv_MOBILE($lang, $escaped, $param)
 {
-    $value = is_mobile(null, isset($param[0]) ? ($param[0] == '1') : false) ? '1' : '0';
+    $value = is_mobile(null, !empty($param[0])) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
@@ -5601,7 +5631,7 @@ function ecv_MOBILE($lang, $escaped, $param)
  */
 function ecv_DESKTOP($lang, $escaped, $param)
 {
-    $value = !is_mobile(null, isset($param[0]) ? ($param[0] == '1') : false) ? '1' : '0';
+    $value = !is_mobile(null, !empty($param[0])) ? '1' : '0';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
@@ -5688,7 +5718,7 @@ function ecv_AUTHOR_MEMBER($lang, $escaped, $param)
 {
     $value = '';
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         if (addon_installed('authors')) {
             require_code('authors');
             $member_id = get_author_id_from_name($param[0]);
@@ -5883,9 +5913,9 @@ function ecv_COPYRIGHT($lang, $escaped, $param)
  */
 function ecv_CUSTOM_BASE_URL($lang, $escaped, $param)
 {
-    $value = get_custom_base_url(empty($param[0]) ? null : ($param[0] == '1'));
+    $value = get_custom_base_url(@cms_empty_safe($param[0]) ? null : !empty($param[0]));
 
-    if ((isset($param[1])) && ($param[1] == '1')) {
+    if (!empty($param[1])) {
         $value = cdn_filter($value);
     }
 
@@ -5961,7 +5991,7 @@ function ecv_CUSTOM_BASE_URL_NOHTTP($lang, $escaped, $param)
  */
 function ecv_BASE_URL($lang, $escaped, $param)
 {
-    $value = get_base_url(isset($param[0]) ? ($param[0] == '1') : null);
+    $value = get_base_url(isset($param[0]) ? !empty($param[0]) : null);
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
@@ -6146,9 +6176,10 @@ function ecv_GROUP_ID($lang, $escaped, $param)
 {
     $value = '';
 
-    $i = isset($param[0]) ? intval($param[0]) : 0;
-    $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups(isset($param[1]) ? intval($param[1]) : get_member());
-    $value = array_key_exists($i, $groups) ? strval($groups[$i]) : '';
+    $i = (!empty($param[0])) ? intval($param[0]) : 0;
+    $member_id = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : get_member();
+    $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id);
+    $value = isset($groups[$i]) ? strval($groups[$i]) : '';
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);
@@ -6273,7 +6304,7 @@ function ecv_VERSION($lang, $escaped, $param)
  */
 function ecv_VERSION_NUMBER($lang, $escaped, $param)
 {
-    if ((isset($param[0])) && ($param[0] == '1')) {
+    if (!empty($param[0])) {
         require_code('version2');
         $value = get_version_dotted();
     } else {
@@ -6323,11 +6354,11 @@ function ecv_CONFIG_OPTION($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         if ($GLOBALS['IN_MINIKERNEL_VERSION']) { // Installer, likely executing global.js. We need a saner default for JavaScript
             $value = '0';
         } else {
-            $value = get_option($param[0], array_key_exists(1, $param) && $param[1] == '1');
+            $value = get_option($param[0], !empty($param[1]));
             if ($value === null) {
                 $value = '';
             }
@@ -6357,7 +6388,7 @@ function ecv_VALUE_OPTION($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $value = function_exists('get_value') ? get_value($param[0]) : '';
         if ($value === null) {
             $value = function_exists('get_value') ? get_value($param[0], null, true) : '';
@@ -6393,11 +6424,11 @@ function ecv_THEME_OPTION($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         if ($GLOBALS['IN_MINIKERNEL_VERSION']) { // Installer, likely executing global.js. We need a saner default for JavaScript
             $value = '0';
         } else {
-            $value = get_theme_option($param[0], array_key_exists(2, $param) ? $param[2] : null, null, array_key_exists(1, $param) && $param[1] == '1');
+            $value = get_theme_option($param[0], isset($param[2]) ? $param[2] : null, null, !empty($param[1]));
             if ($value === null) {
                 $value = '';
             }
@@ -6424,8 +6455,8 @@ function ecv_ADDON_INSTALLED($lang, $escaped, $param)
 {
     $value = '';
 
-    if ((isset($param[0])) && (!running_script('install'))) {
-        $value = (addon_installed($param[0], (isset($param[1])) && ($param[1] == '1'))) ? '1' : '0';
+    if ((!empty($param[0])) && (!running_script('install'))) {
+        $value = (addon_installed($param[0], !empty($param[1]))) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -6528,7 +6559,7 @@ function ecv_TUTORIAL_URL($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[0])) {
+    if (!empty($param[0])) {
         $value = get_tutorial_url($param[0]);
     }
 
@@ -6662,10 +6693,10 @@ function ecv_PUBLIC_CONFIG_OPTIONS_JSON($lang, $escaped, $param)
     foreach ($hooks as $hook => $ob) {
         $details = $ob->get_details();
 
-        if (isset($details['public']) && $details['public']) {
+        if (!empty($details['public'])) {
             if ($GLOBALS['IN_MINIKERNEL_VERSION']) { // Installer, likely executing global.js. We need a saner default for JavaScript
                 $_value[$hook] = '0';
-            } elseif (isset($details['theme_override']) && $details['theme_override']) {
+            } elseif (!empty($details['theme_override'])) {
                 $_value[$hook] = get_theme_option($hook);
             } else {
                 $_value[$hook] = get_option($hook);
@@ -6699,7 +6730,7 @@ function ecv_SMART_LINK_STRIP($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if (isset($param[1])) {
+    if ((isset($param[1])) && (is_numeric($param[1]))) {
         $value = $param[0];
 
         if ((!has_no_forum()) && ($GLOBALS['FORUM_DRIVER']->get_post_count(intval($param[1])) < 1)) {
@@ -6893,38 +6924,6 @@ function ecv_ATTR_DEFAULTED($lang, $escaped, $param)
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
-    }
-    return $value;
-}
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result
- */
-function ecv_HAS_EDIT_PERMISSION($lang, $escaped, $param)
-{
-    $value = '';
-
-    if (isset($param[1])) {
-        $range = strtolower($param[0]);
-        $owner = intval($param[1]);
-        $member_id = ((isset($param[2]))) ? intval($param[2]) : get_member();
-        $cms_page = ((isset($param[3]))) ? $param[3] : get_page_name();
-        if (array_key_exists(5, $param)) {
-            $value = has_edit_permission($range, $member_id, $owner, $cms_page, array($param[4], $param[5])) ? '1' : '0';
-        } else {
-            $value = has_edit_permission($range, $member_id, $owner, $cms_page) ? '1' : '0';
-        }
-    }
-
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
     }
     return $value;
 }

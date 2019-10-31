@@ -148,7 +148,7 @@ class Hook_fields_year_month
      */
     public function get_field_inputter($_cf_name, $_cf_description, $field, $actual_value, $new)
     {
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         $start_year = intval(date('Y')) - 15;
         $end_year = intval(date('Y')) + 15;

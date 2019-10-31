@@ -3,15 +3,13 @@
 <section id="tray-{!CHECK_LIST|}" class="box box---block-main-staff-checklist" data-toggleable-tray="{ save: true }" data-tpl="blockMainStaffChecklist">
 	<div class="box-inner">
 		<h3 class="toggleable-tray-title js-tray-header">
-			<a href="#!" id="checklist-show-all-link" class="top-left-toggle js-click-disable-task-hiding" title="{!SHOW_ALL}: {!CHECK_LIST}">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END}{!SHOW_ALL}</a>
-			<a href="#!" id="checklist-hide-done-link" class="top-left-toggle js-click-enable-task-hiding">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END}{!HIDE_DONE}</a>
+			<a href="#!" id="checklist-show-all-link" class="top-left-toggle js-click-disable-task-hiding" title="{!SHOW_ALL}: {!CHECK_LIST}">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} {!SHOW_ALL}</a>
+			<a href="#!" id="checklist-hide-done-link" class="top-left-toggle js-click-enable-task-hiding">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} {!HIDE_DONE}</a>
 
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/contract
-					ICON_SIZE=24
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
+				NAME=trays/contract
+				ICON_SIZE=24
+			{+END}</a>
 			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!CHECK_LIST}</a>
 		</h3>
 

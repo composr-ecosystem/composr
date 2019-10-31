@@ -47,12 +47,10 @@
 
 					<ul class="horizontal-links with-icons associated-links-block-group">
 						<li>
-							<a href="{SUBSCRIBE_URL*}">
-								{+START,INCLUDE,ICON}
-									NAME=buttons/notifications_enable
-									ICON_SIZE=24
-								{+END}{!SUBSCRIBE_EVENT}
-							</a>
+							<a href="{SUBSCRIBE_URL*}">{+START,INCLUDE,ICON}
+								NAME=buttons/notifications_enable
+								ICON_SIZE=24
+							{+END} {!SUBSCRIBE_EVENT}</a>
 						</li>
 					</ul>
 				</div></div>

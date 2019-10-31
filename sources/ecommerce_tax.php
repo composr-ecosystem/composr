@@ -221,7 +221,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
                 $quantity = $item[$field_name_prefix . 'quantity'];
                 $tax_code = $details['tax_code'];
                 $amount = $details['price'];
-                $sku = empty($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
+                $sku = @cms_empty_safe($details['type_special_details']['sku']) ? strval('item' . strval($i)) : $details['type_special_details']['sku'];
 
                 $cart_items[$i] = array(
                     'Qty' => $quantity,

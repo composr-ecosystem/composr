@@ -938,7 +938,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
 
         $email_address_required = member_field_is_required($member_id, 'email_address');
 
-        if (($email_address !== null) && ($email_address != '') && ($email_address != STRING_MAGIC_NULL) && (!is_email_address($email_address))) {
+        if ((!cms_empty_safe($email_address)) && ($email_address != STRING_MAGIC_NULL) && (!is_email_address($email_address))) {
             warn_exit(do_lang_tempcode('_INVALID_EMAIL_ADDRESS', escape_html($email_address)));
         }
 
@@ -1991,10 +1991,10 @@ function cns_member_choose_photo($param_name, $upload_name, $thumb_name, $thumb_
     if (!(strlen($urls[0]) > 1)) {
         $urls[1] = '';
     }
-    if (((get_base_url() != get_forum_base_url()) || ((!empty($GLOBALS['SITE_INFO']['on_msn'])) && ($GLOBALS['SITE_INFO']['on_msn'] == '1'))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
+    if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
         $urls[0] = get_base_url() . '/' . $urls[0];
     }
-    if (((get_base_url() != get_forum_base_url()) || ((!empty($GLOBALS['SITE_INFO']['on_msn'])) && ($GLOBALS['SITE_INFO']['on_msn'] == '1'))) && ($urls[1] != '') && (url_is_local($urls[1]))) {
+    if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[1] != '') && (url_is_local($urls[1]))) {
         $urls[1] = get_base_url() . '/' . $urls[1];
     }
 

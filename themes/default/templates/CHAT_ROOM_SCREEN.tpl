@@ -28,20 +28,18 @@
 				</div>
 
 				<div class="right">
-					<a class="toggleable-tray-button js-btn-toggle-chat-comcode-panel" href="#!" title="{!CHAT_TOGGLE_COMCODE_BOX}">
-						{+START,INCLUDE,ICON}
-							ID=e-chat-comcode-panel
-							NAME=trays/expand
-							ICON_SIZE=20
-						{+END}
-					</a>
+					<a class="toggleable-tray-button js-btn-toggle-chat-comcode-panel" href="#!" title="{!CHAT_TOGGLE_COMCODE_BOX}">{+START,INCLUDE,ICON}
+						ID=e-chat-comcode-panel
+						NAME=trays/expand
+						ICON_SIZE=20
+					{+END}</a>
 				</div>
 
 				<div class="left">
 					<form title="{SUBMIT_VALUE*}" action="{MESSAGES_PHP*}?action=post&amp;room_id={CHATROOM_ID*}" method="post" class="inline">
 						{$INSERT_SPAMMER_BLACKHOLE}
 
-						<button type="button" class="btn btn-primary btn-sm buttons--send js-click-post-chat-message">{+START,INCLUDE,ICON}NAME=buttons/send{+END}{SUBMIT_VALUE*}</button>
+						<button type="button" class="btn btn-primary btn-sm buttons--send js-click-post-chat-message">{+START,INCLUDE,ICON}NAME=buttons/send{+END} {SUBMIT_VALUE*}</button>
 					</form>
 					{+START,IF,{$DESKTOP}}
 						<span class="inline-desktop">

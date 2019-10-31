@@ -45,12 +45,10 @@
 
 				<div id="mini-form-hider" style="display: none" class="clearfix">
 					<div class="menu-editor-rh-side">
-						<a title="{!TOGGLE_DOCKED_FIELD_EDITING}" class="dock-button js-click-toggle-docked-field-editing">
-							{+START,INCLUDE,ICON}
-								NAME=arrow_box/arrow_box_hover
-								ICON_SIZE=13
-							{+END}
-						</a>
+						<a title="{!TOGGLE_DOCKED_FIELD_EDITING}" class="dock-button js-click-toggle-docked-field-editing">{+START,INCLUDE,ICON}
+							NAME=arrow_box/arrow_box_hover
+							ICON_SIZE=13
+						{+END}</a>
 
 						<h2>{!CHOOSE_ENTRY_POINT}</h2>
 
@@ -95,12 +93,10 @@
 			<div class="box box---menu-editor-screen" data-toggleable-tray="{}">
 				<div class="box-inner">
 					<h2 class="toggleable-tray-title">
-						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-							{+START,INCLUDE,ICON}
-								NAME=trays/expand
-								ICON_SIZE=24
-							{+END}
-						</a>
+						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+							NAME=trays/expand
+							ICON_SIZE=24
+						{+END}</a>
 						<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!DELETE_MENU}</a>
 					</h2>
 

@@ -443,7 +443,7 @@ function send_ticket_email($ticket_id, $title, $post, $ticket_url, $uid_email = 
                 $email_ob->outgoing_message($ticket_id, $ticket_url, $ticket_type_name, $title, $post, $uid, $uid_displayname, $uid_email, '', true);
             } else {
                 require_code('mail');
-                dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), array($uid_email), empty($uid_displayname) ? null : $uid_displayname, '', '', array('require_recipient_valid_since' => $new_poster));
+                dispatch_mail(do_lang('YOUR_MESSAGE_WAS_SENT_SUBJECT', $title), do_lang('YOUR_MESSAGE_WAS_SENT_BODY', $post), array($uid_email), cms_empty_safe($uid_displayname) ? null : $uid_displayname, '', '', array('require_recipient_valid_since' => $new_poster));
             }
         }
     }

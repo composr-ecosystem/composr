@@ -4,22 +4,20 @@
 	<a accesskey="s" class="accessibility-hidden" href="#maincontent">{!SKIP_NAVIGATION}</a>
 
 	<div class="header-inner">
-		<a class="btn btn-outline-primary btn-side-menu-toggler desktop-only" href="#!">
-			{+START,INCLUDE,ICON}NAME=menus/mobile_menu{+END}
-		</a>
+		<a class="btn btn-outline-primary btn-side-menu-toggler desktop-only" href="#!">{+START,INCLUDE,ICON}NAME=menus/mobile_menu{+END}</a>
 
 		{$,Main menu}
 		<div class="global-navigation js-side-menu-toggleable" {+START,IF,{$DESKTOP}}style="display: none;"{+END}>
 			{$,The main logo}
 			<h1 class="logo">
-				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">
+				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">{+START,TRIM}
 					{+START,IF,{$NOT,{$THEME_OPTION,use_site_name_text_as_logo}}}
 						<img class="logo-image logo-image-color" src="{$IMG*,logo/small_logo}" alt="{$SITE_NAME*}" />
 					{+END}
 					{+START,IF,{$THEME_OPTION,use_site_name_text_as_logo}}
 						<span class="logo-text">{$SITE_NAME*}</span>
 					{+END}
-				</a>
+				{+END}</a>
 			</h1>
 
 			<div class="global-navigation-items">

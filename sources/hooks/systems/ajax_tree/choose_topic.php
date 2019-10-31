@@ -68,7 +68,7 @@ class Hook_ajax_tree_choose_topic
         }
 
         // Mark parent cats for pre-expansion
-        if (($default !== null) && ($default != '')) {
+        if (!cms_empty_safe($default)) {
             $cat = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', array('id' => intval($default)));
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';

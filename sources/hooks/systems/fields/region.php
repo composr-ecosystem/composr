@@ -114,7 +114,7 @@ class Hook_fields_region
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         require_code('locations');
         $country_list = new Tempcode();

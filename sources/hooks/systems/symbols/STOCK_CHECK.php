@@ -37,7 +37,7 @@ class Hook_symbol_STOCK_CHECK
 
         $value = '';
 
-        if (array_key_exists(0, $param)) {
+        if (!@cms_empty_safe($param[0])) {
             $type_code = $param[0];
 
             require_code('ecommerce');

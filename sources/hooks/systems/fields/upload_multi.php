@@ -156,7 +156,7 @@ class Hook_fields_upload_multi
 
         $filetype_filter = option_value_from_field_array($field, 'filetype_filter', '');
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $ffield = form_input_upload_multi($_cf_name, $_cf_description, $input_name, $say_required, null, ($field['cf_required'] == 1) ? null/*so unlink option not shown*/ : $default, true, $filetype_filter);
 
         $hidden = new Tempcode();

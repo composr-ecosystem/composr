@@ -107,6 +107,7 @@ class specsettings_documented_test_set extends cms_test_case
                 (/*Can't just flip so simply*/$var != 'multi_lang_content') &&
                 (/*string replace array*/$var != 'reps') &&
                 (/*AFM*/strpos($var, 'ftp_') === false) &&
+                (/*Testing Platform*/!in_array($var, array('ci_password', 'gitlab_personal_token'))) &&
                 (/*Demonstratr*/strpos($var, 'throttle_') === false) &&
                 (/*Demonstratr*/strpos($var, 'custom_') === false) &&
                 (/*Demonstratr*/$var != 'mysql_demonstratr_password') &&

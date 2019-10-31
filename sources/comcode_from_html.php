@@ -328,7 +328,7 @@ function _dedirectiveise($matches)
     }
 
     $attributes = '';
-    if (!empty($attributes_arr['params'])) {
+    if (!@cms_empty_safe($attributes_arr['params'])) {
         $attributes = html_entity_decode($attributes_arr['params'], ENT_QUOTES);
     }
 

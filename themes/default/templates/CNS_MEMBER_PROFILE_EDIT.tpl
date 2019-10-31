@@ -19,15 +19,12 @@
 			<div class="modern-subtab-headers">
 				{+START,LOOP,TABS}
 					<div id="t-edit--{$LCASE,{TAB_CODE|*}}"{+START,IF,{TAB_FIRST}} class="tab-active tab-first{+END}{+START,IF,{TAB_LAST}} tab-last{+END}">
-						<a class="js-click-select-edit-tab" data-tp-tab-code="{TAB_CODE*}" aria-controls="g-edit--{$LCASE,{TAB_CODE|*}}" role="tab" href="#!">
-							{+START,IF_NON_EMPTY,{TAB_ICON}}
-								{+START,INCLUDE,ICON}
-									NAME={TAB_ICON}
-									ICON_SIZE=24
-								{+END}
+						<a class="js-click-select-edit-tab" data-tp-tab-code="{TAB_CODE*}" aria-controls="g-edit--{$LCASE,{TAB_CODE|*}}" role="tab" href="#!">{+START,IF_NON_EMPTY,{TAB_ICON}}
+							{+START,INCLUDE,ICON}
+								NAME={TAB_ICON}
+								ICON_SIZE=24
 							{+END}
-							<span>{TAB_TITLE*}</span>
-						</a>
+						{+END}<span>{TAB_TITLE*}</span></a>
 					</div>
 				{+END}
 			</div>

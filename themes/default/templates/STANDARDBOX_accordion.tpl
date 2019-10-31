@@ -5,20 +5,16 @@
 		{+START,IF_NON_EMPTY,{TITLE}}
 			<h3 class="toggleable-tray-title js-tray-onclick-toggle-accordion">
 				{+START,IF_NOT_IN_ARRAY,OPTIONS,tray_open}
-					<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">
-						{+START,INCLUDE,ICON}
-							NAME=trays/expand
-							ICON_SIZE=24
-						{+END}
-					</a>
+					<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+						NAME=trays/expand
+						ICON_SIZE=24
+					{+END}</a>
 				{+END}
 				{+START,IF_IN_ARRAY,OPTIONS,tray_open}
-					<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!CONTRACT}">
-						{+START,INCLUDE,ICON}
-							NAME=trays/contract
-							ICON_SIZE=24
-						{+END}
-					</a>
+					<a class="toggleable-tray-button js-tray-onclick-toggle-accordion" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
+						NAME=trays/contract
+						ICON_SIZE=24
+					{+END}</a>
 				{+END}
 
 				{+START,IF_NON_EMPTY,{TOP_LINKS}}

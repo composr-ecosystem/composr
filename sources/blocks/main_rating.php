@@ -70,7 +70,7 @@ class Block_main_rating
         require_code('feedback');
 
         $self_url = get_self_url();
-        $self_title = empty($map['title']) ? $page : $map['title'];
+        $self_title = @cms_empty_safe($map['title']) ? $page : $map['title'];
 
         $test_changed = post_param_string('rating_' . $id, '');
         if ($test_changed != '') {

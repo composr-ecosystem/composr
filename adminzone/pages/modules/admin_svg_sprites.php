@@ -222,7 +222,7 @@ class Module_admin_svg_sprites
             if (!is_array($symbol) || ($symbol[0] !== 'http://www.w3.org/2000/svg:symbol')) {
                 continue;
             }
-            $symbol_id = (string)$symbol[1]['id'];
+            $symbol_id = strval($symbol[1]['id']);
             $icons->attach(do_template('PREVIEW_SVG_SPRITE_ICON', array(
                 '_GUID' => 'c1e00e30fa5d4d77bee4b974dc66c926',
                 'SPRITE_URL' => $sprite_url,

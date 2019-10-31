@@ -527,7 +527,7 @@ class Module_admin_actionlog
             if (isset($revision['r_resource_type']) && isset($revision['r_resource_id'])) {
                 require_code('content');
                 list($content_title, , , , $content_url) = content_get_details($revision['r_resource_type'], $revision['r_resource_id']);
-                if (empty($content_title)) {
+                if (cms_empty_safe($content_title)) {
                     $content_title = $revision['r_original_title'];
                 }
                 if ($content_url !== null) {

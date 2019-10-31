@@ -168,7 +168,7 @@ class Hook_fields_reference_multi
         if (($field['cf_type'] != 'reference_multi') && (substr($field['cf_type'], 0, 3) == 'cx_')) {
             $options['catalogue_name'] = substr($field['cf_type'], 3);
         }
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_tree_list($_cf_name, $_cf_description, $input_name, null, 'choose_catalogue_entry', $options, $field['cf_required'] == 1, str_replace("\n", ',', $actual_value), false, null, true);
     }
 

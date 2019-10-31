@@ -37,11 +37,11 @@ class Hook_symbol_CATALOGUE_ENTRY_FIELD_VALUE
 
         $value = mixed();
         $value = '';
-        if ((isset($param[0])) && ($param[0] != '')) {
+        if ((isset($param[0])) && (is_numeric($param[0]))) {
             $map = null;
 
             $entry_id = intval($param[0]);
-            $field_id = array_key_exists(1, $param) ? intval($param[1]) : 0; // nth field in catalogue
+            $field_id = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : 0; // nth field in catalogue
 
             global $CATALOGUE_MAPPER_SYMBOL_CACHE;
             if (!isset($CATALOGUE_MAPPER_SYMBOL_CACHE)) {

@@ -19,10 +19,8 @@
 		</div>
 	</form>
 
-	<a href="#!" data-cms-btn-go-back="1" title="{!NEXT_ITEM_BACK}">
-		{+START,INCLUDE,ICON}
-			NAME=admin/back
-			ICON_SIZE=48
-		{+END}
-	</a>
+	<a href="#!" data-cms-btn-go-back="1" title="{!NEXT_ITEM_BACK}">{+START,INCLUDE,ICON}
+		NAME=admin/back
+		ICON_SIZE=48
+	{+END}</a>
 </div>

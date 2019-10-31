@@ -1291,6 +1291,8 @@ function apply_quick_caching($_cache)
 //        $keep_non_first_has_no_escaping = symbol_tempcode('KEEP', array('1'), array(NULL_ESCAPED));
 //    }
 
+    $has_escaping = (preg_match('#<a|&\w+;#', $cache) !== 0);
+
     $matches = array();
     $num_matches = preg_match_all('#(((\?)|(&(amp;)?))keep_[^="\']*=[^\#&"\']*)+#', $cache, $matches, PREG_OFFSET_CAPTURE); // We assume that the keep_* parameters always come last, which holds true in Composr
     for ($i = 0; $i < $num_matches; $i++) {
@@ -1302,8 +1304,6 @@ function apply_quick_caching($_cache)
         }
 
         $new_tempcode->attach($portion);
-
-        $has_escaping = (preg_match('#&\w+;#', $matches[0][$i][0]) !== 0);
 
         if ($has_keep_parameters) { // NB: has_keep_parameters() is in cache signature of 'menu' block, so this is safe for menus, keep_* will still work with this quick caching when both on and off
             if ($matches[0][$i][0][0] === '&') { // Other parameters are non-keep, but as they come first we can just strip the keep_* ones off

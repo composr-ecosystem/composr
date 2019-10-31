@@ -83,7 +83,7 @@ class Block_main_forum_topics
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
         // Read in variables
-        $forum_name = empty($map['param']) ? do_lang('DEFAULT_FORUM_TITLE') : $map['param'];
+        $forum_name = @cms_empty_safe($map['param']) ? do_lang('DEFAULT_FORUM_TITLE') : $map['param'];
         $limit = array_key_exists('limit', $map) ? intval($map['limit']) : 6;
         $hot = array_key_exists('hot', $map) ? intval($map['hot']) : 0;
         $date_key = array_key_exists('date_key', $map) ? $map['date_key'] : 'lasttime';

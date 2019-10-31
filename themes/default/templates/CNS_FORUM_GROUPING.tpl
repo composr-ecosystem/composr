@@ -8,12 +8,10 @@
 		{+END}
 
 		<span class="cns-forum-grouping-toggleable-tray-button">
-			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!TOGGLE_GROUPING_VISIBILITY}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/{EXPAND_TYPE}
-					ICON_SIZE=24
-				{+END}
-			</a>
+			<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!TOGGLE_GROUPING_VISIBILITY}">{+START,INCLUDE,ICON}
+				NAME=trays/{EXPAND_TYPE}
+				ICON_SIZE=24
+			{+END}</a>
 		</span>
 	</h3>
 

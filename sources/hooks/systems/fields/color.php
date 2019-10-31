@@ -107,7 +107,7 @@ class Hook_fields_color
         if ($actual_value === null) {
             $actual_value = ''; // Plug anomaly due to unusual corruption
         }
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_colour($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1);
     }
 

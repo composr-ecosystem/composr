@@ -8,38 +8,25 @@
 	<div class="clearfix">
 		<div class="ze-tabs tabs" role="tablist">
 			{+START,IF_PASSED,PREVIEW}
-				<a aria-controls="view-{ID*}" role="tab" title="{!PREVIEW}: {ID*}" href="#!" id="view-tab-{ID*}" class="tab tab-first tab-selected js-click-select-tab" data-js-tab="view">
-					{+START,INCLUDE,ICON}
-						NAME=buttons/preview
-						ICON_SIZE=24
-					{+END}
-					<span>{!PREVIEW}</span>
-				</a>
-			{+END}
-			{+START,IF_PASSED,COMCODE}
-				<a aria-controls="edit-{ID*}" role="tab" title="{!EDIT}: {ID*}" href="#!" id="edit-tab-{ID*}" class="tab{+START,IF_NON_PASSED,PREVIEW} tab-first{+END} js-click-select-tab" data-js-tab="edit">
-					{+START,INCLUDE,ICON}
-						NAME=admin/edit
-						ICON_SIZE=24
-					{+END}
-					<span>{!EDIT}</span>
-				</a>
-			{+END}
-			<a aria-controls="info-{ID*}" role="tab" title="{!DETAILS}: {ID*}" href="#!" id="info-tab-{ID*}" class="tab{+START,IF_NON_PASSED,SETTINGS} tab-last{+END}{+START,IF_NON_PASSED,PREVIEW}{+START,IF_NON_PASSED,COMCODE} tab-first{+END}{+END} js-click-select-tab" data-js-tab="info">
-				{+START,INCLUDE,ICON}
-					NAME=content_types/page
+				<a aria-controls="view-{ID*}" role="tab" title="{!PREVIEW}: {ID*}" href="#!" id="view-tab-{ID*}" class="tab tab-first tab-selected js-click-select-tab" data-js-tab="view">{+START,INCLUDE,ICON}
+					NAME=buttons/preview
 					ICON_SIZE=24
-				{+END}
-				<span>{!DETAILS}</span>
-			</a>
+				{+END}<span>{!PREVIEW}</span></a>{+END}
+			{+START,IF_PASSED,COMCODE}
+				<a aria-controls="edit-{ID*}" role="tab" title="{!EDIT}: {ID*}" href="#!" id="edit-tab-{ID*}" class="tab{+START,IF_NON_PASSED,PREVIEW} tab-first{+END} js-click-select-tab" data-js-tab="edit">{+START,INCLUDE,ICON}
+					NAME=admin/edit
+					ICON_SIZE=24
+				{+END}<span>{!EDIT}</span></a>
+			{+END}
+			<a aria-controls="info-{ID*}" role="tab" title="{!DETAILS}: {ID*}" href="#!" id="info-tab-{ID*}" class="tab{+START,IF_NON_PASSED,SETTINGS} tab-last{+END}{+START,IF_NON_PASSED,PREVIEW}{+START,IF_NON_PASSED,COMCODE} tab-first{+END}{+END} js-click-select-tab" data-js-tab="info">{+START,INCLUDE,ICON}
+				NAME=content_types/page
+				ICON_SIZE=24
+			{+END}<span>{!DETAILS}</span></a>
 			{+START,IF_PASSED,SETTINGS}
-				<a aria-controls="settings-{ID*}" role="tab" title="{!SETTINGS}: {ID*}" href="#!" id="settings-tab-{ID*}" class="tab tab-last js-click-select-tab" data-js-tab="settings">
-					{+START,INCLUDE,ICON}
-						NAME=buttons/settings
-						ICON_SIZE=24
-					{+END}
-					<span>{!SETTINGS}</span>
-				</a>
+				<a aria-controls="settings-{ID*}" role="tab" title="{!SETTINGS}: {ID*}" href="#!" id="settings-tab-{ID*}" class="tab tab-last js-click-select-tab" data-js-tab="settings">{+START,INCLUDE,ICON}
+					NAME=buttons/settings
+					ICON_SIZE=24
+				{+END}<span>{!SETTINGS}</span></a>
 			{+END}
 		</div>
 	</div>
@@ -63,16 +50,10 @@
 				{$INSERT_SPAMMER_BLACKHOLE}
 
 				<p>
-					<label for="edit_{ID*}_textarea">{!COMCODE}:</label> <a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,_SEARCH:userguide_comcode}">
-					{+START,INCLUDE,ICON}NAME=editor/comcode{+END}
-				</a>
+					<label for="edit_{ID*}_textarea">{!COMCODE}:</label> <a data-open-as-overlay="{}" class="link-exempt" title="{!COMCODE_MESSAGE,Comcode} {!LINK_NEW_WINDOW}" target="_blank" href="{$PAGE_LINK*,_SEARCH:userguide_comcode}">{+START,INCLUDE,ICON}NAME=editor/comcode{+END}</a>
 					{+START,IF,{$IN_STR,{CLASS},wysiwyg}}
 						<span class="horiz-field-sep associated-link">
-							<a id="toggle-wysiwyg-edit-{ID*}-textarea" href="#!" class="js-a-toggle-wysiwyg" title="{!comcode:ENABLE_WYSIWYG}">
-								<abbr title="{!TOGGLE_WYSIWYG_2}">
-									{+START,INCLUDE,ICON}NAME=editor/wysiwyg_on{+END}
-								</abbr>
-							</a>
+							<a id="toggle-wysiwyg-edit-{ID*}-textarea" href="#!" class="js-a-toggle-wysiwyg" title="{!comcode:ENABLE_WYSIWYG}"><abbr title="{!TOGGLE_WYSIWYG_2}">{+START,INCLUDE,ICON}NAME=editor/wysiwyg_on{+END}</abbr></a>
 						</span>
 					{+END}
 				</p>
@@ -83,7 +64,7 @@
 								{COMCODE_EDITOR}
 							</div>
 						</div>
-		</div>
+					</div>
 				{+END}
 				<div>
 					<textarea rows="50" cols="20" class="form-control {$?,{IS_PANEL},ze-textarea,ze-textarea-middle} {CLASS*} js-ta-ze-comcode textarea-scroll" id="edit_{ID*}_textarea" name="{ID*}">{COMCODE*}</textarea>

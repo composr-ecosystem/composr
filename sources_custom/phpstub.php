@@ -3361,6 +3361,8 @@ function decbin($number)
 
 /**
  * Determine whether a variable is empty (empty being defined differently for different types).
+ * Note that the string '0' is considered empty. If you don't want that, use cms_empty_safe (maybe with @), or a combination of isset and is_numeric.
+ * Generally this function is used if you don't want to check for array index presence, non-nullness, non-blank-stringness, and non-zeroness via individual ANDd clauses.
  *
  * @param  mixed $var Input
  * @return boolean Whether it is CONSIDERED empty

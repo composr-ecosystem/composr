@@ -32,7 +32,7 @@ class Hook_symbol_USER_FB_CONNECT
 
         require_code('facebook_connect');
 
-        if (!array_key_exists(0, $param)) {
+        if ((!isset($param[0])) || (!is_numeric($param[0]))) {
             return '';
         }
 
@@ -42,12 +42,12 @@ class Hook_symbol_USER_FB_CONNECT
         if ((get_forum_type() == 'cns') && ($GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'facebook')) {
             // Find Facebook ID via their member profile (we stashed it in here; authorisation stuff is never stored in DB, only on Facebook and user's JS)...
 
-            $value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($param[0], 'm_pass_hash_salted');
+            $value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
         } else {
             // Okay, look to see if they have set up syndication permissions instead, which is the other way around: stores authorisation, but not Facebook ID...
 
             $token = get_value('facebook_oauth_token__' . strval($member_id), null, true);
-            if (($token === null) || ($token == '')) {
+            if (empty($token)) {
                 return '';
             }
 

@@ -79,7 +79,7 @@ PHP;
             return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', array('_GUID' => '8692692a208449e3862d6ff482dce94b', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('galleries'))));
         }
 
-        if (empty($map['gallery_name'])) {
+        if (@cms_empty_safe($map['gallery_name'])) {
             return $blank_if_empty ? new Tempcode() : do_template('RED_ALERT', array('_GUID' => 'a9a5d583cdc145df840b40bdeb6577cd', 'TEXT' => escape_html('Block main_hero_slider: Parameter "gallery_name" is required.')));
         }
 
@@ -197,6 +197,7 @@ PHP;
             }
 
             $items[] = array(
+                'BACKGROUND_ID' => strval($row['id']),
                 'BACKGROUND_TYPE' => $row['content_type'],
                 'BACKGROUND_URL' => $full_url,
                 'BACKGROUND_THUMB_URL' => $thumb_url,

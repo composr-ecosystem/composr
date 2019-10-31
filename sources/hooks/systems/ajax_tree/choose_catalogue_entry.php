@@ -73,7 +73,7 @@ class Hook_ajax_tree_choose_catalogue_entry
         }
 
         // Mark parent cats for pre-expansion
-        if (($default !== null) && ($default != '')) {
+        if (!cms_empty_safe($default)) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'cc_id', array('id' => intval($default)));
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';

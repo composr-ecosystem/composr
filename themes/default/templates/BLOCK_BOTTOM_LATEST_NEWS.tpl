@@ -7,7 +7,7 @@
 			{+END}
 			{+START,IF_NON_EMPTY,{NEWS_ITEMS}}
 				{+START,LOOP,NEWS_ITEMS}
-					<a class="news-item" href="{FULL_URL*}">
+					<a class="news-item" href="{FULL_URL*}">{+START,TRIM}
 						<div class="news-item-thumb">
 							<img src="{IMG_URL*}" alt="{$STRIP_TAGS*,{NEWS_TITLE}}" />
 						</div>
@@ -15,7 +15,7 @@
 							<h4 class="news-item-heading">{NEWS_TITLE*}</h4>
 							<time class="news-item-date" datetime="{$FROM_TIMESTAMP*,Y-m-d\TH:i:s\Z,{_DATE}}" itemprop="datePublished">{DATE*}</time>
 						</div>
-					</a>
+					{+END}</a>
 				{+END}
 			{+END}
 		</div>

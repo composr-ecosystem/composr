@@ -156,7 +156,7 @@ class Hook_ajax_tree_choose_download
         }
 
         // Mark parent cats for pre-expansion
-        if (($default !== null) && ($default != '')) {
+        if (!cms_empty_safe($default)) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'category_id', array('id' => intval($default)));
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';

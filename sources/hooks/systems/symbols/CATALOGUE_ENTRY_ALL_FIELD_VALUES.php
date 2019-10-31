@@ -36,7 +36,7 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
         }
 
         $value = '';
-        if (isset($param[0])) {
+        if ((isset($param[0])) && (is_numeric($param[0]))) {
             $entry_id = intval($param[0]);
 
             global $CATALOGUE_MAPPER_SYMBOL_CACHE;
@@ -46,7 +46,7 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
             if (isset($CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id])) {
                 $map = $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id];
 
-                if ((array_key_exists(1, $param)) && ($param[1] == '1')) {
+                if (!empty($param[1])) {
                     $value = $map['FIELDS']->evaluate();
                 } else {
                     $tpl_set = $map['CATALOGUE'];
@@ -62,7 +62,7 @@ class Hook_symbol_CATALOGUE_ENTRY_ALL_FIELD_VALUES
                     if ($catalogue !== null) {
                         $tpl_set = $catalogue_name;
                         $map = get_catalogue_entry_map($entry[0], array('c_display_type' => C_DT_FIELDMAPS) + $catalogue, 'PAGE', $tpl_set);
-                        if ((array_key_exists(1, $param)) && ($param[1] == '1')) {
+                        if (!empty($param[1])) {
                             $value = $map['FIELDS']->evaluate();
                         } else {
                             $_value = do_template('CATALOGUE_' . $tpl_set . '_FIELDMAP_ENTRY_WRAP', $map + array('GIVE_CONTEXT' => false, 'ENTRY_SCREEN' => true), null, false, 'CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP');

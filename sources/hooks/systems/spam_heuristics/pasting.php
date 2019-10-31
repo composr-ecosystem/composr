@@ -37,7 +37,7 @@ class Hook_spam_heuristics_pasting
         }
 
         $post_data = post_param_string('post_data', null);
-        if (!empty($post_data)) {
+        if (!cms_empty_safe($post_data)) {
             $bits = explode(',', $post_data);
             if (in_array('paste', $bits)) {
                 return $score;

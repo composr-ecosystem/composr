@@ -762,12 +762,12 @@ class Module_news
         $_prev_article_title = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'title', array('id' => $id - 1), '', true);
         $_next_article_title = $GLOBALS['SITE_DB']->query_select_value_if_there('news', 'title', array('id' => $id + 1), '', true);
 
-        if (!empty($_prev_article_title)) {
+        if (!cms_empty_safe($_prev_article_title)) {
             $prev_article_title = $_prev_article_title;
             $prev_article_url   = build_url(array('page' => 'news', 'type' => 'view', 'id' => $id - 1), get_module_zone('news'));
         }
 
-        if (!empty($_next_article_title)) {
+        if (!cms_empty_safe($_next_article_title)) {
             $next_article_title = $_next_article_title;
             $next_article_url = build_url(array('page' => 'news', 'type' => 'view', 'id' => $id + 1), get_module_zone('news'));
         }

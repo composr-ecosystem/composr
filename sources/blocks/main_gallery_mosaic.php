@@ -109,7 +109,7 @@ PHP;
         $do_pagination = ((array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1');
         $root = ((array_key_exists('root', $map)) && ($map['root'] != '')) ? $map['root'] : get_param_string('keep_gallery_root', null);
 
-        if (empty($map['param'])) {
+        if (@cms_empty_safe($map['param'])) {
             $cat = $GLOBALS['SITE_DB']->query_select_value_if_there('images', 'cat', array(), 'GROUP BY cat ORDER BY COUNT(*) DESC');
             if ($cat === null) {
                 $cat = 'root';

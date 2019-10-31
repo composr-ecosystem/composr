@@ -322,7 +322,7 @@ function init__global2()
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) { // Fast caching for bots and possibly guests
         if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
             $bot_type = get_bot_type();
-            if (($bot_type !== null) && (!empty($SITE_INFO['fast_spider_cache'])) && ($SITE_INFO['fast_spider_cache'] != '0')) {
+            if (($bot_type !== null) && (!empty($SITE_INFO['fast_spider_cache']))) {
                 load_csp(array('csp_enabled' => '0'));
                 require_code('static_cache');
                 static_cache(STATIC_CACHE__FAST_SPIDER);
@@ -376,7 +376,7 @@ function init__global2()
     }
     require_code('users'); // Users are important due to permissions
     if ((!$MICRO_BOOTUP) && (!$MICRO_AJAX_BOOTUP)) { // Fast caching for Guests
-        if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (empty($_SERVER['PHP_AUTH_USER']))) {
+        if (($STATIC_CACHE_ENABLED) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (@cms_empty_safe($_SERVER['PHP_AUTH_USER']))) {
             if ((isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest(null, true)) && (get_param_integer('keep_failover', null) !== 0)) {
                 require_code('static_cache');
                 static_cache(STATIC_CACHE__GUEST);
@@ -512,7 +512,7 @@ function init__global2()
 
     // Reduce down memory limit / raise if requested
     $default_memory_limit = get_value('memory_limit');
-    if (($default_memory_limit === null) || ($default_memory_limit == '') || ($default_memory_limit == '0') || ($default_memory_limit == '-1')) {
+    if ((empty($default_memory_limit)) || ($default_memory_limit == '-1')) {
         $default_memory_limit = '64M';
         if ($GLOBALS['RELATIVE_PATH'] == 'adminzone' || $GLOBALS['RELATIVE_PATH'] == 'cms') {
             $default_memory_limit = '128M';
@@ -538,7 +538,7 @@ function init__global2()
         }
     }
     $memory_tracking = get_value('memory_tracking');
-    if ((!empty($memory_tracking)) && ($memory_tracking != '0')) {
+    if (!empty($memory_tracking)) {
         register_shutdown_function('memory_tracking');
     }
 
@@ -622,8 +622,8 @@ function fixup_bad_php_env_vars()
         'PHP_AUTH_PW',
     );
     foreach ($understood as $key) {
-        if (empty($_SERVER[$key])) {
-            if (empty($_ENV[$key])) {
+        if (@cms_empty_safe($_SERVER[$key])) {
+            if (@cms_empty_safe($_ENV[$key])) {
                 $_SERVER[$key] = '';
             } else {
                 $_SERVER[$key] = $_ENV[$key];
@@ -669,23 +669,23 @@ function fixup_bad_php_env_vars()
         $_SERVER['DOCUMENT_ROOT'] = $document_root;
     }
 
-    $php_self = empty($_SERVER['PHP_SELF']) ? '' : $_SERVER['PHP_SELF'];
-    if ((empty($php_self)) || (/*or corrupt*/strpos($php_self, '.php') === false)) {
+    $php_self = @cms_empty_safe($_SERVER['PHP_SELF']) ? '' : $_SERVER['PHP_SELF'];
+    if ((cms_empty_safe($php_self)) || (/*or corrupt*/strpos($php_self, '.php') === false)) {
         // We're really desperate if we have to derive this, but here we go
         $regexp = '#^' . preg_quote(str_replace('/', DIRECTORY_SEPARATOR, $document_root) . DIRECTORY_SEPARATOR, '#') . '#';
         $_SERVER['PHP_SELF'] = '/' . str_replace(DIRECTORY_SEPARATOR, '/', preg_replace($regexp, '', str_replace('/', DIRECTORY_SEPARATOR, $script_filename)));
-        $path_info = empty($_SERVER['PATH_INFO']) ? '' : $_SERVER['PATH_INFO'];
-        if (!empty($path_info)) { // Add in path-info if we have it
+        $path_info = @cms_empty_safe($_SERVER['PATH_INFO']) ? '' : $_SERVER['PATH_INFO'];
+        if (!cms_empty_safe($path_info)) { // Add in path-info if we have it
             $_SERVER['PHP_SELF'] .= $path_info;
         }
         $php_self = $_SERVER['PHP_SELF'];
     }
 
-    if (empty($_SERVER['SCRIPT_NAME'])) {
+    if (@cms_empty_safe($_SERVER['SCRIPT_NAME'])) {
         $_SERVER['SCRIPT_NAME'] = preg_replace('#\.php/.*#', '.php', $php_self); // Same as PHP_SELF except without path-info on the end
     }
 
-    if (empty($_SERVER['REQUEST_URI'])) {
+    if (@cms_empty_safe($_SERVER['REQUEST_URI'])) {
         if (isset($_SERVER['REDIRECT_URL'])) {
             $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_URL'];
             if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
@@ -703,11 +703,11 @@ function fixup_bad_php_env_vars()
         }
     }
 
-    if (empty($_SERVER['QUERY_STRING'])) {
+    if (@cms_empty_safe($_SERVER['QUERY_STRING'])) {
         $_SERVER['QUERY_STRING'] = str_replace('/', '%2F', http_build_query($_GET));
     }
 
-    if (empty($_SERVER['PHP_AUTH_USER'])) {
+    if (@cms_empty_safe($_SERVER['PHP_AUTH_USER'])) {
         if (empty($_SERVER['HTTP_AUTHORIZATION'])) {
             if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
@@ -719,9 +719,9 @@ function fixup_bad_php_env_vars()
             if (count($bits) == 2) {
                 list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = $bits;
             }
-        } elseif (!empty($_SERVER['REDIRECT_REMOTE_USER'])) {
+        } elseif (!@cms_empty_safe($_SERVER['REDIRECT_REMOTE_USER'])) {
             $_SERVER['PHP_AUTH_USER'] = $_SERVER['REDIRECT_REMOTE_USER'];
-        } elseif (!empty($_SERVER['REMOTE_USER'])) {
+        } elseif (!@cms_empty_safe($_SERVER['REMOTE_USER'])) {
             $_SERVER['PHP_AUTH_USER'] = $_SERVER['REMOTE_USER'];
         }
     }
@@ -1477,7 +1477,7 @@ function in_safe_mode()
         (!array_key_exists('FORUM_DRIVER', $GLOBALS)) ||
         ($GLOBALS['FORUM_DRIVER'] === null) ||
         (!function_exists('get_member')) ||
-        (empty($GLOBALS['MEMBER_CACHED'])) ||
+        (@cms_empty_safe($GLOBALS['MEMBER_CACHED'])) ||
         ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())))
     );
     $CHECKING_SAFEMODE = false;
@@ -2140,4 +2140,18 @@ function ends_with($haystack, $needle)
 function loggable_date()
 {
     return gmdate('[d-M-Y H:i:s \U\T\C]');
+}
+
+/**
+ * Determine whether a variable is empty (empty being defined differently for different types).
+ * The string '0' is NOT considered empty, unlike the default PHP empty language construct.
+ * Generally this function is used if you don't want to check for array index presence, non-nullness, and non-blank-stringness via individual ANDd clauses.
+ * As this is a function and not a language construct, reference to non-set variables or array indices need guarding using @.
+ *
+ * @param  mixed $var Input
+ * @return boolean Whether it is CONSIDERED empty
+ */
+function cms_empty_safe($var)
+{
+    return (empty($var)) && ($var !== '0');
 }

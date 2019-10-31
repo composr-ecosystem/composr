@@ -132,7 +132,7 @@ class Hook_fields_list extends ListFieldHook
 
         $list = $this->get_input_list_map($field);
 
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
         $selected = (($actual_value !== null) && ($actual_value !== '') && ($actual_value !== $field['cf_default']));
@@ -243,7 +243,7 @@ class Hook_fields_list extends ListFieldHook
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
         if ($custom_values == 'on') {
             $test = post_param_string($tmp_name . '_custom', null);
-            if (!empty($test)) {
+            if (!cms_empty_safe($test)) {
                 return $test;
             }
         }

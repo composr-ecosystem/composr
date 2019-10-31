@@ -312,7 +312,8 @@ PHP;
             $news_cat_row = $NEWS_CATS_CACHE[$news_row['news_category']];
 
             $category = get_translated_text($news_cat_row['nc_title']);
-            $category_url = null;
+            $tmp = array('page' => ($zone == '_SELF' && running_script('index')) ? get_page_name() : 'news', 'type' => 'browse', 'id' => $news_row['news_category']) + $prop_url;
+            $category_url = build_url($tmp, $zone);
 
             if ($news_row['news_image'] != '') {
                 $img = $news_row['news_image'];

@@ -822,7 +822,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 
 // Rate limiter, to stop aggressive bots
 global $SITE_INFO;
-$rate_limiting = empty($SITE_INFO['rate_limiting']) ? false : ($SITE_INFO['rate_limiting'] == '1');
+$rate_limiting = !empty($SITE_INFO['rate_limiting']);
 if ($rate_limiting) {
     if ((!empty($_SERVER['REMOTE_ADDR'])) && (basename($_SERVER['SCRIPT_NAME']) == 'index.php')) {
         // Basic context

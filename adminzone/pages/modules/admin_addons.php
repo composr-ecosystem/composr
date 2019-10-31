@@ -875,7 +875,7 @@ class Module_admin_addons
         $info_file = tar_get_file($tar, 'addon.inf');
         if ($info_file !== null) {
             $info = cms_parse_ini_file_fast(null, $info_file['data']);
-            if (!empty($info['description'])) {
+            if (!@cms_empty_safe($info['description'])) {
                 $text = $info['description'];
             }
             tar_close($tar);

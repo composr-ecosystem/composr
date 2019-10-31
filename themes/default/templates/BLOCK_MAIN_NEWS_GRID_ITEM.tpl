@@ -17,15 +17,11 @@
 	{+END}
 
 	{+START,IF,{$AND,{$NOT,{BLOG}},{$IS_NON_EMPTY,{IMG}}}}
-		<a class="news-grid-item-image is-associated" href="{FULL_URL*}">
-			<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" />
-		</a>
+		<a class="news-grid-item-image is-associated" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{IMG_LARGE}}" alt="" /></a>
 	{+END}
 
 	{+START,IF,{$AND,{BLOG},{$IS_EMPTY,{IMG}}}}{+START,IF_NON_EMPTY,{$AVATAR,{SUBMITTER}}}
-		<a class="news-grid-item-image is-avatar" href="{FULL_URL*}">
-			<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{$AVATAR,{SUBMITTER}}}" title="{!AVATAR}" alt="{!AVATAR}" />
-		</a>
+		<a class="news-grid-item-image is-avatar" href="{FULL_URL*}"><img src="{$ENSURE_PROTOCOL_SUITABILITY*,{$AVATAR,{SUBMITTER}}}" title="{!AVATAR}" alt="{!AVATAR}" /></a>
 	{+END}{+END}
 
 	{+START,IF_NON_EMPTY,{CATEGORY}}{+START,IF_NON_EMPTY,{CATEGORY_URL}}
@@ -46,7 +42,7 @@
 		{+END}
 	{+END}
 	{+START,IF,{$NOT,{$GET,skip_content_box_title}}}
-		<h3 class="news-grid-item-heading">{+START,IF_NON_EMPTY,{FULL_URL}}<a class="subtle-link" href="{FULL_URL*}">{+END}{$GET,content_box_title}{+START,IF_NON_EMPTY,{FULL_URL}}</a>{+END}</h3>
+		<h3 class="news-grid-item-heading">{+START,IF_NON_EMPTY,{FULL_URL}}<a class="subtle-link" href="{FULL_URL*}">{+END}{$TRIM,{$GET,content_box_title}}{+START,IF_NON_EMPTY,{FULL_URL}}</a>{+END}</h3>
 	{+END}
 
 	<div class="news-grid-item-details" role="note">

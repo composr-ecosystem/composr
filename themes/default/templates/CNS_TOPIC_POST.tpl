@@ -137,12 +137,10 @@
 							{+END}
 						{+END}
 
-						<a href="#" rel="back_to_top" title="{!BACK_TO_TOP}">
-							{+START,INCLUDE,ICON}
-								NAME=tool_buttons/top
-								ICON_SIZE=24
-							{+END}
-						</a>
+						<a href="#" rel="back_to_top" title="{!BACK_TO_TOP}">{+START,INCLUDE,ICON}
+							NAME=tool_buttons/top
+							ICON_SIZE=24
+						{+END}</a>
 					</div>
 				{+END}{+END}
 			{+END}

@@ -46,7 +46,7 @@ function endpoint_script()
 
     try {
         // Restful
-        if (!empty($_SERVER['PATH_INFO'])) {
+        if (!@cms_empty_safe($_SERVER['PATH_INFO'])) {
             // What response type is desired
             if (!empty($_SERVER['HTTP_ACCEPT'])) {
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {

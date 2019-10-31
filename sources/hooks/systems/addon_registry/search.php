@@ -333,9 +333,9 @@ class Hook_addon_registry_search
         $tpl_tags = array();
 
         foreach (placeholder_array() as $v) {
-            $tpl_tags = array(
+            $tpl_tags[] = array(
                 'TAG' => lorem_word(),
-                'LINK' => placeholder_url(),
+                'URL' => placeholder_url(),
             );
         }
 

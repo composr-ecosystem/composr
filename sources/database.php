@@ -443,7 +443,7 @@ function get_db_type()
 function get_use_persistent()
 {
     global $SITE_INFO;
-    return (!empty($SITE_INFO['use_persistent'])) ? ($SITE_INFO['use_persistent'] == '1') : false;
+    return !empty($SITE_INFO['use_persistent']);
 }
 
 /**

@@ -33,10 +33,10 @@ class Hook_symbol_SHOW_RATINGS
     {
         $value = '';
 
-        if (array_key_exists(1, $param)) {
+        if ((!empty($param[0])) && (isset($param[1]))) {
             $rating_type = $param[0];
             $rating_id = $param[1];
-            $max = array_key_exists(2, $param) ? intval($param[2]) : 30;
+            $max = (!empty($param[2])) ? intval($param[2]) : 30;
 
             $ratings = array();
             $_ratings = $GLOBALS['SITE_DB']->query_select('rating', array('rating_member', 'rating_ip', 'rating_time', 'rating'), array('rating_for_type' => $rating_type, 'rating_for_id' => $rating_id), 'ORDER BY rating_time DESC', $max);

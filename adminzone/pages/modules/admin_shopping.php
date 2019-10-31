@@ -278,7 +278,7 @@ class Module_admin_shopping
             $where .= ' AND ' . db_string_equal_to('order_status', 'ORDER_STATUS_payment_received');
         }
 
-        if (($search !== null) && ($search != '')) {
+        if (!cms_empty_safe($search)) {
             $where .= ' AND (';
             if (is_numeric($filter)) {
                 $where .= 'id=' . strval(intval($filter));

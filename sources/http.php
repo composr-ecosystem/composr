@@ -1946,7 +1946,7 @@ class HttpDownloaderFilesystem extends HttpDownloader
         $this->read_in_options($options);
 
         $faux = function_exists('get_value') ? get_value('http_faux_loopback') : null;
-        if (($faux !== null) && ($faux != '') && ($this->post_params === null) && ($this->files == array())) { // NB: Does not support cookies, accept headers, referers
+        if ((!cms_empty_safe($faux)) && ($this->post_params === null) && ($this->files == array())) { // NB: Does not support cookies, accept headers, referers
             if (substr($faux, 0, 1) != '#') {
                 $faux = '#' . $faux . '#i';
             }

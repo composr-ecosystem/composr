@@ -18,12 +18,10 @@
 	{+START,IF,{$NEQ,{BOOLEAN_SEARCH},0}}<input type="hidden" name="boolean_search" value="{BOOLEAN_SEARCH*}" />{+END}
 	{+START,IF,{$NEQ,{CONJUNCTIVE_OPERATOR},AND}}<input type="hidden" name="conjunctive_operator" value="{CONJUNCTIVE_OPERATOR*}" />{+END}
 
-	<a id="top-search-button" class="top-button top-button-search js-click-toggle-button-popup" href="#!">
-		{+START,INCLUDE,ICON}
-			NAME=buttons/search
-			ICON_SIZE=24
-		{+END}
-	</a>
+	<a id="top-search-button" class="top-button top-button-search js-click-toggle-button-popup" href="#!">{+START,INCLUDE,ICON}
+		NAME=buttons/search
+		ICON_SIZE=24
+	{+END}</a>
 
 	<div class="top-button-popup" id="top-search-rel" style="display: none">
 		<div class="box box-arrow box--block-top-personal-stats">

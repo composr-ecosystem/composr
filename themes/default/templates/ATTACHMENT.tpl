@@ -15,12 +15,10 @@
 							{!ATTACHMENT,{I*}}
 
 							{+START,IF,{TRUE_ATTACHMENT_UI}}
-								<a class="help-icon" data-cms-rich-tooltip="{}" title="{!ATTACHMENT_HELP_2=,{$GET,IMAGE_TYPES}}" href="#!">
-									{+START,INCLUDE,ICON}
-										NAME=help
-										ICON_SIZE=24
-									{+END}
-								</a>
+								<a class="help-icon" data-cms-rich-tooltip="{}" title="{!ATTACHMENT_HELP_2=,{$GET,IMAGE_TYPES}}" href="#!">{+START,INCLUDE,ICON}
+									NAME=help
+									ICON_SIZE=24
+								{+END}</a>
 							{+END}
 						</th>
 					{+END}

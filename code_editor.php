@@ -314,7 +314,7 @@ function ce_fix_permissions($path, $perms = 0666) // We call this function assum
  */
 function open_up_ftp_connection()
 {
-    if ((!isset($_POST['ftp_username'])) || ($_POST['ftp_username'] == '')) {
+    if (empty($_POST['ftp_username'])) {
         return null;
     }
 

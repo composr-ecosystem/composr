@@ -65,7 +65,7 @@ function member_field_is_required($member_id, $field_class, $current_value = nul
         }
 
         $cv = trim($current_value);
-        if ((@empty($cv)) && (has_privilege($editing_member, 'bypass_' . $field_class . '_if_already_empty'))) {
+        if ((cms_empty_safe($cv)) && (has_privilege($editing_member, 'bypass_' . $field_class . '_if_already_empty'))) {
             return false;
         }
     }

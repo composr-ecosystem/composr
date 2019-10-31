@@ -2044,6 +2044,10 @@ Note that you cannot use directives for symbol parameters because directives con
 			<td>CDN_FILTER</td>
 			<td>Mass-apply the <kbd>CDN_FILTER</kbd> symbol to appropriate URLs found inside the directive. Covered in the [page="_SEARCH:tut_performance"]Optimising Performance[/page] tutorial.</td>
 		</tr>
+		<tr style="background: #DDFFDD">
+			<td>TRIM</td>
+			<td>Trim the contents of the directive. Only trims strict character white-space, not HTML line-breaks. Particularly useful to remove white-space around the contents of anchor tags.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]

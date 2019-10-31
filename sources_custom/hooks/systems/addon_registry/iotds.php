@@ -246,7 +246,7 @@ class Hook_addon_registry_iotds
         return array(
             lorem_globalise(do_lorem_template('BLOCK_MAIN_IOTD', array(
                 'BLOCK_ID' => lorem_word(),
-                'SUBMITTER' => placeholder_number(),
+                'SUBMITTER' => placeholder_id(),
                 'THUMB_URL' => placeholder_image_url(),
                 'FULL_URL' => placeholder_image_url(),
                 'I_TITLE' => lorem_phrase(),

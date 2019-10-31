@@ -1801,7 +1801,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             }
 
             // Render
-            if (empty($attributes['target'])) {
+            if (@cms_empty_safe($attributes['target'])) {
                 $attributes['target'] = $local ? '_top' : '_blank';
             }
             if ($attributes['target'] == 'blank') {
@@ -2117,7 +2117,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     if ($_size_uploaded_today[0]['the_answer'] === null) {
                         $_size_uploaded_today[0]['the_answer'] = 0;
                     }
-                    $size_uploaded_today = ceil(((float)$_size_uploaded_today[0]['the_answer']) / 1024.0 / 1024.0);
+                    $size_uploaded_today = ceil(floatval($_size_uploaded_today[0]['the_answer']) / 1024.0 / 1024.0);
                     $attach_size = 0;
                     require_code('uploads');
                     is_plupload(true);

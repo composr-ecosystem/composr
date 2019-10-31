@@ -39,7 +39,7 @@ class Hook_symbol_CURRENCY_SYMBOL
 
         if (addon_installed('ecommerce')) {
             require_code('ecommerce');
-            $value = ecommerce_get_currency_symbol(isset($param[0]) ? $param[0] : null);
+            $value = ecommerce_get_currency_symbol((!empty($param[0])) ? $param[0] : null);
         }
 
         return $value;

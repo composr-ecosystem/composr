@@ -291,7 +291,7 @@ class Hook_import_phpbb3
 
             $permissions = $db->query_select('acl_groups', array('*'), array('group_id' => $row['group_id']));
             foreach ($permissions as $p) {
-                if ($p['auth_role_id'] != 0) { // Do role
+                if (!empty($p['auth_role_id'])) { // Do role
                     $rp = $db->query_select('acl_roles_data', array('*'), array('role_id' => $p['auth_role_id']));
                     foreach ($rp as $_p) {
                         $this->_import_permg($db, $table_prefix, $_p['auth_option_id'], $id_new, $_p['auth_setting']);
@@ -664,7 +664,7 @@ class Hook_import_phpbb3
                 if ($group_id === null) {
                     continue; // maybe bots group (6)
                 }
-                if ($p['auth_role_id'] != 0) { // Do role
+                if (!empty($p['auth_role_id'])) { // Do role
                     $rp = $db->query_select('acl_roles_data', array('*'), array('role_id' => $p['auth_role_id']));
                     foreach ($rp as $_p) {
                         $this->_import_perm($db, $table_prefix, $_p['auth_option_id'], $group_id, $id_new, $_p['auth_setting']);
@@ -1062,7 +1062,7 @@ class Hook_import_phpbb3
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['vote_user_id'];
-                if (($member_id !== null) && ($member_id != 0)) {
+                if (!empty($member_id)) {
                     if (($row2['poll_option_id'] == 0) || (!array_key_exists($row2['poll_option_id'] - 1, $answers))) {
                         $answer = -1;
                     } else {

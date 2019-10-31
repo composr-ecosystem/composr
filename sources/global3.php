@@ -178,7 +178,7 @@ function init__global3()
 function get_brand_base_url()
 {
     $value = function_exists('get_value') ? get_value('rebrand_base_url') : null;
-    if (($value === null) || ($value == '')) {
+    if (empty($value)) {
         $value = 'http://compo.sr';
     }
     return $value;
@@ -2488,7 +2488,7 @@ function get_ip_address($amount = 4, $ip = null)
     }
 
     global $SITE_INFO;
-    if (($amount == 3) && (!empty($SITE_INFO['full_ips'])) && ($SITE_INFO['full_ips'] == '1')) { // Extra configurable security
+    if (($amount == 3) && (!empty($SITE_INFO['full_ips']))) { // Extra configurable security
         $amount = 4;
     }
 

@@ -39,7 +39,7 @@ class Hook_symbol_PROVIDE_WITH_TRANSLATION
             return $text; // Somehow startup hook didn't run
         }
 
-        if (isset($param[1])) {
+        if (!empty($param[1])) {
             $context = @constant('TRANS_TEXT_CONTEXT_' . $param[1]);
             if ($context === null) {
                 $context = TRANS_TEXT_CONTEXT_html_block;

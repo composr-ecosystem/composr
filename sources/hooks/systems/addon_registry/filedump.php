@@ -165,7 +165,7 @@ class Hook_addon_registry_filedump
             'DESCRIPTION' => lorem_paragraph(),
             'ACTIONS' => lorem_paragraph(),
             '_SIZE' => placeholder_number(),
-            'SIZE' => placeholder_number(),
+            'SIZE' => lorem_word(),
             '_TIME' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
             'WIDTH' => placeholder_number(),

@@ -18,12 +18,10 @@
 						</p>
 
 						<div class="toggleable-tray-title tt-title-licence-agreement js-tray-header">
-							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">
-								{+START,INCLUDE,ICON}
-									NAME=trays/expand
-									ICON_SIZE=24
-								{+END}
-							</a>
+							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!EXPAND}">{+START,INCLUDE,ICON}
+								NAME=trays/expand
+								ICON_SIZE=24
+							{+END}</a>
 							<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!I_AGREE}</a>
 						</div>
 

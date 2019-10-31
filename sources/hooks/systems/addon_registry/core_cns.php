@@ -1344,6 +1344,7 @@ class Hook_addon_registry_core_cns
             lorem_globalise(do_lorem_template('BLOCK_MAIN_JOIN', array(
                 'FORM' => placeholder_form(),
                 'HAS_EMAIL_TO_SEND' => true,
+                'BLOCK_PARAMS' => '',
             )), null, '', true)
         );
     }

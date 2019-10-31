@@ -172,7 +172,7 @@ class Hook_fields_tax_code
                 $actual_value = ($val === null) ? '0.0' : $val;
             }
         }
-        $input_name = empty($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
+        $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         return form_input_tax_code($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1);
     }
 

@@ -3,12 +3,10 @@
 
 	{+START,IF_NON_EMPTY,{RETURN_URL}}
 		<p class="back-button">
-			<a href="{RETURN_URL*}" title="{MSG}">
-				{+START,INCLUDE,ICON}
-					NAME=admin/back
-					ICON_SIZE=48
-				{+END}
-			</a>
+			<a href="{RETURN_URL*}" title="{MSG}">{+START,INCLUDE,ICON}
+				NAME=admin/back
+				ICON_SIZE=48
+			{+END}</a>
 		</p>
 	{+END}
 

@@ -291,7 +291,7 @@ class Module_cms_catalogues extends Standard_crud_module
             $cat_title = $cat_rows[0]['c_title'];
         }
 
-        if (($catalogue_name !== null) && ($catalogue_name != '')) {
+        if (!cms_empty_safe($catalogue_name)) {
             $cat_count = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'COUNT(*)', array('c_name' => $catalogue_name));
             $has_categories = ($cat_count != 0);
         } else {

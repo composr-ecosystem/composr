@@ -91,7 +91,7 @@ class Hook_ajax_tree_choose_catalogue_category
         }
 
         // Mark parent cats for pre-expansion
-        if (($default !== null) && ($default != '')) {
+        if (!cms_empty_safe($default)) {
             $cat = intval($default);
             while ($cat !== null) {
                 $out .= '<expand>' . strval($cat) . '</expand>';

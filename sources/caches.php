@@ -209,7 +209,7 @@ class Self_learning_cache
             }
         }
 
-        $this->empty = empty($this->data);
+        $this->empty = cms_empty_safe($this->data);
 
         if ($this->data !== null) {
             $this->keys_initial = array_flip(array_keys($this->data));

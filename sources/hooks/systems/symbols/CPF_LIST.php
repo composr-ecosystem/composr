@@ -33,8 +33,8 @@ class Hook_symbol_CPF_LIST
     {
         $value = '';
 
-        if ((isset($param[0])) && (get_forum_type() == 'cns')) {
-            $delimiter = isset($param[1]) ? $param[1] : ',';
+        if ((!@cms_empty_safe($param[0])) && (get_forum_type() == 'cns')) {
+            $delimiter = (!empty($param[1])) ? $param[1] : ',';
             $include_label_syntax = isset($param[2]) ? ($param[2] === '1') : true;
 
             static $cache = array();
@@ -74,7 +74,7 @@ class Hook_symbol_CPF_LIST
             $cpf_id = find_cpf_field_id($param[0]);
             if ($cpf_id !== null) {
                 $test = $GLOBALS['FORUM_DB']->query_select('f_custom_fields', array('cf_default', 'cf_type'), array('id' => $cpf_id));
-                if (array_key_exists(0, $test)) {
+                if (isset($test[0])) {
                     switch ($test[0]['cf_type']) {
                         case 'list':
                         case 'list_multi':

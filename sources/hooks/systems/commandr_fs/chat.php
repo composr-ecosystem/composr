@@ -201,7 +201,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         $row = $rows[0];
 
         $allow = array();
-        if (!empty($row['allow_list'])) {
+        if (!cms_empty_safe($row['allow_list'])) {
             foreach (explode(',', $row['allow_list']) as $x) {
                 $_x = remap_resource_id_as_portable('member', intval($x));
                 if ($_x !== null) {
@@ -211,7 +211,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         }
 
         $allow_groups = array();
-        if (!empty($row['allow_list_groups'])) {
+        if (!cms_empty_safe($row['allow_list_groups'])) {
             foreach (explode(',', $row['allow_list_groups']) as $x) {
                 $_x = remap_resource_id_as_portable('group', intval($x));
                 if ($_x !== null) {
@@ -221,7 +221,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         }
 
         $disallow = array();
-        if (!empty($row['disallow_list'])) {
+        if (!cms_empty_safe($row['disallow_list'])) {
             foreach (explode(',', $row['disallow_list']) as $x) {
                 $_x = remap_resource_id_as_portable('member', intval($x));
                 if ($_x !== null) {
@@ -231,7 +231,7 @@ class Hook_commandr_fs_chat extends Resource_fs_base
         }
 
         $disallow_groups = array();
-        if (!empty($row['disallow_list_groups'])) {
+        if (!cms_empty_safe($row['disallow_list_groups'])) {
             foreach (explode(',', $row['disallow_list_groups']) as $x) {
                 $_x = remap_resource_id_as_portable('group', intval($x));
                 if ($_x !== null) {

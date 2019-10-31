@@ -991,7 +991,7 @@ function do_site()
                 if (!empty($site_message['site_message'])) {
                     if ((empty($site_message['site_message_start_datetime'])) || ((!empty($site_message['site_message_start_datetime'])) && (((is_numeric($site_message['site_message_start_datetime'])) && (intval($site_message['site_message_start_datetime']) <= time())) || ((!is_numeric($site_message['site_message_start_datetime'])) && (strtotime($site_message['site_message_start_datetime']) <= time()))))) {
                         if ((empty($site_message['site_message_end_datetime'])) || ((!empty($site_message['site_message_end_datetime'])) && (((is_numeric($site_message['site_message_end_datetime'])) && (intval($site_message['site_message_end_datetime']) > time())) || ((!is_numeric($site_message['site_message_end_datetime'])) && (strtotime($site_message['site_message_end_datetime']) > time()))))) {
-                            if (empty($site_message['site_message_usergroup_select'])) {
+                            if (cms_empty_safe($site_message['site_message_usergroup_select'])) {
                                 $group_pass = true;
                             } else {
                                 require_code('selectcode');
@@ -2025,7 +2025,7 @@ function load_comcode_page($string, $zone, $codename, $file_base = null, $being_
     }
     $filtered_title_to_use = null;
     if ((!$is_panel) && (!$being_included)) {
-        if (($title_to_use !== null) && ($title_to_use != '')) {
+        if (!cms_empty_safe($title_to_use)) {
             get_screen_title($title_to_use, false); // Little hack - this will force DISPLAYED_TITLE to get set.
             $filtered_title_to_use = strip_html($title_to_use);
         }

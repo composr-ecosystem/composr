@@ -32,7 +32,7 @@ class Hook_symbol_CATALOGUE_ENTRY_FOR
     public function run($param)
     {
         $value = '';
-        if ((array_key_exists(1, $param)) && ($param[1] != '') && (addon_installed('catalogues'))) {
+        if ((!empty($param[0])) && (!@cms_empty_safe($param[1])) && (addon_installed('catalogues'))) {
             static $cache = array();
             if (isset($cache[$param[0]][$param[1]])) {
                 return $cache[$param[0]][$param[1]];

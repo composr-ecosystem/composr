@@ -71,7 +71,7 @@ function external_db()
 function external_db_user_from_session()
 {
     $coookie_session_name = get_value('external_db_login__session_name', null, true);
-    if (empty($_COOKIE[$coookie_session_name])) {
+    if (@cms_empty_safe($_COOKIE[$coookie_session_name])) {
         return null; // No session
     }
     $cookie = $_COOKIE[$coookie_session_name];

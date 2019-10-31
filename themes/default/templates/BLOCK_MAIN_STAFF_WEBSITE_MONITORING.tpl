@@ -5,14 +5,12 @@
 	<section id="tray-{!SITE_WATCHLIST|}" data-toggleable-tray="{ save: true }" class="box box---block-main-staff-website-monitoring">
 		<div class="box-inner">
 			<h3 class="toggleable-tray-title js-tray-header">
-				<a title="{!EDIT}: {!SITE_WATCHLIST}" class="top-left-toggle js-click-staff-block-flip" href="#!">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END}{!EDIT}</a>
+				<a title="{!EDIT}: {!SITE_WATCHLIST}" class="top-left-toggle js-click-staff-block-flip" href="#!">{+START,INCLUDE,ICON}NAME=checklist/toggle{+END} {!EDIT}</a>
 
-				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">
-					{+START,INCLUDE,ICON}
-						NAME=trays/contract
-						ICON_SIZE=24
-					{+END}
-				</a>
+				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
+					NAME=trays/contract
+					ICON_SIZE=24
+				{+END}</a>
 
 				<a class="toggleable-tray-button js-tray-onclick-toggle-tray" href="#!">{!SITE_WATCHLIST}</a>
 			</h3>

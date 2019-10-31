@@ -29,7 +29,7 @@ function get_active_support_user()
 
     if (has_privilege($member_id, 'support_operator')) {
         $support_operator = get_option('support_operator');
-        if (!empty($support_operator)) {
+        if (!cms_empty_safe($support_operator)) {
             $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($support_operator);
             if ($_member_id !== null) {
                 $member_id = $_member_id;

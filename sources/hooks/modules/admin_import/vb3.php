@@ -328,7 +328,7 @@ class Hook_import_vb3
                 }
 
                 $language = '';
-                if ($row['languageid'] != 0) {
+                if (!empty($row['languageid'])) {
                     $rows2 = $db->query_select('language', array('languagecode'), array('languageid' => $row['languageid']));
                     if (array_key_exists(0, $rows2)) {
                         $language = strtoupper($rows2[0]['languagecode']);
@@ -479,7 +479,7 @@ class Hook_import_vb3
                 if ($row['avatardata'] !== null) {
                     list($avatar_url) = $this->data_to_disk($row['avatardata'], $row['a_filename'], 'cns_avatars', false);
                 } else {
-                    if ($row['avatarid'] != 0) {
+                    if (!empty($row['avatarid'])) {
                         $avatar_rows = $db->query_select('avatar', array('*'), array('avatarid' => $row['avatarid']));
                         $setting_row = $db->query_select('setting', array('value', 'defaultvalue'), array('varname' => 'avatarpath'));
                         $setting = ($setting_row[0]['value'] == '') ? $setting_row[0]['defaultvalue'] : $setting_row[0]['value'];
@@ -1031,7 +1031,7 @@ class Hook_import_vb3
 
             foreach ($rows2 as $row2) {
                 $member_id = $row2['userid'];
-                if (($member_id !== null) && ($member_id != 0)) {
+                if (!empty($member_id)) {
                     $answer = array_key_exists($row2['voteoption'] - 1, $answers) ? $answers[$row2['voteoption'] - 1] : -1;
                     $GLOBALS['FORUM_DB']->query_insert('f_poll_votes', array('pv_poll_id' => $id_new, 'pv_member_id' => $member_id, 'pv_answer_id' => $answer, 'pv_ip' => ''));
                 }

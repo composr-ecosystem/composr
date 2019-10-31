@@ -818,7 +818,7 @@ class Module_admin_stats
         $header_row = results_header_row(array(do_lang_tempcode('URL'), do_lang_tempcode('COUNT_VIEWS')), $sortables, 'sort', $sortable . ' ' . $sort_order);
         $fields = new Tempcode();
         $i = 0;
-        $degrees = 360.0 / $total;
+        $degrees = 360.0 / floatval($total);
         $done_total = 0;
         $data = array();
 
@@ -853,9 +853,9 @@ class Module_admin_stats
             $sheet_writer->output_and_exit($filename, true);
         }
 
-        if ((360 - $done_total) > 0) {
-            $data[do_lang('OTHER')] = 360 - $done_total;
-            $fields->attach(results_entry(array(do_lang('OTHER'), float_format((360 - $done_total) / $degrees)), true));
+        if ((360.0 - $done_total) > 0.0) {
+            $data[do_lang('OTHER')] = 360.0 - $done_total;
+            $fields->attach(results_entry(array(do_lang('OTHER'), float_format((360.0 - $done_total) / $degrees)), true));
         }
 
         $list = results_table(do_lang_tempcode('TOP_REFERRERS'), $start, 'start', $max, 'max', count($referrers), $header_row, $fields, $sortables, $sortable, $sort_order, 'sort', new Tempcode());
@@ -1151,10 +1151,10 @@ class Module_admin_stats
             } else {
                 $regions = array();
                 $data = array();
-                $degrees = 360 / count($rows);
+                $degrees = 360.0 / floatval(count($rows));
                 foreach ($rows as $value) {
                     $region = geolocate_ip($value['ip']);
-                    if (($region === null) || ($region == '')) {
+                    if (empty($region)) {
                         $region = do_lang('_UNKNOWN');
                     }
 
@@ -1188,9 +1188,9 @@ class Module_admin_stats
                     $done_total += $data[$key];
                     $i++;
                 }
-                if ((360 - $done_total) > 0) {
+                if (360.0 - $done_total > 0.0) {
                     $data[do_lang('OTHER')] = 360 - $done_total;
-                    $fields->attach(results_entry(array(do_lang('OTHER'), integer_format((int)((360 - $done_total) / $degrees))), true));
+                    $fields->attach(results_entry(array(do_lang('OTHER'), integer_format(intval(round((360.0 - $done_total) / $degrees)))), true));
                 }
                 $list_regionality = results_table(do_lang_tempcode('PAGES_STATISTICS', escape_html($page)), $start, 'start_views', $max, 'max_views', $i, $header_row, $fields, $sortables, $sortable, $sort_order, 'sort_views');
 
@@ -1499,7 +1499,7 @@ class Module_admin_stats
         }
 
         $data1 = array();
-        $degrees = 360 / count($rows);
+        $degrees = 360.0 / floatval(count($rows));
         foreach ($rows as $value) {
             if ($type == 'browser') {
                 // Strip point versions in e.g. Chrome

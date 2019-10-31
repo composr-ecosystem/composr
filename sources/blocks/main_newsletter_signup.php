@@ -73,7 +73,7 @@ class Block_main_newsletter_signup
 
         $block_id = get_block_id($map);
 
-        $newsletter_id = empty($map['param']) ? db_get_first_id() : intval($map['param']);
+        $newsletter_id = @cms_empty_safe($map['param']) ? db_get_first_id() : intval($map['param']);
 
         $_newsletter_title = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletters', 'title', array('id' => $newsletter_id));
         if ($_newsletter_title === null) {

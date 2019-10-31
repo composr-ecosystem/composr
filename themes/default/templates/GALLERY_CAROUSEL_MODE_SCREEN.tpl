@@ -33,12 +33,10 @@
 				<div class="sorting-and-slideshow-btn">
 					<ul class="horizontal-links with-icons">
 						<li>
-							<a data-link-start-slideshow="{}" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{$PAGE_LINK*,_SELF:galleries:{FIRST_ENTRY_ID*}:slideshow=1:wide_high=1}">
-								{+START,INCLUDE,ICON}
-									NAME=buttons/proceed
-									ICON_SIZE=24
-								{+END}{!_SLIDESHOW}
-							</a>
+							<a data-link-start-slideshow="{}" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{$PAGE_LINK*,_SELF:galleries:{FIRST_ENTRY_ID*}:slideshow=1:wide_high=1}">{+START,INCLUDE,ICON}
+								NAME=buttons/proceed
+								ICON_SIZE=24
+							{+END} {!_SLIDESHOW}</a>
 						</li>
 						<li>{SORTING}</li>
 					</ul>

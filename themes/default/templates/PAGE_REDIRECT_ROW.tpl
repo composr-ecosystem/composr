@@ -36,12 +36,10 @@
 	</td>
 	<td>
 		{+START,IF,{$NEQ,{I},new}}
-			<a href="#!" class="js-click-confirm-container-deletion" title="{!DELETE}">
-				{+START,INCLUDE,ICON}
-					NAME=admin/delete
-					ICON_SIZE=14
-				{+END}
-			</a>
+			<a href="#!" class="js-click-confirm-container-deletion" title="{!DELETE}">{+START,INCLUDE,ICON}
+				NAME=admin/delete
+				ICON_SIZE=14
+			{+END}</a>
 		{+END}
 	</td>
 </tr>

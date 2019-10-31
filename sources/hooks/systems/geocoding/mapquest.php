@@ -94,8 +94,8 @@ class Hook_geocoding_mapquest
         }
         $r = $result['results'][0]['locations'][0];
 
-        $street_address = empty($r['street']) ? null : $r['street'];
-        $postal_code = empty($r['postalCode']) ? null : $r['postalCode'];
+        $street_address = @cms_empty_safe($r['street']) ? null : $r['street'];
+        $postal_code = @cms_empty_safe($r['postalCode']) ? null : $r['postalCode'];
 
         $city = null;
         $county = null;

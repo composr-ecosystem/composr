@@ -70,14 +70,14 @@ function _autofill_geo_cpfs($row)
     $post_code_field = find_cms_cpf_field_id('cms_post_code');
     $country_field = find_cms_cpf_field_id('cms_country');
 
-    $has_street_address = ($street_address_field !== null) && (!empty($row['field_' . strval($street_address_field)]));
+    $has_street_address = ($street_address_field !== null) && (!@cms_empty_safe($row['field_' . strval($street_address_field)]));
     $has_city = ($city_field !== null) && (!empty($row['field_' . strval($city_field)]));
     $has_county = ($county_field !== null) && (!empty($row['field_' . strval($county_field)]));
     $has_state = ($state_field !== null) && (!empty($row['field_' . strval($state_field)]));
     $has_post_code = ($post_code_field !== null) && (!empty($row['field_' . strval($post_code_field)]));
     $has_country = ($country_field !== null) && (!empty($row['field_' . strval($country_field)]));
-    $has_latitude = ($latitude_field !== null) && (!empty($row['field_' . strval($latitude_field)]));
-    $has_longitude = ($longitude_field !== null) && (!empty($row['field_' . strval($longitude_field)]));
+    $has_latitude = ($latitude_field !== null) && (!@cms_empty_safe($row['field_' . strval($latitude_field)]));
+    $has_longitude = ($longitude_field !== null) && (!@cms_empty_safe($row['field_' . strval($longitude_field)]));
 
     $has_address = $has_city && $has_country;
     $has_gps = $has_latitude && $has_longitude;

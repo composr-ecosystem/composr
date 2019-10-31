@@ -81,7 +81,7 @@ class Block_bottom_forum_news
         $check_perms = array_key_exists('check', $map) ? ($map['check'] == '1') : true;
 
         $limit = empty($map['param']) ? 6 : intval($map['param']);
-        $forum_name = empty($map['forum']) ? do_lang('NEWS') : $map['forum'];
+        $forum_name = @cms_empty_safe($map['forum']) ? do_lang('NEWS') : $map['forum'];
 
         $date_key = array_key_exists('date_key', $map) ? $map['date_key'] : 'firsttime';
 

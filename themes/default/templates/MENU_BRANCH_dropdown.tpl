@@ -13,10 +13,10 @@
 
 {+START,IF,{TOP_LEVEL}}
 	<li class="menu-dropdown-item toplevel {$?,{CURRENT},current,non-current}{+START,IF,{$GET,HAS_CHILDREN}} has-children{+END}{$?,{FIRST}, first}{$?,{LAST}, last}">
-		<a{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END} class="menu-dropdown-item-a toplevel-link">
+		<a{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END} class="menu-dropdown-item-a toplevel-link">{+START,TRIM}
 			{+START,IF_NON_EMPTY,{$GET,img}}<span class="menu-dropdown-item-icon">{$GET,img_html}</span>{+END}
 			<span class="menu-dropdown-item-caption">{CAPTION}</span>
-		</a>
+		{+END}</a>
 		{+START,IF,{$GET,HAS_CHILDREN}}
 			<ul aria-haspopup="true" class="menu-dropdown-items nlevel" style="display: none">
 				{CHILDREN}
@@ -27,10 +27,7 @@
 
 {+START,IF,{$NOT,{TOP_LEVEL}}}
 	<li class="menu-dropdown-item nlevel {$?,{CURRENT},current,non-current}{+START,IF,{$GET,HAS_CHILDREN}} has-children{+END}{$?,{FIRST}, first}{$?,{LAST}, last} {+START,IF_PASSED,SIBLINGS}siblings-{SIBLINGS*}{+END}">
-		<a{+START,IF_NON_EMPTY,{URL}}{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END}{+END} {+START,IF_EMPTY,{URL}}href="#!"{+END} class="menu-dropdown-item-a nlevel-link">
-			{+START,IF_NON_EMPTY,{$GET,img}}<span class="menu-dropdown-item-icon">{$GET,img_html}</span>{+END}
-			<span class="menu-dropdown-item-caption">{CAPTION}</span>
-		</a>
+		<a{+START,IF_NON_EMPTY,{URL}}{+START,INCLUDE,MENU_LINK_PROPERTIES}{+END}{+END} {+START,IF_EMPTY,{URL}}href="#!"{+END} class="menu-dropdown-item-a nlevel-link">{+START,IF_NON_EMPTY,{$GET,img}}<span class="menu-dropdown-item-icon">{$GET,img_html}</span>{+END}<span class="menu-dropdown-item-caption">{CAPTION}</span></a>
 
 		{+START,IF,{$GET,HAS_CHILDREN}}
 			<ul aria-haspopup="true" class="menu-dropdown-items nlevel" style="display: none">

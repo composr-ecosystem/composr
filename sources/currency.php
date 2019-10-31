@@ -260,7 +260,7 @@ function _currency_convert__currency_conv_api($amount, $from_currency, $to_curre
 
             set_value($cache_key, float_to_raw_string($rate, 10, false), true); // Will be de-cached in currency_convert
 
-            $ret = round((float)$rate * $amount, 2);
+            $ret = round(floatval($rate) * $amount, 2);
 
             return $ret;
         }

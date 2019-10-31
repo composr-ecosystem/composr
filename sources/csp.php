@@ -416,11 +416,11 @@ function _csp_clean_source($_source)
         $source .= ':' . strval($parts['port']);
     }
 
-    if (!empty($parts['path'])) {
+    if (!@cms_empty_safe($parts['path'])) {
         $source .= $parts['path'];
     }
 
-    if (!empty($parts['query'])) {
+    if (!@cms_empty_safe($parts['query'])) {
         $source .= '?' . $parts['query'];
     }
 

@@ -161,7 +161,7 @@ class Block_main_multi_content
         $start = get_param_integer($block_id . '_start', isset($map['start']) ? intval($map['start']) : 0);
         $do_pagination = ((isset($map['pagination']) ? $map['pagination'] : '0') == '1');
         $attach_to_url_filter = ((isset($map['attach_to_url_filter']) ? $map['attach_to_url_filter'] : '0') == '1');
-        $root = empty($map['root']) ? get_param_integer('keep_' . $content_type . '_root', null) : intval($map['root']);
+        $root = @cms_empty_safe($map['root']) ? get_param_integer('keep_' . $content_type . '_root', null) : intval($map['root']);
 
         $guid = isset($map['guid']) ? $map['guid'] : '';
         $sort = empty($map['sort']) ? 'recent' : $map['sort']; // recent|top|views|random|title or some manually typed sort order

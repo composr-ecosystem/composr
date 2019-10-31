@@ -465,11 +465,42 @@ class Hook_addon_registry_galleries
         // Need to create the form fields (instead of using placeholder_form()) because javascript is using a field called 'files' (list type).
         $fields = new Tempcode();
         $orphaned_content = new Tempcode();
-        $orphaned_content->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', array('SELECTED' => false, 'DISABLED' => false, 'CLASS' => '', 'NAME' => 'test', 'TEXT' => 'test')));
-        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', array('TABINDEX' => placeholder_id(), 'REQUIRED' => '-required', 'NAME' => 'files', 'CONTENT' => $orphaned_content, 'INLINE_LIST' => true, 'SIZE' => '9'));
-        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', array('REQUIRED' => true, 'SKIP_LABEL' => false, 'NAME' => 'files', 'PRETTY_NAME' => lorem_phrase(), 'DESCRIPTION' => lorem_paragraph_html(), 'DESCRIPTION_SIDE' => '', 'INPUT' => $input, 'COMCODE' => new Tempcode())));
+        $orphaned_content->attach(do_lorem_template('FORM_SCREEN_INPUT_LIST_ENTRY', array(
+            'SELECTED' => false,
+            'DISABLED' => false,
+            'CLASS' => '',
+            'NAME' => 'test',
+            'TEXT' => 'test',
+        )));
+        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', array(
+            'TABINDEX' => placeholder_id(),
+            'REQUIRED' => '-required',
+            'NAME' => 'files',
+            'CONTENT' => $orphaned_content,
+            'INLINE_LIST' => true,
+            'SIZE' => '9',
+        ));
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', array(
+            'REQUIRED' => true,
+            'SKIP_LABEL' => false,
+            'NAME' => 'files',
+            'PRETTY_NAME' => lorem_phrase(),
+            'DESCRIPTION' => lorem_paragraph_html(),
+            'DESCRIPTION_SIDE' => '',
+            'INPUT' => $input,
+            'COMCODE' => new Tempcode(),
+        )));
 
-        $form = do_lorem_template('FORM', array('TABINDEX' => placeholder_number(), 'FIELDS' => $fields, 'SUBMIT_ICON' => 'admin/import', 'SUBMIT_NAME' => lorem_word(), 'URL' => placeholder_url(), 'TEXT' => lorem_phrase(), 'HIDDEN' => '', 'BATCH_IMPORT_ARCHIVE_CONTENTS' => lorem_phrase()));
+        $form = do_lorem_template('FORM', array(
+            'TABINDEX' => placeholder_number(),
+            'FIELDS' => $fields,
+            'SUBMIT_ICON' => 'admin/import',
+            'SUBMIT_NAME' => lorem_word(),
+            'URL' => placeholder_url(),
+            'TEXT' => lorem_phrase(),
+            'HIDDEN' => '',
+            'BATCH_IMPORT_ARCHIVE_CONTENTS' => lorem_phrase(),
+        ));
 
         return array(
             lorem_globalise(do_lorem_template('GALLERY_IMPORT_SCREEN', array(
@@ -546,7 +577,7 @@ class Hook_addon_registry_galleries
                 'DESCRIPTION' => lorem_paragraph(),
                 'ID' => strval($k),
                 'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'FULL_URL' => placeholder_url(),
                 'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
@@ -692,7 +723,7 @@ class Hook_addon_registry_galleries
                 'VIEWS' => placeholder_number(),
                 'ADD_DATE_RAW' => placeholder_date(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'CLASS' => lorem_word(),
                 'THUMB' => placeholder_image(),
                 'VIEW_URL' => placeholder_url(),
@@ -813,7 +844,7 @@ class Hook_addon_registry_galleries
                 'VIEWS' => placeholder_number(),
                 'ADD_DATE_RAW' => placeholder_date(),
                 'EDIT_DATE_RAW' => placeholder_date_raw(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'CLASS' => lorem_word(),
                 'THUMB' => placeholder_image(),
                 'VIEW_URL' => placeholder_url(),
@@ -911,7 +942,7 @@ class Hook_addon_registry_galleries
             'TYPE' => 'image',
             'ID' => placeholder_id(),
             'FILE_SIZE' => lorem_word(),
-            'SUBMITTER' => lorem_word(),
+            'SUBMITTER' => placeholder_id(),
             'FULL_URL' => placeholder_url(),
             'THUMB_URL' => placeholder_url(),
             'CAT' => lorem_word(),
@@ -1024,7 +1055,22 @@ class Hook_addon_registry_galleries
      */
     public function tpl_preview__gallery_entry_screen()
     {
-        $nav = do_lorem_template('GALLERY_NAV', array('BACK_URL' => placeholder_url(), 'SLIDESHOW' => false, '_X' => placeholder_number(), '_N' => placeholder_number(), 'X' => placeholder_number(), 'N' => placeholder_number(), 'SLIDESHOW_URL' => placeholder_url(), 'SLIDESHOW_NEXT_URL' => placeholder_url(), 'PREVIOUS_URL' => placeholder_url(), 'NEXT_URL' => placeholder_url(), 'MORE_URL' => placeholder_url(), 'CATEGORY_NAME' => lorem_word()));
+        $nav = do_lorem_template('GALLERY_NAV', array(
+            'BACK_URL' => placeholder_url(),
+            'NEXT_URL' => placeholder_url(),
+            'BACK_THUMB' => placeholder_image(),
+            'NEXT_THUMB' => placeholder_image(),
+            'SLIDESHOW' => false,
+            '_X' => placeholder_number(),
+            '_N' => placeholder_number(),
+            'X' => placeholder_number(),
+            'N' => placeholder_number(),
+            'SLIDESHOW_URL' => placeholder_url(),
+            'SLIDESHOW_NEXT_URL' => placeholder_url(),
+            'PREVIOUS_URL' => placeholder_url(),
+            'MORE_URL' => placeholder_url(),
+            'CATEGORY_NAME' => lorem_word(),
+        ));
 
         $comment_details = do_lorem_template('COMMENTS_POSTING_FORM', array(
             'TITLE' => lorem_phrase(),
@@ -1097,8 +1143,12 @@ class Hook_addon_registry_galleries
     {
         $items = array(
             array(
-                'BACKGROUND_IMAGE_URL' => placeholder_image_url(),
+                'BACKGROUND_ID' => placeholder_id(),
+                'BACKGROUND_TYPE' => lorem_word(),
+                'BACKGROUND_URL' => placeholder_url(),
+                'BACKGROUND_THUMB_URL' => placeholder_image_url(),
                 'CONTENT_HTML' => lorem_chunk_html(),
+                'EDIT_URL' => placeholder_url(),
             ),
         );
 
@@ -1135,7 +1185,7 @@ class Hook_addon_registry_galleries
                 'ID' => placeholder_random_id(),
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'FULL_URL' => placeholder_url(),
                 'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
@@ -1166,7 +1216,7 @@ class Hook_addon_registry_galleries
                 'ID' => placeholder_random_id(),
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'FULL_URL' => placeholder_url(),
                 'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
@@ -1221,7 +1271,7 @@ class Hook_addon_registry_galleries
                 'ID' => placeholder_random_id(),
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'FULL_URL' => placeholder_url(),
                 'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),
@@ -1251,7 +1301,7 @@ class Hook_addon_registry_galleries
                 'ID' => placeholder_random_id(),
                 'MEDIA_TYPE' => 'image',
                 'FILE_SIZE' => lorem_word(),
-                'SUBMITTER' => lorem_word(),
+                'SUBMITTER' => placeholder_id(),
                 'FULL_URL' => placeholder_url(),
                 'THUMB_URL' => placeholder_url(),
                 'CAT' => lorem_word(),

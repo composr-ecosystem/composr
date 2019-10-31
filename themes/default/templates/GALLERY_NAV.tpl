@@ -8,11 +8,11 @@
 	<div class="gallery-nav-inner">
 		{$,Back}
 		{+START,IF_NON_EMPTY,{BACK_URL}}
-			<a class="gallery-nav-prev-btn" rel="prev" accesskey="j" href="{BACK_URL*}">
+			<a class="gallery-nav-prev-btn" rel="prev" accesskey="j" href="{BACK_URL*}">{+START,TRIM}
 				{+START,INCLUDE,ICON}NAME=buttons/previous{+END}
 				<span>{!PREVIOUS}</span>
 				{BACK_THUMB}
-			</a>
+			{+END}</a>
 		{+END}
 
 		<div class="gallery-nav-status">
@@ -28,11 +28,7 @@
 
 		{$,Next}
 		{+START,IF_NON_EMPTY,{NEXT_URL}}
-			<a class="gallery-nav-next-btn" rel="next" accesskey="k" href="{NEXT_URL*}">
-				{NEXT_THUMB}
-				<span>{!NEXT}</span>
-				{+START,INCLUDE,ICON}NAME=buttons/next{+END}
-			</a>
+			<a class="gallery-nav-next-btn" rel="next" accesskey="k" href="{NEXT_URL*}">{NEXT_THUMB}<span>{!NEXT}</span>{+START,INCLUDE,ICON}NAME=buttons/next{+END}</a>
 		{+END}
 	</div>
 

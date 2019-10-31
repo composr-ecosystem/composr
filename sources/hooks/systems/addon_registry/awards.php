@@ -153,7 +153,7 @@ class Hook_addon_registry_awards
                 'AWARDEE_PROFILE_URL' => placeholder_url(),
                 'AWARDEE' => lorem_phrase(),
                 'AWARDEE_USERNAME' => lorem_word(),
-                'RAW_AWARD_DATE' => placeholder_date(),
+                'RAW_AWARD_DATE' => placeholder_date_raw(),
                 'AWARD_DATE' => placeholder_date(),
                 'CONTENT' => lorem_phrase_html(),
                 'SUBMIT_URL' => placeholder_url(),

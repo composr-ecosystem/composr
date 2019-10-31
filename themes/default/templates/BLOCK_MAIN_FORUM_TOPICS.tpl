@@ -1,12 +1,10 @@
 <section id="tray-{TITLE|}" data-toggleable-tray="{ save: true }" class="box box---block-main-forum-topics">
 	<div class="box-inner">
 		<h3 class="toggleable-tray-title js-tray-header">
-			<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!" title="{!CONTRACT}">
-				{+START,INCLUDE,ICON}
-					NAME=trays/contract
-					ICON_SIZE=24
-				{+END}
-			</a>
+			<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!" title="{!CONTRACT}">{+START,INCLUDE,ICON}
+				NAME=trays/contract
+				ICON_SIZE=24
+			{+END}</a>
 
 			{+START,IF_NON_EMPTY,{TITLE}}
 				<a class="toggleable-tray-button" data-click-tray-toggle="#tray-{TITLE|}" href="#!">{TITLE}</a>

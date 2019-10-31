@@ -240,7 +240,7 @@ class Module_admin_permissions
             require_all_lang();
 
             $p_section = get_param_string('id', null);
-            if (($p_section === null) || ($p_section == '')) {
+            if (empty($p_section)) {
                 $this->title = get_screen_title('PRIVILEGES');
             } else {
                 breadcrumb_set_parents(array(array('_SELF:_SELF:privileges', do_lang_tempcode('PRIVILEGES'))));
@@ -252,7 +252,7 @@ class Module_admin_permissions
 
         if ($type == '_privileges') {
             $p_section = get_param_string('id', null);
-            if (($p_section === null) || ($p_section == '')) {
+            if (empty($p_section)) {
                 set_helper_panel_tutorial('tut_permissions');
             }
 
@@ -685,7 +685,7 @@ class Module_admin_permissions
         require_code('zones2');
 
         $p_section = get_param_string('id', null);
-        if (($p_section === null) || ($p_section == '')) {
+        if (empty($p_section)) {
             $fields = new Tempcode();
             $_sections = $this->_get_ordered_sections();
             $sections = new Tempcode();

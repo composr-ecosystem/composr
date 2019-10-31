@@ -51,7 +51,7 @@ class CMSAccountWrite
         // Find whether the member exists
         if (!empty($username)) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
-            if (!empty($member_id)) {
+            if (!cms_empty_safe($member_id)) {
                 $email = $GLOBALS['FORUM_DRIVER']->get_member_email_address($member_id);
             }
         } elseif (!empty($email)) {
@@ -236,7 +236,7 @@ class CMSAccountWrite
             'register' => true,
             'member_id' => $member_id,
             'result_text' => null,
-            'preview_topic_id' => empty($preview_topic_id) ? null : intval($preview_topic_id),
+            'preview_topic_id' => cms_empty_safe($preview_topic_id) ? null : intval($preview_topic_id),
         );
     }
 

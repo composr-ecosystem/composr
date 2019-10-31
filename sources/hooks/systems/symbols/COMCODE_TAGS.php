@@ -38,7 +38,7 @@ class Hook_symbol_COMCODE_TAGS
 
         $out = '';
 
-        $wanted = isset($param[0]) ? intval($param[0]) : null;
+        $wanted = ((isset($param[0])) && (is_numeric($param[0]))) ? intval($param[0]) : null;
 
         global $VALID_COMCODE_TAGS;
         foreach (array_keys($VALID_COMCODE_TAGS) as $tag) {

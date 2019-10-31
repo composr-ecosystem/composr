@@ -15,7 +15,7 @@
 			{$INSERT_SPAMMER_BLACKHOLE}
 
 			<div class="inline">
-				<button class="btn btn-primary btn-scr buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END}{!SEND_ALL}</button>
+				<button class="btn btn-primary btn-scr buttons--send" type="submit">{+START,INCLUDE,ICON}NAME=buttons/send{+END} {!SEND_ALL}</button>
 			</div>
 		</form>
 	</div>

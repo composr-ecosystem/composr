@@ -73,7 +73,7 @@ class Block_main_awards
 
         $block_id = get_block_id($map);
 
-        $award = empty($map['param']) ? $GLOBALS['SITE_DB']->query_select_value('award_types', 'MIN(id)') : intval($map['param']);
+        $award = @cms_empty_safe($map['param']) ? $GLOBALS['SITE_DB']->query_select_value('award_types', 'MIN(id)') : intval($map['param']);
         $zone = array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH';
 
         $guid = array_key_exists('guid', $map) ? $map['guid'] : '';

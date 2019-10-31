@@ -94,14 +94,14 @@ class Hook_geocoding_bing
         }
         $r = $result['resourceSets'][0]['resources'][0];
 
-        $street_address = empty($r['address']['addressLine']) ? null : $r['address']['addressLine'];
+        $street_address = @cms_empty_safe($r['address']['addressLine']) ? null : $r['address']['addressLine'];
         $city = empty($r['address']['locality']) ? null : $r['address']['locality'];
         $county = empty($r['address']['adminDistrict']) ? null : $r['address']['adminDistrict'];
         if ($county === $city) {
             $county = null;
         }
         $state = empty($r['address']['adminDistrict2']) ? null : $r['address']['adminDistrict2'];
-        $postal_code = empty($r['address']['postalCode']) ? null : $r['address']['postalCode'];
+        $postal_code = @cms_empty_safe($r['address']['postalCode']) ? null : $r['address']['postalCode'];
         $country = empty($r['address']['countryRegion']) ? null : $r['address']['countryRegion'];
 
         require_code('locations');

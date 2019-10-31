@@ -1,10 +1,8 @@
 <div class="global-helper-panel-wrap" data-view="GlobalHelperPanel">
-	<a id="helper-panel-toggle" href="#!" class="js-click-toggle-helper-panel" title="{!HELP_OR_ADVICE}: {$?,{$HIDE_HELP_PANEL},{!SHOW},{!HIDE}}">
-		{+START,INCLUDE,ICON}
-			NAME=helper_panel/{$?,{$HIDE_HELP_PANEL},show,hide}
-			ICON_SIZE=14
-		{+END}
-	</a>
+	<a id="helper-panel-toggle" href="#!" class="js-click-toggle-helper-panel" title="{!HELP_OR_ADVICE}: {$?,{$HIDE_HELP_PANEL},{!SHOW},{!HIDE}}">{+START,INCLUDE,ICON}
+		NAME=helper_panel/{$?,{$HIDE_HELP_PANEL},show,hide}
+		ICON_SIZE=14
+	{+END}</a>
 
 	<div class="block-mobile">
 		<h2>{!HELP_OR_ADVICE}</h2>

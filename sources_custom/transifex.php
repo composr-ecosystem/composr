@@ -962,10 +962,10 @@ function _transifex_credentials()
         $password = get_param_string('password', get_value('transifex_password', null, true));
     }
 
-    if (empty($username)) {
+    if (cms_empty_safe($username)) {
         warn_exit(do_lang('API_NOT_CONFIGURED', 'Transifex') . ' Username must be set with :set_value(\'transifex_username\', \'...\', true); or passed as the first CLI parameter', true);
     }
-    if (empty($password)) {
+    if (cms_empty_safe($password)) {
         warn_exit(do_lang('API_NOT_CONFIGURED', 'Transifex') . ' Transifex password must be set with :set_value(\'transifex_password\', \'...\', true); or passed as the second CLI parameter', true);
     }
 

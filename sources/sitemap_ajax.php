@@ -112,7 +112,7 @@ function sitemap_script_loading()
         echo "\n" . '<expand></expand>';
         echo "\n" . '<expand>:</expand>';
     }
-    if (($default !== null) && ($default != '') && (strpos($default, ':') !== false)) {
+    if ((!cms_empty_safe($default)) && (strpos($default, ':') !== false)) {
         $parts = explode(':', $default);
         $buildup = '';
         foreach ($parts as $part) {

@@ -69,7 +69,7 @@ $required_settings = array(
 
 global $SITE_INFO;
 foreach ($required_settings as $setting) {
-    if (empty($SITE_INFO[$setting])) {
+    if (@cms_empty_safe($SITE_INFO[$setting])) {
         exit('Missing/empty _config.php setting: ' . $setting);
     }
 }
@@ -191,7 +191,7 @@ function handle_failover_auto_switching($iteration = 0)
                     $cpu_num++;
                     $load_total += $cpu->loadpercentage;
                 }
-                $load = round((float)$load_total / (float)$cpu_num);
+                $load = round(floatval($load_total) / floatval($cpu_num));
                 if ($cpu_num != 0) {
                     if ($load >= floatval($SITE_INFO['failover_loadaverage_threshold'])) {
                         is_failing('load-average=' . number_format($load, 2));

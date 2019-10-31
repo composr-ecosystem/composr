@@ -296,12 +296,12 @@ class Hook_addon_registry_points
 
         $give_template = do_lorem_template('POINTS_GIVE', array(
             'GIVE_URL' => placeholder_url(),
-            'MEMBER' => lorem_phrase(),
+            'MEMBER' => placeholder_id(),
             'VIEWER_GIFT_POINTS_AVAILABLE' => placeholder_number(),
         ));
 
         $content = do_lorem_template('POINTS_PROFILE', array(
-            'MEMBER' => lorem_phrase(),
+            'MEMBER' => placeholder_id(),
             'PROFILE_URL' => placeholder_url(),
             'USERNAME' => lorem_word(),
             'POINTS_JOINING' => placeholder_number(),

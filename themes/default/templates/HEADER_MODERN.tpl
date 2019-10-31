@@ -8,7 +8,7 @@
 		<div class="global-navigation">
 			{$,The main logo}
 			<h1 class="logo">
-				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">
+				<a class="logo-link" target="_self" href="{$PAGE_LINK*,:}" rel="home" title="{!HOME}">{+START,TRIM}
 					{+START,IF,{$NOT,{$THEME_OPTION,use_site_name_text_as_logo}}}
 						<img class="logo-image logo-image-color" src="{$IMG*,logo/small_logo}" alt="{$SITE_NAME*}" />
 						<img class="logo-image logo-image-white" src="{$IMG*,logo/small_white_logo}" alt="{$SITE_NAME*}" style="display: none;" />
@@ -16,7 +16,7 @@
 					{+START,IF,{$THEME_OPTION,use_site_name_text_as_logo}}
 						<span class="logo-text">{$SITE_NAME*}</span>
 					{+END}
-				</a>
+				{+END}</a>
 			</h1>
 
 			<div class="global-navigation-items">

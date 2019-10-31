@@ -36,11 +36,11 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
         }
 
         $value = '';
-        if (isset($param[0])) {
-            $limit = isset($param[1]) ? intval($param[1]) : null;
+        if ((isset($param[0])) && (is_numeric($param[0]))) {
+            $limit = ((isset($param[1])) && (is_numeric($param[1]))) ? intval($param[1]) : null;
             $resolve = isset($param[2]) ? $param[2] : ''; // Content-type to associate back to, and fetch the ID for
             $rating_type = isset($param[3]) ? $param[3] : ''; // If non empty, it will get the highest rated first
-            $field_id = ((isset($param[4])) && ($param[4] != '')) ? intval($param[4]) : null; // Limit to a particular field ID
+            $field_id = ((isset($param[4])) && (is_numeric($param[4]))) ? intval($param[4]) : null; // Limit to a particular field ID
 
             static $cache = array();
             $cache_key = serialize($param);
@@ -56,7 +56,7 @@ class Hook_symbol_CATALOGUE_ENTRY_BACKREFS
             $select = array('ce_id');
             $order_by = '';
             if ($resolve != '') {
-                $table .= ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage ON ' . db_string_equal_to('content_type', $param[2]) . ' AND catalogue_entry_id=ce_id';
+                $table .= ' JOIN ' . get_table_prefix() . 'catalogue_entry_linkage ON ' . db_string_equal_to('content_type', $resolve) . ' AND catalogue_entry_id=ce_id';
                 $select[] = 'content_id';
 
                 if ($rating_type != '') {

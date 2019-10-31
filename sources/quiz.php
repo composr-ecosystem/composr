@@ -209,13 +209,13 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
                     $marks++;
 
                     $affirmation = array($question['id'], $question_text, $correct_answer, $given_answer);
-                    if (($correct_explanation !== null) && ($correct_explanation != '')) {
+                    if (!cms_empty_safe($correct_explanation)) {
                         $affirmation[] = $correct_explanation;
                     }
                     $affirmations[] = $affirmation;
                 } else {
                     $correction = array($question['id'], $question_text, $correct_answer, $given_answer);
-                    if (($correct_explanation !== null) && ($correct_explanation != '')) {
+                    if (!cms_empty_safe($correct_explanation)) {
                         $correction[] = $correct_explanation;
                     }
                     $corrections[] = $correction;
@@ -270,7 +270,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
 
             if ($correctness != 1.0) {
                 $correction = array($question['id'], $question_text, $correct_answer, $accum);
-                if (($correct_explanation !== null) && ($correct_explanation != '')) {
+                if (!cms_empty_safe($correct_explanation)) {
                     $correction[] = $correct_explanation;
                 }
                 $corrections[] = $correction;
@@ -312,13 +312,13 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
 
             if (!$was_correct) {
                 $correction = array($question['id'], $question_text, $correct_answer, $given_answer);
-                if (($correct_explanation !== null) && ($correct_explanation != '')) {
+                if (!cms_empty_safe($correct_explanation)) {
                     $correction[] = $correct_explanation;
                 }
                 $corrections[] = $correction;
             } else {
                 $affirmation = array($question['id'], $question_text, $correct_answer, $given_answer);
-                if (($correct_explanation !== null) && ($correct_explanation != '')) {
+                if (!cms_empty_safe($correct_explanation)) {
                     $affirmation[] = $correct_explanation;
                 }
                 $affirmations[] = $affirmation;

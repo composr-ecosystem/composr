@@ -1472,7 +1472,7 @@ class Module_cms_comcode_pages
                     $page_contents = '';
                 }
             }
-            if (!empty($page_contents)) {
+            if (!cms_empty_safe($page_contents)) {
                 if ($user_lang == 'EN') {
                     $page_contents_lower = $page_contents; // FUDGE: For performance we can assume English only requires ASCII characters for this check
                 } else {

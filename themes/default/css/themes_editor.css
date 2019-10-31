@@ -80,7 +80,7 @@
 /* Template editor */
 
 .template-editor-files-and-tabs {
-	display: flex;
+	{$BETA_CSS_PROPERTY,display: flex;}
 }
 
 .template-editor-file-selector {

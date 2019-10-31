@@ -4,13 +4,11 @@
 	{+START,IF_NON_EMPTY,{DOC}}<div id="doc-{$GET,rand_do_next_item}" style="display: none">{DOC}</div>{+END}
 
 	<div class="do-next-item-icon">
-		<a href="{URL*}" class="js-click-confirm-warning"{+START,IF_PASSED,TARGET} target="{TARGET*}"{+END}>
-			{+START,INCLUDE,ICON}
-				NAME={PICTURE}
-				ICON_DESCRIPTION={$STRIP_TAGS,{DESCRIPTION}}
-				ICON_SIZE=48
-			{+END}
-		</a>
+		<a href="{URL*}" class="js-click-confirm-warning"{+START,IF_PASSED,TARGET} target="{TARGET*}"{+END}>{+START,INCLUDE,ICON}
+			NAME={PICTURE}
+			ICON_DESCRIPTION={$STRIP_TAGS,{DESCRIPTION}}
+			ICON_SIZE=48
+		{+END}</a>
 	</div>
 
 	<div class="do-next-item-label">

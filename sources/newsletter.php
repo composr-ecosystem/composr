@@ -646,11 +646,11 @@ function newsletter_variable_substitution($message, $subject, $forename, $surnam
         'forename' => $forename,
         'surname' => $surname,
         'name' => $name,
-        'member_id' => empty($member_id) ? '' : strval($member_id),
+        'member_id' => cms_empty_safe($member_id) ? '' : strval($member_id),
         'email_address' => $email_address,
         'sendid' => $sendid,
         'unsub_url' => $unsub_url,
-        'unsub_comcode' => do_lang(empty($member_id) ? 'NEWSLETTER_UNSUBSCRIBE_NEWSLETTER' : 'NEWSLETTER_UNSUBSCRIBE_MEMBER', $unsub_url->evaluate()),
+        'unsub_comcode' => do_lang(cms_empty_safe($member_id) ? 'NEWSLETTER_UNSUBSCRIBE_NEWSLETTER' : 'NEWSLETTER_UNSUBSCRIBE_MEMBER', $unsub_url->evaluate()),
     );
 
     foreach ($vars as $var => $sub) {

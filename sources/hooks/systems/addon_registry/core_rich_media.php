@@ -230,7 +230,6 @@ class Hook_addon_registry_core_rich_media
             'themes/default/images/icons_monochrome/carousel/button_right_hover.svg',
             'themes/default/images/icons_monochrome/carousel/button_right.svg',
             'themes/default/images/icons_monochrome/carousel/index.html',
-            'themes/default/images/carousel/index.html',
             'themes/default/images/big_tabs/index.html',
             'themes/default/images/big_tabs/controller_button_active.svg',
             'themes/default/images/big_tabs/controller_button_top_active.svg',

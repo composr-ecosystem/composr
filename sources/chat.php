@@ -495,12 +495,12 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
 
         $avatar_url = $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($_message['member_id']);
         if (!is_guest($_message['member_id'])) {
-            $user = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_message['member_id'], $_message['username'], false);
+            $member_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($_message['member_id'], $_message['username'], false);
         } else {
             if (preg_match('#[:\.]#', $_message['ip_address']) != 0) {
-                $user = make_string_tempcode(escape_html(do_lang('GUEST') . '-' . substr(md5($_message['ip_address']), 0, 5)));
+                $member_link = make_string_tempcode(escape_html(do_lang('GUEST') . '-' . substr(md5($_message['ip_address']), 0, 5)));
             } else {
-                $user = make_string_tempcode(escape_html($_message['ip_address']));
+                $member_link = make_string_tempcode(escape_html($_message['ip_address']));
             }
         }
 
@@ -511,7 +511,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
             'OLD_MESSAGES' => $backlog,
             'AVATAR_URL' => $avatar_url,
             'STAFF_ACTIONS' => $staff_actions,
-            'MEMBER' => $user,
+            'MEMBER_LINK' => $member_link,
             'MEMBER_ID' => strval($_message['member_id']),
             'MESSAGE' => $_message['the_message'],
             'DATE' => $_message['date_and_time_nice'],
@@ -653,7 +653,7 @@ function chatter_active($member_id, $room_id = null)
     } else {
         $room_clause = 'room_id=' . strval($room_id);
     }
-    $test = $GLOBALS['SITE_DB']->query_value_if_there('SELECT member_id FROM ' . get_table_prefix() . 'chat_active WHERE ' . $room_clause . ' AND date_and_time>=' . strval(time() - CHAT_ACTIVITY_PRUNE) . ' AND member_id=' . (string)$member_id);
+    $test = $GLOBALS['SITE_DB']->query_value_if_there('SELECT member_id FROM ' . get_table_prefix() . 'chat_active WHERE ' . $room_clause . ' AND date_and_time>=' . strval(time() - CHAT_ACTIVITY_PRUNE) . ' AND member_id=' . strval($member_id));
     return $test !== null;
 }
 
@@ -701,7 +701,7 @@ function _chat_post_message_ajax($room_id, $message, $font, $colour, $first_mess
             'OLD_MESSAGES' => false,
             'AVATAR_URL' => '',
             'STAFF_ACTIONS' => '',
-            'MEMBER' => do_lang('SYSTEM'),
+            'MEMBER_LINK' => do_lang('SYSTEM'),
             'MEMBER_ID' => strval($_message['member_id']),
             'MESSAGE' => $the_message,
             'DATE' => get_timezoned_date_time($_message['date_and_time']),
@@ -1346,7 +1346,7 @@ function _deal_with_chatcode_private($pm_user, $pm_message, $username, $text, $r
                 '_GUID' => '96ef50f1442b319b034fe6f68ca50c12',
                 'SYSTEM_MESSAGE' => strval($system_message),
                 'MESSAGE' => $pm_message,
-                'USER' => do_lang_tempcode('CHAT_PRIVATE_TITLE', ($username == $pm_user) ? do_lang_tempcode('USER_SYSTEM') : make_string_tempcode(escape_html($username))),
+                'USERNAME' => do_lang_tempcode('CHAT_PRIVATE_TITLE', ($username == $pm_user) ? do_lang_tempcode('USER_SYSTEM') : make_string_tempcode(escape_html($username))),
             ));
             $text = preg_replace('#\[private=&quot;([^&]*)&quot;\]([^\[]*)\[/private\]#', $private_code->evaluate(), $text, 1);
         }

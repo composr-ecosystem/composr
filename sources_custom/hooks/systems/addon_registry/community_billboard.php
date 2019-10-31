@@ -212,7 +212,7 @@ class Hook_addon_registry_community_billboard
         $about_current = do_lorem_template('COMMUNITY_BILLBOARD_DETAILS', array(
             'USERNAME' => lorem_word_html(),
             'DAYS_ORDERED' => lorem_phrase(),
-            'DATE_RAW' => placeholder_date(),
+            'DATE_RAW' => placeholder_date_raw(),
             'DATE' => placeholder_date(),
         ));
 

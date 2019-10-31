@@ -22,7 +22,7 @@
 
 			<ul class="horizontal-links with-icons bock-top-login-links">
 				{+START,IF_NON_EMPTY,{JOIN_URL}}<li class="li-join"><a href="{JOIN_URL*}">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/join{+END}<span class="li-join-text">{!_JOIN}</span></a></li>{+END}
-				<li class="li-login"><a data-open-as-overlay="{}" rel="nofollow" href="{FULL_LOGIN_URL*}" title="{!MORE}: {!_LOGIN}">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END}{+START,IF,{$DESKTOP}}<span class="desktop-only">{!OPTIONS}</span>{+END}<span class="li-login-text mobile-only">{!_LOGIN}</span></a></li>
+				<li class="li-login"><a data-open-as-overlay="{}" rel="nofollow" href="{FULL_LOGIN_URL*}" title="{!MORE}: {!_LOGIN}">{+START,INCLUDE,ICON}NAME=menu/site_meta/user_actions/login{+END} {+START,IF,{$DESKTOP}}<span class="desktop-only">{!OPTIONS}</span>{+END}<span class="li-login-text mobile-only">{!_LOGIN}</span></a></li>
 			</ul>
 		</form>
 	</div>

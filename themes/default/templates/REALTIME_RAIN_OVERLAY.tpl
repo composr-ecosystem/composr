@@ -28,21 +28,17 @@
 
 			<div id="timer">
 				<div id="pause-but">
-					<a class="js-click-toggle-window-pausing" title="{!PAUSE}" href="#!">
-						{+START,INCLUDE,ICON}
-							NAME=buttons/pause
-							ICON_SIZE=30
-						{+END}
-					</a>
+					<a class="js-click-toggle-window-pausing" title="{!PAUSE}" href="#!">{+START,INCLUDE,ICON}
+						NAME=buttons/pause
+						ICON_SIZE=30
+					{+END}</a>
 				</div>
 
 				<div id="pre-but">
-					<a class="js-click-rain-slow-down" title="{!SLOW_DOWN}" href="#!">
-						{+START,INCLUDE,ICON}
-							NAME=buttons/pause
-							ICON_SIZE=30
-						{+END}
-					</a>
+					<a class="js-click-rain-slow-down" title="{!SLOW_DOWN}" href="#!">{+START,INCLUDE,ICON}
+						NAME=buttons/pause
+						ICON_SIZE=30
+					{+END}</a>
 				</div>
 
 				<div class="js-hover-toggle-real-time-indicator js-mouseover-set-time-line-position js-mousemove-timeline-click js-click-timeline-click" id="time-line">
@@ -50,12 +46,10 @@
 				</div>
 
 				<div id="next-but">
-					<a class="js-click-rain-speed-up" title="{!SPEED_UP}" href="#!">
-						{+START,INCLUDE,ICON}
-							NAME=realtime_rain/next_but
-							ICON_SIZE=30
-						{+END}
-					</a>
+					<a class="js-click-rain-speed-up" title="{!SPEED_UP}" href="#!">{+START,INCLUDE,ICON}
+						NAME=realtime_rain/next_but
+						ICON_SIZE=30
+					{+END}</a>
 				</div>
 			</div>
 		</div></div>

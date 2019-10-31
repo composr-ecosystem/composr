@@ -6,7 +6,7 @@
 		{+END}
 	{+END}
 
-	<a class="gallery-mosaic-item-inner img-thumb-opaque" href="{VIEW_URL*}">
+	<a class="gallery-mosaic-item-inner img-thumb-opaque" href="{VIEW_URL*}">{+START,TRIM}
 		{$TRIM,{THUMB}}
 		<div class="gallery-mosaic-item-overlay">
 			<div class="gallery-mosaic-item-overlay-top">
@@ -28,5 +28,5 @@
 				<div class="submitter">{+START,INCLUDE,ICON}NAME=content_types/member{+END} {$USERNAME*,{SUBMITTER},1}</div>
 			</div>
 		</div>
-	</a>
+	{+END}</a>
 </div>

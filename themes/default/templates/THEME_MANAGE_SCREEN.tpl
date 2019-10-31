@@ -84,36 +84,30 @@
 							<div class="do-theme-items">
 								<div>
 									<div>
-										<a rel="edit" title="{!EDIT_THEME}: {NAME*}" href="{EDIT_URL*}">
-											{+START,INCLUDE,ICON}
-												NAME=admin/edit_this
-												ICON_SIZE=48
-											{+END}
-										</a>
+										<a rel="edit" title="{!EDIT_THEME}: {NAME*}" href="{EDIT_URL*}">{+START,INCLUDE,ICON}
+											NAME=admin/edit_this
+											ICON_SIZE=48
+										{+END}</a>
 									</div>
 									<div><a title="{!EDIT_THEME}: {NAME*}" href="{EDIT_URL*}">{$?,{$IS_EMPTY,{THEME_USAGE}},{!_EDIT_THEME},{!SETTINGS}}</a></div>
 								</div>
 
 								<div data-cms-href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>
 									<div>
-										<a rel="edit" title="{!EDIT_TEMPLATES}: {NAME*}" href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>
-											{+START,INCLUDE,ICON}
-												NAME=menu/adminzone/style/themes/templates
-												ICON_SIZE=48
-											{+END}
-										</a>
+										<a rel="edit" title="{!EDIT_TEMPLATES}: {NAME*}" href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>{+START,INCLUDE,ICON}
+											NAME=menu/adminzone/style/themes/templates
+											ICON_SIZE=48
+										{+END}</a>
 									</div>
 									<div><a title="{!EDIT_TEMPLATES}: {NAME*}" href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>{!EDIT_TEMPLATES}</a></div>
 								</div>
 
 								<div data-cms-href="{IMAGES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>
 									<div>
-										<a rel="edit" title="{!EDIT_THEME_IMAGES}: {NAME*}" href="{IMAGES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>
-											{+START,INCLUDE,ICON}
-												NAME=menu/adminzone/style/themes/theme_images
-												ICON_SIZE=48
-											{+END}
-										</a>
+										<a rel="edit" title="{!EDIT_THEME_IMAGES}: {NAME*}" href="{IMAGES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>{+START,INCLUDE,ICON}
+											NAME=menu/adminzone/style/themes/theme_images
+											ICON_SIZE=48
+										{+END}</a>
 									</div>
 									<div><a title="{!EDIT_THEME_IMAGES}: {NAME*}" href="{IMAGES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING*}"{+END}>{!EDIT_THEME_IMAGES}</a></div>
 								</div>

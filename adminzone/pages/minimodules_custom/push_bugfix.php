@@ -633,7 +633,7 @@ function create_tracker_issue($version_dotted, $tracker_title, $tracker_message,
 {
     $args = func_get_args();
     $result = make_call(__FUNCTION__, array('parameters' => $args));
-    if (empty($result)) {
+    if (cms_empty_safe($result)) {
         return null;
     }
     return intval($result);
