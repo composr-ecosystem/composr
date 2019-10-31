@@ -41,7 +41,7 @@ class Hook_symbol_CURRENCY
             $amount = float_unformat($param[0]);
             $from_currency = (!empty($param[1])) ? $param[1] : get_option('currency');
             $to_currency = (!empty($param[2])) ? $param[2] : null;
-            $display_method = ((isset($param[3])) && (!is_numeric($param[3]))) ? intval($param[2]) : CURRENCY_DISPLAY_TEMPLATED;
+            $display_method = ((isset($param[3])) && (is_numeric($param[3]))) ? intval($param[2]) : CURRENCY_DISPLAY_TEMPLATED;
 
             $value = currency_convert($amount, $from_currency, $to_currency, $display_method);
         } else {
