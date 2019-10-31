@@ -347,7 +347,7 @@ class Hook_addon_registry_chat
                 'OLD_MESSAGES' => lorem_phrase(),
                 'AVATAR_URL' => placeholder_avatar(),
                 'STAFF_ACTIONS' => $chat_actions,
-                'USERNAME' => lorem_word(),
+                'MEMBER_LINK' => lorem_word(),
                 'MEMBER_ID' => placeholder_id(),
                 'MESSAGE' => lorem_phrase(),
                 'DATE' => placeholder_date(),

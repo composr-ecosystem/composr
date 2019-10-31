@@ -91,7 +91,7 @@ function pins_on_map($data, $color_pool = null, $api_key = null, $width = null, 
 
     $_data = array();
     foreach ($data as $details) {
-        $color = empty($details['color']) ? _search_map_color_pool(@cms_empty_safe(($details['intensity']) ? null : @intval($details['intensity']), $max_intensity, $color_pool) : $details['color'];
+        $color = empty($details['color']) ? _search_map_color_pool(@cms_empty_safe($details['intensity']) ? null : @intval($details['intensity']), $max_intensity, $color_pool) : $details['color'];
 
         $_data[] = array(
             'LATITUDE' => @strval($details['latitude']),

@@ -2845,7 +2845,7 @@ function ecv2_COLOR_LIGHTEN($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if ((!empty($param[0])) && (isset($param[1])) && (is_numeric($param[1]))) {
+    if ((!empty($param[0])) && (isset($param[1]))) {
         require_code('themes');
 
         $hex_color = $param[0];
@@ -2888,7 +2888,7 @@ function ecv2_COLOR_DARKEN($lang, $escaped, $param)
         ocp_mark_as_escaped($value);
     }
 
-    if ((!empty($param[0])) && (isset($param[1])) && (is_numeric($param[1]))) {
+    if ((!empty($param[0])) && (isset($param[1]))) {
         require_code('themes');
 
         $hex_color = $param[0];
