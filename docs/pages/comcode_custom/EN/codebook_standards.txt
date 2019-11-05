@@ -10,7 +10,7 @@ This document documents many coding standards. Agencies may wish to integrate th
 
 Ideally you should try and learn to apply all these standards naturally, so going through this as a checklist will be a quick final formality when you're finished coding.
 
-You may also wish to read the "Engineering standards and trade-off" section of [page="_SEARCH:codebook_3"]Code Book, part 3 (Miscellany)[/page] and the descriptions of design concerns across the main compo.sr website.
+You may also wish to read the "Engineering standards and trade-off" section of [page="_SEARCH:codebook_3"]Code Book, part 3 (Miscellany)[/page] and the descriptions of design concerns across the main compo.sr website (particularly the Composr Manifesto).
 
 [title="2"]What standards to apply[/title]
 
