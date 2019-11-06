@@ -73,8 +73,12 @@ class _backups_test_set extends cms_test_case
         $config_php .= rtrim('
 unset($SITE_INFO[\'base_url\']); // Let it auto-detect
 unset($SITE_INFO[\'cns_table_prefix\']);
+unset($SITE_INFO[\'db_forums\']);
+unset($SITE_INFO[\'db_forums_user\']);
+unset($SITE_INFO[\'db_forums_password\']);
 $SITE_INFO[\'db_site\'] = \'cms_backup_test\';
-$SITE_INFO[\'db_forums\'] = \'cms_backup_test\';
+$SITE_INFO[\'db_site_user\'] = \'root\';
+$SITE_INFO[\'db_site_password\'] = isset($SITE_INFO[\'mysql_root_password\']) ? $SITE_INFO[\'mysql_root_password\'] : \'\';
 $SITE_INFO[\'table_prefix\'] = \'cms_backup_test_\';
 $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_content']) . '\';
         ');

@@ -39,7 +39,7 @@ class demonstratr_test_set extends cms_test_case
 
             global $SITE_INFO;
             if (!isset($SITE_INFO['mysql_root_password'])) {
-                $SITE_INFO['mysql_root_password'] = $SITE_INFO['db_site_password'];
+                $SITE_INFO['mysql_root_password'] = '';
             }
             if (!isset($SITE_INFO['mysql_demonstratr_password'])) {
                 $SITE_INFO['mysql_demonstratr_password'] = $SITE_INFO['db_site_password'];
