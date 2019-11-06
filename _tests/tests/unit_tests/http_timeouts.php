@@ -48,7 +48,7 @@ class http_timeouts_test_set extends cms_test_case
             $this->assertTrue($r2[0]);
             $this->assertTrue($r2[1] == 27078913, 'Wrong download size @ ' . strval($r2[1]));
         }
-        if (($this->only === null) || ($this->only == 'big_socket')) {
+        if ((($this->only === null) || ($this->only == 'big_socket')) && (strpos($url, 'https://') === false)) {
             $r3 = $this->_testFSockOpen($url, $timeout);
             $this->assertTrue($r3[0]);
             $this->assertTrue($r3[1] >= 27078913, 'Wrong download size @ ' . strval($r3[1]));
@@ -66,7 +66,7 @@ class http_timeouts_test_set extends cms_test_case
             $this->assertTrue(!$r2[0]);
             $this->assertTrue($r2[1] == 0, 'Wrong download size @ ' . strval($r2[1]));
         }
-        if (($this->only === null) || ($this->only == 'timeout_socket')) {
+        if ((($this->only === null) || ($this->only == 'timeout_socket')) && (strpos($url, 'https://') === false)) {
             $r3 = $this->_testFSockOpen($url, $timeout);
             $this->assertTrue(!$r3[0]);
             $this->assertTrue($r3[1] == 0, 'Wrong download size @ ' . strval($r3[1]));
@@ -125,6 +125,13 @@ class http_timeouts_test_set extends cms_test_case
                 }
             }
             fclose($fh);
+        }
+
+        if ($this->debug) {
+            var_dump(gettype($result));
+            if (is_string($result)) {
+                var_dump(substr($result, 0, 1000));
+            }
         }
 
         return array(is_string($result), is_string($result) ? strlen($result) : 0);
