@@ -145,7 +145,7 @@ class _installer_test_set extends cms_test_case
         for ($i = 0; $i < 2; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
             $success = do_install_to(
                 $database,
-                (strpos(get_db_site(), 'mysql') === false) ? get_db_site_user() : 'root',
+                (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root',
                 isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '',
                 $table_prefix,
                 $safe_mode,

@@ -62,7 +62,7 @@ class _installer_forum_drivers_test_set extends cms_test_case
         }
 
         global $SITE_INFO;
-        $username = 'root';
+        $username = (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root';
         $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
 
         $this->do_headless_install(false, 'none', $username, $password);

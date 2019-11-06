@@ -26,6 +26,10 @@ if (!addon_installed('meta_toolkit')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('meta_toolkit')));
 }
 
+if (strpos(get_db_type(), 'mysql') === false) {
+    warn_exit('The build tools require MySQL to be the active database.');
+}
+
 restrictify();
 cms_ini_set('ocproducts.xss_detect', '0');
 
