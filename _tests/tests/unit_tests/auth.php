@@ -91,11 +91,8 @@ class auth_test_set extends cms_test_case
         $fake_session_id = '1234543';
 
         $ips = array();
-        $localhost_ips = get_localhost_ips();
-        foreach ($localhost_ips as $ip) {
-            $ips[get_ip_address(3, $ip)] = true;
-        }
-        $ips['1.2.3.4'] = false;
+        $ips[get_ip_address(3, get_server_external_looparound_ip())] = true;
+        $ips[get_ip_address(3, '1.2.3.4')] = false;
 
         foreach ($ips as $ip => $pass_expected) { // We actually test both pass and fail, to help ensure our test is actually not somehow getting a failure from something else
             // Clean up
@@ -119,13 +116,13 @@ class auth_test_set extends cms_test_case
             persistent_cache_delete('SESSION_CACHE');
 
             require_code('files');
-            $url = static_evaluate_tempcode(build_url(array('page' => '', 'keep_session' => $fake_session_id), 'adminzone', array(), false, false, true));
-            $http_result = cms_http_request($url, array('trigger_error' => false));
+            $url = static_evaluate_tempcode(build_url(array('page' => ''), 'adminzone', array(), false, false, true));
+            $http_result = cms_http_request($url, array('trigger_error' => false, 'cookies' => array(get_session_cookie() => $fake_session_id)));
 
             if ($pass_expected) {
-                $this->assertTrue($http_result->message != '401', 'No access when expected');
+                $this->assertTrue($http_result->message != '401', 'No access when expected for ' . $ip);
             } else {
-                $this->assertTrue($http_result->message == '401', 'Access when none expected');
+                $this->assertTrue($http_result->message == '401', 'Access when none expected for ' . $ip);
             }
         }
     }

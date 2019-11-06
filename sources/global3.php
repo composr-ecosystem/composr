@@ -2632,6 +2632,23 @@ function is_local_machine($ip_or_hostname = null)
 }
 
 /**
+ * Make our best guess on what IP addresses connections from server to server will use.
+ * Also see get_server_ips().
+ *
+ * @return ID $ip_address IP address
+ */
+function get_server_external_looparound_ip()
+{
+    if (get_option('ip_forwarding') == '1') {
+        $server_ips = get_server_ips(true);
+        $ip_address = $server_ips[0];
+    } else {
+        $ip_address = cms_gethostbyname(get_base_url_hostname());
+    }
+    return $ip_address;
+}
+
+/**
  * Get possible IP addresses of the server.
  * In order of what is most likely what the server considers itself. The first entry may be used for server loopback connections.
  * Also see get_localhost_ips().

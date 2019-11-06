@@ -137,12 +137,7 @@ class cms_test_case extends WebTestCase
         require_code('users_active_actions');
         require_code('users_inactive_occasionals');
 
-        if (get_option('ip_forwarding') == '1') {
-            $server_ips = get_server_ips(true);
-            $ip_address = $server_ips[0];
-        } else {
-            $ip_address = cms_gethostbyname(get_base_url_hostname());
-        }
+        $ip_address = get_server_external_looparound_ip();
 
         return create_session(get_first_admin_user(), 1, false, false, $ip_address);
     }
