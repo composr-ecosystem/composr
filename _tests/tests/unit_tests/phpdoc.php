@@ -78,6 +78,8 @@ class phpdoc_test_set extends cms_test_case
         );
         $exceptions_regexp = '#' . implode('|', array_map('preg_quote', $exceptions)) . '#';
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+
         require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE, true, true, array('php'));
 
