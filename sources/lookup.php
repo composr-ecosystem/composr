@@ -253,6 +253,7 @@ function save_user_metadata($include_referer = false, $member_id = null, $ip = n
     require_code('crypt');
     $path = get_custom_file_base() . '/temp/mail_' . get_secure_random_string() . '.txt';
 
+    require_code('files');
     cms_file_put_contents_safe($path, json_encode($data, JSON_PRETTY_PRINT), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
     return $path;

@@ -145,6 +145,8 @@ class Module_iotds
 
             $id = get_param_integer('id');
 
+            $this->title = get_screen_title('IOTD');
+
             // Breadcrumbs
             breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('IOTD_ARCHIVE'))));
 
@@ -163,8 +165,6 @@ class Module_iotds
             set_extra_request_metadata(array(
                 'identifier' => '_SEARCH:iotds:view:' . strval($id),
             ), $myrow, 'iotd', strval($id));
-
-            $this->title = get_screen_title('IOTD');
 
             $this->id = $id;
             $this->myrow = $myrow;

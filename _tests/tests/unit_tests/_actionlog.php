@@ -46,7 +46,7 @@ class _actionlog_test_set extends cms_test_case
 
     public function testPageLinks()
     {
-        $this->establish_admin_session();
+        $session_id = $this->establish_admin_callback_session();
 
         $hook_obs = find_all_hook_obs('systems', 'actionlog', 'Hook_actionlog_');
         foreach ($hook_obs as $hook => $ob) {
@@ -83,7 +83,7 @@ class _actionlog_test_set extends cms_test_case
                         static $done_urls = array();
 
                         if (!array_key_exists($url, $done_urls)) {
-                            $http_result = cms_http_request($url, array('byte_limit' => 0, 'trigger_error' => false, 'cookies' => array(get_session_cookie() => get_session_id())));
+                            $http_result = cms_http_request($url, array('byte_limit' => 0, 'trigger_error' => false, 'cookies' => array(get_session_cookie() => $session_id)));
                             $this->assertTrue(in_array($http_result->message, array('200', '404')), 'Unexpected HTTP response, ' . $http_result->message . ', for ' . $url . ' from ' . $handler);
 
                             $done_urls[$url] = true;
@@ -131,6 +131,8 @@ class _actionlog_test_set extends cms_test_case
         foreach ($hook_obs as $hook => $ob) {
             $handlers += $ob->get_handlers();
         }
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files');
         require_code('files2');

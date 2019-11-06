@@ -131,7 +131,7 @@ class _config_test_set extends cms_test_case
 
     public function testConfigHookCompletenessAndConsistency()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files2');
 

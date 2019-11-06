@@ -40,6 +40,8 @@ class maintenance_codes_test_set extends cms_test_case
 
     public function testMaintenanceCodeReferences()
     {
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+
         $codenames = array();
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read(get_file_base() . '/data/maintenance_status.csv');

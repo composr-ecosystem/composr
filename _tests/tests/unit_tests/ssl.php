@@ -23,8 +23,6 @@ class ssl_test_set extends cms_test_case
         parent::setUp();
 
         set_value('disable_ssl_for__' . $_SERVER['HTTP_HOST'], '1');
-
-        $this->establish_admin_session();
     }
 
     public function testHTTPSStatus()
@@ -33,6 +31,8 @@ class ssl_test_set extends cms_test_case
             $this->assertTrue(false, 'Test can only run on HTTP site');
             return;
         }
+
+        $session_id = $this->establish_admin_callback_session();
 
         if (is_local_machine()) {
             set_value('disable_ssl_for__' . get_base_url_hostname(), '1');
@@ -61,7 +61,7 @@ class ssl_test_set extends cms_test_case
         $HTTPS_PAGES_CACHE = null;
         erase_persistent_cache();
         $url = build_url(array('page' => $page), get_module_zone($page));
-        $c = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => get_session_id()), 'convert_to_internal_encoding' => true, 'timeout' => 20.0));
+        $c = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => $session_id), 'convert_to_internal_encoding' => true, 'timeout' => 20.0));
         $this->assertTrue(strpos($c, 'src="http://') === false, 'HTTPS version failed (HTTP embed [e.g. image] found) on ' . $url->evaluate());
 
         // HTTP version
@@ -69,7 +69,7 @@ class ssl_test_set extends cms_test_case
         $HTTPS_PAGES_CACHE = null;
         erase_persistent_cache();
         $url = build_url(array('page' => $page), get_module_zone($page));
-        $c = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => get_session_id()), 'convert_to_internal_encoding' => true, 'timeout' => 20.0));
+        $c = http_get_contents($url->evaluate(), array('cookies' => array(get_session_cookie() => $session_id), 'convert_to_internal_encoding' => true, 'timeout' => 20.0));
         $this->assertTrue(strpos($c, 'src="https://') === false, 'HTTP version failed (HTTPS embed [e.g. image] found) on ' . $url->evaluate());
     }
 

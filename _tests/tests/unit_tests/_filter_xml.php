@@ -18,11 +18,13 @@
  */
 class _filter_xml_test_set extends cms_test_case
 {
+    protected $session_id = null;
+
     public function setUp()
     {
         parent::setUp();
 
-        $this->establish_admin_session();
+        $this->session_id = $this->establish_admin_callback_session();
 
         require_code('files');
         require_code('csrf_filter');
@@ -60,7 +62,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
     }
 
@@ -99,7 +101,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result === null);
     }
 
@@ -133,7 +135,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
     }
 
@@ -167,7 +169,7 @@ class _filter_xml_test_set extends cms_test_case
 
         $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result === null);
     }
 
@@ -205,7 +207,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
@@ -246,7 +248,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC'/*, 1*/);
@@ -287,7 +289,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
@@ -329,7 +331,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
@@ -370,7 +372,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
@@ -411,7 +413,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $rows = $GLOBALS['SITE_DB']->query_select('news', array('*'), array(), 'ORDER BY date_and_time DESC, id DESC', 1);
@@ -452,7 +454,7 @@ class _filter_xml_test_set extends cms_test_case
         if (get_db_type() == 'xml') {
             sleep(1); // Need different timestamps because IDs are randomised
         }
-        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue($result !== null);
 
         $this->assertTrue(substr_count($result, ' value="foobar"') == 1);
@@ -495,7 +497,7 @@ class _filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -538,7 +540,7 @@ class _filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -581,7 +583,7 @@ class _filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -625,7 +627,7 @@ class _filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -668,7 +670,7 @@ class _filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {
@@ -711,7 +713,7 @@ class _filter_xml_test_set extends cms_test_case
 
             $url = build_url(array('page' => 'cms_news', 'type' => '_add'), 'cms');
 
-            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url->evaluate(), array('trigger_error' => false, 'timeout' => 20.0, 'post_params' => $post, 'cookies' => array(get_session_cookie() => $this->session_id)));
             if ($expect) {
                 $this->assertTrue($result !== null);
             } else {

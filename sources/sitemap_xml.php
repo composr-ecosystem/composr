@@ -238,9 +238,8 @@ function ping_sitemap_xml($url, $trigger_error = false)
     $out = '';
     if (get_option('auto_submit_sitemap') == '1') {
         $ping = true;
-        $test_url = str_replace('https://', 'http://', $url);
-        $not_local = (substr($test_url, 0, 16) != 'http://localhost') && (substr($test_url, 0, 16) != 'http://127.0.0.1') && (substr($test_url, 0, 15) != 'http://192.168.') && (substr($test_url, 0, 10) != 'http://10.');
-        if (($ping) && (get_option('site_closed') == '0') && ($not_local)) {
+        $local = is_local_machine(parse_url($url, PHP_URL_HOST));
+        if (($ping) && (get_option('site_closed') == '0') && (!$local)) {
             // Submit to search engines
             $services = array(
                 'http://www.google.com/webmasters/tools/ping?sitemap=',

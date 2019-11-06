@@ -20,38 +20,26 @@ class firephp_test_set extends cms_test_case
 {
     public function testFirePHP()
     {
-        $this->establish_admin_session();
+        $session_id = $this->establish_admin_callback_session();
 
         $guest_username = $GLOBALS['FORUM_DRIVER']->get_username($GLOBALS['FORUM_DRIVER']->get_guest_id());
 
         $url = build_url(array('page' => '', 'keep_firephp' => 1, 'keep_su' => $guest_username), 'adminzone');
 
-        $header = '';
-        $header .= 'Cookie: ' . get_session_cookie() . '=' . get_session_id() . "\r\n";
-        $header .= 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 FirePHP/4Chrome' . "\r\n";
-        $header .= 'X-FirePHP-Version: 0.0.6';
-
-        $default_opts = array(
-            'http' => array(
-                'header' => $header,
-            )
+        $extra_headers = array(
+            'X-FirePHP-Version' => '0.0.6',
         );
-        stream_context_set_default($default_opts);
-        $headers = @get_headers($url->evaluate());
-
-        $this->assertTrue($headers !== false, 'HTTP request failed');
+        $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 FirePHP/4Chrome';
+        $http_result = cms_http_request($url->evaluate(), array('ignore_http_status' => true, 'trigger_error' => false, 'ua' => $ua, 'extra_headers' => $extra_headers, 'cookies' => array(get_session_cookie() => $session_id)));
 
         if ($this->debug) {
             @var_dump($url->evaluate());
-            @var_dump($header);
-            @var_dump($headers);
+            @var_dump($http_result);
         }
 
         $found = false;
-        if ($headers !== false) {
-            foreach ($headers as $header) {
-                $found = $found || (strpos($header, 'Permission check FAILED: has_zone_access: adminzone') !== false);
-            }
+        foreach ($http_result->headers as $header) {
+            $found = $found || (strpos($header, 'Permission check FAILED: has_zone_access: adminzone') !== false);
         }
         $this->assertTrue($found, 'Could not find a firephp header');
     }

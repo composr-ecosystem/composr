@@ -54,8 +54,6 @@ class posts_test_set extends cms_test_case
             return;
         }
 
-        $this->establish_admin_session();
-
         cns_edit_post($this->post_id, 1, 'take care', 'the post editing', 0, 0, null, true, false, 'Nothing');
 
         $this->assertTrue('take care' == $GLOBALS['FORUM_DB']->query_select_value('f_posts', 'p_title', array('id' => $this->post_id)));

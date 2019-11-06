@@ -18,11 +18,14 @@
  */
 class _feeds_and_podcasts_test_set extends cms_test_case
 {
+    protected $session_id = null;
+
     public function setUp()
     {
         parent::setUp();
 
         $this->establish_admin_session();
+        $this->session_id = $this->establish_admin_callback_session();
 
         require_code('galleries2');
         require_code('xml');
@@ -42,22 +45,22 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         }
 
         $url = find_script('backend');
-        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '</opml>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
 
         $url = find_script('backend') . '?type=xslt-opml';
-        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '</xsl:stylesheet>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
 
         $url = find_script('backend') . '?type=xslt-atom';
-        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '</xsl:stylesheet>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
 
         $url = find_script('backend') . '?type=xslt-rss';
-        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '</xsl:stylesheet>') !== false, 'Failed on ' . $url);
         $parsed = new CMS_simple_xml_reader($data);
     }
@@ -80,11 +83,11 @@ class _feeds_and_podcasts_test_set extends cms_test_case
 
             foreach (array('RSS2', 'Atom') as $type) {
                 $url = find_script('backend') . '?type=' . $type . '&mode=' . $feed . '&days=30&max=100';
-                $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+                $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
 
                 $data = str_replace(array('http://localhost/', 'https://localhost/'), array('http://example.com/', 'http://example.com/'), $data); // Workaround validator bug
 
-                $result = http_get_contents('https://validator.w3.org/feed/check.cgi', array('convert_to_internal_encoding' => true, 'post_params' => array('rawdata' => $data)));
+                $result = http_get_contents('https://validator.w3.org/feed/check.cgi', array('timeout' => 30.0, 'convert_to_internal_encoding' => true, 'post_params' => array('rawdata' => $data)));
 
                 $ok = (strpos($result, 'Congratulations!') !== false);
                 if (!$ok) {
@@ -105,11 +108,11 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         }
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=podcast';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<item>') !== false, 'Failed on ' . $url);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=abcxxx';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<item>') === false, 'Failed on ' . $url);
     }
 
@@ -120,11 +123,11 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         }
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=1';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<item>') !== false, 'Failed on ' . $url);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=0';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<item>') === false, 'Failed on ' . $url);
     }
 
@@ -135,11 +138,11 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         }
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=1';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<item>') !== false, 'Failed on ' . $url);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=0';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<item>') === false, 'Failed on ' . $url);
     }
 
@@ -150,11 +153,11 @@ class _feeds_and_podcasts_test_set extends cms_test_case
         }
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&select=podcast';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, 'itunes:') === false);
 
         $url = find_script('backend') . '?type=RSS2&mode=galleries&days=30&max=100&filter=podcast';
-        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ua' => 'iTunes/9.0.3 (Macintosh; U; Intel Mac OS X 10_6_2; en-ca)', 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ua' => 'iTunes/9.0.3 (Macintosh; U; Intel Mac OS X 10_6_2; en-ca)', 'cookies' => array(get_session_cookie() => $this->session_id)));
         $this->assertTrue(strpos($data, '<itunes:author>') !== false, 'Failed on ' . $url);
         $this->assertTrue(strpos($data, '<itunes:owner>') !== false, 'Failed on ' . $url);
         $this->assertTrue(strpos($data, '<itunes:name>') !== false, 'Failed on ' . $url);

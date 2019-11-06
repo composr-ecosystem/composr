@@ -2473,6 +2473,7 @@ function is_valid_ip($ip)
 /**
  * Attempt to get the clean IP address of the current user.
  * Note we do not consider potential proxying because that can easily be forged, and even if not it could be some local IP that is not unique enough.
+ *  Composr has support for deproxying in global.php, which will adjust REMOTE_ADDR well in advance of this function being called.
  *
  * @param  integer $amount The number of groups to include in the IP address (rest will be replaced with *'s). For IP6, this is doubled.
  * @set 1 2 3 4
@@ -2485,6 +2486,10 @@ function get_ip_address($amount = 4, $ip = null)
 
     if ($ip === null) {
         $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    if ($ip == '') {
+        $ip = '127.0.0.1'; // Running on CLI, perhaps
     }
 
     global $SITE_INFO;
@@ -2628,9 +2633,10 @@ function is_local_machine($ip_or_hostname = null)
 
 /**
  * Get possible IP addresses of the server.
+ * In order of what is most likely what the server considers itself. The first entry may be used for server loopback connections.
  * Also see get_localhost_ips().
  *
- * @param  boolean array $local_interface_only Whether to only get IP addresses that are on a local network interface
+ * @param  boolean $local_interface_only Whether to only get IP addresses that are on a local network interface
  * @return array IP addresses
  */
 function get_server_ips($local_interface_only = false)
@@ -2640,6 +2646,13 @@ function get_server_ips($local_interface_only = false)
     if ($arr === null) {
         $arr = array();
 
+        if (!empty($_SERVER['SERVER_ADDR'])) {
+            $arr[] = $_SERVER['SERVER_ADDR'];
+        }
+        if (!empty($_SERVER['LOCAL_ADDR'])) {
+            $arr[] = $_SERVER['LOCAL_ADDR'];
+        }
+
         if (!$local_interface_only) {
             $hostnames = get_server_names(false);
             foreach ($hostnames as $hostname) {
@@ -2648,13 +2661,6 @@ function get_server_ips($local_interface_only = false)
                     $arr[] = $test;
                 }
             }
-        }
-
-        if (!empty($_SERVER['SERVER_ADDR'])) {
-            $arr[] = $_SERVER['SERVER_ADDR'];
-        }
-        if (!empty($_SERVER['LOCAL_ADDR'])) {
-            $arr[] = $_SERVER['LOCAL_ADDR'];
         }
 
         $arr = array_merge($arr, get_localhost_ips());
@@ -2667,6 +2673,7 @@ function get_server_ips($local_interface_only = false)
 
 /**
  * Get possible hostnames of the server.
+ * In order of what is most likely what the server considers itself.
  * Also see get_domain() and get_request_hostname() and get_base_url_hostname() and get_localhost_names().
  *
  * @param  boolean $include_equivalents Whether to include www vs non-www equivalents

@@ -138,6 +138,8 @@ class file_type_whitelisting_test_set extends cms_test_case
 
     public function testCodeTypes()
     {
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+
         require_code('files2');
         $php_files = get_directory_contents(get_file_base(), '', IGNORE_NONBUNDLED | IGNORE_UNSHIPPED_VOLATILE | IGNORE_SHIPPED_VOLATILE | IGNORE_REBUILDABLE_OR_TEMP_FILES_FOR_BACKUP, true, true, array('php'));
         $exts = array();

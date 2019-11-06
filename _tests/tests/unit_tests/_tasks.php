@@ -45,9 +45,9 @@ class _tasks_test_set extends cms_test_case
         $ob_import = new Hook_task_import_newsletter_subscribers();
         $ob_import->run(fallback_lang(), db_get_first_id(), true, $tmp_path, 'test.csv');
 
-        $this->establish_admin_session();
+        $session_id = $this->establish_admin_callback_session();
         $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'), 'adminzone');
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
         file_put_contents($tmp_path, $data);

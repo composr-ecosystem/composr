@@ -18,8 +18,19 @@
  */
 class special_links_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+    }
+
     public function testISBN()
     {
+        if (($this->only !== null) && ($this->only != 'testISBN')) {
+            return;
+        }
+
         $c = http_get_contents('https://www.bookfinder.com/search/?isbn=0241968984&mode=isbn&st=sr&ac=qr', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 10.0, 'ua' => false)); // seems to dislike bots
         $this->assertTrue(strpos($c, 'No Place to Hide') !== false, 'External link not working, fix test and use within Composr (separate)');
 
@@ -33,6 +44,10 @@ class special_links_test_set extends cms_test_case
 
     public function testLookupLinks()
     {
+        if (($this->only !== null) && ($this->only != 'testLookupLinks')) {
+            return;
+        }
+
         $this->assertTrue(strpos(http_get_contents('http://whatismyipaddress.com/ip/12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'AT&T Services') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
         $this->assertTrue(strpos(http_get_contents('https://ping.eu/ping/?host=12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'Ping') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
         $this->assertTrue(strpos(http_get_contents('https://ping.eu/traceroute/?host=12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'Traceroute') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
@@ -40,11 +55,19 @@ class special_links_test_set extends cms_test_case
 
     public function testWhoIsLink()
     {
+        if (($this->only !== null) && ($this->only != 'testWhoIsLink')) {
+            return;
+        }
+
         $this->assertTrue(stripos(http_get_contents('http://whois.domaintools.com/compo.sr', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
     }
 
     public function testHealthCheckLinks()
     {
+        if (($this->only !== null) && ($this->only != 'testHealthCheckLinks')) {
+            return;
+        }
+
         $urls = array(
             'https://seositecheckup.com/' => true,
             //'https://www.google.com/webmasters/tools/home?pli=1' => false,        Only works if logged in
@@ -68,8 +91,8 @@ class special_links_test_set extends cms_test_case
         foreach ($urls as $url => $test_no_redirecting) {
             if ($test_no_redirecting) {
                 $result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
-                $this->assertTrue(is_string($result->data), 'External link (' . $url . ') not working, fix test and use within Composr (separate)');
-                $this->assertTrue($result->download_url == $url, 'External link (' . $url . ') redirecting elsewhere, fix test and use within Composr (separate)');
+                $this->assertTrue(is_string($result->data), 'External link (' . $url . ') not working (' . $result->message . '), fix test and use within Composr (separate)');
+                $this->assertTrue($result->download_url == $url, 'External link (' . $url . ') redirecting elsewhere (' . $result->download_url . '), fix test and use within Composr (separate)');
             } else {
                 $exists = check_url_exists($url, 60 * 60 * 24 * 100);
                 if (!$exists) {
@@ -82,6 +105,10 @@ class special_links_test_set extends cms_test_case
 
     public function testMiscLinks()
     {
+        if (($this->only !== null) && ($this->only != 'testMiscLinks')) {
+            return;
+        }
+
         $urls = array(
             'http://www.google.com/search?as_lq=' . urlencode('http://example.com/'),
             'https://duckduckgo.com/?q=tile+background&iax=images&ia=images',

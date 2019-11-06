@@ -31,7 +31,7 @@ function init__continuous_integration()
 
         $status = cms_version_branch_status();
         define('CI_BLACKLISTED_TESTS', array(
-            // Very slow 
+            // Very slow
             'unit_tests/_actionlog',
             'unit_tests/_bash_parser',
             'unit_tests/_backups',

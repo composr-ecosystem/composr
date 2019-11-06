@@ -113,6 +113,7 @@ class cms_test_case extends WebTestCase
         return $ret;
     }
 
+    // Establishes an admin session for the current web user, NOT for the server to call itself as an admin
     public function establish_admin_session()
     {
         static $done_once = false;
@@ -121,14 +122,28 @@ class cms_test_case extends WebTestCase
         }
         $done_once = true;
 
-        if (get_ip_address() == '') { // Running from CLI
-            $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        }
-
         global $MEMBER_CACHED;
         require_code('users_active_actions');
         $MEMBER_CACHED = restricted_manually_enabled_backdoor();
 
         $this->dump($this->_browser->getContent());
+
+        return get_session_id();
+    }
+
+    // Establishes an admin session on the server's likely callback IP
+    public function establish_admin_callback_session()
+    {
+        require_code('users_active_actions');
+        require_code('users_inactive_occasionals');
+
+        if (get_option('ip_forwarding') == '1') {
+            $server_ips = get_server_ips(true);
+            $ip_address = $server_ips[0];
+        } else {
+            $ip_address = cms_gethostbyname(get_base_url_hostname());
+        }
+
+        return create_session(get_first_admin_user(), 1, false, false, $ip_address);
     }
 }

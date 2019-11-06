@@ -47,7 +47,7 @@ class ecommerce_custom_test_set extends cms_test_case
 
     public function testCustomProductPurchaseWorks()
     {
-        $this->establish_admin_session();
+        $session_id = $this->establish_admin_callback_session();
 
         set_option('payment_gateway', 'paypal');
         set_option('ecommerce_test_mode', '1');
@@ -64,7 +64,7 @@ class ecommerce_custom_test_set extends cms_test_case
 
         // Test custom product is there
         $url = build_url(array('page' => 'purchase', 'type' => 'browse', 'keep_su' => $test_username));
-        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue(strpos($purchase_screen, 'TestCustomItem') !== false);
 
         // Test button generates

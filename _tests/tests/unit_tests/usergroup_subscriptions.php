@@ -43,7 +43,7 @@ class usergroup_subscriptions_test_set extends cms_test_case
             return;
         }
 
-        $this->establish_admin_session();
+        $session_id = $this->establish_admin_callback_session();
 
         set_option('payment_gateway', 'paypal');
         set_option('ecommerce_test_mode', '1');
@@ -54,12 +54,12 @@ class usergroup_subscriptions_test_set extends cms_test_case
 
         // Test usergroup subscription selection is there
         $url = build_url(array('page' => 'purchase', 'type' => 'browse', 'keep_su' => 'test'));
-        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue(strpos($purchase_screen, 'Usergroup subscription') !== false);
 
         // Test our usergroup subscription is there
         $url = build_url(array('page' => 'purchase', 'type' => 'browse', 'category' => 'usergroup', 'keep_su' => 'test'));
-        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => get_session_id())));
+        $purchase_screen = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue(strpos($purchase_screen, 'Subscription: test') !== false);
 
         // Test button generates

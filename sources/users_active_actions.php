@@ -30,6 +30,7 @@ function restricted_manually_enabled_backdoor()
 
     require_code('users_inactive_occasionals');
 
+    // Option 1: Create using SU
     $ks = get_param_string('keep_su', null);
     if ($ks !== null) {
         if (get_param_integer('keep_su_strict', 0) == 0) {
@@ -55,12 +56,10 @@ function restricted_manually_enabled_backdoor()
         }
     }
 
+    // Option 2: Create to first admin user
     $ret = get_first_admin_user();
-
     $IS_VIA_BACKDOOR = true;
-
     create_session($ret, 1); // Will restore from previous session if possible
-
     return $ret;
 }
 

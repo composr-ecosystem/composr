@@ -22,6 +22,8 @@ class google_appengine_test_set extends cms_test_case
     {
         require_code('files2');
 
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_NONBUNDLED | IGNORE_FLOATING, true, true, array('php'));
         $files[] = 'install.php';
         foreach ($files as $path) {

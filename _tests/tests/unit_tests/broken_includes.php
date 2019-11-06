@@ -25,7 +25,7 @@ class broken_includes_test_set extends cms_test_case
         parent::setUp();
 
         disable_php_memory_limit();
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_sluggish);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files2');
 

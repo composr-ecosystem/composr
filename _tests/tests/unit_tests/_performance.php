@@ -69,6 +69,8 @@ class _performance_test_set extends cms_test_case
     {
         cms_disable_time_limit();
 
+        $session_id = $this->establish_admin_callback_session();
+
         $page_link = $node['page_link'];
 
         if (($this->whitelist !== null) && (!in_array($page_link, $this->whitelist))) {
@@ -91,7 +93,7 @@ class _performance_test_set extends cms_test_case
         $times = array();
         for ($i = 0; $i < 3; $i++) { // We can do it multiple times so that caches are primed for final time
             $before = microtime(true);
-            $result = http_get_contents($url, array('trigger_error' => false/*we're not looking for errors - we may get some under normal conditions, e.g. for site:authors which is 404 until you add your profile*/, 'timeout' => 60.0, 'cookies' => array(get_session_cookie() => get_session_id())));
+            $result = http_get_contents($url, array('trigger_error' => false/*we're not looking for errors - we may get some under normal conditions, e.g. for site:authors which is 404 until you add your profile*/, 'timeout' => 60.0, 'cookies' => array(get_session_cookie() => $session_id)));
             $after = microtime(true);
             $time = $after - $before;
             $times[] = $time;
