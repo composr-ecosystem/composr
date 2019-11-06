@@ -28,11 +28,11 @@ class Hook_startup_multi_domain_login
             //if (isset($_POST['username'])) return;  Actually, we'll use caching to avoid this
 
             $value = '';
-            //$url = $this->session_syndicate_code(get_local_hostname(), preg_replace('#^.*://[^/]*(/|$)#', '', get_base_url()));
+            //$url = $this->session_syndicate_code(get_request_hostname(), preg_replace('#^.*://[^/]*(/|$)#', '', get_base_url()));
             //$value .= 'new Image().src=\'' . addslashes($url) . '\';';
             foreach ($GLOBALS['SITE_INFO'] as $key => $_val) {
                 if (@$key[0] == 'Z' && substr($key, 0, strlen('ZONE_MAPPING_')) == 'ZONE_MAPPING_') {
-                    if ($_val[0] != get_local_hostname()) {
+                    if ($_val[0] != get_request_hostname()) {
                         $url = $this->session_syndicate_code($_val[0], $_val[1]);
                         $value .= 'new Image().src=\'' . addslashes($url) . '\';';
                     }

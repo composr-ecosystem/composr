@@ -569,7 +569,7 @@ function step_3()
     }
     if (($email != '') || ($advertise_on == 1)) {
         require_code('files');
-        http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter('http://' . get_local_hostname() . $_SERVER['SCRIPT_NAME']))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, array('trigger_error' => false));
+        http_get_contents('https://compo.sr/uploads/website_specific/compo.sr/scripts/newsletter_join.php?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . strval($advertise_on) . '&lang=' . $INSTALL_LANG, array('trigger_error' => false));
     }
 
     // Forum chooser
@@ -810,7 +810,7 @@ function step_4()
     $member_cookie = $PROBED_FORUM_CONFIG['cookie_member_id'];
     $pass_cookie = $PROBED_FORUM_CONFIG['cookie_member_hash'];
     $multi_lang_content = file_exists(get_file_base() . '/.git')/*randomise in dev mode*/ ? mt_rand(0, 1) : 0;
-    $domain = preg_replace('#:.*#', '', get_local_hostname());
+    $domain = preg_replace('#:.*#', '', get_request_hostname());
 
     $forum_driver_specifics = $GLOBALS['FORUM_DRIVER']->install_specifics();
 
