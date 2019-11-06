@@ -54,6 +54,6 @@ class Hook_config_spam_check_exclusions
      */
     public function get_default()
     {
-        return '127.0.0.1,' . $_SERVER['SERVER_ADDR'] . '';
+        return implode(',', get_server_ips());
     }
 }

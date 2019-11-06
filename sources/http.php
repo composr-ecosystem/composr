@@ -432,24 +432,17 @@ abstract class HttpDownloader
             return null;
         }
         if (!array_key_exists('host', $this->url_parts)) {
-            $this->url_parts['host'] = '127.0.0.1';
+            $this->url_parts['host'] = get_base_url_hostname();
         }
         $this->connect_to = $this->url_parts['host'];
 
-        $base_url_parsed = parse_url(get_base_url());
-        if (!array_key_exists('host', $base_url_parsed)) {
-            $base_url_parsed['host'] = '127.0.0.1';
-        }
-
         $config_ip_forwarding = function_exists('get_option') ? get_option('ip_forwarding') : '';
-        $this->do_ip_forwarding = (preg_replace('#^www\.#', '', $base_url_parsed['host']) == preg_replace('#^www\.#', '', $this->connect_to)) && ($config_ip_forwarding != '') && ($config_ip_forwarding != '0');
+        $this->do_ip_forwarding = ($config_ip_forwarding != '') && ($config_ip_forwarding != '0') && (is_our_server($this->connect_to));
 
         if ($this->do_ip_forwarding) { // For cases where we have IP-forwarding, and a strong firewall (i.e. blocked to our own domain's IP by default)
             if ($config_ip_forwarding == '1') {
-                $this->connect_to = $_SERVER['SERVER_ADDR'];
-                if ($this->connect_to == '') {
-                    $this->connect_to = '127.0.0.1'; // "localhost" can fail due to IP6
-                }
+                $server_ips = get_server_ips(true);
+                $this->connect_to = $server_ips[0];
             } else {
                 $protocol_end_pos = strpos($config_ip_forwarding, '://');
                 if ($protocol_end_pos !== false) {
@@ -1094,7 +1087,7 @@ class HttpDownloaderCurl extends HttpDownloader
 
         // Proxy settings
         $proxy = function_exists('get_option') ? get_option('proxy') : '';
-        if (($proxy != '') && ($this->url_parts['host'] != 'localhost') && ($this->url_parts['host'] != '127.0.0.1')) {
+        if (($proxy != '') && (!is_local_machine($this->url_parts['host'])) && (!is_our_server($this->url_parts['host']))) {
             $port = get_option('proxy_port');
             curl_setopt($ch, CURLOPT_PROXY, $proxy . ':' . $port);
             $proxy_user = get_option('proxy_user');
@@ -1361,7 +1354,7 @@ class HttpDownloaderSockets extends HttpDownloader
         if ($proxy == '') {
             $proxy = null;
         }
-        if (($proxy !== null) && ($this->connect_to != 'localhost') && ($this->connect_to != '127.0.0.1')) {
+        if (($proxy !== null) && (!is_local_machine($this->connect_to)) && (!is_our_server($this->connect_to))) {
             $proxy_port = get_option('proxy_port');
             $mysock = @fsockopen($proxy, intval($proxy_port), $errno, $errstr, $this->timeout);
         } else {
@@ -1386,7 +1379,7 @@ class HttpDownloaderSockets extends HttpDownloader
                 $url2 .= '?' . $this->url_parts['query'];
             }
 
-            if (($proxy != '') && ($this->connect_to != 'localhost') && ($this->connect_to != '127.0.0.1')) {
+            if (($proxy !== null) && (!is_local_machine($this->connect_to)) && (!is_our_server($this->connect_to))) {
                 $out = '';
                 $out .= $this->http_verb . ' ' . escape_header($url) . " HTTP/1.1\r\n";
                 $proxy_user = get_option('proxy_user');

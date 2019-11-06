@@ -39,15 +39,11 @@ function reprocess_url($url, $operation_base_url)
 
     // Cookie relaying from client through to server
     $url_bits = @parse_url(normalise_idn_url($url)) or warn_exit(do_lang_tempcode('HTTP_DOWNLOAD_NO_SERVER', escape_html($url)), false, true);
-    $url_bits_2 = parse_url(get_base_url());
     $cookies_relayed = null;
     if (!array_key_exists('host', $url_bits)) {
-        $url_bits['host'] = 'localhost';
+        $url_bits['host'] = get_base_url_hostname();
     }
-    if (!array_key_exists('host', $url_bits_2)) {
-        $url_bits_2['host'] = 'localhost';
-    }
-    if ($url_bits['host'] == $url_bits_2['host']) {
+    if ($url_bits['host'] == get_base_url_hostname()) {
         $cookies_relayed = array();
         foreach ($_COOKIE as $key => $val) {
             if (is_array($val)) {
@@ -101,7 +97,7 @@ function reprocess_url($url, $operation_base_url)
     }
 
     // Were we asked to set any cookies?
-    if ($url_bits['host'] == $url_bits_2['host']) {
+    if ($url_bits['host'] == get_base_url_hostname()) {
         foreach ($http_result->new_cookies as $cookie_key => $cookie_parts) {
             setcookie(
                 $cookie_key,

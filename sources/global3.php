@@ -2562,24 +2562,195 @@ function normalise_ip_address($ip, $amount = null)
 }
 
 /**
- * See if an IP address is local.
+ * Get possible IP addresses of a localhost machine.
+ * Also see get_server_ips().
  *
- * @param  IP $user_ip IP address
- * @return boolean Whether the IP address is local
+ * @return array IP addresses
  */
-function ip_address_is_local($user_ip)
+function get_localhost_ips()
 {
-    return (($user_ip == '0000:0000:0000:0000:0000:0000:0000:0001') || ($user_ip == '::1') || ($user_ip == '127.0.0.1') || (substr($user_ip, 0, 3) == '10.') || (substr($user_ip, 0, 8) == '192.168.'));
+    return array(
+        '0000:0000:0000:0000:0000:0000:0000:0001',
+        '::1',
+        '127.0.0.1',
+    );
 }
 
 /**
- * Find whether Composr is running on a local network, rather than a live-site.
+ * Get possible hostnames of a localhost machine.
+ * Also see get_server_names_and_ips().
  *
+ * @return array Hostnames and IP addresses
+ */
+function get_localhost_names()
+{
+    return array(
+        'localhost',
+    );
+}
+
+/**
+ * Get possible hostnames and IP addresses of a localhost machine.
+ * Also see get_server_names().
+ *
+ * @return array Hostnames
+ */
+function get_localhost_names_and_ips()
+{
+    return array_unique(array_merge(get_localhost_ips(), get_localhost_names()));
+}
+
+/**
+ * See if an IP address is local (localhost or on non-routable LAN).
+ *
+ * @param  IP $ip_address IP address
+ * @return boolean Whether the IP address is local
+ */
+function ip_address_is_local($ip_address)
+{
+    return ((in_array($ip_address, get_localhost_ips())) || (substr($ip_address, 0, 3) == '10.') || (substr($ip_address, 0, 8) == '192.168.'));
+}
+
+/**
+ * Find whether a machine is local (localhost or on non-routable LAN), rather than a live-site.
+ * Also see is_our_server().
+ *
+ * @param  ?IP $ip_or_hostname IP address or hostname (null: currently requested hostname)
  * @return boolean If it is running locally
  */
-function running_locally()
+function is_local_machine($ip_or_hostname = null)
 {
-    return (ip_address_is_local(get_local_hostname())) || (in_array(get_local_hostname(), array('localhost')));
+    if ($ip_or_hostname === null) {
+        $ip_or_hostname = get_request_hostname();
+    }
+    return (ip_address_is_local($ip_or_hostname)) || (in_array($ip_or_hostname, get_localhost_names()));
+}
+
+/**
+ * Get possible IP addresses of the server.
+ * Also see get_localhost_ips().
+ *
+ * @param  boolean array $local_interface_only Whether to only get IP addresses that are on a local network interface
+ * @return array IP addresses
+ */
+function get_server_ips($local_interface_only = false)
+{
+    static $arr = null;
+
+    if ($arr === null) {
+        $arr = array();
+
+        if (!$local_interface_only) {
+            $hostnames = get_server_names(false);
+            foreach ($hostnames as $hostname) {
+                $test = cms_gethostbyname($hostname);
+                if ($test != $hostname) {
+                    $arr[] = $test;
+                }
+            }
+        }
+
+        if (!empty($_SERVER['SERVER_ADDR'])) {
+            $arr[] = $_SERVER['SERVER_ADDR'];
+        }
+        if (!empty($_SERVER['LOCAL_ADDR'])) {
+            $arr[] = $_SERVER['LOCAL_ADDR'];
+        }
+
+        $arr = array_merge($arr, get_localhost_ips());
+
+        $arr = array_unique($arr);
+    }
+
+    return $arr;
+}
+
+/**
+ * Get possible hostnames of the server.
+ * Also see get_domain() and get_request_hostname() and get_base_url_hostname() and get_localhost_names().
+ *
+ * @param  boolean $include_equivalents Whether to include www vs non-www equivalents
+ * @return array Host names
+ */
+function get_server_names($include_equivalents = true)
+{
+    $arr = array();
+    if ($_SERVER['SERVER_NAME'] != '') {
+        $arr[] = $_SERVER['SERVER_NAME'];
+    }
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        $arr[] = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+    }
+    $arr[] = gethostname();
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['domain'])) {
+        $arr[] = $SITE_INFO['domain'];
+    }
+    if (!empty($SITE_INFO['base_url'])) {
+        $tmp = parse_url($SITE_INFO['base_url'], PHP_URL_HOST);
+        if (!empty($tmp)) {
+            $arr[] = $tmp;
+        }
+    }
+    if (get_custom_base_url() != get_base_url()) {
+        $tmp = parse_url(get_custom_base_url(), PHP_URL_HOST);
+        if (!empty($tmp)) {
+            $arr[] = $tmp;
+        }
+    }
+    $zl = strlen('ZONE_MAPPING_');
+    foreach ($SITE_INFO as $key => $_val) {
+        if ($key !== '' && $key[0] === 'Z' && substr($key, 0, $zl) === 'ZONE_MAPPING_') {
+            $arr[] = $_val[0];
+        }
+    }
+    $arr = array_merge($arr, get_localhost_names());
+
+    $arr = array_unique($arr);
+
+    $arr2 = array();
+    foreach ($arr as $domain) {
+        $arr2[] = $domain;
+
+        // www vs non-www equivalents
+        if ($include_equivalents) {
+            if (preg_match('#^[\d:.]$#', $domain) == 0) { // If not an IP address
+                if (preg_match('#^www\.#', $domain) != 0) {
+                    $arr2[] = substr($domain, 4);
+                } else {
+                    $arr2[] = 'www.' . $domain;
+                }
+            }
+        }
+    }
+
+    return array_unique($arr2);
+}
+
+/**
+ * Get possible hostnames of the server.
+ * Also see get_localhost_names().
+ *
+ * @return array Hostnames and IP addresses
+ */
+function get_server_names_and_ips()
+{
+    return array_unique(array_merge(get_server_ips(), get_server_names()));
+}
+
+/**
+ * Find whether a machine is our server.
+ * Also see is_local_machine().
+ *
+ * @param  ?IP $ip_or_hostname IP address or hostname (null: current user's IP address)
+ * @return boolean If it is our server
+ */
+function is_our_server($ip_or_hostname = null)
+{
+    if ($ip_or_hostname === null) {
+        $ip_or_hostname = get_ip_address();
+    }
+    return in_array($ip_or_hostname, get_server_names_and_ips());
 }
 
 /**
@@ -2777,7 +2948,7 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
         $ip_parts = explode(':', $ip);
     }
 
-    $self_ip = null;
+    $server_ips = null;
     foreach ($ip_bans as $ban) {
         if ((isset($ban['i_ban_until'])) && ($ban['i_ban_until'] < time())) {
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'banned_ip WHERE i_ban_until IS NOT NULL AND i_ban_until<' . strval(time()));
@@ -2785,26 +2956,14 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
         }
 
         if ((($ip4) && (compare_ip_address_ip4($ban['ip'], $ip_parts))) || ((!$ip4) && (compare_ip_address_ip6($ban['ip'], $ip_parts)))) {
-            if ($self_ip === null) {
-                $self_host = get_local_hostname();
-                if (($self_host == '') || (preg_match('#^localhost[\.\:$]#', $self_host) != 0)) {
-                    $self_ip = '';
-                } else {
-                    $self_ip = cms_gethostbyname($self_host);
-                    if ($self_ip == $self_host) {
-                        $self_ip = $_SERVER['SERVER_ADDR'];
-                    }
+            // Will ignore any bans that seem to be the server itself!
+            if ($server_ips === null) {
+                $server_ips = get_server_ips();
+            }
+            foreach ($server_ips as $server_ip) {
+                if (compare_ip_address($ban['ip'], $server_ip)) {
+                    continue 2;
                 }
-            }
-
-            if (($self_ip != '') && (compare_ip_address($ban['ip'], $self_ip))) {
-                continue;
-            }
-            if (compare_ip_address($ban['ip'], '127.0.0.1')) {
-                continue;
-            }
-            if (compare_ip_address($ban['ip'], 'fe00:0000:0000:0000:0000:0000:0000:0000')) {
-                continue;
             }
 
             if (array_key_exists('i_ban_positive', $ban)) {

@@ -20,13 +20,17 @@ class cdn_config_test_set extends cms_test_case
 {
     public function testCDNConfig()
     {
-        if (get_domain() != 'localhost') {
-            $this->assertTrue(false, 'Test can only run on localhost');
+        $hostname = get_base_url_hostname();
+        $server_ips = get_server_ips();
+        $ip_address = $server_ips[0];
+
+        if ($hostname == $ip_address) {
+            $this->assertTrue(false, 'Test can only run from a hostname.');
         }
 
         require_code('images');
 
-        set_option('cdn', 'localhost,127.0.0.1');
+        set_option('cdn', $hostname . ',' . $ip_address);
 
         $a = false;
         $b = false;
@@ -38,10 +42,10 @@ class cdn_config_test_set extends cms_test_case
                 if (is_image($file, IMAGE_CRITERIA_WEBSAFE)) {
                     $ext = get_file_extension($file);
                     $url = find_theme_image(basename($file, '.' . $ext));
-                    if (strpos($url, 'localhost') !== false) {
+                    if (strpos($url, $hostname) !== false) {
                         $a = true;
                     }
-                    if (strpos($url, '127.0.0.1') !== false) {
+                    if (strpos($url, $ip_address) !== false) {
                         $b = true;
                     }
                 }

@@ -3548,7 +3548,7 @@ function ecv_URL_FOR_GET_FORM($lang, $escaped, $param)
     if (!empty($param[0])) {
         $url_bits = parse_url($param[0]);
         if (isset($url_bits['scheme'])) {
-            $value = $url_bits['scheme'] . '://' . (isset($url_bits['host']) ? $url_bits['host'] : 'localhost');
+            $value = $url_bits['scheme'] . '://' . (isset($url_bits['host']) ? $url_bits['host'] : get_base_url_hostname());
             if ((isset($url_bits['port'])) && ($url_bits['port'] != 80)) {
                 $value .= ':' . strval($url_bits['port']);
             }
@@ -6394,7 +6394,7 @@ function ecv_VALUE_OPTION($lang, $escaped, $param)
             $value = function_exists('get_value') ? get_value($param[0], null, true) : '';
             if ($value === null) {
                 $value = isset($param[1]) ? $param[1] : '';
-                if (($param[0] == 'textmate') && ((running_locally()) && (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false))) {
+                if (($param[0] == 'textmate') && ((is_local_machine()) && (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false))) {
                     $value = '1';
                 }
             }
@@ -6945,7 +6945,7 @@ function ecv_FAVICON($lang, $escaped, $param)
 
     if (addon_installed('health_check')) {
         if (get_option('hc_is_test_site') == '1') {
-            $value = find_theme_image((parse_url(get_base_url(),  PHP_URL_HOST) == 'localhost') ? 'favicon_dev' : 'favicon_staging', true);
+            $value = find_theme_image(is_local_machine() ? 'favicon_dev' : 'favicon_staging', true);
             if ($value == '') {
                 $value = $default;
             }

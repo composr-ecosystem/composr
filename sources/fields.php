@@ -86,7 +86,7 @@ function catalogue_file_script()
         $ev .= '::' . $original_filename;
     }
     if ($is_catalogue_type) { // Now check the match, if we support checking on it
-        if (get_ip_address() != $_SERVER['SERVER_ADDR']/*We need to allow media renderer to get through*/) {
+        if (!is_our_server()/*We need to allow media renderer to get through*/) {
             $c_name = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'c_name', array('id' => $entry_id));
             if (substr($c_name, 0, 1) != '_') { // Doesn't work on custom fields (this is documented)
                 $cc_id = $GLOBALS['SITE_DB']->query_select_value('catalogue_entries', 'cc_id', array('id' => $entry_id));

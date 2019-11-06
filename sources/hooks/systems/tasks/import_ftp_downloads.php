@@ -64,7 +64,7 @@ class Hook_task_import_ftp_downloads
         $directory = array_key_exists('path', $parsed_url) ? $parsed_url['path'] : '';
 
         require_lang('installer');
-        $conn_id = @ftp_connect(array_key_exists('host', $parsed_url) ? $parsed_url['host'] : 'localhost', array_key_exists('port', $parsed_url) ? $parsed_url['port'] : 21);
+        $conn_id = @ftp_connect(array_key_exists('host', $parsed_url) ? $parsed_url['host'] : get_base_url_hostname(), array_key_exists('port', $parsed_url) ? $parsed_url['port'] : 21);
         if ($conn_id === false) {
             return array(null, do_lang_tempcode('HTTP_DOWNLOAD_NO_SERVER', escape_html($server_url))); // Yes it's FTP not HTTP, but language string is ok
         }

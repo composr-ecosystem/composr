@@ -268,22 +268,69 @@ function fixup_bad_php_env_vars()
 }
 
 /**
- * Get server hostname.
+ * Get server hostname as used in the base URL.
+ * See also get_domain() and get_request_hostname() and get_server_names().
  *
  * @return string The hostname
  */
-function get_local_hostname()
+function get_base_url_hostname()
+{
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['base_url'])) {
+        return strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+    }
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+    }
+    return gethostname();
+}
+
+/**
+ * Get server hostname as used in the URL.
+ * See also get_domain() and get_base_url_hostname().
+ *
+ * @return string The hostname
+ */
+function get_request_hostname()
 {
     if (!empty($_SERVER['HTTP_HOST'])) {
-        return $_SERVER['HTTP_HOST'];
+        return strtolower(preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']));
     }
-    if (php_function_allowed('gethostname')) {
-        return gethostname();
+    return gethostname();
+}
+
+/**
+ * Get the domain the website is installed on (preferably, without any www). The domain is used for e-mail defaults among other things.
+ * See also get_request_hostname() and get_base_url_hostname().
+ *
+ * @return string The domain of the website
+ */
+function get_domain()
+{
+    global $SITE_INFO;
+    $ret = (!empty($SITE_INFO['domain'])) ? $SITE_INFO['domain'] : '';
+
+    // Ah, no explicit setting, so derive...
+    if (empty($ret)) {
+        // Derive from base URL
+        if (!empty($SITE_INFO['base_url'])) {
+            $ret = strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+        }
     }
-    if (!empty($_SERVER['SERVER_ADDR'])) {
-        return $_SERVER['SERVER_ADDR'];
+    if (empty($ret)) {
+        if (!empty($_SERVER['HTTP_HOST'])) {
+            $ret = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+        }
     }
-    return 'localhost';
+    if (empty($ret)) {
+        if (!empty($_SERVER['SERVER_NAME'])) {
+            $ret = $_SERVER['SERVER_NAME'];
+        }
+    }
+    if (empty($ret)) {
+        $ret = gethostname();
+    }
+    return preg_replace('#^www\.#', '', $ret);
 }
 
 /**
@@ -773,20 +820,6 @@ function cms_version_pretty()
 }
 
 /**
- * Get the domain the website is installed on (preferably, without any www). The domain is used for e-mail defaults among other things.
- *
- * @return string The domain of the website
- */
-function get_domain()
-{
-    global $SITE_INFO;
-    if (empty($SITE_INFO['domain'])) {
-        $SITE_INFO['domain'] = preg_replace('#:.*#', '', get_local_hostname());
-    }
-    return $SITE_INFO['domain'];
-}
-
-/**
  * Get the type of forums installed.
  *
  * @return string The type of forum installed
@@ -838,7 +871,12 @@ function get_base_url($https = null, $zone_for = '')
 {
     global $SITE_INFO;
     if (empty($SITE_INFO['base_url'])) {
-        $default_base_url = (tacit_https() ? 'https://' : 'http://') . get_local_hostname() . str_replace('%2F', '/', rawurlencode(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))));
+        $default_base_url = (tacit_https() ? 'https://' : 'http://') . get_request_hostname();
+        $port = $_SERVER['SERVER_PORT'];
+        if ($port != (tacit_https() ? '443' : '80')) {
+            $default_base_url .= $port;
+        }
+        $default_base_url .= str_replace('%2F', '/', rawurlencode(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))));
 
         $base_url = post_param_string('base_url', $default_base_url, INPUT_FILTER_URL_GENERAL);
         if (substr($base_url, -1) == '/') {

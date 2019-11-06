@@ -439,53 +439,6 @@ abstract class Hook_Health_Check
     }
 
     /**
-     * Get the website domain names.
-     *
-     * @param  boolean $remap_www Whether to strip www from domain names
-     * @return array Domain names
-     */
-    protected function get_domains($remap_www = true)
-    {
-        $domains = array();
-
-        $host = parse_url(get_base_url(), PHP_URL_HOST);
-        if (preg_match('#[A-Z]#i', $host) != 0) {
-            $domains[''] = $host;
-        }
-
-        global $SITE_INFO;
-        $zl = strlen('ZONE_MAPPING_');
-        foreach ($SITE_INFO as $key => $_val) {
-            if ($key !== '' && $key[0] === 'Z' && substr($key, 0, $zl) === 'ZONE_MAPPING_') {
-                $domains[substr($key, strlen('ZONE_MAPPING_'))] = $_val[0];
-            }
-        }
-
-        if ($remap_www) {
-            foreach ($domains as &$domain) {
-                $domain = preg_replace('#^www\d*\.#', '', $domain);
-            }
-        }
-
-        return array_unique($domains);
-    }
-
-    /**
-     * Find whether a domain is local.
-     *
-     * @param  ?string $domain The domain (null: website domain)
-     * @return boolean Whether it is local
-     */
-    protected function is_localhost_domain($domain = null)
-    {
-        if ($domain === null) {
-            $domain = parse_url(get_base_url(), PHP_URL_HOST);
-        }
-
-        return ($domain == 'localhost') || (trim($domain, '0123456789.') == '') || (strpos($domain, ':') !== false);
-    }
-
-    /**
      * Get a list of e-mail domains the site uses.
      *
      * @param  boolean $include_all Include all e-mail domains, as opposed to just the main outgoing one
@@ -498,7 +451,7 @@ abstract class Hook_Health_Check
         $domains = array();
         $addresses = find_system_email_addresses($include_all);
         foreach ($addresses as $address => $domain) {
-            if (!$this->is_localhost_domain($domain)) {
+            if (!is_local_machine($domain)) {
                 $domains[$domain] = $address;
             }
         }

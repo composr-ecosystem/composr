@@ -145,7 +145,7 @@ function get_afm_form_fields()
         if (!empty($GLOBALS['SITE_INFO']['ftp_domain'])) {
             $ftp_domain = $GLOBALS['SITE_INFO']['ftp_domain'];
         } else {
-            $ftp_domain = get_domain();
+            $ftp_domain = get_base_url_hostname();
         }
     }
 

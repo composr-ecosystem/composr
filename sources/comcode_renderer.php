@@ -1782,7 +1782,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
             $url = check_naughty_javascript_url($source_member, $url, $as_admin);
 
             // More URL tidying
-            $local = (url_is_local($url)) || (strpos($url, get_domain()) !== false);
+            $local = (url_is_local($url)) || (parse_url($url, PHP_URL_HOST) == get_base_url_hostname());
             $given_url = $url;
             if (($url != '') && ($url[0] != '#')) {
                 if (substr($url, 0, 1) == '/') {

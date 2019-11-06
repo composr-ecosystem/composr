@@ -472,7 +472,7 @@ function find_user_metadata($include_referer = true, $member_id = null, $ip = nu
                 $h[$l_session_id] = $myrow['session_id'];
             }
 
-            if (($myrow['referer'] != '') && (($advanced) || (/*external referer*/@parse_url($myrow['referer'], HTTP_HOST) != @parse_url(get_base_url(), HTTP_HOST)))) {
+            if (($myrow['referer'] != '') && (($advanced) || (/*external referer*/@parse_url($myrow['referer'], HTTP_HOST) != get_base_url_hostname()))) {
                 $h[$l_referer] = $myrow['referer'];
             }
 

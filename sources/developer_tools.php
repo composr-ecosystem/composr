@@ -57,7 +57,7 @@ function semi_dev_mode_startup()
         }*/
 
         if (
-            (strpos($_SERVER['HTTP_REFERER'], get_local_hostname()) !== false) &&
+            (strpos($_SERVER['HTTP_REFERER'], get_request_hostname()) !== false) &&
             (strpos($_SERVER['HTTP_REFERER'], 'keep_devtest') !== false) &&
             (!running_script('attachment')) &&
             (!running_script('external_url_proxy')) &&

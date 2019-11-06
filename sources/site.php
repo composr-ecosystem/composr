@@ -542,17 +542,17 @@ function do_site_prep()
     }
 
     if ((running_script('index')) && (!is_cli())) {
-        $access_host = preg_replace('#:.*#', '', get_local_hostname());
+        $request_hostname = get_request_hostname();
 
         // Detect bad access domain
         global $SITE_INFO;
-        if (($access_host != '') && (isset($_SERVER['HTTP_HOST'])) && (empty($GLOBALS['EXTERNAL_CALL']))) {
-            $parsed_base_url = parse_url(get_base_url());
+        if (($request_hostname != '') && (isset($_SERVER['HTTP_HOST'])) && (empty($GLOBALS['EXTERNAL_CALL']))) {
+            $base_url_hostname = get_base_url_hostname();
 
-            if ((array_key_exists('host', $parsed_base_url)) && (strtolower($parsed_base_url['host']) != strtolower($access_host))) {
+            if ($base_url_hostname != $request_hostname) {
                 if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
                     if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
-                        attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($parsed_base_url['host']), escape_html($access_host)), 'warn');
+                        attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($base_url_hostname), escape_html($request_hostname)), 'warn');
                     }
 
                     set_http_status_code(301);
@@ -572,9 +572,9 @@ function do_site_prep()
         if (get_value('disable_cookie_checks') !== '1') {
             // Detect bad cookie domain (reasonable approximation)
             $cookie_domain = @ltrim(get_cookie_domain(), '.');
-            if (!empty($cookie_domain) && !empty($access_host)) {
-                if (substr($access_host, -strlen($cookie_domain)) != $cookie_domain) {
-                    attach_message(do_lang_tempcode('INCORRECT_COOKIE_DOMAIN', escape_html($cookie_domain), escape_html($access_host)), 'warn');
+            if (!empty($cookie_domain) && !empty($request_hostname)) {
+                if (substr($request_hostname, -strlen($cookie_domain)) != $cookie_domain) {
+                    attach_message(do_lang_tempcode('INCORRECT_COOKIE_DOMAIN', escape_html($cookie_domain), escape_html($request_hostname)), 'warn');
                 }
             }
 
@@ -1125,7 +1125,7 @@ function do_site()
         }
 
         // Track very basic details of what sites use Composr
-        if ((!running_locally()) && (get_option('call_home') == '1')) {
+        if ((!is_local_machine()) && (get_option('call_home') == '1')) {
             $timeout_before = ini_get('default_socket_timeout');
             cms_ini_set('default_socket_timeout', '3');
             require_code('version2');

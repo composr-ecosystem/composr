@@ -87,15 +87,13 @@ function autoprobe_cdns()
     }
     $domain_name = $parsed['host'];
 
-    if ($domain_name == 'localhost') {
+    if (is_local_machine()) {
         set_value('cdn', '');
         return '';
     }
 
-    $server_ip = $_SERVER['REMOTE_ADDR'];
     $try = array(
         'cdn' . '.' . $domain_name,
-        ip_address_is_local($server_ip) ? null : $server_ip,
         (substr($domain_name, 0, 4) == 'www.') ? preg_replace('#^www\.#', '', $domain_name) : ('www' . '.' . $domain_name),
         'ftp' . '.' . $domain_name,
         'mail' . '.' . $domain_name,

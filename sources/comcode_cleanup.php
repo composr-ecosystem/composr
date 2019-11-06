@@ -142,14 +142,7 @@ function download_associated_media(&$text)
  */
 function _download_associated_media(&$text, $old_url)
 {
-    $local_url_1 = parse_url(get_base_url());
-    $local_domain_1 = $local_url_1['host'];
-
-    $local_url_2 = parse_url(get_custom_base_url());
-    $local_domain_2 = $local_url_2['host'];
-
-    $matches2 = array();
-    if ((preg_match('#^https?://([^:/]+)#', $old_url, $matches2) != 0) && ($matches2[1] != $local_domain_1) && ($matches2[1] != $local_domain_2)) {
+    if (!is_our_server(parse_url($old_url,  PHP_URL_HOST))) {
         require_code('crypt');
         $temp_filename = get_secure_random_string();
         $temp_dir = get_custom_file_base() . '/uploads/external_media';

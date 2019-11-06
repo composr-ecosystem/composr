@@ -277,7 +277,7 @@ class Module_admin_lookup
                         'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_member_ban', 'id' => $id, 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('admin_actionlog')),
                     ));
                 }
-                if (($ip != '') && ($ip != get_ip_address()) && ($ip != $_SERVER['SERVER_ADDR'])) {
+                if (($ip != '') && ($ip != get_ip_address()) &&  (!in_array($ip, get_server_ips()))) {
                     $ip_ban_link = do_template('ACTIONLOGS_TOGGLE_LINK', array(
                         '_GUID' => '76979d80cdd7d3e664c9a4ec04419bc6',
                         'URL' => build_url(array('page' => 'admin_ip_ban', 'type' => 'toggle_ip_ban', 'id' => $ip), get_module_zone('admin_actionlog')),

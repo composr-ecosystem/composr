@@ -69,7 +69,7 @@ function upgrader_file_upgrade_screen()
     $out .= '<form title="' . do_lang('PROCEED') . '" enctype="multipart/form-data" action="upgrader.php?type=_file_upgrade" method="post">' . post_fields_relay();
     $out .= '<p><label for="url">' . do_lang('URL') . '</label> <input type="text" id="url" name="url" size="80" value="' . escape_html($upgrader_tar_url) . '" /></p>';
     $out .= '<p><label for="dry_run"><input type="checkbox" id="dry_run" name="dry_run" value="1" /> ' . do_lang('UPGRADER_DRY_RUN') . '</label></p>';
-    if ((get_local_hostname() == 'compo.sr') || ($GLOBALS['DEV_MODE'])) { // for ocProducts to use on own site, for testing
+    if ((get_base_url_hostname() == 'compo.sr') || ($GLOBALS['DEV_MODE'])) { // for ocProducts to use on own site, for testing
         $out .= '<p><label for="upload">' . do_lang('ALT_FIELD', do_lang('UPLOAD')) . '</label> <input type="file" id="upload" name="upload" /></p>';
         $out .= '<script ' . csp_nonce_html() . '>var url=document.getElementById(\'url\'); url.addEventListener(\'change\', function() { document.getElementById(\'upload\').disabled=url.value!=\'\'; });</script>';
     }
@@ -109,7 +109,7 @@ function _upgrader_file_upgrade_screen()
 
     // Get file
     require_code('tar');
-    if ((post_param_string('url', '', INPUT_FILTER_URL_GENERAL) == '') && ((get_local_hostname() == 'compo.sr') || ($GLOBALS['DEV_MODE']))) {
+    if ((post_param_string('url', '', INPUT_FILTER_URL_GENERAL) == '') && ((get_base_url_hostname() == 'compo.sr') || ($GLOBALS['DEV_MODE']))) {
         $upgrade_path = $_FILES['upload']['tmp_name'];
         $original_filename = $_FILES['upload']['name'];
         $retrieval_method = FILE_RETRIEVAL_UPLOAD;

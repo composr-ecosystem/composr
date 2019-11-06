@@ -365,8 +365,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
             }
             if ($socket !== false) {
                 if ($new_connection) {
-                    $base_url = parse_url(get_base_url());
-                    $domain = $base_url['host'];
+                    $domain = get_base_url_hostname();
 
                     $rcv = fread($socket, 1024);
 

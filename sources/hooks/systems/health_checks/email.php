@@ -301,7 +301,7 @@ class Hook_health_check_email extends Hook_Health_Check
 
         if (get_option('smtp_sockets_use') == '0') {
             if (php_function_allowed('dns_get_record')) {
-                $domains = $this->get_domains();
+                $domains = get_server_names();
 
                 foreach ($domains as $self_domain) {
                     $self_ip = cms_gethostbyname($self_domain);
@@ -493,8 +493,8 @@ class Hook_health_check_email extends Hook_Health_Check
             $socket = @fsockopen($host, $port, $errno, $errstr, 30.0);
             if ($socket !== false) {
                 $rcv = fread($socket, 1024);
-                $base_url = parse_url(get_base_url());
-                $domain = $base_url['host'];
+
+                $domain = get_base_url_hostname();
 
                 // Log in if necessary
                 if ($username != '') {

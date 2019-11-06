@@ -293,7 +293,7 @@ class Module_admin_ip_ban
                 if (!in_array($ip, $old_bans)) {
                     if ($ip == get_ip_address()) {
                         attach_message(do_lang_tempcode('WONT_BAN_SELF', escape_html($ip)), 'warn');
-                    } elseif ($ip == $_SERVER['SERVER_ADDR']) {
+                    } elseif (!in_array($ip, get_server_ips())) {
                         attach_message(do_lang_tempcode('WONT_BAN_SERVER', escape_html($ip)), 'warn');
                     } else {
                         wrap_add_ip_ban($ip, isset($matches[2]) ? trim($matches[2]) : '');

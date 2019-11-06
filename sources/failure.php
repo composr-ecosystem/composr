@@ -618,13 +618,6 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     // Work out basic metadata...
 
     $ip = get_ip_address();
-    $ip2 = $_SERVER['REMOTE_ADDR'];
-    if (!is_valid_ip($ip2)) {
-        $ip2 = '';
-    }
-    if (($ip2 == $ip) || ($ip2 == '') || ($_SERVER['SERVER_ADDR'] == $ip2)) {
-        $ip2 = null;
-    }
     if (function_exists('get_member')) {
         $id = get_member();
         $username = $GLOBALS['FORUM_DRIVER']->get_username($id);
@@ -645,16 +638,6 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     // Automatic ban needed?...
 
     $count = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', array('ip' => $ip))) / 100.0;
-    $alt_ip = false;
-    if ($ip2 !== null) {
-        $count2 = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(percentage_score)', array('ip' => $ip2))) / 100.0;
-        if ($count2 > $count) {
-            // Lots of hack-attacks through the proxy rather than client IP
-            $count = $count2;
-            $alt_ip = true;
-        }
-    }
-    $_ip = ($alt_ip ? $ip2 : $ip);
     $hack_threshold = intval(get_option('hack_ban_threshold'));
     if ((array_key_exists('FORUM_DRIVER', $GLOBALS)) && (function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $count = 0.0;
@@ -676,13 +659,13 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     );
 
     $ip_ban_todo = null;
-    if ((($count >= floatval($hack_threshold)) || ($instant_ban)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', array('ip' => $_ip)) === null)) {
+    if ((($count >= floatval($hack_threshold)) || ($instant_ban)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', array('ip' => $ip)) === null)) {
         // Test we're not banning a good bot...
 
-        if ((!ip_address_is_local($_ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip)) && ($ip2 === null) || ((!is_unbannable_bot_dns($ip2)) && (!is_unbannable_bot_ip($ip2)))) {
+        if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {
             // Prepare message about a ban...
 
-            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', array('*'), array('ip' => $_ip), 'ORDER BY date_and_time');
+            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', array('*'), array('ip' => $ip), 'ORDER BY date_and_time');
             $rows[] = $new_row;
 
             $summary = '[list]';
@@ -704,12 +687,12 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
 
             if ($is_spammer) {
                 require_code('failure_spammers');
-                syndicate_spammer_report($_ip, is_guest() ? '' : $GLOBALS['FORUM_DRIVER']->get_username(get_member()), $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), do_lang('SPAM_REPORT_TRIGGERED_SPAM_HEURISTICS'));
+                syndicate_spammer_report($ip, is_guest() ? '' : $GLOBALS['FORUM_DRIVER']->get_username(get_member()), $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member()), do_lang('SPAM_REPORT_TRIGGERED_SPAM_HEURISTICS'));
             }
 
             // Add ban...
 
-            $ban_happened = add_ip_ban($_ip, $full_reason);
+            $ban_happened = add_ip_ban($ip, $full_reason);
 
             // Prepare notification text...
 
@@ -717,7 +700,7 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
             $ip_ban_url = $_ip_ban_url->evaluate();
 
             if ($ban_happened) {
-                $ip_ban_todo = do_lang('AUTO_BAN_HACK_MESSAGE', $_ip, integer_format($hack_threshold), array($summary, $ip_ban_url), get_site_default_lang());
+                $ip_ban_todo = do_lang('AUTO_BAN_HACK_MESSAGE', $ip, integer_format($hack_threshold), array($summary, $ip_ban_url), get_site_default_lang());
             }
         }
     }
@@ -725,10 +708,6 @@ function _log_hack_attack_and_exit($reason, $reason_param_a = '', $reason_param_
     // Add hackattack...
 
     $GLOBALS['SITE_DB']->query_insert('hackattack', $new_row);
-    if ($ip2 !== null) {
-        $new_row['ip'] = $ip2;
-        $GLOBALS['SITE_DB']->query_insert('hackattack', $new_row);
-    }
 
     // Send notification...
 
@@ -958,13 +937,11 @@ function remove_ip_ban($ip)
  */
 function get_webservice_result($error_message)
 {
-    if (get_domain() == 'compo.sr') {
+    if (in_array(get_base_url_hostname(), array('compo.sr', 'ocproducts.com'))) {
         return null;
     }
-    if (get_domain() == 'ocproducts.com') {
-        return null;
-    }
-    if (get_domain() == 'localhost') {
+
+    if (is_local_machine()) {
         return null; // In case of no Internet connection
     }
 

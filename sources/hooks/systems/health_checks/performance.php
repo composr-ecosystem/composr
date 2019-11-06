@@ -93,10 +93,8 @@ class Hook_health_check_performance extends Hook_Health_Check
                 return $url;
 
             case '1':
-                $connect_to = $_SERVER['SERVER_ADDR'];
-                if ($connect_to == '') {
-                    $connect_to = '127.0.0.1'; // "localhost" can fail due to IP6
-                }
+                $server_ips = get_server_ips();
+                $connect_to = $server_ips[0];
 
                 $url = preg_replace('#^(.*://)(.*)(/|:|$)#U', '$1' . $connect_to . '$3', $url);
 

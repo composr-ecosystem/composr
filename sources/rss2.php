@@ -88,7 +88,7 @@ function rss_backend_script()
 
     // Closed site
     $site_closed = get_option('site_closed');
-    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (get_ip_address() != $_SERVER['SERVER_ADDR']) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
+    if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!is_our_server(get_ip_address())) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         http_response_code(503);
         header('Content-type: text/plain; charset=' . get_charset());
         @exit(get_option('closed'));

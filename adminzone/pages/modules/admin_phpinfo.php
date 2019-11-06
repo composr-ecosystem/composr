@@ -137,8 +137,7 @@ class Module_admin_phpinfo
         $out = preg_replace('#<head[^>]*>.*</head[^>]*>#s', '', $out);
 
         $out = str_replace(' width="600"', ' width="100%"', $out);
-        $url_parts = parse_url(get_base_url());
-        $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html($url_parts['host']) . '/', $out);
+        $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html(get_base_url_hostname()) . '/', $out);
 
         // Current run-time details...
 

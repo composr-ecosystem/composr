@@ -105,7 +105,7 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         $other_allowed = $this->robots_allowed($url, 'Googlebot', false); // We'll still check for Google, just with the other way of doing precedence
 
         if ($check_context == CHECK_CONTEXT__TEST_SITE) {
-            if ($this->is_localhost_domain()) {
+            if (is_local_machine(get_base_url_hostname())) {
                 return; // Google cannot access anyway
             }
 

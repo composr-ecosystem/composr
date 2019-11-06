@@ -1079,6 +1079,16 @@ function htmlspecialchars($string, $quote_style = ENT_COMPAT, $charset = '')
 }
 
 /**
+ * Gets the host name.
+ *
+ * @return ~string Hostname (false: error)
+ */
+function gethostname()
+{
+    return '';
+}
+
+/**
  * Set the blending mode for an image.
  *
  * @param  resource $image The image handle

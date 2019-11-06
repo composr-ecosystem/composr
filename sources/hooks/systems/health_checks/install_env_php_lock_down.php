@@ -267,7 +267,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             file_get_contents str_word_count html_entity_decode
             array_combine array_walk_recursive header_remove
             str_split strpbrk substr_compare file_put_contents get_headers headers_list
-            http_build_query scandir str_shuffle fnmatch
+            http_build_query scandir str_shuffle fnmatch gethostname
             ob_get_clean array_diff_assoc glob debug_backtrace date_default_timezone_set sha1
             array_diff_key inet_pton array_product json_encode json_decode
             inet_ntop fputcsv is_nan is_finite is_infinite ob_flush array_chunk array_fill

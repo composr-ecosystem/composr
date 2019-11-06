@@ -814,6 +814,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         if (((strpos($proxy, '/') !== false) && (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy))) || ($_SERVER['REMOTE_ADDR'] == $proxy)) {
             if (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy)) {
                 $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                $_SERVER['HTTP_X_FORWARDED_FOR'] = '';
                 break;
             }
         }

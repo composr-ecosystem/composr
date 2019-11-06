@@ -62,13 +62,12 @@ class Hook_realtime_rain_stats
 
                 // Show referer domain
                 $referer = @parse_url($row['referer']);
-                $base_url = @parse_url(get_base_url());
                 if ($referer !== false) {
                     if (!array_key_exists('host', $referer)) {
                         $referer['host'] = do_lang('UNKNOWN');
                     }
 
-                    if ($referer['host'] != $base_url['host']) {
+                    if ($referer['host'] != get_base_url_hostname()) {
                         $title = rain_truncate_for_title(do_lang('HIT', $page_link, $referer['host']));
                     }
                 }

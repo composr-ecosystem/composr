@@ -279,7 +279,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             return;
         }
 
-        if ($this->is_localhost_domain()) {
+        if (is_local_machine(get_base_url_hostname())) {
             return;
         }
 
@@ -303,20 +303,17 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
             }
         }
 
+        $problematic_host_prefixes = array();
+        foreach (get_localhost_names_and_ips() as $ip_or_hostname) {
+            $problematic_host_prefixes[] = preg_quote($ip_or_hostname, '#') . '($|:|/)';
+        }
+        $problematic_host_prefixes[] = '10\.';
+        $problematic_host_prefixes[] = '192\.168\.';
+        if (!health_check__is_test_site()) {
+            $problematic_host_prefixes[] = '(staging|sandbox)\.' . preg_quote(preg_replace('#^www\.#', '', get_base_url_hostname()), '#') . '($|:|/)';
+        }
+
         foreach ($html_segments as $field_title => $html) {
-            $problematic_host_prefixes = array(
-                '127\.0\.0\.1($|:|/)',
-                '192\.168\.',
-                '10\.',
-                '0000:0000:0000:0000:0000:0000:0000:0001($|:|/)',
-                '::1($|:|/)',
-                'localhost($|:|/)',
-            );
-
-            if (!health_check__is_test_site()) {
-                $problematic_host_prefixes[] = '(staging|sandbox)\.' . preg_quote(preg_replace('#^www\.#', '', get_domain()), '#') . '($|:|/)';
-            }
-
             $regexp = '#https?://(';
             foreach ($problematic_host_prefixes as $i => $host_prefix) {
                 if ($i != 0) {

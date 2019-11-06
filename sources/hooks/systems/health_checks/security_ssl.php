@@ -179,7 +179,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        $domains = $this->get_domains();
+        $domains = get_server_names();
 
         $page_links = $this->process_urls_into_page_links($urls_or_page_links);
 
@@ -252,7 +252,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
 
             if ($ok) {
                 // If it's a problem with SSL verification on our domain specifically
-                $domains = $this->get_domains();
+                $domains = get_server_names();
                 foreach ($domains as $domain) {
                     if (get_value('disable_ssl_for__' . $domain) !== '1') {
                         $test_url = get_base_url(true) . '/data/empty.php';

@@ -728,22 +728,73 @@ function fixup_bad_php_env_vars()
 }
 
 /**
- * Get server hostname.
+ * Get server hostname as used in the base URL.
+ * See also get_domain() and get_request_hostname() and get_server_names().
  *
  * @return string The hostname
  */
-function get_local_hostname()
+function get_base_url_hostname()
+{
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['base_url'])) {
+        return strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+    }
+    if (!empty($_SERVER['HTTP_HOST'])) {
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+    }
+    return gethostname();
+}
+
+/**
+ * Get server hostname as used in the URL.
+ * See also get_domain() and get_base_url_hostname() and get_server_names().
+ *
+ * @return string The hostname
+ */
+function get_request_hostname()
 {
     if (!empty($_SERVER['HTTP_HOST'])) {
-        return $_SERVER['HTTP_HOST'];
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
     }
-    if (php_function_allowed('gethostname')) {
-        return gethostname();
+    global $SITE_INFO;
+    if (!empty($SITE_INFO['base_url'])) {
+        return strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
     }
-    if (!empty($_SERVER['SERVER_ADDR'])) {
-        return $_SERVER['SERVER_ADDR'];
+    return gethostname();
+}
+
+/**
+ * Get the domain the website is installed on (preferably, without any www). The domain is used for e-mail defaults among other things.
+ * Also see get_request_hostname() and get_base_url_hostname() and get_server_names().
+ *
+ * @return string The domain of the website
+ */
+function get_domain()
+{
+    global $SITE_INFO;
+    $ret = (!empty($SITE_INFO['domain'])) ? $SITE_INFO['domain'] : '';
+
+    // Ah, no explicit setting, so derive...
+    if (empty($ret)) {
+        // Derive from base URL
+        if (!empty($SITE_INFO['base_url'])) {
+            $ret = strtolower(parse_url($SITE_INFO['base_url'], PHP_URL_HOST));
+        }
     }
-    return 'localhost';
+    if (empty($ret)) {
+        if (!empty($_SERVER['HTTP_HOST'])) {
+            $ret = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
+        }
+    }
+    if (empty($ret)) {
+        if (!empty($_SERVER['SERVER_NAME'])) {
+            $ret = $_SERVER['SERVER_NAME'];
+        }
+    }
+    if (empty($ret)) {
+        $ret = gethostname();
+    }
+    return preg_replace('#^www\.#', '', $ret);
 }
 
 /**
@@ -1308,41 +1359,6 @@ function cms_version_pretty()
 }
 
 /**
- * Get the domain the website is installed on (preferably, without any www). The domain is used for e-mail defaults among other things.
- *
- * @return string The domain of the website
- */
-function get_domain()
-{
-    global $SITE_INFO;
-    $ret = (!empty($SITE_INFO['domain'])) ? $SITE_INFO['domain'] : '';
-
-    // Ah, no explicit setting, so derive...
-    if ($ret == '') {
-        // Derive from base URL
-        if (!empty($SITE_INFO['base_url'])) {
-            $matches = array();
-            if (preg_match('#://([^/\#:]+)#', $SITE_INFO['base_url'], $matches) != 0) {
-                return preg_replace('#^www\.#', '', $matches[1]);
-            }
-        }
-
-        // Derive from other possibilities
-        if (!empty($_SERVER['HTTP_HOST'])) {
-            return preg_replace('#^www\.#', '', $_SERVER['HTTP_HOST']);
-        }
-        if (php_function_allowed('gethostname')) {
-            return preg_replace('#^www\.#', '', gethostname());
-        }
-        if (!empty($_SERVER['SERVER_ADDR'])) {
-            return preg_replace('#^www\.#', '', $_SERVER['SERVER_ADDR']);
-        }
-        return 'localhost';
-    }
-    return $ret;
-}
-
-/**
  * Get the type of forums installed.
  *
  * @return string The type of forum installed
@@ -1454,7 +1470,7 @@ function in_safe_mode()
         }
     }
 
-    $backdoor_ip = ((!empty($SITE_INFO['backdoor_ip'])) && ($_SERVER['REMOTE_ADDR'] == $SITE_INFO['backdoor_ip']) && ($_SERVER['HTTP_X_FORWARDED_FOR'] == ''));
+    $backdoor_ip = ((!empty($SITE_INFO['backdoor_ip'])) && ($_SERVER['REMOTE_ADDR'] == $SITE_INFO['backdoor_ip']));
 
     global $CHECKING_SAFEMODE, $REQUIRED_CODE;
     if (!$backdoor_ip) {

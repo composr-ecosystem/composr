@@ -513,7 +513,7 @@ $SITE_INFO['dev_mode'] = '0';
 [/code]
 git automatically enables dev mode, which intentionally interferes with things to help you develop quality code -- such as adding extra checks, or disabling cookies so that you don't rely on them. This is great for development, where the developer is in control of everything, but not correct for production.
 [*] Use a decent [tt].gitignore[/tt] so you don't get a lot of noise when running [tt]git status[/tt]. Our default one is good but may need tuning.
-[*] Either keep the config file out of git, or put code in there to differentiate between machines via checking [tt]$_SERVER['SERVER_ADDR'][/tt].
+[*] Either keep the config file out of git, or put code in there to differentiate between machines via checking [tt]get_hostname()[/tt].
 [*] Make heavy use of git branches so that you don't get stuck having to perfect all code before you can update anything onto the server.
 [/list]
 

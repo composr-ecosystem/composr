@@ -88,7 +88,7 @@ class Hook_health_check_security extends Hook_Health_Check
         }
 
         if ($use_test_data_for_pass === null) {
-            if ($this->is_localhost_domain()) {
+            if (is_local_machine(get_base_url_hostname())) {
                 $this->stateCheckSkipped('Could not scan for Malware on local domain');
                 return;
             }
@@ -223,9 +223,9 @@ class Hook_health_check_security extends Hook_Health_Check
         $this->assertTrue($result === $data, 'Website does not seem to be running on the base URL that is configured');
         @unlink(get_custom_file_base() . '/' . $path);
 
-        if (!$this->is_localhost_domain()) {
+        if (!is_local_machine(get_base_url_hostname())) {
             if (php_function_allowed('shell_exec')) {
-                $domains = $this->get_domains();
+                $domains = get_server_names();
 
                 foreach ($domains as $domain) {
                     $regexp = '#\nName:\s+' . $domain . '\nAddress:\s+(.*)\n#';

@@ -354,7 +354,7 @@ function get_zone_name()
     if ($VIRTUALISED_ZONES_CACHE !== false) {
         $VIRTUALISED_ZONES_CACHE = false;
         $url_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        $host = preg_replace('#:\d+$#', '', get_local_hostname());
+        $host = get_request_hostname();
         foreach ($SITE_INFO as $key => $val) {
             if (($key[0] === 'Z') && (substr($key, 0, 13) === 'ZONE_MAPPING_') && (is_array($val))) {
                 $VIRTUALISED_ZONES_CACHE = true;

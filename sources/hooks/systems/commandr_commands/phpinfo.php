@@ -74,8 +74,7 @@ class Hook_commandr_command_phpinfo
             $out = str_replace(' width="600"', ' width="100%"', $out);
             $out = cms_preg_replace_safe('#([^\s<>"\']{65}&[^;]+;)#', '${1}<br />', $out);
             $out = cms_preg_replace_safe('#([^\s<>"\']{95})#', '${1}<br />', $out);
-            $url_parts = parse_url(get_base_url());
-            $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html($url_parts['host']) . '/', $out);
+            $out = str_replace('<img border="0" src="/', '<img border="0" style="padding-top: 20px" src="http://' . escape_html(get_base_url_hostname()) . '/', $out);
 
             return array('', xhtmlise_html($out, true), '', '');
         }

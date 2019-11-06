@@ -323,7 +323,7 @@ function save_zone_base_url($zone, $base_url)
     $config_file = preg_replace($regexp, '', $config_file); // Strip any old entry
 
     if ($base_url != '') { // Add new entry, if appropriate
-        $main_site_domain = parse_url(get_base_url(), PHP_URL_HOST);
+        $main_site_domain = get_base_url_hostname();
         $main_site_path = trim(parse_url(get_base_url(), PHP_URL_PATH), '/');
 
         if (url_is_local($base_url)) {

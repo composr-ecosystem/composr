@@ -274,7 +274,7 @@ function _qualify_url($url, $url_base, $base_is_full_url)
                     $parsed['scheme'] = 'http';
                 }
                 if (!array_key_exists('host', $parsed)) {
-                    $parsed['host'] = 'localhost';
+                    $parsed['host'] = get_base_url_hostname();
                 }
                 if (substr($url, 0, 2) == '//') {
                     $url = $parsed['scheme'] . ':' . $url;

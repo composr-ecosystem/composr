@@ -63,7 +63,7 @@ class Hook_health_check_network extends Hook_Health_Check
             return;
         }
 
-        if ($this->is_localhost_domain()) {
+        if (is_local_machine(get_base_url_hostname())) {
             return;
         }
 

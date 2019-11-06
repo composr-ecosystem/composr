@@ -34,10 +34,10 @@ class ssl_test_set extends cms_test_case
             return;
         }
 
-        if (get_domain() == 'localhost') {
-            set_value('disable_ssl_for__' . get_domain(), '1');
+        if (is_local_machine()) {
+            set_value('disable_ssl_for__' . get_base_url_hostname(), '1');
         }
-        $test = http_get_contents('https://' . get_domain(), array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+        $test = http_get_contents('https://' . get_base_url_hostname(), array('convert_to_internal_encoding' => true, 'trigger_error' => false));
         if ($test === null) {
             $this->assertTrue(false, 'SSL not running on this machine');
             return;

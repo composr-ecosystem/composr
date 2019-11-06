@@ -31,22 +31,7 @@ function qr_get_domain()
     if (!empty($_ENV['HTTP_HOST'])) {
         return $_ENV['HTTP_HOST'];
     }
-    if (function_exists('gethostname')) {
-        return gethostname();
-    }
-    if (!empty($_SERVER['SERVER_ADDR'])) {
-        return $_SERVER['SERVER_ADDR'];
-    }
-    if (!empty($_ENV['SERVER_ADDR'])) {
-        return $_ENV['SERVER_ADDR'];
-    }
-    if (!empty($_SERVER['LOCAL_ADDR'])) {
-        return $_SERVER['LOCAL_ADDR'];
-    }
-    if (!empty($_ENV['LOCAL_ADDR'])) {
-        return $_ENV['LOCAL_ADDR'];
-    }
-    return 'localhost';
+    return gethostname();
 }
 
 $target = $_GET['url'];
