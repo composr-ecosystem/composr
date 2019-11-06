@@ -631,7 +631,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/cpfs.php',
             '_tests/tests/unit_tests/addon_guards.php',
             '_tests/tests/unit_tests/_config.php',
-            '_tests/tests/unit_tests/images.php',
+            '_tests/tests/unit_tests/_images.php',
             '_tests/tests/unit_tests/downloads.php',
             '_tests/tests/unit_tests/downloads_categories.php',
             '_tests/tests/unit_tests/addon_hook_quality.php',

@@ -36,6 +36,7 @@ function init__continuous_integration()
             'unit_tests/_bash_parser',
             'unit_tests/_backups',
             'unit_tests/_broken_links',
+            'unit_tests/_images',
 
             // Excessively complex and make not always succeed depending on test site context
             'unit_tests/_performance',
