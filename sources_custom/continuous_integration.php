@@ -323,6 +323,7 @@ function find_all_applicable_tests($limit_to = null)
         }
     }
     sort($_tests);
+    $_tests = array_merge(array('unit_tests/_cqc__function_sigs')/*Must run first*/, $_tests);
     return $_tests;
 }
 

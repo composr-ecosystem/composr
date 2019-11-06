@@ -2635,7 +2635,7 @@ function is_local_machine($ip_or_hostname = null)
  * Make our best guess on what IP addresses connections from server to server will use.
  * Also see get_server_ips().
  *
- * @return ID $ip_address IP address
+ * @return IP IP address
  */
 function get_server_external_looparound_ip()
 {
