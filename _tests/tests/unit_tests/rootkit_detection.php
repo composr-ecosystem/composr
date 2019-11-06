@@ -20,14 +20,20 @@ class rootkit_detection_test_set extends cms_test_case
 {
     public function testRootkitDetection()
     {
+        $password = '';
+        global $SITE_INFO;
+        if ((!empty($SITE_INFO['master_password'])) && (strlen($SITE_INFO['master_password']) != 32)) {
+            $password = $SITE_INFO['master_password'];
+        }
+
         require_code('crypt_master');
-        if (!check_master_password('')) {
-            $this->assertTrue(false, 'Cannot run test unless admin password is blank');
+        if (!check_master_password($password)) {
+            $this->assertTrue(false, 'Cannot run test unless admin password is blank or defined as non-hashed');
             return; // If we don't have a blank password test cannot work
         }
 
         $post_params = array(
-            'password' => '',
+            'password' => $password,
             'db_host' => get_db_site_host(),
             'db_name' => get_db_site(),
             'db_prefix' => get_table_prefix(),
