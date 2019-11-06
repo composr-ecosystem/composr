@@ -1066,7 +1066,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->do_ip_forwarding) {
             $curl_headers[] = 'Host: ' . $this->url_parts['host'];
         }
-        if ((count($curl_headers) != 0) && ((($this->files == array())/*Breaks file uploads for some reason*/) || ($this->extra_headers != array()))) {
+        if (count($curl_headers) != 0) {
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
         }

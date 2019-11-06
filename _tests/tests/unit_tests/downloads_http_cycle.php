@@ -30,11 +30,12 @@ class downloads_http_cycle_test_set extends cms_test_case
     public function testUpload()
     {
         require_code('uploads');
+        require_code('csrf_filter');
 
         $url = build_url(array('page' => 'cms_downloads', 'type' => '_add', 'keep_fatalistic' => 1), 'cms');
         $post_params = array(
             'download_name' => 'Test' . uniqid('', true),
-            'csrf_token' => $this->session_id,
+            'csrf_token' => generate_csrf_token(),
             'category_id' => strval(db_get_first_id()),
             'author' => 'Test',
             'description' => '',
