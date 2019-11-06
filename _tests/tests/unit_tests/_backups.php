@@ -77,7 +77,7 @@ unset($SITE_INFO[\'db_forums\']);
 unset($SITE_INFO[\'db_forums_user\']);
 unset($SITE_INFO[\'db_forums_password\']);
 $SITE_INFO[\'db_site\'] = \'cms_backup_test\';
-if ((isset($SITE_INFO[\'db_type\'])) && (strpos($SITE_INFO[\'db_type\'], \'mysql\') === false)) {
+if ((isset($SITE_INFO[\'db_type\'])) && (strpos($SITE_INFO[\'db_type\'], \'mysql\') !== false)) {
     $SITE_INFO[\'db_site_user\'] = \'root\';
 }
 $SITE_INFO[\'db_site_password\'] = isset($SITE_INFO[\'mysql_root_password\']) ? $SITE_INFO[\'mysql_root_password\'] : \'\';
