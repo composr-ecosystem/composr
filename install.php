@@ -1241,6 +1241,7 @@ function step_5()
             'master_password_confirm',
             'cns_admin_password',
             'cns_admin_password_confirm',
+            'post_data',
         ))) {
             continue;
         }
@@ -1797,6 +1798,8 @@ if (!function_exists(\'git_repos\')) {
             'gae_live_db_site_host',
             'gae_live_db_site_user',
             'gae_live_db_site_password',
+
+            'post_data',
         ))) {
             continue;
         }
