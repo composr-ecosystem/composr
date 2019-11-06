@@ -23,24 +23,33 @@ class http_obscure_cases_test_set extends cms_test_case
     {
         $extra_headers = array('Origin' => 'http://example.com');
         $http_verb = 'GET';
-        $response = cms_http_request(get_base_url() . '/index.php', array('extra_headers' => $extra_headers, 'http_verb' => $http_verb));
+        $response = cms_http_request(get_base_url() . '/index.php', array('extra_headers' => $extra_headers, 'http_verb' => $http_verb, 'timeout' => 20.0));
         $this->assertTrue($response->data != '');
-        $this->assertTrue(!$this->has_cor_header($response, 'Access-Control-Allow-Origin'));
-        $this->assertTrue(!$this->has_cor_header($response, 'Access-Control-Allow-Credentials'));
+        if ($this->debug) {
+            var_dump($response);
+        }
+        $this->assertTrue(!$this->has_cor_header($response, 'Access-Control-Allow-Origin'), 'Unexpected allowed origin (example.com)');
+        $this->assertTrue(!$this->has_cor_header($response, 'Access-Control-Allow-Credentials'), 'Unexpected credentials header (example.com)');
 
         $extra_headers = array('Origin' => get_base_url());
         $http_verb = 'GET';
-        $response = cms_http_request(get_base_url() . '/index.php', array('extra_headers' => $extra_headers, 'http_verb' => $http_verb));
+        $response = cms_http_request(get_base_url() . '/index.php', array('extra_headers' => $extra_headers, 'http_verb' => $http_verb, 'timeout' => 20.0));
+        if ($this->debug) {
+            var_dump($response);
+        }
         $this->assertTrue($response->data != '');
-        $this->assertTrue($this->has_cor_header($response, 'Access-Control-Allow-Origin'));
-        $this->assertTrue(!$this->has_cor_header($response, 'Access-Control-Allow-Credentials'));
+        $this->assertTrue($this->has_cor_header($response, 'Access-Control-Allow-Origin'), 'Should have allowed origin [GET]');
+        $this->assertTrue(!$this->has_cor_header($response, 'Access-Control-Allow-Credentials'), 'Unexpected credentials header [GET]');
 
         $extra_headers = array('Origin' => get_base_url());
         $http_verb = 'OPTIONS';
-        $response = cms_http_request(get_base_url() . '/index.php', array('extra_headers' => $extra_headers, 'http_verb' => $http_verb));
+        $response = cms_http_request(get_base_url() . '/index.php', array('extra_headers' => $extra_headers, 'http_verb' => $http_verb, 'timeout' => 20.0));
+        if ($this->debug) {
+            var_dump($response);
+        }
         $this->assertTrue($response->data == '');
-        $this->assertTrue($this->has_cor_header($response, 'Access-Control-Allow-Origin'));
-        $this->assertTrue($this->has_cor_header($response, 'Access-Control-Allow-Credentials'));
+        $this->assertTrue($this->has_cor_header($response, 'Access-Control-Allow-Origin'), 'Should have allowed origin [OPTIONS]');
+        $this->assertTrue($this->has_cor_header($response, 'Access-Control-Allow-Credentials'), 'Unexpected credentials header [OPTIONS]');
     }
 
     protected function has_cor_header($response, $header)

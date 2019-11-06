@@ -29,7 +29,7 @@ function cor_prepare()
 {
     require_code('input_filter');
     $trusted_sites = get_trusted_sites(1);
-    if (in_array(preg_replace('#^.*://([^:/]*).*$#', '${1}', $_SERVER['HTTP_ORIGIN']), $trusted_sites)) {
+    if (in_array(parse_url($_SERVER['HTTP_ORIGIN'], PHP_URL_HOST), $trusted_sites)) {
         header('Access-Control-Allow-Origin: ' . /*escape_header  function not needed and may not be loaded yet*/($_SERVER['HTTP_ORIGIN']));
 
         if ((isset($_SERVER['REQUEST_METHOD'])) && ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')) {

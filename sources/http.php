@@ -1203,13 +1203,7 @@ class HttpDownloaderCurl extends HttpDownloader
         foreach ($this->curl_headers as $header) {
             $matches = array();
 
-            if (preg_match('#^Content-Disposition: [^;]*;\s*filename="([^"]*)"#i', $header, $matches) != 0) {
-                $this->read_in_headers($header);
-            }
-
-            if (preg_match("#^Set-Cookie: ([^\r\n=]*)=([^\r\n]*)\r\n#i", $header, $matches) != 0) {
-                $this->read_in_headers($header);
-            }
+            $this->read_in_headers($header);
 
             if (preg_match("#^Refresh: (\d*);(.*)\r\n#i", $header, $matches) != 0) {
                 if ($this->filename === null) {
