@@ -874,7 +874,7 @@ function get_base_url($https = null, $zone_for = '')
         $default_base_url = (tacit_https() ? 'https://' : 'http://') . get_request_hostname();
         $port = $_SERVER['SERVER_PORT'];
         if ($port != (tacit_https() ? '443' : '80')) {
-            $default_base_url .= $port;
+            $default_base_url .= ':' . $port;
         }
         $default_base_url .= str_replace('%2F', '/', rawurlencode(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))));
 

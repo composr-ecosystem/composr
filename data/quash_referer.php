@@ -26,10 +26,10 @@
 function qr_get_domain()
 {
     if (!empty($_SERVER['HTTP_HOST'])) {
-        return $_SERVER['HTTP_HOST'];
+        return preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
     }
     if (!empty($_ENV['HTTP_HOST'])) {
-        return $_ENV['HTTP_HOST'];
+        return preg_replace('#:.*#', '', $_ENV['HTTP_HOST']);
     }
     return gethostname();
 }
@@ -41,6 +41,6 @@ $target = str_replace(array("\r", "\n"), array('', ''), $target);
 $domain = qr_get_domain();
 $our_server_http = 'http://' . $domain;
 $our_server_https = 'https://' . $domain;
-if ((substr($_SERVER['HTTP_REFERER'], 0, strlen($our_server_http)) == $our_server_http) || (substr($_SERVER['HTTP_REFERER'], 0, strlen($our_server_https)) == $our_server_https)) {
+if (parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) == qr_get_domain()) {
     header('Location: ' . $target); // assign_refresh not used, as no UI here
 }

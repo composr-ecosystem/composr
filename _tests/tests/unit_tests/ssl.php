@@ -22,7 +22,7 @@ class ssl_test_set extends cms_test_case
     {
         parent::setUp();
 
-        set_value('disable_ssl_for__' . $_SERVER['HTTP_HOST'], '1');
+        set_value('disable_ssl_for__' . get_base_url_hostname(), '1');
     }
 
     public function testHTTPSStatus()
@@ -46,7 +46,7 @@ class ssl_test_set extends cms_test_case
         global $HTTPS_PAGES_CACHE;
         $HTTPS_PAGES_CACHE = null;
 
-        set_value('disable_ssl_for__' . $_SERVER['HTTP_HOST'], '1');
+        set_value('disable_ssl_for__' . get_base_url_hostname(), '1');
 
         if (get_forum_type() == 'cns') {
             $page_link = 'forum:forumview';
@@ -75,7 +75,7 @@ class ssl_test_set extends cms_test_case
 
     public function tearDown()
     {
-        set_value('disable_ssl_for__' . $_SERVER['HTTP_HOST'], '0');
+        set_value('disable_ssl_for__' . get_base_url_hostname(), '0');
 
         parent::tearDown();
     }
