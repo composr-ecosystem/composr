@@ -101,7 +101,10 @@ $SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_con
             }
         }
 
-        $db = new DatabaseConnector('cms_backup_test', get_db_site_host(), get_db_site_user(), get_db_site_password(), 'cms_backup_test_');
+        global $SITE_INFO;
+        $username = (strpos(get_db_type(), 'mysql') === false) ? get_db_site_user() : 'root';
+        $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';
+        $db = new DatabaseConnector('cms_backup_test', get_db_site_host(), $username, $password, 'cms_backup_test_');
         $count = $db->query_select_value('zones', 'COUNT(*)');
         $this->assertTrue($count > 0, 'Failed to restore database');
 
