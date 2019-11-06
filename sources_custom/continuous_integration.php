@@ -31,20 +31,29 @@ function init__continuous_integration()
 
         $status = cms_version_branch_status();
         define('CI_BLACKLISTED_TESTS', array(
+            // Very slow 
             'unit_tests/_actionlog',
-            'unit_tests/_backups',
             'unit_tests/_bash_parser',
+            'unit_tests/_backups',
             'unit_tests/_broken_links',
-            'unit_tests/_commandr_fs',
-            'unit_tests/_critical_error_display',
-            'unit_tests/_database_integrity',
-            'unit_tests/_find_broken_screen_links',
-            'unit_tests/_health_check',
-            'unit_tests/_installer_forum_drivers',
+
+            // Excessively complex and make not always succeed depending on test site context
             'unit_tests/_performance',
-            'unit_tests/_rate_limiting',
             'unit_tests/_resource_fs',
+            'unit_tests/_commandr_fs',
+            'unit_tests/_database_integrity',
+            'unit_tests/_installer_forum_drivers',
+
+            // Is not expected to pass
+            'unit_tests/_health_check',
+
+            // Messes with _config.php
+            'unit_tests/_rate_limiting',
+            'unit_tests/_critical_error_display',
             'unit_tests/_static_caching',
+
+            // Can not run over HTTPS
+            'unit_tests/ssl',
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_copyright' : null,
             ($status == VERSION_ALPHA || $status == VERSION_BETA) ? '_tracker_categories' : null,
         ));
