@@ -1234,7 +1234,7 @@ function cms_mb_substr($in, $from, $amount = null, $force = false)
  */
 function _local_ctype_hack($start)
 {
-    $ctype_hack = (do_lang('locale_ctype_hack') == '1');
+    $ctype_hack = (function_exists('do_lang')) && (do_lang('locale_ctype_hack') == '1');
     if ($ctype_hack) {
         if ($start) {
             static $proper_locale = null;
@@ -1340,9 +1340,10 @@ function cms_mb_strcasecmp($str1, $str2)
                 static $collator = false;
                 if ($collator === false) {
                     $collator = collator_create(setlocale(LC_ALL, '0'));
-                    collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::OFF);
                 }
                 if ($collator !== null) {
+                    collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::OFF);
+
                     $ret = collator_compare($collator, $str1, $str2);
 
                     _local_ctype_hack(false);
@@ -1379,9 +1380,10 @@ function cms_mb_strnatcasecmp($str1, $str2)
                 static $collator = false;
                 if ($collator === false) {
                     $collator = collator_create(setlocale(LC_ALL, '0'));
-                    collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::ON);
                 }
                 if ($collator !== null) {
+                    collator_set_attribute($collator, Collator::NUMERIC_COLLATION, Collator::ON);
+
                     $ret = collator_compare($collator, $str1, $str2);
 
                     _local_ctype_hack(false);

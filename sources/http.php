@@ -1131,6 +1131,9 @@ class HttpDownloaderCurl extends HttpDownloader
             $this->download_mime_type = null;
         }
         $this->download_size = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+        if ($this->download_size == -1) {
+            $this->download_size = null;
+        }
         $this->download_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
         if ($this->download_url == $this->connecting_url) {
             $this->download_url = $url;

@@ -16,7 +16,7 @@
 function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = array(), $do_index_test = true, $db_type = null)
 {
     // Most Composr MySQL drivers auto-create the DB if missing, if root, but mysql_pdo does not because of how the connection works
-    if (get_db_site_user() == 'root') {
+    if ((get_db_site_user() == 'root') && (strpos(get_db_type(), 'mysql') !== false)) {
         $GLOBALS['SITE_DB']->query('CREATE DATABASE IF NOT EXISTS ' . $database, null, 0, true);
     }
 
@@ -27,7 +27,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
 
     if ($success && $do_index_test) {
         $url = get_base_url() . '/index.php?keep_no_query_limit=1';
-        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0));
+        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 200.0/*May be very slow with XML DB*/));
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 
@@ -180,7 +180,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         if (count($get) > 0) {
             $url .= '&' . http_build_query($get);
         }
-        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'post_params' => $post, 'timeout' => 60.0));
+        $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'post_params' => $post, 'timeout' => 240.0/*If XML DB may be VERY slow*/));
         $data = $http_result->data;
         $success = ($http_result->message == '200') && (strpos($data, '<!--ERROR-->') === false);
 

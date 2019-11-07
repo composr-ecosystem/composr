@@ -29,7 +29,7 @@ class _tutorial_quality_test_set extends cms_test_case
             return;
         }
 
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
 
         require_code('tutorials');
 
