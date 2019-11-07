@@ -1119,14 +1119,14 @@ class Database_Static_xml extends DatabaseDriver
         $_record = array();
         $bc = count($bits) - 2;
         $i = 0;
-        if (trim($bits[$i]) == '') {
+        while (trim($bits[$i]) == '') {
             $i++; // Whitespace between tags
         }
         if ((!isset($bits[$i])) || ($bits[$i] != 'composr')) {
-            warn_exit('Unrecognised XML in ' . $path);
+            warn_exit('Unrecognised XML in ' . $path . ' (found ' . (isset($bits[$i]) ? $bits[$i] : '(end)') . ')');
         }
         $i++; // Skip past "Composr"
-        if (trim($bits[$i]) == '') {
+        while (trim($bits[$i]) == '') {
             $i++; // Whitespace between tags
         }
         while ($i < $bc) {

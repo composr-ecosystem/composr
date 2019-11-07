@@ -1,3 +1,3 @@
 {+START,IF,{$NOT,{$BROWSER_MATCHES,itunes}}}
-		<cloud domain="{$DOMAIN*}" port="{PORT*}" path="{LOCAL_BASE_URL*}/backend_cloud.php?type={TYPE*}" registerProcedure="xmlStorageSystem.rssPleaseNotify" protocol="xml-rpc" />
+		<cloud domain="{DOMAIN*}" port="{PORT*}" path="{PATH*}/backend_cloud.php?type={TYPE*}" registerProcedure="xmlStorageSystem.rssPleaseNotify" protocol="xml-rpc" />
 {+END}

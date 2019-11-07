@@ -227,24 +227,12 @@ function rss_backend_script()
     if ($type == 'RSS2') {
         // Change a full URL into constituent parts
         $base_url = get_base_url();
-        $port = 80;
-        $end_protocol_pos = strpos($base_url, '://');
-        $colon_pos = strpos($base_url, ':', $end_protocol_pos + 1);
-        if ($colon_pos !== false) {
-            $after_port_pos = strpos($base_url, '/', $colon_pos);
-            if ($after_port_pos === false) {
-                $after_port_pos = strlen($base_url);
-            }
-            $port = intval(substr($base_url, $colon_pos, $after_port_pos - $colon_pos));
-        }
-        $start_path_pos = strpos($base_url, '/', $end_protocol_pos + 4);
-        if ($start_path_pos !== false) {
-            $local_base_url = substr($base_url, $start_path_pos);
-        } else {
-            $local_base_url = '';
-        }
+        $url_bits = parse_url($base_url);
+        $domain = get_base_url_hostname();
+        $port = isset($url_bits['port']) ? $url_bits['port'] : 80;
+        $path = isset($url_bits['path']) ? $url_bits['path'] : '';
 
-        $rss_cloud = do_template('RSS_CLOUD', array('_GUID' => 'a47c40a4c137ea1e5abfc71346547313', 'TYPE' => ($type == 'news') ? '' : $type, 'PORT' => strval($port), 'LOCAL_BASE_URL' => $local_base_url), null, false, null, '.xml', 'xml');
+        $rss_cloud = do_template('RSS_CLOUD', array('_GUID' => 'a47c40a4c137ea1e5abfc71346547313', 'TYPE' => ($type == 'news') ? '' : $type, 'DOMAIN' => $domain, 'PORT' => strval($port), 'PATH' => $path), null, false, null, '.xml', 'xml');
     } else {
         $rss_cloud = new Tempcode();
     }

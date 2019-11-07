@@ -78,7 +78,7 @@ Placement of blocks is explained in the [page="_SEARCH:tut_adv_comcode_pages"]Us
 
 The block shows a combination of summary posts (newer posts) and archive lines (older posts).
 The block shows as far back as the "Days back to display" parameter if possible:
- - If there is news going from that far back then the "Multipler" parameter defines the proportions of those shows as summary posts compared to archive lines.
+ - If there is news going from that far back then the "Multiplier" parameter defines the proportions of those shows as summary posts compared to archive lines.
  - Otherwise a static quantity of news will show, using the "Fallback Full" and "Fallback Archive" parameters.
 If you want to force static quantities you should therefore set the "Days back to display" parameter to [tt]0[/tt].
 

@@ -2145,7 +2145,7 @@ Use standardised field [tt][name][/tt]s when autofill is desired
 | Consistent UI
 | Composr development +
 | Manually
-| Avoid the field names mentioned in the row above when autofill is undesireable. For example: avoid any field named [tt]'name'[/tt] unless it really is a human name; consider [tt]'title'[/tt].
+| Avoid the field names mentioned in the row above when autofill is undesirable. For example: avoid any field named [tt]'name'[/tt] unless it really is a human name; consider [tt]'title'[/tt].
 |}
 
 [title="4"][acronym="Cascading Style Sheets"]CSS[/acronym][/title]

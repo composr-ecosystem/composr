@@ -44,6 +44,8 @@ function init__continuous_integration()
             'unit_tests/_commandr_fs',
             'unit_tests/_database_integrity',
             'unit_tests/_installer_forum_drivers',
+            'unit_tests/_tasks',
+            'unit_tests/_template_previews',
 
             // Is not expected to pass
             'unit_tests/_health_check',
