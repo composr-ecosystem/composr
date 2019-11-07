@@ -108,10 +108,10 @@ class Hook_health_check_domains extends Hook_Health_Check
             foreach ($domains as $domain) {
                 if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {
                     $cmd = 'whois ' . escapeshellarg('domain ' . $domain);
-                    $data = shell_exec($cmd);
+                    $data = @strval(shell_exec($cmd));
                     if (strpos($data, 'Unknown AS number') !== false) {
                         $cmd = 'whois ' . escapeshellarg($domain);
-                        $data = shell_exec($cmd);
+                        $data = @strval(shell_exec($cmd));
                     }
                 } else {
                     $this->stateCheckSkipped('No implementation for doing whois lookups on this platform');

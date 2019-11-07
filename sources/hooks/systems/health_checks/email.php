@@ -135,12 +135,10 @@ class Hook_health_check_email extends Hook_Health_Check
             foreach ($domains as $domain => $email) {
                 if (php_function_allowed('dns_get_record')) {
                     $found_record = false;
-                    $records = dns_get_record($domain, DNS_ANY);
+                    $records = @dns_get_record($domain, DNS_TXT);
                     foreach ($records as $record) {
-                        if ($record['type'] == 'TXT') {
-                            if (strpos($record['host'], 'v=DKIM') !== false) {
-                                $found_record = true;
-                            }
+                        if (strpos($record['host'], 'v=DKIM') !== false) {
+                            $found_record = true;
                         }
                     }
                     $this->assertTrue($found_record, 'Could not find a DKIM DNS record even though DKIM is configured');
@@ -174,12 +172,10 @@ class Hook_health_check_email extends Hook_Health_Check
         foreach ($domains as $domain => $email) {
             if (php_function_allowed('dns_get_record')) {
                 $found_record = false;
-                $records = dns_get_record($domain, DNS_ANY);
+                $records = @dns_get_record($domain, DNS_TXT);
                 foreach ($records as $record) {
-                    if ($record['type'] == 'TXT') {
-                        if (strpos($record['host'], 'v=DMARC') !== false) {
-                            $found_record = true;
-                        }
+                    if (strpos($record['host'], 'v=DMARC') !== false) {
+                        $found_record = true;
                     }
                 }
                 $this->assertTrue($found_record, 'Could not find a DMARC DNS record');

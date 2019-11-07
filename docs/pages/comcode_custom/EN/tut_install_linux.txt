@@ -71,7 +71,8 @@ This section is not actively maintained. Package names may change, but it is des
 apt install apache2 libapache2-mod-php php php-common php-cli php-apcu php-curl \
 php-enchant php-ffmpeg php-gd php-imap php-zip php-mysqlnd php-pspell php-json \
 php-xml php-intl openssl mysql-server mysql-client \
-postfix nano wget lynx hunspell git openssh-server nano wget iostat
+postfix nano wget lynx hunspell git openssh-server nano wget iostat iotop \
+whois dnsutils
 [/code]
 
 Some lines in the default PHP ini ([tt]/etc/php7/apache2/php.ini[/tt]) file need changing:
@@ -105,7 +106,7 @@ You may need to setup the [url="EPEL repository"]https://www.tecmint.com/how-to-
 yum install httpd mod_ssl mod_fcgid php php-common php-cli php-pecl-apc php-pdo curl enchant \
 freetype gd php-gd php-imap php-mysqlnd php-mbstring php-pspell php-xml php-json openssl mysql-server \
 mysql sendmail nano wget lynx hunspell git openssh-server aspell aspell-en nano wget iostat iotop \
-hunspell-en screen unzip
+hunspell-en screen unzip whois dnsutils
 [/code]
 
 You may have selinux installed, you can see if you do with [tt]sestatus[/tt]:

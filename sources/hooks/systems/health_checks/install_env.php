@@ -506,7 +506,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
         }
 
         if (php_function_allowed('shell_exec')) {
-            $result = shell_exec('sestatus');
+            $result = @strval(shell_exec('sestatus'));
             if (strpos($result, 'enabled') !== false) {
                 $this->stateCheckManual('SELinux is enabled, check the httpd_sys_rw_content_t context is recursively applied to your webroot');
             } elseif (strpos($result, 'disabled') !== false) {
