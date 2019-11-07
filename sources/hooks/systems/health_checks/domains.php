@@ -69,7 +69,7 @@ class Hook_health_check_domains extends Hook_Health_Check
         }
 
         if (php_function_allowed('checkdnsrr')) {
-            $domains = get_server_names();
+            $domains = get_server_names(false);
 
             foreach ($domains as $domain) {
                 $this->assertTrue(@checkdnsrr($domain, 'A'), 'DNS does not seem to be set up properly for [tt]' . $domain . '[/tt]');
@@ -103,7 +103,7 @@ class Hook_health_check_domains extends Hook_Health_Check
         }
 
         if ((php_function_allowed('shell_exec')) && (php_function_allowed('escapeshellarg'))) {
-            $domains = get_server_names();
+            $domains = get_server_names(false);
 
             foreach ($domains as $domain) {
                 if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN') {

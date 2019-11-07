@@ -225,7 +225,7 @@ class Hook_health_check_security extends Hook_Health_Check
 
         if (!is_local_machine(get_base_url_hostname())) {
             if (php_function_allowed('shell_exec')) {
-                $domains = get_server_names();
+                $domains = get_server_names(false);
 
                 foreach ($domains as $domain) {
                     $regexp = '#\nName:\s+' . $domain . '\nAddress:\s+(.*)\n#';

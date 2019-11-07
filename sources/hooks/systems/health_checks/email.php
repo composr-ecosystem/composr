@@ -297,12 +297,11 @@ class Hook_health_check_email extends Hook_Health_Check
 
         if (get_option('smtp_sockets_use') == '0') {
             if (php_function_allowed('dns_get_record')) {
-                $domains = get_server_names();
+                $domains = get_server_names(false);
+                $mail_domains = $this->get_mail_domains(true);
 
                 foreach ($domains as $self_domain) {
                     $self_ip = cms_gethostbyname($self_domain);
-
-                    $mail_domains = $this->get_mail_domains(true);
 
                     foreach ($mail_domains as $domain => $email) {
                         $passed = $this->do_spf_check($domain, $self_domain, $self_ip);
