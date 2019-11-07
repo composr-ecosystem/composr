@@ -86,7 +86,7 @@ class Hook_health_check_mistakes_user_ux extends Hook_Health_Check
             return;
         }
 
-        $domains = get_server_names(false);
+        $domains = get_server_names(false, false);
 
         foreach ($domains as $zone => $domain) {
             if (is_local_machine($domain)) {

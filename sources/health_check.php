@@ -329,6 +329,9 @@ abstract class Hook_Health_Check
             if (strpos($section_label, ',') !== false) {
                 fatal_exit(do_lang_tempcode('INTERNAL_ERROR')); // We cannot have commas in section labels because we store label sets in comma-separated lists
             }
+            if (array_key_exists($section_label, $this->results)) {
+                fatal_exit('Duplicate section: ' . $section_label);
+            }
             $this->results[$section_label] = null;
         }
     }

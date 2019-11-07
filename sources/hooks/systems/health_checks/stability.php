@@ -185,7 +185,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
             fseek($myfile, max(0, $filesize - 50000));
 
-            fgets($myfile, $myfile_charset); // Skip line part-way-through
+            cms_fgets($myfile, $myfile_charset); // Skip line part-way-through
 
             $threshold_time = time() - 60 * 60 * 24 * 1;
             $threshold_count = intval(get_option('hc_error_log_day_flood_threshold'));

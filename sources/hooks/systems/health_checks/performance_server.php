@@ -199,7 +199,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             $cpu = null;
 
             if (strpos(PHP_OS, 'Darwin') !== false) {
-                $result = explode("\n", shell_exec('iostat'));
+                $result = @explode("\n", shell_exec('iostat'));
                 array_shift($result);
                 array_shift($result);
                 if (isset($result[0])) {
@@ -209,7 +209,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                     }
                 }
             } elseif (strpos(PHP_OS, 'Linux') !== false) {
-                $result = explode("\n", shell_exec('iostat'));
+                $result = @explode("\n", shell_exec('iostat'));
                 array_shift($result);
                 array_shift($result);
                 array_shift($result);
@@ -396,7 +396,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             $load = null;
 
             if (strpos(PHP_OS, 'Linux') !== false) {
-                $result = explode("\n", shell_exec('iostat'));
+                $result = @explode("\n", shell_exec('iostat'));
                 array_shift($result);
                 array_shift($result);
                 array_shift($result);

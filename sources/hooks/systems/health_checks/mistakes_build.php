@@ -49,7 +49,6 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         $this->process_checks_section('testSpellingComcodePages', 'Spellchecking of all Comcode pages', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSpellingPages', 'Spellchecking of pages', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSpellingContent', 'Spellchecking of miscellaneous content', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testBrokenWebPostForms', 'Broken web POST forms', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass);
         $this->process_checks_section('testComcodePageHeadings', 'Comcode page headings', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testComcodePageFormFields', 'Comcode page form fields', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testWebStandards', 'Web standards', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -339,7 +338,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
      */
     public function testBrokenWebPostForms($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
-        if ($check_context == CHECK_CONTEXT__INSTALL) {
+        if ($check_context != CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
             return;
         }
 

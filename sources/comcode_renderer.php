@@ -1009,13 +1009,15 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                 }
                 $find = array_search($group, $all_groups);
                 if ($find === false) {
-                    if ($groups != '') {
-                        $groups .= ',';
+                    if (($group == 'primary') || ($group == 'secondary') || ($group == '') || (substr($group, 0, 1) == '@')) {
+                        if ($groups != '') {
+                            $groups .= ',';
+                        }
+                        if ($not) {
+                            $groups .= '!';
+                        }
+                        $groups .= $group;
                     }
-                    if ($not) {
-                        $groups .= '!';
-                    }
-                    $groups .= $group;
                 } else {
                     if ($groups != '') {
                         $groups .= ',';

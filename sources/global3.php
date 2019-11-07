@@ -2695,19 +2695,24 @@ function get_server_ips($local_interface_only = false)
  * In order of what is most likely what the server considers itself.
  * Also see get_domain() and get_request_hostname() and get_base_url_hostname() and get_localhost_names().
  *
+ * @param  boolean $include_non_web_names Whether to include names that may not be for a web domain
  * @param  boolean $include_equivalents Whether to include www vs non-www equivalents
  * @return array Host names
  */
-function get_server_names($include_equivalents = true)
+function get_server_names($include_non_web_names = true, $include_equivalents = true)
 {
     $arr = array();
-    if ($_SERVER['SERVER_NAME'] != '') {
-        $arr[] = $_SERVER['SERVER_NAME'];
+    if ($include_non_web_names) {
+        if ($_SERVER['SERVER_NAME'] != '') {
+            $arr[] = $_SERVER['SERVER_NAME'];
+        }
     }
     if (!empty($_SERVER['HTTP_HOST'])) {
         $arr[] = preg_replace('#:.*#', '', $_SERVER['HTTP_HOST']);
     }
-    $arr[] = gethostname();
+    if ($include_non_web_names) {
+        $arr[] = gethostname();
+    }
     global $SITE_INFO;
     if (!empty($SITE_INFO['domain'])) {
         $arr[] = $SITE_INFO['domain'];
@@ -2730,7 +2735,9 @@ function get_server_names($include_equivalents = true)
             $arr[] = $_val[0];
         }
     }
-    $arr = array_merge($arr, get_localhost_names());
+    if ($include_non_web_names) {
+        $arr = array_merge($arr, get_localhost_names());
+    }
 
     $arr = array_unique($arr);
 

@@ -56,7 +56,7 @@ class Block_main_hero_slider
                 !empty($map['show_scroll_down']),
                 isset($map['interval']) ? strval(intval($map['interval'])) : false,
                 isset($map['check_perms']) ? !empty($map['check_perms']) : true,
-                $map['gallery_name'],
+                isset($map['gallery_name']) ? $map['gallery_name'] : '',
             )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;

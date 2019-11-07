@@ -72,13 +72,13 @@
 
 				{+START,IF,{$GET,has_left_panel}}
 					<div id="panel-left" class="global-side-panel{+START,IF,{$GET,has_right_panel}} with-both-panels{+END}" role="complementary" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
-						<div class="stuck-nav" data-stuck-nav>{$LOAD_PANEL,left}</div>
+						<div class="stuck-nav" data-stuck-nav="data-stuck-nav">{$LOAD_PANEL,left}</div>
 					</div>
 				{+END}
 
 				{+START,IF,{$GET,has_right_panel}}
 					<div id="panel-right" class="global-side-panel{+START,IF,{$GET,has_left_panel}} with-both-panels{+END}" role="complementary" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
-						<div class="stuck-nav" data-stuck-nav>{$LOAD_PANEL,right}</div>
+						<div class="stuck-nav" data-stuck-nav="data-stuck-nav">{$LOAD_PANEL,right}</div>
 					</div>
 				{+END}
 			</div>
@@ -121,7 +121,7 @@
 
 		{$,This is the main site footer}
 		{+START,IF,{$SHOW_FOOTER}}
-			<footer class="footer clearfix" itemscope="itemscope" itemtype="http://schema.org/WPFooter" role="contentinfo">
+			<footer class="footer clearfix" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
 				<div class="footer-inner container">
 					<div class="global-footer-left block-desktop">
 						{+START,SET,FOOTER_BUTTONS}

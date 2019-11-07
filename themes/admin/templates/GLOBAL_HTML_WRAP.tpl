@@ -91,7 +91,7 @@
 
 			{+START,IF_NON_EMPTY,{$TRIM,{$LOAD_PANEL,left}}}
 				<div id="panel-left" class="global-side-panel" role="complementary" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
-					<div class="stuck-nav" data-stuck-nav>{$LOAD_PANEL,left}</div>
+					<div class="stuck-nav" data-stuck-nav="data-stuck-nav">{$LOAD_PANEL,left}</div>
 				</div>
 			{+END}
 
@@ -101,7 +101,7 @@
 			{+START,IF,{$OR,{$GET,helper_panel},{$IS_NON_EMPTY,{$TRIM,{$LOAD_PANEL,right}}}}}
 				<div id="panel-right" class="global-side-panel{+START,IF_EMPTY,{$TRIM,{$LOAD_PANEL,right}}} helper-panel {$?,{$HIDE_HELP_PANEL},helper-panel-hidden,helper-panel-visible}{+END}" role="complementary" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
 					{+START,IF_NON_EMPTY,{$TRIM,{$LOAD_PANEL,right}}}
-						<div class="stuck-nav" data-stuck-nav>{$LOAD_PANEL,right}</div>
+						<div class="stuck-nav" data-stuck-nav="data-stuck-nav">{$LOAD_PANEL,right}</div>
 					{+END}
 
 					{+START,IF_EMPTY,{$TRIM,{$LOAD_PANEL,right}}}

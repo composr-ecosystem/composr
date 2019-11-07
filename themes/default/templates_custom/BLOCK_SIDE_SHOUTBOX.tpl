@@ -14,7 +14,7 @@
 
 				<div>
 					<p class="accessibility-hidden"><label for="shoutbox-message">{!MESSAGE}</label></p>
-					<p><input type="text" id="shoutbox-message" name="shoutbox_message" alt="{!MESSAGE}" class="form-control form-control-wide" /></p>
+					<p><input type="text" id="shoutbox-message" name="shoutbox_message" class="form-control form-control-wide" /></p>
 				</div>
 
 				<div class="btn-row btn-row-stretched">
