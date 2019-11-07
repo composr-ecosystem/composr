@@ -1047,7 +1047,7 @@ class _images_test_set extends cms_test_case
             return false;
         }
 
-        // Find quadrant centers, biased a bit towards edges to avoid problems with blending
+        // Find quadrant centres, biased a bit towards edges to avoid problems with blending
         $min_x = max(0, intval($dimensions[0] / 4) - 1);
         $min_y = max(0, intval($dimensions[1] / 4) - 1);
         $max_x = min($dimensions[0] - 1, intval($dimensions[0] * 0.75) + 1);

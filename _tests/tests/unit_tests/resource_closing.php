@@ -7,6 +7,8 @@
 
 */
 
+/*EXTRA FUNCTIONS: get_resources|get_resource_type*/
+
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd

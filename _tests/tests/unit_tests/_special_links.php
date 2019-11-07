@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class special_links_test_set extends cms_test_case
+class _special_links_test_set extends cms_test_case
 {
     public function setUp()
     {

@@ -79,6 +79,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'goim',
             'screenname',
             'xmpp',
+            'airplane',
             'grawlix',
             'umask',
             'changelogs',
@@ -86,6 +87,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
             'besluit',
             'colormind',
             'xfn',
+            'organization', // Autofill name
             'punycode',
             'hreview',
             'upwork',

@@ -1861,7 +1861,7 @@
             this.wasLastCssModeMobile = $cms.isCssMode('mobile');
         },
 
-        onCssModeChange: function (/*initializing*/) {
+        onCssModeChange: function (/*initialising*/) {
             if (this.el.classList.contains('header-side')) {
                 this.setupSideHeaderToggleables();
             }

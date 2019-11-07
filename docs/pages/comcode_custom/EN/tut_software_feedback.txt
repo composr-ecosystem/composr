@@ -547,7 +547,7 @@ This policy applies to any code bundled with the main Composr distribution or he
 The developers request any third-party security professionals implement their own responsible full disclosure policy, i.e. hold off before fully publishing details around a vulnerability.
 
 The developers reserve the right to not disclose vulnerabilities that match any of the following low-risk circumstances:
-a) Vulnerabilities the developers believe can not actually be exploited in practice due to additional layers of built-in defense (for example, CSRF vulnerabilities that security tokens mean can never actually be exploited).
+a) Vulnerabilities the developers believe can not actually be exploited in practice due to additional layers of built-in defence (for example, CSRF vulnerabilities that security tokens mean can never actually be exploited).
 b) Vulnerabilities that require staff privileges to begin with, and can only be exploited by some kind of associated social engineering attack. (As the staff could abuse their positions to undermine security by such social engineering attacks anyway, without any software vulnerability.)
 These exceptions are carved out to ease burden on the developers and remove noise from the security announcement process.
 This security policy may be amended based on particular unique contexts the developers find around vulnerabilities. The developers provide no guarantees or warranty: it is the responsibility of any Composr website owner to satisfy themselves with whatever level of additional support they may find is necessary for their organisation or business.

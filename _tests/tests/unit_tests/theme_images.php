@@ -29,38 +29,6 @@ class theme_images_test_set extends cms_test_case
         require_code('files2');
     }
 
-    public function testSVGQuality()
-    {
-        require_code('files2');
-        $files = get_directory_contents(get_file_base() . '/themes/default/', get_file_base() . '/themes/default', 0, true, true, array('svg'));
-
-        foreach ($files as $path) {
-            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
-            $_c = $c;
-
-            $this->assertTrue(strpos($c, '<image') === false, 'Raster data in ' . $path);
-
-            $bad_patterns = array(
-                '<!-- Generator.*-->',
-                '\s+xml:space="preserve"',
-                '\s+enable-background="[^"]*"',
-                '\s+xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"',
-                '<[^<>]* display="none"[^<>]*/>\n',
-            );
-            foreach ($bad_patterns as $bad_pattern) {
-                if (preg_match('#' . $bad_pattern . '#', $c) != 0) {
-                    $this->assertTrue(false, 'Found: ' . $bad_pattern . ' in ' . $path . '; fix with &auto_fix=1');
-                    $c = preg_replace('#' . $bad_pattern . '#', '', $c);
-                }
-            }
-            if ($c != $_c) {
-                if (get_param_integer('auto_fix', 0) == 1) {
-                    cms_file_put_contents_safe($path, $c, FILE_WRITE_BOM);
-                }
-            }
-        }
-    }
-
     public function testIconsSquare()
     {
         $themes = find_all_themes();
@@ -101,6 +69,38 @@ class theme_images_test_set extends cms_test_case
                 }
 
                 $this->assertTrue($width === $height, 'Non-square icon, ' . $path);
+            }
+        }
+    }
+
+    public function testSVGQuality()
+    {
+        require_code('files2');
+        $files = get_directory_contents(get_file_base() . '/themes/default/', get_file_base() . '/themes/default', 0, true, true, array('svg'));
+
+        foreach ($files as $path) {
+            $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT | FILE_READ_BOM);
+            $_c = $c;
+
+            $this->assertTrue(strpos($c, '<image') === false, 'Raster data in ' . $path);
+
+            $bad_patterns = array(
+                '<!-- Generator.*-->',
+                '\s+xml:space="preserve"',
+                '\s+enable-background="[^"]*"',
+                '\s+xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"',
+                '<[^<>]* display="none"[^<>]*/>\n',
+            );
+            foreach ($bad_patterns as $bad_pattern) {
+                if (preg_match('#' . $bad_pattern . '#', $c) != 0) {
+                    $this->assertTrue(false, 'Found: ' . $bad_pattern . ' in ' . $path . '; fix with &auto_fix=1');
+                    $c = preg_replace('#' . $bad_pattern . '#', '', $c);
+                }
+            }
+            if ($c != $_c) {
+                if (get_param_integer('auto_fix', 0) == 1) {
+                    cms_file_put_contents_safe($path, $c, FILE_WRITE_BOM);
+                }
             }
         }
     }
@@ -202,7 +202,7 @@ class theme_images_test_set extends cms_test_case
 
                             // Find referenced images
                             $matches = array();
-                            $num_matches = preg_match_all('#\{\$(IMG|IMG_INLINE)[^\w,]*,([^{},]+)\}#', $c, $matches);
+                            $num_matches = preg_match_all('#\{\$(IMG|IMG_INLINE)[^\w\{\},]*,([^{},]+)\}#', $c, $matches);
                             for ($i = 0; $i < $num_matches; $i++) {
                                 $images_referenced[$matches[2][$i]] = isset($images_there[$matches[2][$i]]);
                             }
@@ -210,7 +210,7 @@ class theme_images_test_set extends cms_test_case
                             // See if any of the theme images were used
                             foreach ($images_there as $image => $is_there) {
                                 if (!$is_there) {
-                                    if (preg_match('#\{\$(IMG|IMG_INLINE)[^\w,]*,' . preg_quote($image, '#') . '\}#', $c) != 0) {
+                                    if (preg_match('#\{\$(IMG|IMG_INLINE)[^\w\{\},]*,' . preg_quote($image, '#') . '\}#', $c) != 0) {
                                         $images_there[$image] = true;
                                     }
                                 }

@@ -18,7 +18,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class web_resources_test_set extends cms_test_case
+class _web_resources_test_set extends cms_test_case
 {
     public function setUp()
     {

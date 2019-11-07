@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class _config_test_set extends cms_test_case
+class config_test_set extends cms_test_case
 {
     public function testSaneDefaults()
     {
@@ -104,7 +104,7 @@ class _config_test_set extends cms_test_case
             if ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
 
-                $num_matches = preg_match_all('#\{\$CONFIG_OPTION[^\w,]*,(\w+)\}#', $c, $matches);
+                $num_matches = preg_match_all('#\{\$CONFIG_OPTION[^\w,\{\}]*,(\w+)\}#', $c, $matches);
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook = $matches[1][$i];
 
@@ -217,9 +217,9 @@ class _config_test_set extends cms_test_case
 
                     elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                         if (!empty($details['theme_override'])) {
-                            $this->assertTrue((preg_match('#\{\$CONFIG_OPTION[^\w,]*,' . $hook . '\}#', $c) == 0), $hook . ' must be accessed as a theme option: ' . $path);
+                            $this->assertTrue((preg_match('#\{\$CONFIG_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0), $hook . ' must be accessed as a theme option: ' . $path);
                         } else {
-                            $this->assertTrue((preg_match('#\{\$THEME_OPTION[^\w,]*,' . $hook . '\}#', $c) == 0) || ($hook == 'description'), $hook . ' must not be accessed as a theme option: ' . $path);
+                            $this->assertTrue((preg_match('#\{\$THEME_OPTION[^\w,\{\}]*,' . $hook . '\}#', $c) == 0) || ($hook == 'description'), $hook . ' must not be accessed as a theme option: ' . $path);
                         }
                     }
                 }

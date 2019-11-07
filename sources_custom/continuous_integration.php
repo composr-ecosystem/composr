@@ -39,6 +39,16 @@ function init__continuous_integration()
             'unit_tests/_images',
             'unit_tests/_installer_xml_db',
             'unit_tests/_tutorial_quality',
+            'unit_tests/_special_links',
+            'unit_tests/_newsletters',
+            'unit_tests/_http_timeouts',
+            'unit_tests/_web_resources',
+            'unit_tests/_oembed',
+            'unit_tests/_extra_logging',
+            'unit_tests/_feeds_and_podcasts',
+            'unit_tests/_filter_xml',
+            'unit_tests/_lang_no_unused',
+            // 'unit_tests/_installer', Important enough to spend the time on it
 
             // Excessively complex and make not always succeed depending on test site context
             'unit_tests/_performance',
@@ -48,6 +58,7 @@ function init__continuous_integration()
             'unit_tests/_installer_forum_drivers',
             'unit_tests/_tasks',
             'unit_tests/_template_previews',
+            'unit_tests/_lang_spelling_epic',
 
             // Is not expected to pass
             'unit_tests/_health_check',

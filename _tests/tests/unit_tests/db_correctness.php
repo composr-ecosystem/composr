@@ -18,477 +18,428 @@
  */
 class db_correctness_test_set extends cms_test_case
 {
-    protected $files, $table_fields, $all_fields, $tables, $indices;
+    protected $table_fields, $all_fields, $tables, $indexes;
 
-    public function setUp()
+    public function testDbCorrectness()
     {
-        parent::setUp();
-
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files2');
-        $this->files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | (in_safe_mode() ? IGNORE_NONBUNDLED : 0), true, true, array('php'));
-        $this->files[] = 'install.php';
+        $files = get_directory_contents(get_file_base(), '', IGNORE_FLOATING | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | (in_safe_mode() ? IGNORE_NONBUNDLED : 0), true, true, array('php'));
+        $files[] = 'install.php';
 
         $db_fields = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_table', 'm_name'));
 
         $db_indices = $GLOBALS['SITE_DB']->query_select('db_meta_indices', array('i_table', 'i_name'));
 
-        $this->table_fields = array('site' => array(), 'forum' => array());
+        $table_fields = array('site' => array(), 'forum' => array());
         foreach ($db_fields as $db_field) {
             $forum = $this->is_forum_table($db_field['m_table']);
             if ($forum === null) {
                 continue;
             }
-            $this->table_fields[$forum ? 'forum' : 'site'][] = $db_field['m_name'];
+            $table_fields[$forum ? 'forum' : 'site'][] = $db_field['m_name'];
         }
-        $this->table_fields['_site'] = array_diff($this->table_fields['site'], $this->table_fields['forum']);
-        $this->table_fields['site_regexp'] = implode('|', $this->table_fields['_site']);
-        $this->table_fields['_forum'] = array_diff($this->table_fields['forum'], $this->table_fields['site']);
-        $this->table_fields['forum_regexp'] = implode('|', $this->table_fields['_forum']);
+        $table_fields['_site'] = array_diff($table_fields['site'], $table_fields['forum']);
+        $table_fields['site_regexp'] = implode('|', $table_fields['_site']);
+        $table_fields['_forum'] = array_diff($table_fields['forum'], $table_fields['site']);
+        $table_fields['forum_regexp'] = implode('|', $table_fields['_forum']);
+        $this->table_fields = $table_fields;
 
-        $this->all_fields = array();
+        $all_fields = array();
         foreach ($db_fields as $field) {
             $table = $field['m_table'];
             $name = $field['m_name'];
 
-            if (!isset($this->all_fields[$table])) {
-                $this->all_fields[$table] = array();
+            if (!isset($all_fields[$table])) {
+                $all_fields[$table] = array();
             }
-            $this->all_fields[$table][] = $name;
+            $all_fields[$table][] = $name;
         }
+        $this->all_fields = $all_fields;
 
-        $this->tables = array();
+        $tables = array();
         foreach (array_unique(collapse_1d_complexity('m_table', $db_fields)) as $table) {
             $forum = $this->is_forum_table($table);
             if ($forum === null) {
                 continue;
             }
-            $this->tables[$forum ? 'forum' : 'site'][] = $table;
+            $tables[$forum ? 'forum' : 'site'][] = $table;
         }
-        $this->tables['site_regexp'] = implode('|', $this->tables['site']);
-        $this->tables['forum_regexp'] = implode('|', $this->tables['forum']);
+        $tables['site_regexp'] = implode('|', $tables['site']);
+        $tables['forum_regexp'] = implode('|', $tables['forum']);
+        $this->tables = $tables;
 
-        $this->indexes = array('site' => array(), 'forum' => array());
+        $indexes = array('site' => array(), 'forum' => array());
         foreach ($db_indices as $db_field) {
             $forum = $this->is_forum_table($db_field['i_table']);
             if ($forum === null) {
                 continue;
             }
-            $this->indexes[$forum ? 'forum' : 'site'][] = ($db_field['i_name'][0] == '#') ? substr($db_field['i_name'], 1) : $db_field['i_name'];
+            $indexes[$forum ? 'forum' : 'site'][] = ($db_field['i_name'][0] == '#') ? substr($db_field['i_name'], 1) : $db_field['i_name'];
         }
-        $this->indexes['_site'] = array_diff($this->indexes['site'], $this->indexes['forum']);
-        $this->indexes['site_regexp'] = implode('|', $this->indexes['_site']);
-        $this->indexes['_forum'] = array_diff($this->indexes['forum'], $this->indexes['site']);
-        $this->indexes['forum_regexp'] = implode('|', $this->indexes['_forum']);
-    }
+        $indexes['_site'] = array_diff($indexes['site'], $indexes['forum']);
+        $indexes['site_regexp'] = implode('|', $indexes['_site']);
+        $indexes['_forum'] = array_diff($indexes['forum'], $indexes['site']);
+        $indexes['forum_regexp'] = implode('|', $indexes['_forum']);
+        $this->indexes = $indexes;
 
-    public function testNoBadTablePrefixing()
-    {
-        $php_path = find_php_path();
-
-        foreach ($this->files as $path) {
-            // Exceptions
-            if (in_array($path, array(
-                'sources/forum/none.php',
-                'sources/users.php',
-                '_tests/tests/unit_tests/db_correctness.php',
-                'adminzone/pages/modules/admin_version.php',
-                'sources/blocks/main_friends_list.php',
-                'sources/hooks/modules/admin_setupwizard/cns_forum.php',
-                'sources/hooks/systems/cron/subscription_mails.php',
-                'sources/upgrade_db_upgrade.php',
-            ))) {
-                continue;
-            }
-
+        foreach ($files as $path) {
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-            $this->assertTrue(strpos($c, ". get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
-            $this->assertTrue(strpos($c, ". \$GLOBALS['SITE_DB']->get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
-
-            $matches = array();
-            $num_matches = preg_match_all('#\$GLOBALS\[\'FORUM_DB\'\]->get_table_prefix\(\) . \'(\w+)#', $c, $matches);
-            for ($i = 0; $i < $num_matches; $i++) {
-                $table = $matches[1][$i];
-                $forum = $this->is_forum_table($table);
-                $this->assertTrue(($forum === null) || $forum, 'Found a non-forum table (' . $table . ') with a forum table prefix on ' . $path);
-            }
+            $this->_testNoBadTablePrefixing($path, $c);
+            $this->_testGetTranslatedTempcodeMatchingFieldsAndTables($path, $c);
+            $this->_testGetTranslatedRef($path, $c);
+            $this->_testTranslateFieldRef($path, $c);
+            $this->_testTableIsLockedRef($path, $c);
+            $this->_testPreferIndexLockedRef($path, $c);
+            $this->_testInsertLangRef($path, $c);
+            $this->_testUpdateLangRef($path, $c);
+            $this->_testSelectRef($path, $c);
+            $this->_testInsertRef($path, $c);
+            $this->_testUpdateRef($path, $c);
+            $this->_testDeleteRef($path, $c);
+            $this->_testCreateRef($path, $c);
+            $this->_testDropRef($path, $c);
+            $this->_testCreateIndexRef($path, $c);
+            $this->_testDeleteIndexRef($path, $c);
+            $this->_testJoinConsistency($path, $c);
+            $this->_testForumDbForumDriverMixup($path, $c);
         }
     }
 
-    public function testGetTranslatedTempcodeMatchingFieldsAndTables()
+    protected function _testNoBadTablePrefixing($path, $c)
     {
-        foreach ($this->files as $path) {
-            $c = cms_file_get_contents_safe($path);
+        // Exceptions
+        if (in_array($path, array(
+            'sources/forum/none.php',
+            'sources/users.php',
+            '_tests/tests/unit_tests/db_correctness.php',
+            'adminzone/pages/modules/admin_version.php',
+            'sources/blocks/main_friends_list.php',
+            'sources/hooks/modules/admin_setupwizard/cns_forum.php',
+            'sources/hooks/systems/cron/subscription_mails.php',
+            'sources/upgrade_db_upgrade.php',
+        ))) {
+            return;
+        }
 
-            $matches = array();
-            $num_matches = preg_match_all('#get_translated_tempcode\(\'(\w+)\', [^,]*, \'(\w+)\'\)#', $c, $matches);
-            for ($i = 0; $i < $num_matches; $i++) {
-                $table = $matches[1][$i];
-                $name = $matches[2][$i];
+        $this->assertTrue(strpos($c, ". get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
+        $this->assertTrue(strpos($c, ". \$GLOBALS['SITE_DB']->get_table_prefix() . 'f_") === false, 'Wrong forum table prefix in ' . $path);
 
-                $ok = (isset($this->all_fields[$table])) && (in_array($name, $this->all_fields[$table]));
-                $this->assertTrue($ok, 'Could not find ' . $table . ':' . $name . ', ' . $path);
-            }
+        $matches = array();
+        $num_matches = preg_match_all('#\$GLOBALS\[\'FORUM_DB\'\]->get_table_prefix\(\) . \'(\w+)#', $c, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $table = $matches[1][$i];
+            $forum = $this->is_forum_table($table);
+            $this->assertTrue(($forum === null) || $forum, 'Found a non-forum table (' . $table . ') with a forum table prefix on ' . $path);
         }
     }
 
-    public function testGetTranslatedRef()
+    protected function _testGetTranslatedTempcodeMatchingFieldsAndTables($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $matches = array();
+        $num_matches = preg_match_all('#get_translated_tempcode\(\'(\w+)\', [^,]*, \'(\w+)\'\)#', $c, $matches);
+        for ($i = 0; $i < $num_matches; $i++) {
+            $table = $matches[1][$i];
+            $name = $matches[2][$i];
 
-            $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['forum_regexp'] . ')\', [^,]*, [^,]*' . preg_quote(", \$GLOBALS['SITE_DB']", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['site_regexp'] . ')\', [^,]*, [^,]*' . preg_quote(", \$GLOBALS['FORUM_DB']", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+            $ok = (isset($this->all_fields[$table])) && (in_array($name, $this->all_fields[$table]));
+            $this->assertTrue($ok, 'Could not find ' . $table . ':' . $name . ', ' . $path);
         }
     }
 
-    public function testTranslateFieldRef()
+    protected function _testGetTranslatedRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['forum_regexp'] . ')\', [^,]*, [^,]*' . preg_quote(", \$GLOBALS['SITE_DB']", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->translate_field_ref('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->translate_field_ref('", '#') . '(' . $this->table_fields['site_regexp'] . ')' . preg_quote("')", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("get_translated_tempcode('", '#') . '(' . $this->tables['site_regexp'] . ')\', [^,]*, [^,]*' . preg_quote(", \$GLOBALS['FORUM_DB']", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testTableIsLockedRef()
+    protected function _testTranslateFieldRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->translate_field_ref('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->table_is_locked('", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->table_is_locked('", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("')", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->translate_field_ref('", '#') . '(' . $this->table_fields['site_regexp'] . ')' . preg_quote("')", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testPreferIndexLockedRef()
+    protected function _testTableIsLockedRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->table_is_locked('", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("')", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->prefer_index('", '#') . "[^']+" . preg_quote("', '", '#') . '(' . $this->indexes['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->prefer_index('", '#') . "[^']+" . preg_quote("', '", '#') . '(' . $this->indexes['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->table_is_locked('", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("')", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testInsertLangRef()
+    protected function _testPreferIndexLockedRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->prefer_index('", '#') . "[^']+" . preg_quote("', '", '#') . '(' . $this->indexes['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'SITE_DB\'\]' . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,\(\)]*, [^,\(\)]*\)' . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['site_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'FORUM_DB\'\]' . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->prefer_index('", '#') . "[^']+" . preg_quote("', '", '#') . '(' . $this->indexes['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testUpdateLangRef()
+    protected function _testInsertLangRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'SITE_DB\'\]' . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'SITE_DB\'\]' . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,\(\)]*, [^,\(\)]*\)' . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,\(\)]*, [^,\(\)]*\)' . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['site_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'FORUM_DB\'\]' . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#(insert_lang|insert_lang_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['site_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'FORUM_DB\'\]' . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testSelectRef()
+    protected function _testUpdateLangRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            // Exceptions
-            if (in_array($file, array(
-                'sources/forum/none.php',
-            ))) {
-                continue;
-            }
+        $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'SITE_DB\'\]' . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['forum_regexp'] . ')' . preg_quote("'", '#') . ', [^,\(\)]*, [^,\(\)]*\)' . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_select(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select_value(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_select_value(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select_value_if_there(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_select_value_if_there(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#(lang_remap|lang_remap_comcode)' . preg_quote("('", '#') . '(' . $this->table_fields['site_regexp'] . ')' . preg_quote("'", '#') . ', [^,]*, [^,]*, \$GLOBALS\[\'FORUM_DB\'\]' . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testInsertRef()
+    protected function _testSelectRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_insert(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_insert(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        // Exceptions
+        if (in_array($path, array(
+            'sources/forum/none.php',
+        ))) {
+            return;
         }
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_select(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select_value(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_select_value(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_select_value_if_there(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_select_value_if_there(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testUpdateRef()
+    protected function _testInsertRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_insert(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_update(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_update(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_insert(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testDeleteRef()
+    protected function _testUpdateRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_update(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_delete(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_delete(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_update(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testCreateRef()
+    protected function _testDeleteRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            // Exceptions
-            if (in_array($file, array(
-                'site/pages/modules/subscriptions.php',
-                'adminzone/pages/modules/admin_version.php',
-            ))) {
-                continue;
-            }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->query_delete(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
 
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->create_table(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->create_table(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-        }
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->query_delete(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testDropRef()
+    protected function _testCreateRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            // Exceptions
-            if (in_array($file, array(
-                'site/pages/modules/subscriptions.php',
-                'adminzone/pages/modules/admin_version.php',
-            ))) {
-                continue;
-            }
-
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->drop_table_if_exists(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->drop_table_if_exists(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        // Exceptions
+        if (in_array($path, array(
+            'site/pages/modules/subscriptions.php',
+            'adminzone/pages/modules/admin_version.php',
+        ))) {
+            return;
         }
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->create_table(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->create_table(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testCreateIndexRef()
+    protected function _testDropRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            // Exceptions
-            if (in_array($file, array(
-                'site/pages/modules/subscriptions.php',
-                'adminzone/pages/modules/admin_version.php',
-            ))) {
-                continue;
-            }
-
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->create_index(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->create_index(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        // Exceptions
+        if (in_array($path, array(
+            'site/pages/modules/subscriptions.php',
+            'adminzone/pages/modules/admin_version.php',
+        ))) {
+            return;
         }
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->drop_table_if_exists(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->drop_table_if_exists(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testDeleteIndexRef()
+    protected function _testCreateIndexRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            // Exceptions
-            if (in_array($file, array(
-                'site/pages/modules/subscriptions.php',
-                'adminzone/pages/modules/admin_version.php',
-            ))) {
-                continue;
-            }
-
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->delete_index_if_exists(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->delete_index_if_exists(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        // Exceptions
+        if (in_array($path, array(
+            'site/pages/modules/subscriptions.php',
+            'adminzone/pages/modules/admin_version.php',
+        ))) {
+            return;
         }
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->create_index(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->create_index(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testJoinConsistency()
+    protected function _testDeleteIndexRef($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            if ($file == '_tests/tests/unit_tests/db_correctness.php') {
-                continue;
-            }
-
-            if ($file != 'sources/users.php') {
-                $bad_pattern = '#SITE_DB.*JOIN .*\'f_#';
-                $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-            }
-
-            $bad_pattern = '#FORUM_DB.*JOIN .*\'(' . $this->tables['site_regexp'] . ')#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        // Exceptions
+        if (in_array($path, array(
+            'site/pages/modules/subscriptions.php',
+            'adminzone/pages/modules/admin_version.php',
+        ))) {
+            return;
         }
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['SITE_DB']->delete_index_if_exists(\s*'", '#') . '(' . $this->tables['forum_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $bad_pattern = '#' . preg_quote("\$GLOBALS['FORUM_DB']->delete_index_if_exists(\s*'", '#') . '(' . $this->tables['site_regexp'] . ')' . preg_quote("'", '#') . '#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
-    public function testForumDbForumDriverMixup()
+    protected function _testJoinConsistency($path, $c)
     {
-        foreach ($this->files as $file) {
-            $c = cms_file_get_contents_safe(get_file_base() . '/' . $file);
-
-            $driver_funcs = array(
-                'cns_flood_control',
-                'find_emoticons',
-                'find_topic_id_for_topic_identifier',
-                'forum_authorise_login',
-                'forum_create_cookie',
-                'forum_get_lang',
-                'forum_id_from_name',
-                'forum_layer_initialise',
-                'forum_md5',
-                'forum_url',
-                'get_custom_fields',
-                'get_displayname',
-                'get_drivered_table_prefix',
-                'get_emoticon_chooser',
-                'get_emo_dir',
-                'get_forum_topic_posts',
-                'get_guest_group',
-                'get_guest_id',
-                'get_matching_members',
-                'get_members_groups',
-                'get_member_avatar_url',
-                'get_member_email_address',
-                'get_member_email_allowed',
-                'get_member_from_email_address',
-                'get_member_from_username',
-                'get_member_ip',
-                'get_member_join_timestamp',
-                'get_member_photo_url',
-                'get_member_row',
-                'get_member_row_field',
-                'get_moderator_groups',
-                'get_mrow',
-                'get_next_member',
-                'get_num_forum_posts',
-                'get_num_members',
-                'get_num_new_forum_posts',
-                'get_num_topics',
-                'get_num_users_forums',
-                'get_post_count',
-                'get_post_remaining_details',
-                'get_previous_member',
-                'get_super_admin_groups',
-                'get_theme',
-                'get_topic_count',
-                'get_top_posters',
-                'get_usergroup_list',
-                'get_username',
-                'install_create_custom_field',
-                'install_delete_custom_field',
-                'install_get_path_search_list',
-                'install_specifics',
-                'install_test_load_from',
-                'is_banned',
-                'is_cookie_login_name',
-                'is_hashed',
-                'is_staff',
-                'is_super_admin',
-                'join_url',
-                'make_post_forum_topic',
-                'member_group_query',
-                'member_home_url',
-                'member_pm_url',
-                'member_profile_hyperlink',
-                'member_profile_url',
-                'mrow_email',
-                'mrow_group',
-                'mrow_id',
-                'mrow_lastvisit',
-                'mrow_username',
-                'pin_topic',
-                'post_url',
-                'probe_ip',
-                'set_custom_field',
-                'show_forum_topics',
-                'topic_is_threaded',
-                'topic_url',
-                'users_online_url',
-                '_get_theme',
-            );
-            $bad_pattern = '#\$GLOBALS\[\'FORUM_DB\'\]->(' . implode('|', $driver_funcs) . ')\(#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
-
-            $db_funcs = array(
-                'query.*',
-            );
-            $bad_pattern = '#\$GLOBALS\[\'FORUM_DRIVER\'\]->(' . implode('|', $db_funcs) . ')\(#';
-            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $file);
+        if ($path == '_tests/tests/unit_tests/db_correctness.php') {
+            return;
         }
+
+        if ($path != 'sources/users.php') {
+            $bad_pattern = '#SITE_DB.*JOIN .*\'f_#';
+            $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+        }
+
+        $bad_pattern = '#FORUM_DB.*JOIN .*\'(' . $this->tables['site_regexp'] . ')#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+    }
+
+    protected function _testForumDbForumDriverMixup($path, $c)
+    {
+        $driver_funcs = array(
+            'cns_flood_control',
+            'find_emoticons',
+            'find_topic_id_for_topic_identifier',
+            'forum_authorise_login',
+            'forum_create_cookie',
+            'forum_get_lang',
+            'forum_id_from_name',
+            'forum_layer_initialise',
+            'forum_md5',
+            'forum_url',
+            'get_custom_fields',
+            'get_displayname',
+            'get_drivered_table_prefix',
+            'get_emoticon_chooser',
+            'get_emo_dir',
+            'get_forum_topic_posts',
+            'get_guest_group',
+            'get_guest_id',
+            'get_matching_members',
+            'get_members_groups',
+            'get_member_avatar_url',
+            'get_member_email_address',
+            'get_member_email_allowed',
+            'get_member_from_email_address',
+            'get_member_from_username',
+            'get_member_ip',
+            'get_member_join_timestamp',
+            'get_member_photo_url',
+            'get_member_row',
+            'get_member_row_field',
+            'get_moderator_groups',
+            'get_mrow',
+            'get_next_member',
+            'get_num_forum_posts',
+            'get_num_members',
+            'get_num_new_forum_posts',
+            'get_num_topics',
+            'get_num_users_forums',
+            'get_post_count',
+            'get_post_remaining_details',
+            'get_previous_member',
+            'get_super_admin_groups',
+            'get_theme',
+            'get_topic_count',
+            'get_top_posters',
+            'get_usergroup_list',
+            'get_username',
+            'install_create_custom_field',
+            'install_delete_custom_field',
+            'install_get_path_search_list',
+            'install_specifics',
+            'install_test_load_from',
+            'is_banned',
+            'is_cookie_login_name',
+            'is_hashed',
+            'is_staff',
+            'is_super_admin',
+            'join_url',
+            'make_post_forum_topic',
+            'member_group_query',
+            'member_home_url',
+            'member_pm_url',
+            'member_profile_hyperlink',
+            'member_profile_url',
+            'mrow_email',
+            'mrow_group',
+            'mrow_id',
+            'mrow_lastvisit',
+            'mrow_username',
+            'pin_topic',
+            'post_url',
+            'probe_ip',
+            'set_custom_field',
+            'show_forum_topics',
+            'topic_is_threaded',
+            'topic_url',
+            'users_online_url',
+            '_get_theme',
+        );
+        $bad_pattern = '#\$GLOBALS\[\'FORUM_DB\'\]->(' . implode('|', $driver_funcs) . ')\(#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
+
+        $db_funcs = array(
+            'query.*',
+        );
+        $bad_pattern = '#\$GLOBALS\[\'FORUM_DRIVER\'\]->(' . implode('|', $db_funcs) . ')\(#';
+        $this->assertTrue(preg_match($bad_pattern, $c) == 0, 'Found ' . $bad_pattern . ' in ' . $path);
     }
 
     protected function is_forum_table($table)

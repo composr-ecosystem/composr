@@ -15,10 +15,12 @@
 
 // This test makes sure our assumptions about PHP's timeout facilities are correct.
 
+/*EXTRA FUNCTIONS: curl_.*|fsockopen|socket_set_timeout|stream_select*/
+
 /**
  * Composr test case class (unit testing).
  */
-class http_timeouts_test_set extends cms_test_case
+class _http_timeouts_test_set extends cms_test_case
 {
     public function setUp()
     {

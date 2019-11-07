@@ -20,7 +20,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class _find_broken_screen_links_test_set extends cms_test_case
+class find_broken_screen_links_test_set extends cms_test_case
 {
     // This test is not necessarily required to pass, but it may hint at issues; best just to make it pass anyway (it does at the time at writing)
     public function testScreenLinks()

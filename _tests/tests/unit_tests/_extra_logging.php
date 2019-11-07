@@ -13,10 +13,12 @@
  * @package    testing_platform
  */
 
+/*EXTRA FUNCTIONS: error_log*/
+
 /**
  * Composr test case class (unit testing).
  */
-class extra_logging_test_set extends cms_test_case
+class _extra_logging_test_set extends cms_test_case
 {
     protected $session_id = null;
 

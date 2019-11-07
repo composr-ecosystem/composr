@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+/*EXTRA FUNCTIONS: sleep*/
+
 /**
  * Composr test case class (unit testing).
  */

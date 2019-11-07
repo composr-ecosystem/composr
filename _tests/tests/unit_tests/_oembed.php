@@ -16,7 +16,7 @@
 /**
  * Composr test case class (unit testing).
  */
-class oembed_test_set extends cms_test_case
+class _oembed_test_set extends cms_test_case
 {
     public function testOEmbedManualPatternsConfigOption()
     {
