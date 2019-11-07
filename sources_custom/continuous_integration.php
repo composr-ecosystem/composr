@@ -37,6 +37,8 @@ function init__continuous_integration()
             'unit_tests/_backups',
             'unit_tests/_broken_links',
             'unit_tests/_images',
+            'unit_tests/_installer_xml_db',
+            'unit_tests/_tutorial_quality',
 
             // Excessively complex and make not always succeed depending on test site context
             'unit_tests/_performance',
@@ -78,6 +80,8 @@ function continuous_integration_script()
     try {
         authenticate_ci_request();
 
+        $cli = is_cli();
+
         // Handle request to enqueue a commit
         if ((isset($_SERVER['HTTP_X_GITLAB_EVENT'])) && ($_SERVER['HTTP_X_GITLAB_EVENT'] == 'Push Hook')) {
             $request = json_decode(file_get_contents('php://input'), true);
@@ -86,11 +90,11 @@ function continuous_integration_script()
             }
             $commit_id = $request['after']; // Technically we're checking all commits in a push, but we just check against the last one
         } else {
-            $commit_id = get_param_string('commit_id', null); // Can be HEAD
+            $commit_id = ($cli ? 'HEAD' : get_param_string('commit_id', null)); // Can be HEAD
         }
         if ($commit_id !== null) {
-            $verbose = (get_param_integer('verbose', 0) == 1);
-            $dry_run = (get_param_integer('dry_run', 0) == 1);
+            $verbose = (get_param_integer('verbose', 0) == 1) || ($cli);
+            $dry_run = (get_param_integer('dry_run', 0) == 1) || ($cli);
             $output = (get_param_integer('output', 0) == 1);
             $_limit_to = get_param_string('limit_to', '');
             $limit_to = ($_limit_to == '') ? null : explode(',', $_limit_to);
@@ -104,17 +108,17 @@ function continuous_integration_script()
             $context = json_decode(get_param_string('context', '{}'), true);
             enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $context, $output);
 
-            $immediate = (get_param_integer('immediate', 0) == 1);
+            $immediate = (get_param_integer('immediate', 0) == 1) || ($cli);
         } else {
             $immediate = true;
         }
 
         // Process queue
         if ($immediate) {
-            $output = (get_param_integer('output', 0) == 1);
-            $ignore_lock = (get_param_integer('ignore_lock', 0) == 1);
+            $output = (get_param_integer('output', 0) == 1) || ($cli);
+            $ignore_lock = (get_param_integer('ignore_lock', 0) == 1) || ($cli);
 
-            process_ci_queue($output, $ignore_lock);
+            process_ci_queue($output, $ignore_lock, $cli);
         }
     }
     catch (Exception $e) {
@@ -177,7 +181,7 @@ function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $con
 
     // Write to queue
     $queue_item = array('commit_id' => $commit_id, 'verbose' => $verbose, 'dry_run' => $dry_run, 'limit_to' => $limit_to, 'context' => $context);
-    array_unshift($commit_queue['queue'], $queue_item);
+    $commit_queue['queue'][] = $queue_item;
     cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, json_encode($commit_queue));
 
     if ($output) {
@@ -187,7 +191,7 @@ function enqueue_testable_commit($commit_id, $verbose, $dry_run, $limit_to, $con
     }
 }
 
-function process_ci_queue($output, $ignore_lock = false)
+function process_ci_queue($output, $ignore_lock = false, $lifo = false)
 {
     if ($output) {
         @header('Content-type: text/plain; charset=' . get_charset());
@@ -198,7 +202,11 @@ function process_ci_queue($output, $ignore_lock = false)
     $prior_lock_timestamp = $commit_queue['lock_timestamp'];
 
     if (($prior_lock_timestamp === null) || ($ignore_lock)) {
-        $next_commit_details = array_shift($commit_queue['queue']);
+        if ($lifo) {
+            $next_commit_details = array_pop($commit_queue['queue']);
+        } else {
+            $next_commit_details = array_shift($commit_queue['queue']);
+        }
         if ($next_commit_details !== null) {
             // Lock (and remove from queue)
             $commit_queue['lock_timestamp'] = time();
@@ -211,10 +219,6 @@ function process_ci_queue($output, $ignore_lock = false)
             $limit_to = $next_commit_details['limit_to'];
             $context = $next_commit_details['context'];
             $results = test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $context);
-
-            if ($output) {
-                echo $results;
-            }
 
             // Unlock
             $commit_queue['lock_timestamp'] = null;
@@ -249,16 +253,16 @@ function test_commit($output, $commit_id, $verbose, $dry_run, $limit_to, $contex
         }
     }
 
-    $results = run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to);
+    $results = run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limit_to);
 
-    if ($commit_id != 'HEAD') {
+    if (($commit_id != 'HEAD') && ($commit_id != $old_branch)) {
         shell_exec('git checkout ' . $old_branch . ' 2>&1');
     }
 
     return $results;
 }
 
-function run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to)
+function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limit_to)
 {
     cms_disable_time_limit();
 
@@ -269,14 +273,21 @@ function run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to)
 
     $tests = find_all_applicable_tests($limit_to);
     foreach ($tests as $test) {
-        $result = shell_exec('php _tests/index.php ' . escapeshellarg($test) . ' 2>&1');
-        if (strpos($result, 'Failures: 0, Exceptions: 0') === false) {
-            if (strlen($result) > 1000) {
-               $result = substr($result, 0, 100) . '...';
-            }
-            $fails[$test] = $result;
+        $before = microtime(true);
+        $result = trim(shell_exec('php _tests/index.php ' . escapeshellarg($test) . ' 2>&1'));
+        $after = microtime(true);
+        $time = $after - $before;
+
+        $success = (strpos($result, 'Failures: 0, Exceptions: 0') !== false);
+        $details = array('result' => $result, 'time' => $time, 'stub' => ' [time = ' . float_format($time) . ' seconds]');
+        if ($success) {
+            $successes[$test] = $details;
         } else {
-            $successes[] = $test;
+            $fails[$test] = $details;
+        }
+
+        if ($output) {
+            echo $result . "\n" . 'Completed ' . $test . $details['stub'] . "\n";
         }
     }
 
@@ -286,8 +297,13 @@ function run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to)
         $results .= 'Errors while running automated tests (CI server)...' . "\n\n";
 
         if (count($fails) > 0) {
-            foreach ($fails as $test => $result) {
-                $results .= $test . "\n" . str_repeat('=', strlen($test)) . "\n\n" . $result . "\n\n";
+            foreach ($fails as $test => $details) {
+                $result = $details['result'];
+                if (strlen($result) > 1000) {
+                   $result = substr($result, 0, 100) . '...';
+                }
+
+                $results .= $test . $details['stub'] . "\n" . str_repeat('=', strlen($test)) . "\n\n" . $result . "\n\n";
             }
         } else {
             $results .= '(none)' . "\n\n";
@@ -297,8 +313,8 @@ function run_all_applicable_tests($commit_id, $verbose, $dry_run, $limit_to)
             $results .= 'Passed tests...' . "\n\n";
 
             if (count($successes) > 0) {
-                foreach ($successes as $test) {
-                    $results .= $test . "\n";
+                foreach ($successes as $test => $details) {
+                    $results .= $test . $details['stub'] . "\n";
                 }
             } else {
                 $results .= '(none)' . "\n\n";
