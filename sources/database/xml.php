@@ -1074,7 +1074,7 @@ class Database_Static_xml extends DatabaseDriver
             return null;
         }
 
-        $file_contents = @cms_file_get_contents_safe($path, FILE_READ_LOCK);
+        $file_contents = @cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
         if ($file_contents === false) {
             return null;
         }
