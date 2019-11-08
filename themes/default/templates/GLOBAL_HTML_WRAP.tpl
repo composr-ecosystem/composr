@@ -153,14 +153,14 @@
 									</li>
 								{+END}{+END}{+END}{+END}
 								<li>
-									<a href="{$PAGE_LINK*,adminzone:,,,,keep_theme}" title="{!ADMIN_ZONE*}">{+START,INCLUDE,ICON}
+									<a href="{$PAGE_LINK*,adminzone:,,,,keep_theme}" title="{!ADMIN_ZONE}">{+START,INCLUDE,ICON}
 										NAME=menu/adminzone/adminzone
 										ICON_SIZE=24
 									{+END}</a>
 								</li>
 								{+START,IF,{$DESKTOP}}{+START,IF,{$EQ,{$BRAND_NAME},Composr}}
 									<li>
-										<a id="software-chat-button" title="{!SOFTWARE_CHAT*}" accesskey="-" href="#!" class="js-global-click-load-software-chat">{+START,INCLUDE,ICON}
+										<a id="software-chat-button" title="{!SOFTWARE_CHAT}" accesskey="-" href="#!" class="js-global-click-load-software-chat">{+START,INCLUDE,ICON}
 											NAME=tool_buttons/software_chat
 											ICON_CLASS=software-chat-img
 											ICON_SIZE=24

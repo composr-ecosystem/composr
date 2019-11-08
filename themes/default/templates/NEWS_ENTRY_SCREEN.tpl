@@ -75,13 +75,13 @@
 	{+START,SET,next_and_prev}
 		{+START,IF_PASSED,PREV_ARTICLE_URL}{+START,IF_PASSED,PREV_ARTICLE_TITLE}
 			<div class="news-entry-prev">
-				<p class="news-entry-prev-label">&larr; {!PREVIOUS_ARTICLE*}</p>
+				<p class="news-entry-prev-label">&larr; {!PREVIOUS_ARTICLE}</p>
 				<h4 class="news-entry-prev-title"><a href="{PREV_ARTICLE_URL*}">{PREV_ARTICLE_TITLE*}</a></h4>
 			</div>
 		{+END}{+END}
 		{+START,IF_PASSED,NEXT_ARTICLE_URL}{+START,IF_PASSED,NEXT_ARTICLE_TITLE}
 			<div class="news-entry-next">
-				<p class="news-entry-next-label">{!NEXT_ARTICLE*} &rarr;</p>
+				<p class="news-entry-next-label">{!NEXT_ARTICLE} &rarr;</p>
 				<h4 class="news-entry-next-title"><a href="{NEXT_ARTICLE_URL*}">{NEXT_ARTICLE_TITLE*}</a></h4>
 			</div>
 		{+END}{+END}

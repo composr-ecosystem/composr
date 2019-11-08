@@ -26,7 +26,7 @@
 				pluginspage="http://www.apple.com/quicktime/download/"
 				scale="ASPECT"
 				width="{WIDTH*}"
-				height="{$ADD,{HEIGHT*},16}"
+				height="{$ADD*,{HEIGHT},16}"
 
 				{$,WMP}
 				filename="{URL*}"

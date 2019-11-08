@@ -33,7 +33,7 @@
 				<div class="sorting-and-slideshow-btn">
 					<ul class="horizontal-links with-icons">
 						<li>
-							<a data-link-start-slideshow="{}" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{$PAGE_LINK*,_SELF:galleries:{FIRST_ENTRY_ID*}:slideshow=1:wide_high=1}">{+START,INCLUDE,ICON}
+							<a data-link-start-slideshow="{}" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW}" target="_blank"{+END} href="{$PAGE_LINK*,_SELF:galleries:{FIRST_ENTRY_ID*}:slideshow=1:wide_high=1}">{+START,INCLUDE,ICON}
 								NAME=buttons/proceed
 								ICON_SIZE=24
 							{+END} {!_SLIDESHOW}</a>
@@ -53,8 +53,8 @@
 					</div>
 				</div>
 				<div class="glide__arrows">
-					<button class="btn btn-secondary btn-glide-go btn-glide-prev"><i class="chevron chevron-left"></i><span class="sr-only">{!PREVIOUS*}</span></button>
-					<button class="btn btn-secondary btn-glide-go btn-glide-next"><i class="chevron chevron-right"></i><span class="sr-only">{!NEXT*}</span></button>
+					<button class="btn btn-secondary btn-glide-go btn-glide-prev"><i class="chevron chevron-left"></i><span class="sr-only">{!PREVIOUS}</span></button>
+					<button class="btn btn-secondary btn-glide-go btn-glide-next"><i class="chevron chevron-right"></i><span class="sr-only">{!NEXT}</span></button>
 				</div>
 			</div>
 

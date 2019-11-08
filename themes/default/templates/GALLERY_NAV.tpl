@@ -23,7 +23,7 @@
 
 		{$,Start slideshow}
 		{+START,IF_NON_EMPTY,{SLIDESHOW_URL}}{+START,IF,{$DESKTOP}}
-			<a class="btn btn-primary btn-scr buttons--slideshow desktop-only" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{SLIDESHOW_URL*}" data-link-start-slideshow="{}"><span>{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</span></a>
+			<a class="btn btn-primary btn-scr buttons--slideshow desktop-only" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW}" target="_blank"{+END} href="{SLIDESHOW_URL*}" data-link-start-slideshow="{}"><span>{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</span></a>
 		{+END}{+END}
 
 		{$,Next}
@@ -36,7 +36,7 @@
 	{+START,IF_NON_EMPTY,{SLIDESHOW_URL}}
 		<div class="clearfix mobile-only">
 			<div class="right">
-				<a class="btn btn-primary btn-scr buttons--slideshow" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{SLIDESHOW_URL*}" data-link-start-slideshow="{}"><span>{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</span></a>
+				<a class="btn btn-primary btn-scr buttons--slideshow" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW}" target="_blank"{+END} href="{SLIDESHOW_URL*}" data-link-start-slideshow="{}"><span>{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</span></a>
 			</div>
 		</div>
 	{+END}
