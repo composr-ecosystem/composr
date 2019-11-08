@@ -7,7 +7,7 @@
 	{+START,IF_NON_EMPTY,{ENTRIES}}
 		<div class="gallery-actions">
 			{+START,IF_PASSED,SLIDESHOW_URL}
-				<a data-link-start-slideshow="{}" class="btn btn-primary btn-slideshow" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{SLIDESHOW_URL*}">{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</a>
+				<a data-link-start-slideshow="{}" class="btn btn-primary btn-slideshow" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW}" target="_blank"{+END} href="{SLIDESHOW_URL*}">{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</a>
 			{+END}
 
 			{+START,IF_PASSED,SORTING}

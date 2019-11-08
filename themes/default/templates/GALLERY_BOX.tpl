@@ -63,7 +63,7 @@
 			<div class="buttons-group-inner">
 				<a class="btn btn-primary buttons--more" href="{URL*}"><span>{+START,INCLUDE,ICON}NAME=buttons/more{+END} {!VIEW}</span></a>
 				{+START,IF_PASSED,SLIDESHOW_URL}{+START,IF_NON_EMPTY,{SLIDESHOW_URL}}
-					<a class="btn btn-secondary buttons--slideshow" data-link-start-slideshow="{}" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW*}" target="_blank"{+END} href="{SLIDESHOW_URL*}"><span>{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</span></a>
+					<a class="btn btn-secondary buttons--slideshow" data-link-start-slideshow="{}" rel="nofollow" {+START,IF,{$DESKTOP}}title="{!LINK_NEW_WINDOW}" target="_blank"{+END} href="{SLIDESHOW_URL*}"><span>{+START,INCLUDE,ICON}NAME=buttons/slideshow{+END} {!_SLIDESHOW}</span></a>
 				{+END}{+END}
 			</div>
 		</div>
