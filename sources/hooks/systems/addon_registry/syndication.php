@@ -174,6 +174,7 @@ class Hook_addon_registry_syndication
 
         $cloud = do_lorem_template('RSS_CLOUD', array(
             'TYPE' => 'news',
+            'DOMAIN' => 'example.com',
             'PORT' => '80',
             'LOCAL_BASE_URL' => placeholder_url(),
         ), null, false, null, '.xml', 'xml');
