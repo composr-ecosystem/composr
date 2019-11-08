@@ -33,6 +33,10 @@ class cdn_config_test_set extends cms_test_case
         $_cdn_config = $hostname . ',' . $ip_address;
         set_option('cdn', $_cdn_config);
 
+        if ($this->debug) {
+            var_dump($_cdn_config);
+        }
+
         $a = false;
         $b = false;
 
@@ -42,7 +46,7 @@ class cdn_config_test_set extends cms_test_case
             while (($file = readdir($dh)) !== false) {
                 if (is_image($file, IMAGE_CRITERIA_WEBSAFE)) {
                     $ext = get_file_extension($file);
-                    $url = find_theme_image(basename($file, '.' . $ext));
+                    $url = find_theme_image(basename($file, '.' . $ext), false, false, 'default');
                     if (strpos($url, $hostname) !== false) {
                         $a = true;
                     }
