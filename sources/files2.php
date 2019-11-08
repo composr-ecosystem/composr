@@ -1448,6 +1448,9 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
                                                     // Response metadata that cURL lets us gather easily
                                                     $HTTP_DOWNLOAD_MIME_TYPE = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
                                                     $HTTP_DOWNLOAD_SIZE = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+                                                    if ($HTTP_DOWNLOAD_SIZE == -1) {
+                                                        $HTTP_DOWNLOAD_SIZE = null;
+                                                    }
                                                     $HTTP_DOWNLOAD_URL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
                                                     if ($HTTP_DOWNLOAD_URL == $_url) {
                                                         $HTTP_DOWNLOAD_URL = $url;
@@ -1465,13 +1468,8 @@ function _http_download_file($url, $byte_limit = null, $trigger_error = true, $n
 
                                                     // Receive headers
                                                     foreach ($CURL_HEADERS as $header) {
+                                                        _read_in_headers($header);
                                                         $matches = array();
-                                                        if (preg_match('#^Content-Disposition: [^;]*;\s*filename="([^"]*)"#i', $header, $matches) != 0) {
-                                                            _read_in_headers($header);
-                                                        }
-                                                        if (preg_match("#^Set-Cookie: ([^\r\n=]*)=([^\r\n]*)\r\n#i", $header, $matches) != 0) {
-                                                            _read_in_headers($header);
-                                                        }
                                                         if (preg_match("#^Location: (.*)\r\n#i", $header, $matches) != 0) {
                                                             if (is_null($HTTP_FILENAME)) {
                                                                 $HTTP_FILENAME = urldecode(basename($matches[1]));
