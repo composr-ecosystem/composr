@@ -18,6 +18,8 @@
  * @package    core
  */
 
+//debug_print_backtrace();exit();
+
 // These symbols are all static evaluated during compilation, so don't need loading on each request.
 
 /**
@@ -65,38 +67,6 @@ function ecv2_MAILTO($lang, $escaped, $param)
 
     if ($escaped !== array()) {
         apply_tempcode_escaping($escaped, $value);
-    }
-    return $value;
-}
-
-// Uncommon symbols
-
-/**
- * Evaluate a particular Tempcode symbol.
- *
- * @ignore
- *
- * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
- * @param  array $escaped Array of escaping operations
- * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
- * @return string The result
- */
-function ecv2_ADD($lang, $escaped, $param)
-{
-    $value = '';
-
-    if ((isset($param[1])) && (is_numeric($param[0])) && (is_numeric($param[1]))) {
-        $_value = 0.0;
-
-        foreach ($param as $p) {
-            $_value += floatval(str_replace(',', '', $p));
-        }
-
-        $value = float_to_raw_string($_value, 20, true);
-    }
-
-    if ($GLOBALS['XSS_DETECT']) {
-        ocp_mark_as_escaped($value);
     }
     return $value;
 }

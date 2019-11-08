@@ -1061,7 +1061,7 @@ function download_latest_data_files()
 
 function _download_latest_data_cert()
 {
-    $data = http_get_contents('https://curl.haxx.se/ca/cacert.pem', array('convert_to_internal_encoding' => true));
+    $data = http_get_contents('https://curl.haxx.se/ca/cacert.pem', array('convert_to_internal_encoding' => true, 'timeout' => 20.0));
     if (strpos($data, 'BEGIN CERTIFICATE') === false) {
         fatal_exit('Error with certificates');
     }
@@ -1134,7 +1134,7 @@ function _download_latest_data_no_banning()
 
     $data = '';
     foreach ($urls as $url) {
-        $data .= http_get_contents($url, array('convert_to_internal_encoding' => true));
+        $data .= http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0));
     }
 
     cms_file_put_contents_safe(get_file_base() . '/text/unbannable_ips.txt', $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);

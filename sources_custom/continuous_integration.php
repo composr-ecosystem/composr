@@ -282,6 +282,8 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
     $successes = array();
     $fails = array();
 
+    $_before = microtime(true);
+
     $tests = find_all_applicable_tests($limit_to);
     foreach ($tests as $test) {
         $before = microtime(true);
@@ -300,6 +302,12 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
         if ($output) {
             echo $result . "\n" . 'Completed ' . $test . $details['stub'] . "\n";
         }
+    }
+
+    $_after = microtime(true);
+    $_time = $_after - $_before;
+    if ($output) {
+        echo 'FINISHED [time = ' . float_format($time) . ' seconds]' . "\n";
     }
 
     $results = '';
