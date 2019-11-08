@@ -31,14 +31,14 @@ class _special_links_test_set extends cms_test_case
             return;
         }
 
-        $c = http_get_contents('https://www.bookfinder.com/search/?isbn=0241968984&mode=isbn&st=sr&ac=qr', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 10.0, 'ua' => false)); // seems to dislike bots
+        $c = http_get_contents('https://www.bookfinder.com/search/?isbn=0241968984&mode=isbn&st=sr&ac=qr', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0, 'ua' => false)); // seems to dislike bots
         $this->assertTrue(strpos($c, 'No Place to Hide') !== false, 'External link not working, fix test and use within Composr (separate)');
 
         if (php_function_allowed('usleep')) {
             usleep(1000000);
         }
 
-        $c = http_get_contents('https://www.bookfinder.com/search/?isbn=978-0241968987&mode=isbn&st=sr&ac=qr', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 10.0, 'ua' => false)); // seems to dislike bots
+        $c = http_get_contents('https://www.bookfinder.com/search/?isbn=978-0241968987&mode=isbn&st=sr&ac=qr', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0, 'ua' => false)); // seems to dislike bots
         $this->assertTrue(strpos($c, 'No Place to Hide') !== false, 'External link not working, fix test and use within Composr (separate)');
     }
 
@@ -48,9 +48,9 @@ class _special_links_test_set extends cms_test_case
             return;
         }
 
-        $this->assertTrue(strpos(http_get_contents('http://whatismyipaddress.com/ip/12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'AT&T Services') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
-        $this->assertTrue(strpos(http_get_contents('https://ping.eu/ping/?host=12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'Ping') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
-        $this->assertTrue(strpos(http_get_contents('https://ping.eu/traceroute/?host=12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'Traceroute') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(strpos(http_get_contents('http://whatismyipaddress.com/ip/12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0)), 'AT&T Services') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(strpos(http_get_contents('https://ping.eu/ping/?host=12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0)), 'Ping') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
+        $this->assertTrue(strpos(http_get_contents('https://ping.eu/traceroute/?host=12.34.56.78', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0)), 'Traceroute') !== false, 'External link not working, fix test and use within Composr (separate) [LOOKUP_SCREEN.tpl, COMMANDR_WHOIS.tpl]');
     }
 
     public function testWhoIsLink()
@@ -59,7 +59,7 @@ class _special_links_test_set extends cms_test_case
             return;
         }
 
-        $this->assertTrue(stripos(http_get_contents('http://whois.domaintools.com/compo.sr', array('convert_to_internal_encoding' => true, 'trigger_error' => false)), 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
+        $this->assertTrue(stripos(http_get_contents('http://whois.domaintools.com/compo.sr', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0)), 'whois') !== false, 'External link not working, fix test and use within Composr (separate) [WARN_SPAM_URLS.tpl]');
     }
 
     public function testHealthCheckLinks()
@@ -90,7 +90,7 @@ class _special_links_test_set extends cms_test_case
         );
         foreach ($urls as $url => $test_no_redirecting) {
             if ($test_no_redirecting) {
-                $result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+                $result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0));
                 $this->assertTrue(is_string($result->data), 'External link (' . $url . ') not working (' . $result->message . '), fix test and use within Composr (separate)');
                 $this->assertTrue($result->download_url == $url, 'External link (' . $url . ') redirecting elsewhere (' . $result->download_url . '), fix test and use within Composr (separate)');
             } else {

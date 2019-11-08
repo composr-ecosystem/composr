@@ -44,7 +44,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         $cms_mime_types = get_mime_types(true);
 
         $url = 'https://raw.githubusercontent.com/microsoft/computerscience/f44092740662393051af0ed1c2fa3b2443660b79/Labs/Azure%20Services/Azure%20Storage/Solutions/Intellipix/.vs/config/applicationhost.config';
-        $c = http_get_contents($url, array('convert_to_internal_encoding' => true));
+        $c = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0));
 
         $found_bin = false;
 
@@ -97,7 +97,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         $cms_mime_types = get_mime_types(true);
 
         $url = 'https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types';
-        $c = http_get_contents($url);
+        $c = http_get_contents($url, array('timeout' => 20.0));
 
         $found_bin = false;
 

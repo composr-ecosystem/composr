@@ -30,7 +30,8 @@ class cdn_config_test_set extends cms_test_case
 
         require_code('images');
 
-        set_option('cdn', $hostname . ',' . $ip_address);
+        $_cdn_config = $hostname . ',' . $ip_address;
+        set_option('cdn', $_cdn_config);
 
         $a = false;
         $b = false;

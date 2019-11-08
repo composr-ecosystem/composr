@@ -82,7 +82,7 @@ class auth_test_set extends cms_test_case
     public function testAdminZoneDoesFail()
     {
         require_code('files');
-        $http_result = cms_http_request(static_evaluate_tempcode(build_url(array('page' => ''), 'adminzone', array(), false, false, true)), array('trigger_error' => false));
+        $http_result = cms_http_request(static_evaluate_tempcode(build_url(array('page' => '', 'keep_su' => 'Guest'), 'adminzone', array(), false, false, true)), array('trigger_error' => false));
         $this->assertTrue($http_result->message == '401', 'Expected 401 HTTP status but got ' . $http_result->message);
     }
 

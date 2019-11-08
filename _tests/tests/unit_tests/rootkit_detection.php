@@ -41,7 +41,7 @@ class rootkit_detection_test_set extends cms_test_case
             'db_password' => get_db_site_password(),
             'do_files' => '0',
         );
-        $result = http_get_contents(get_base_url() . '/rootkit_detection.php?type=go', array('convert_to_internal_encoding' => true, 'post_params' => $post_params));
+        $result = http_get_contents(get_base_url() . '/rootkit_detection.php?type=go', array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'post_params' => $post_params));
         $this->assertTrue(strpos($result, 'Privileges:') !== false, 'Failed to see listed privileges');
         $this->assertTrue(strpos($result, 'Fatal error') === false, 'Found a fatal error');
         $this->assertTrue(strpos($result, 'PHP Error') === false, 'Found an error');

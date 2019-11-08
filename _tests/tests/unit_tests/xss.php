@@ -18,6 +18,15 @@
  */
 class xss_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        if (!defined('DEFAULT_PARAM')) {
+            define('DEFAULT_PARAM', file_get_contents(get_file_base() . '/index.php')/*Won't be escaped*/);
+        }
+    }
+
     public function testNoBackdoor()
     {
         $this->assertTrue(empty($GLOBALS['SITE_INFO']['backdoor_ip']), 'Backdoor to IP address present, may break other tests');
@@ -111,7 +120,7 @@ class xss_test_set extends cms_test_case
         cms_ini_set('ocproducts.xss_detect', '1');
 
         ob_start();
-        @print(get_param_string('id')); // Print an unverified input parameter, but suppress our XSS error
+        @print(get_param_string('id', DEFAULT_PARAM)); // Print an unverified input parameter, but suppress our XSS error
         ob_end_clean();
 
         cms_ini_set('ocproducts.xss_detect', '0');
@@ -132,7 +141,7 @@ class xss_test_set extends cms_test_case
         cms_ini_set('ocproducts.xss_detect', '1');
 
         ob_start();
-        $tpl = do_template('PARAGRAPH', array('_GUID' => '8bca69a1088b0ca260321cd3117aabbe', 'TEXT' => get_param_string('id')));
+        $tpl = do_template('PARAGRAPH', array('_GUID' => '8bca69a1088b0ca260321cd3117aabbe', 'TEXT' => get_param_string('id', DEFAULT_PARAM)));
         @$tpl->evaluate_echo();
         ob_end_clean();
 
@@ -154,7 +163,7 @@ class xss_test_set extends cms_test_case
         cms_ini_set('ocproducts.xss_detect', '1');
 
         ob_start();
-        $_tpl = do_template('PARAGRAPH', array('_GUID' => '809e41570771a797998d59f8e3dc7a0b', 'TEXT' => get_param_string('id')));
+        $_tpl = do_template('PARAGRAPH', array('_GUID' => '809e41570771a797998d59f8e3dc7a0b', 'TEXT' => get_param_string('id', DEFAULT_PARAM)));
         $tpl = do_template('PARAGRAPH', array('_GUID' => '89dd3a60565dab73c2796c8a754095ba', 'TEXT' => $_tpl));
         @$tpl->evaluate_echo();
         ob_end_clean();
@@ -178,7 +187,7 @@ class xss_test_set extends cms_test_case
 
         ob_start();
         $_tpl = new Tempcode();
-        $_tpl->attach(do_template('PARAGRAPH', array('_GUID' => 'a9e8285ac5ef71d93eedaaf6b81f4384', 'TEXT' => get_param_string('id'))));
+        $_tpl->attach(do_template('PARAGRAPH', array('_GUID' => 'a9e8285ac5ef71d93eedaaf6b81f4384', 'TEXT' => get_param_string('id', DEFAULT_PARAM))));
         $tpl = do_template('PARAGRAPH', array('_GUID' => 'd2e942317451ffed9a5d75c13c85a350', 'TEXT' => $_tpl));
         @$tpl->evaluate_echo();
         ob_end_clean();

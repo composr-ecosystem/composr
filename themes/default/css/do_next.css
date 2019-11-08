@@ -45,7 +45,7 @@
 	min-height: 8.5em;
 	border-right: 1px solid {$GET,standard_border};
 	border-bottom: 1px solid {$GET,standard_border};
-	transition: color  0.15s ease-in-out, background-color  0.15s ease-in-out;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 }
 
 .do-next-item:hover,

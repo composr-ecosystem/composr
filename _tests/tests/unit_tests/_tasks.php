@@ -49,7 +49,7 @@ class _tasks_test_set extends cms_test_case
 
         $session_id = $this->establish_admin_callback_session();
         $url = build_url(array('page' => 'admin_newsletter', 'type' => 'subscribers', 'id' => db_get_first_id(), 'lang' => fallback_lang(), 'spreadsheet' => 1, 'file_type' => 'csv'), 'adminzone');
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'cookies' => array(get_session_cookie() => $session_id)));
+        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue(strpos($data, 'test@example.com') !== false);
 
         file_put_contents($tmp_path, $data);
@@ -144,7 +144,7 @@ class _tasks_test_set extends cms_test_case
         }
         */
 
-        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', array('convert_to_internal_encoding' => true, 'trigger_error' => false));
+        $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0));
         if ($result !== null) {
             /* Could not get this working with upload method
             $matches = array();
@@ -157,7 +157,7 @@ class _tasks_test_set extends cms_test_case
             $cookies = array('JSESSIONID' => $session_id);
             $extra_headers = array();
             $url = qualify_url(html_entity_decode($rel_url, ENT_QUOTES), 'https://ical-validator.herokuapp.com/validate/');
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers));
+            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers));
             */
 
             $matches = array();
@@ -167,7 +167,7 @@ class _tasks_test_set extends cms_test_case
             $ical = convert_to_internal_encoding($ical, get_charset(), 'utf-8');
             $post_params = array('snippet' => $ical);
             $url = qualify_url(html_entity_decode($rel_url, ENT_QUOTES), 'https://ical-validator.herokuapp.com/validate/');
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params));
+            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'post_params' => $post_params));
             if ($this->debug) {
                 @var_dump($url);
                 @var_dump($result);

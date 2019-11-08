@@ -1331,7 +1331,7 @@ header.with-seed-navbar .top-button:hover {
 	align-items: center;
 	padding: 0 10px;
 	text-decoration: none;
-	transition: color  0.15s ease-in-out, background-color  0.15s ease-in-out;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 }
 
 .top-button:hover {

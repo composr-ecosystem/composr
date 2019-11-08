@@ -48,67 +48,91 @@ class env_vars_test_set extends cms_test_case
 
     public function testMissing_DOCUMENT_ROOT()
     {
+        if (is_cli()) {
+            return;
+        }
+
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['DOCUMENT_ROOT'] == $this->bak['DOCUMENT_ROOT']);
+        $this->assertTrue($_SERVER['DOCUMENT_ROOT'] == $this->bak['DOCUMENT_ROOT'], 'Fixed DOCUMENT_ROOT to ' . $_SERVER['DOCUMENT_ROOT'] . ', expected ' . $this->bak['DOCUMENT_ROOT']);
 
         $this->wipe_data(false);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['DOCUMENT_ROOT'] == $this->bak['DOCUMENT_ROOT']);
+        $this->assertTrue($_SERVER['DOCUMENT_ROOT'] == $this->bak['DOCUMENT_ROOT'], 'Fixed DOCUMENT_ROOT to ' . $_SERVER['DOCUMENT_ROOT'] . ', expected ' . $this->bak['DOCUMENT_ROOT']);
     }
 
     public function testMissing_PHP_SELF()
     {
+        if (is_cli()) {
+            return;
+        }
+
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['PHP_SELF'] == $this->bak['PHP_SELF']);
+        $this->assertTrue($_SERVER['PHP_SELF'] == $this->bak['PHP_SELF'], 'Fixed PHP_SELF to ' . $_SERVER['PHP_SELF'] . ', expected ' . $this->bak['PHP_SELF']);
 
         $this->wipe_data(false);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['PHP_SELF'] == $this->bak['PHP_SELF']);
+        $this->assertTrue($_SERVER['PHP_SELF'] == $this->bak['PHP_SELF'], 'Fixed PHP_SELF to ' . $_SERVER['PHP_SELF'] . ', expected ' . $this->bak['PHP_SELF']);
     }
 
     public function testMissing_SCRIPT_FILENAME()
     {
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['SCRIPT_FILENAME'] == $this->bak['SCRIPT_FILENAME']);
+        $this->assertTrue($_SERVER['SCRIPT_FILENAME'] == $this->bak['SCRIPT_FILENAME'], 'Fixed SCRIPT_FILENAME to ' . $_SERVER['SCRIPT_FILENAME'] . ', expected ' . $this->bak['SCRIPT_FILENAME']);
 
         $this->wipe_data(false);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['SCRIPT_FILENAME'] == $this->bak['SCRIPT_FILENAME']);
+        $this->assertTrue($_SERVER['SCRIPT_FILENAME'] == $this->bak['SCRIPT_FILENAME'], 'Fixed SCRIPT_FILENAME to ' . $_SERVER['SCRIPT_FILENAME'] . ', expected ' . $this->bak['SCRIPT_FILENAME']);
     }
 
     public function testMissing_SCRIPT_NAME()
     {
+        if (is_cli()) {
+            return;
+        }
+
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['SCRIPT_NAME'] == $this->bak['SCRIPT_NAME']);
+        $this->assertTrue($_SERVER['SCRIPT_NAME'] == $this->bak['SCRIPT_NAME'], 'Fixed SCRIPT_NAME to ' . $_SERVER['SCRIPT_NAME'] . ', expected ' . $this->bak['SCRIPT_NAME']);
 
         $this->wipe_data(false);
         fixup_bad_php_env_vars();
-        $this->assertTrue($_SERVER['SCRIPT_NAME'] == $this->bak['SCRIPT_NAME']);
+        $this->assertTrue($_SERVER['SCRIPT_NAME'] == $this->bak['SCRIPT_NAME'], 'Fixed SCRIPT_NAME to ' . $_SERVER['SCRIPT_NAME'] . ', expected ' . $this->bak['SCRIPT_NAME']);
     }
 
     public function testMissing_REQUEST_URI()
     {
+        if (is_cli()) {
+            return;
+        }
+
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
-        $this->assertTrue(urldecode($this->default_doc_normalise($_SERVER['REQUEST_URI'])) == urldecode($this->default_doc_normalise($this->bak['REQUEST_URI'])));
+        $got = urldecode($this->default_doc_normalise($_SERVER['REQUEST_URI']));
+        $expected = urldecode($this->default_doc_normalise($this->bak['REQUEST_URI']));
+        $this->assertTrue($got == $expected, 'Fixed REQUEST_URI to ' . $got . ' (after decoding), expected ' . $expected);
 
         $this->wipe_data(false);
         fixup_bad_php_env_vars();
-        $this->assertTrue(urldecode($this->default_doc_normalise($_SERVER['REQUEST_URI'])) == urldecode($this->default_doc_normalise($this->bak['REQUEST_URI'])));
+        $got = urldecode($this->default_doc_normalise($_SERVER['REQUEST_URI']));
+        $expected = urldecode($this->default_doc_normalise($this->bak['REQUEST_URI']));
+        $this->assertTrue($got == $expected, 'Fixed REQUEST_URI to ' . $got . ' (after decoding), expected ' . $expected);
     }
 
     public function testMissing_QUERY_STRING()
     {
+        if (is_cli()) {
+            return;
+        }
+
         $this->wipe_data(true);
         fixup_bad_php_env_vars();
-        $this->assertTrue(urldecode($_SERVER['QUERY_STRING']) == urldecode($this->bak['QUERY_STRING']));
+        $this->assertTrue(urldecode($_SERVER['QUERY_STRING']) == urldecode($this->bak['QUERY_STRING']), 'Fixed QUERY_STRING to ' . $_SERVER['QUERY_STRING'] . ', expected ' . $this->bak['QUERY_STRING']);
 
         $this->wipe_data(false);
         fixup_bad_php_env_vars();
-        $this->assertTrue(urldecode($_SERVER['QUERY_STRING']) == urldecode($this->bak['QUERY_STRING']));
+        $this->assertTrue(urldecode($_SERVER['QUERY_STRING']) == urldecode($this->bak['QUERY_STRING']), 'Fixed QUERY_STRING to ' . $_SERVER['QUERY_STRING'] . ', expected ' . $this->bak['QUERY_STRING']);
     }
 }

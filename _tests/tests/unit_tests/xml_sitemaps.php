@@ -66,7 +66,7 @@ class xml_sitemaps_test_set extends cms_test_case
             $files = array(
                 'xmlfile' => $tmp_file,
             );
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => $post_params, 'files' => $files));
+            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'post_params' => $post_params, 'files' => $files));
 
             unlink($tmp_file);
 

@@ -230,11 +230,11 @@ class TextReporter extends SimpleReporter {
         } else {
             print "FAILURES!!!\n";
         }
-        print "Test cases run: " . $this->getTestCaseProgress() .
-                "/" . $this->getTestCaseCount() .
-                ", Passes: " . $this->getPassCount() .
-                ", Failures: " . $this->getFailCount() .
-                ", Exceptions: " . $this->getExceptionCount() . "\n";
+        print "Test cases run: " . strval($this->getTestCaseProgress()) .
+                "/" . strval($this->getTestCaseCount()) .
+                ", Passes: " . strval($this->getPassCount()) .
+                ", Failures: " . strval($this->getFailCount()) .
+                ", Exceptions: " . strval($this->getExceptionCount()) . "\n";
     }
 
     /**

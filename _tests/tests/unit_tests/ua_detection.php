@@ -41,10 +41,10 @@ class ua_detection_test_set extends cms_test_case
         $topic_id = cns_make_topic(db_get_first_id(), 'Test', '', 1, 1, 0, 0, null, null, false);
         cns_make_post($topic_id, 'Welcome', 'Welcome to the posts', 0, false, null, 0, null, null, null, null, null, null, null, true, true, null, true, '', null, false, false, false);
 
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'ua' => 'bingbot', 'cookies' => array(get_session_cookie() => $session_id)));
+        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => true, 'trigger_error' => false, 'ua' => 'bingbot', 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue($data !== null && strpos($data, 'findpost') === false, 'Could not find findpost in ' . $url->evaluate());
 
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'cookies' => array(get_session_cookie() => $session_id)));
+        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => true, 'trigger_error' => false, 'cookies' => array(get_session_cookie() => $session_id)));
         $this->assertTrue($data !== null && strpos($data, 'findpost') !== false, 'Could not find findpost in ' . $url->evaluate());
     }
 
@@ -58,7 +58,7 @@ class ua_detection_test_set extends cms_test_case
             'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25', // iPhone
         );
         foreach ($uas as $ua) {
-            $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ua' => $ua));
+            $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ua' => $ua, 'timeout' => 20.0));
             $this->assertTrue($data !== null && strpos($data, '>Mobile version') === false, 'Issue with ' . $ua);
             $this->assertTrue($data !== null && strpos($data, '>Non-Mobile version') !== false, 'Issue with ' . $ua);
         }
@@ -73,7 +73,7 @@ class ua_detection_test_set extends cms_test_case
             'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25', // iPad
         );
         foreach ($uas as $ua) {
-            $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ua' => $ua));
+            $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ua' => $ua, 'timeout' => 20.0));
             $this->assertTrue($data !== null && strpos($data, '>Mobile version') !== false, 'Issue with ' . $ua);
             $this->assertTrue($data !== null && strpos($data, '>Non-Mobile version') === false, 'Issue with ' . $ua);
         }

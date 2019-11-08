@@ -197,7 +197,7 @@ function calculate_shipping_cost($details, $shipping_cost, &$product_weight, &$p
     require_code('character_sets');
     $_request = convert_to_internal_encoding($_request, get_charset(), 'utf-8');
     $url = 'https://api.goshippo.com/shipments/';
-    $_response = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => array($_request), 'timeout' => 10.0, 'raw_post' => true, 'extra_headers' => array('Authorization' => 'ShippoToken ' . $shippo_token), 'raw_content_type' => 'application/json', 'ignore_http_status' => true));
+    $_response = http_get_contents($url, array('convert_to_internal_encoding' => true, 'post_params' => array($_request), 'timeout' => 20.0, 'raw_post' => true, 'extra_headers' => array('Authorization' => 'ShippoToken ' . $shippo_token), 'raw_content_type' => 'application/json', 'ignore_http_status' => true));
     $response = json_decode($_response, true);
 
     // Error handling

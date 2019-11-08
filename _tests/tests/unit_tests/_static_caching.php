@@ -30,7 +30,7 @@ class _static_caching_test_set extends cms_test_case
 
         $url = build_url(array('page' => ''), '');
 
-        $result = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true)); // Prime cache
+        $result = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0)); // Prime cache
 
         if (get_param_integer('early_debug', 0) == 1) {
             require_code('files2');
@@ -40,7 +40,7 @@ class _static_caching_test_set extends cms_test_case
         }
 
         $time_before = microtime(true);
-        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true));
+        $data = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'timeout' => 20.0));
         $time_after = microtime(true);
 
         $time = $time_after - $time_before;
@@ -70,20 +70,20 @@ class _static_caching_test_set extends cms_test_case
         $ALLOW_DOUBLE_DECACHE = true;
         erase_persistent_cache();
 
-        $result = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'trigger_error' => false)); // Prime cache
+        $result = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0)); // Prime cache
         $this->assertTrue($result !== null, 'Failed to prime cache');
 
         $detect_url = find_script('failover_script');
-        $result = http_get_contents($detect_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false)); // Should trigger failover, due to our $test_url being a broken URL
+        $result = http_get_contents($detect_url, array('convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0)); // Should trigger failover, due to our $test_url being a broken URL
         $this->assertTrue($result !== null, 'Failed to call failover script');
 
         clearstatcache();
         $this->assertTrue(strpos(cms_file_get_contents_safe(get_file_base() . '/_config.php', FILE_READ_LOCK), "\$SITE_INFO['failover_mode'] = 'auto_on';") !== false, 'Failover should have activated but did not');
 
-        $result = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false)); // Should be failed over, but cached
+        $result = http_get_contents($url->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0)); // Should be failed over, but cached
         $this->assertTrue(strpos($result, '</body>') !== false, 'Failover should have been able to use static cache but did not');
 
-        $result = http_get_contents($url2->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false)); // Should be failed over, but cached
+        $result = http_get_contents($url2->evaluate(), array('convert_to_internal_encoding' => true, 'ignore_http_status' => true, 'trigger_error' => false, 'timeout' => 20.0)); // Should be failed over, but cached
         $this->assertTrue(strpos($result, 'FAILOVER_CACHE_MISS') !== false, 'Failover cache miss message not found');
 
         file_put_contents($config_file_path, $config_file);

@@ -41,7 +41,9 @@ class antispam_test_set extends cms_test_case
         $this->assertTrue(strpos($scoring, 'alien_code') !== false);
         $this->assertTrue(strpos($scoring, 'autonomous') !== false);
         $this->assertTrue(strpos($scoring, 'country') !== false);
-        $this->assertTrue(strpos($scoring, 'header_absence') !== false);
+        if (is_cli()) {
+            $this->assertTrue(strpos($scoring, 'header_absence') !== false);
+        }
         $this->assertTrue(strpos($scoring, 'keywords') !== false);
         $this->assertTrue(strpos($scoring, 'links') !== false);
         $this->assertTrue(strpos($scoring, 'user_agents') !== false);

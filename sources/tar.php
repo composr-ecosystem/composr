@@ -469,6 +469,7 @@ function tar_extract_to_folder(&$resource, $path, $use_afm = false, $files = nul
                     }
                     $full_path = get_custom_file_base() . '/' . $path . $file['path'];
                     @chmod($full_path, $data['mode']);
+                    sync_file($full_path);
                     if ($data['mtime'] == 0) {
                         $data['mtime'] = time();
                     }
