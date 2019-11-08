@@ -31,6 +31,9 @@ function init__continuous_integration()
 
         $status = cms_version_branch_status();
         define('CI_BLACKLISTED_TESTS', array(
+            // Will be added back to run first
+            'unit_tests/_cqc__function_sigs',
+
             // Very slow
             'unit_tests/_actionlog',
             'unit_tests/_bash_parser',
@@ -307,7 +310,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
     $_after = microtime(true);
     $_time = $_after - $_before;
     if ($output) {
-        echo 'FINISHED [time = ' . float_format($time) . ' seconds]' . "\n";
+        echo 'FINISHED [time = ' . float_format($_time) . ' seconds]' . "\n";
     }
 
     $results = '';
