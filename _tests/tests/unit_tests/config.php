@@ -20,6 +20,10 @@ class config_test_set extends cms_test_case
 {
     public function testSaneDefaults()
     {
+        if (($this->only !== null) && ($this->only != 'testSaneDefaults')) {
+            return;
+        }
+
         $hooks = find_all_hooks('systems', 'config');
         foreach (array_keys($hooks) as $hook) {
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
@@ -46,6 +50,10 @@ class config_test_set extends cms_test_case
 
     public function testNoBadLists()
     {
+        if (($this->only !== null) && ($this->only != 'testNoBadLists')) {
+            return;
+        }
+
         $hooks = find_all_hooks('systems', 'config');
         foreach (array_keys($hooks) as $hook) {
             require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
@@ -68,6 +76,10 @@ class config_test_set extends cms_test_case
 
     public function testMissingOptions()
     {
+        if (($this->only !== null) && ($this->only != 'testMissingOptions')) {
+            return;
+        }
+
         require_code('files2');
 
         $matches = array();
@@ -131,6 +143,10 @@ class config_test_set extends cms_test_case
 
     public function testConfigHookCompletenessAndConsistency()
     {
+        if (($this->only !== null) && ($this->only != 'testConfigHookCompletenessAndConsistency')) {
+            return;
+        }
+
         cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
         require_code('files2');
@@ -158,6 +174,7 @@ class config_test_set extends cms_test_case
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
+
             foreach ($settings_needed as $setting => $type) {
                 $this->assertTrue(array_key_exists($setting, $details), 'Missing setting: ' . $setting . ' in ' . $hook);
                 if (array_key_exists($setting, $details)) {
@@ -194,7 +211,19 @@ class config_test_set extends cms_test_case
             if ($file_type == 'php' || $file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
                 $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
-                foreach (array_keys($hooks) as $hook) {
+                if ($file_type == 'php') {
+                    if ((strpos($c, 'get_option') === false) && (strpos($c, 'get_theme_option') === false)) {
+                        continue;
+                    }
+                }
+
+                elseif ($file_type == 'tpl' || $file_type == 'txt' || $file_type == 'css' || $file_type == 'js') {
+                    if ((strpos($c, 'CONFIG_OPTION') === false) && (strpos($c, 'THEME_OPTION') === false)) {
+                        continue;
+                    }
+                }
+
+                foreach ($hooks as $hook => $ob) {
                     if ($hook == 'description') {
                         // Special case - we have a config option named 'description', and also a theme setting named 'description' -- they are separate
                     }
@@ -203,8 +232,6 @@ class config_test_set extends cms_test_case
                         continue;
                     }
 
-                    require_code('hooks/systems/config/' . filter_naughty_harsh($hook));
-                    $ob = object_factory('Hook_config_' . filter_naughty_harsh($hook));
                     $details = $ob->get_details();
 
                     if ($file_type == 'php') {
@@ -229,6 +256,10 @@ class config_test_set extends cms_test_case
 
     public function testListConfigConsistency()
     {
+        if (($this->only !== null) && ($this->only != 'testListConfigConsistency')) {
+            return;
+        }
+
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
         foreach ($hooks as $hook => $ob) {
             $details = $ob->get_details();
@@ -247,6 +278,10 @@ class config_test_set extends cms_test_case
 
     public function testReasonablePerCategory()
     {
+        if (($this->only !== null) && ($this->only != 'testReasonablePerCategory')) {
+            return;
+        }
+
         $categories = array();
 
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
@@ -270,6 +305,10 @@ class config_test_set extends cms_test_case
 
     public function testConsistentGroupOrdering()
     {
+        if (($this->only !== null) && ($this->only != 'testConsistentGroupOrdering')) {
+            return;
+        }
+
         $categories = array();
 
         $hooks = find_all_hook_obs('systems', 'config', 'Hook_config_');
@@ -314,6 +353,10 @@ class config_test_set extends cms_test_case
 
     public function testConsistentCategoriesSet()
     {
+        if (($this->only !== null) && ($this->only != 'testConsistentCategoriesSet')) {
+            return;
+        }
+
         // Find all categories by searching
         $hooks = find_all_hooks('systems', 'config');
         $categories_found = array();

@@ -81,6 +81,10 @@ class _template_previews_test_set extends cms_test_case
 
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
+            if (($this->only !== null) && ($this->only != $theme)) {
+                continue;
+            }
+
             if ($theme == '_unnamed_') {
                 continue;
             }
@@ -111,6 +115,10 @@ class _template_previews_test_set extends cms_test_case
                 if (!in_array($template, $only_do_these)) {
                     continue;
                 }
+            }
+
+            if ((!is_file(get_file_base() . '/themes/' . $theme . '/' . $template)) && (!is_file(get_file_base() . '/themes/' . $theme . '/' . str_replace('/', '_custom/', $template)))) {
+                continue;
             }
 
             if ($template == 'templates/tempcode_test.tpl') {

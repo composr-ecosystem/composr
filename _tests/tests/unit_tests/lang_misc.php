@@ -30,6 +30,10 @@ class lang_misc_test_set extends cms_test_case
 
     public function testLangStringsWork()
     {
+        if (($this->only !== null) && ($this->only != 'testLangStringsWork')) {
+            return;
+        }
+
         require_code('files');
 
         $dir = get_file_base() . '/lang_custom/EX';
@@ -60,6 +64,10 @@ class lang_misc_test_set extends cms_test_case
 
     public function testPluralisation()
     {
+        if (($this->only !== null) && ($this->only != 'testPluralisation')) {
+            return;
+        }
+
         require_code('lang2');
         require_code('lang_compile');
         require_code('files2');
@@ -75,7 +83,12 @@ class lang_misc_test_set extends cms_test_case
 
     public function testUnknownReferences()
     {
+        if (($this->only !== null) && ($this->only != 'testUnknownReferences')) {
+            return;
+        }
+
         require_code('lang_compile');
+        require_code('files2');
 
         require_all_lang();
 
@@ -98,7 +111,7 @@ class lang_misc_test_set extends cms_test_case
             }
 
             $c = cms_file_get_contents_safe(get_file_base() . '/' . $path, FILE_READ_LOCK);
-            $this->process_file_for_references($c, $path);
+            $this->process_file_for_references($c, $path, true);
         }
         $files = get_directory_contents(get_file_base(), '', IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING | IGNORE_CUSTOM_THEMES, true, true, array('tpl'));
         foreach ($files as $path) {
@@ -143,41 +156,47 @@ class lang_misc_test_set extends cms_test_case
         $this->process_file_for_references($c, get_file_base() . '/install.php');
     }
 
-    protected function process_file_for_references($c, $path)
+    protected function process_file_for_references($c, $path, $is_php = false)
     {
         $matches = array();
 
-        $num_matches = preg_match_all('#do_lang_tempcode\(\'([^\']*)\'[\),]#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'do_lang_tempcode', $path);
-            $this->check_includes($c, $str, $path);
-        }
+        if ($is_php) {
+            if (strpos($c, '_lang') !== false) {
+                $num_matches = preg_match_all('#do_lang_tempcode\(\'([^\']*)\'[\),]#', $c, $matches);
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $str = $matches[1][$i];
+                    $this->process_str_reference($str, 'do_lang_tempcode', $path);
+                    $this->check_includes($c, $str, $path);
+                }
 
-        $num_matches = preg_match_all('#do_lang\(\'([^\']*)\'[\),]#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'do_lang', $path);
-            $this->check_includes($c, $str, $path);
-        }
+                $num_matches = preg_match_all('#do_lang\(\'([^\']*)\'[\),]#', $c, $matches);
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $str = $matches[1][$i];
+                    $this->process_str_reference($str, 'do_lang', $path);
+                    $this->check_includes($c, $str, $path);
+                }
 
-        $num_matches = preg_match_all('#do_notification_lang\(\'([^\']*)\'[\),]#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'do_lang', $path);
-            $this->check_includes($c, $str, $path);
-        }
+                $num_matches = preg_match_all('#do_notification_lang\(\'([^\']*)\'[\),]#', $c, $matches);
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $str = $matches[1][$i];
+                    $this->process_str_reference($str, 'do_lang', $path);
+                    $this->check_includes($c, $str, $path);
+                }
+            }
 
-        $num_matches = preg_match_all('#get_screen_title\(\'([^\']*)\'\)#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'get_screen_title', $path);
-        }
-
-        $num_matches = preg_match_all('#[^\\\\]\{\!([\w:]+)[^\}]*\}#', $c, $matches);
-        for ($i = 0; $i < $num_matches; $i++) {
-            $str = $matches[1][$i];
-            $this->process_str_reference($str, 'Tempcode', $path);
+            $num_matches = preg_match_all('#get_screen_title\(\'([^\']*)\'\)#', $c, $matches);
+            for ($i = 0; $i < $num_matches; $i++) {
+                $str = $matches[1][$i];
+                $this->process_str_reference($str, 'get_screen_title', $path);
+            }
+        } else {
+            if (strpos($c, '{!') !== false) {
+                $num_matches = preg_match_all('#[^\\\\]\{\!([\w:]+)[^\}]*\}#', $c, $matches);
+                for ($i = 0; $i < $num_matches; $i++) {
+                    $str = $matches[1][$i];
+                    $this->process_str_reference($str, 'Tempcode', $path);
+                }
+            }
         }
     }
 

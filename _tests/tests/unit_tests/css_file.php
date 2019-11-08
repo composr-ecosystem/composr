@@ -72,6 +72,11 @@ class css_file_test_set extends cms_test_case
 
     protected function find_classes_defined($theme)
     {
+        static $cache = array();
+        if (isset($cache[$theme])) {
+            return $cache[$theme];
+        }
+
         $out = array();
 
         $directories = array(
@@ -108,11 +113,16 @@ class css_file_test_set extends cms_test_case
             }
         }
 
-        return array_unique($out);
+        $cache[$theme] = array_unique($out);
+        return $cache[$theme];
     }
 
     protected function find_classes_used($theme)
     {
+        static $cache = array();
+        if (isset($cache[$theme])) {
+            return $cache[$theme];
+        }
         $out = array();
 
         $directories = array(
@@ -139,7 +149,8 @@ class css_file_test_set extends cms_test_case
             }
         }
 
-        return array_unique($out);
+        $cache[$theme] = array_unique($out);
+        return $cache[$theme];
     }
 
     public function testSelectorUsage()
@@ -193,6 +204,7 @@ class css_file_test_set extends cms_test_case
                             'widget_color.css',
                             'widget_date.css',
                             'widget_select2.css',
+                            'widget_glide.css',
                             'confluence.css',
                         );
                         if (in_array($file, $exceptions)) {

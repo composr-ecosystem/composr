@@ -31,6 +31,10 @@ class theme_images_test_set extends cms_test_case
 
     public function testIconsSquare()
     {
+        if (($this->only !== null) && ($this->only != 'testIconsSquare')) {
+            return;
+        }
+
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             if ($theme == '_unnamed_') {
@@ -75,6 +79,10 @@ class theme_images_test_set extends cms_test_case
 
     public function testSVGQuality()
     {
+        if (($this->only !== null) && ($this->only != 'testSVGQuality')) {
+            return;
+        }
+
         require_code('files2');
         $files = get_directory_contents(get_file_base() . '/themes/default/', get_file_base() . '/themes/default', 0, true, true, array('svg'));
 
@@ -107,6 +115,10 @@ class theme_images_test_set extends cms_test_case
 
     public function testDuplicateThemeImages()
     {
+        if (($this->only !== null) && ($this->only != 'testDuplicateThemeImages')) {
+            return;
+        }
+
         $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             if ($theme == '_unnamed_') {
@@ -133,29 +145,43 @@ class theme_images_test_set extends cms_test_case
 
     public function testBrokenReferences()
     {
+        if (($this->only !== null) && ($this->only != 'testBrokenReferences')) {
+            return;
+        }
+
         // Find default images
-        $default_images = $this->get_theme_images('default');
+        $default_images_referenced = array(); // true means referenced and exists, false means referenced and is not yet known to exist
+        $default_images_there = $this->get_theme_images('default');
+
+        // Get theme list, but 'default' must come first
+        $themes = find_all_themes();
+        unset($themes['default']);
+        $themes = array_merge(array('default' => null), $themes);
 
         // Go through each theme
-        $themes = find_all_themes();
         foreach (array_keys($themes) as $theme) {
             if ($theme == '_unnamed_') {
                 continue;
             }
 
-            $directories = array(
-                 get_file_base() . '/themes/default/css_custom',
-                 get_file_base() . '/themes/default/css',
-                 get_file_base() . '/themes/default/templates_custom',
-                 get_file_base() . '/themes/default/templates',
-                 get_file_base() . '/themes/default/javascript_custom',
-                 get_file_base() . '/themes/default/javascript',
-                 get_file_base() . '/themes/default/xml_custom',
-                 get_file_base() . '/themes/default/xml',
-                 get_file_base() . '/site/pages/comcode_custom/EN',
-                 get_file_base() . '/pages/comcode_custom/EN',
-            );
-            if ($theme != 'default') {
+            $non_css_contents = '';
+            $images_referenced = $default_images_referenced;
+            $images_there = $default_images_there;
+
+            if ($theme == 'default') {
+                $directories = array(
+                     get_file_base() . '/themes/default/css_custom',
+                     get_file_base() . '/themes/default/css',
+                     get_file_base() . '/themes/default/templates_custom',
+                     get_file_base() . '/themes/default/templates',
+                     get_file_base() . '/themes/default/javascript_custom',
+                     get_file_base() . '/themes/default/javascript',
+                     get_file_base() . '/themes/default/xml_custom',
+                     get_file_base() . '/themes/default/xml',
+                     get_file_base() . '/site/pages/comcode_custom/EN',
+                     get_file_base() . '/pages/comcode_custom/EN',
+                );
+            } else {
                 $directories = array_merge($directories, array(
                     get_file_base() . '/themes/' . $theme . '/css_custom',
                     get_file_base() . '/themes/' . $theme . '/css',
@@ -166,11 +192,9 @@ class theme_images_test_set extends cms_test_case
                     get_file_base() . '/themes/' . $theme . '/xml_custom',
                     get_file_base() . '/themes/' . $theme . '/xml',
                 ));
-            }
 
-            $images_there = array_merge($default_images, $this->get_theme_images($theme));
-            $images_referenced = array(); // true means referenced and exists, false means referenced and is not yet known to exist
-            $non_css_contents = '';
+                $images_there = array_merge($images_there, $this->get_theme_images($theme));
+            }
 
             $db_reference_sources = array(
                 'f_emoticons' => 'e_theme_img_code',
@@ -194,11 +218,15 @@ class theme_images_test_set extends cms_test_case
                 if ($dh !== false) {
                     while (($file = readdir($dh)) !== false) {
                         $is_css_file = (substr($file, -4) == '.css');
-                        $is_tpl_file = (substr($file, -4) == '.tpl') || (substr($file, -3) == '.js');
+                        $is_tpl_file = (substr($file, -4) == '.tpl') || (substr($file, -4) == '.xml') || (substr($file, -3) == '.js');
                         $is_comcode_page = ((substr($file, -4) == '.txt') && ((count($themes) < 5) || (substr($file, 0, strlen($theme . '__')) == $theme . '__')));
 
                         if ($is_css_file || $is_tpl_file || $is_comcode_page) {
                             $c = cms_file_get_contents_safe($dir . '/' . $file, FILE_READ_LOCK | FILE_READ_UNIXIFIED_TEXT);
+
+                            if (strpos($c, '{$IMG') === false) {
+                                continue;
+                            }
 
                             // Find referenced images
                             $matches = array();
@@ -247,6 +275,11 @@ class theme_images_test_set extends cms_test_case
 
             foreach ($images_referenced as $image => $is_existent) {
                 $this->assertTrue($is_existent, 'Missing theme image in theme ' . $theme . ': ' . $image);
+            }
+
+            if ($theme == 'default') {
+                $default_images_referenced = $images_referenced;
+                $default_images_there = $images_there;
             }
         }
     }
