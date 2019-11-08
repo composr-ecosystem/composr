@@ -1104,6 +1104,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (strpos($text, 'Too many connections') === false) &&
         (strpos($text, 'duplicate key in table') === false) &&
         (strpos($text, 'Incorrect string value') === false) &&
+        (strpos($text, 'Too many words in a FTS phrase or proximity search') === false) &&
         (strpos($text, 'Can\'t create/write to file') === false) &&  // MySQL
         (strpos($text, 'Error writing file') === false) && // E.g. cannot PHP create a temporary file
         (strpos($text, 'possibly out of free disk space') === false) &&

@@ -456,10 +456,7 @@ class Forum_driver_base
         // Try hardcoded in URL
         $theme = $is_current_member ? filter_naughty(get_param_string('keep_theme', get_param_string('utheme', '-1'))) : '-1';
         if ($theme != '-1') {
-            if ((!is_dir(get_file_base() . '/themes/' . $theme)) && (!is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
-                require_code('site');
-                attach_message(do_lang_tempcode('NO_SUCH_THEME', escape_html($theme)), 'warn');
-            } else {
+            if ((is_dir(get_file_base() . '/themes/' . $theme)) || (is_dir(get_custom_file_base() . '/themes/' . $theme))) { // Sanity check
                 $zone_theme = ($ZONE === null || !$current_zone_requested) ? $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_theme', array('zone_name' => $zone_for)) : $ZONE['zone_theme'];
 
                 require_code('permissions');
@@ -471,11 +468,6 @@ class Forum_driver_base
                         $USER_THEME_CACHE = $theme;
                     }
                     return $theme;
-                } else {
-                    if (running_script('index')) {
-                        require_code('site');
-                        attach_message(do_lang_tempcode('NO_THEME_PERMISSION', escape_html($theme)), 'warn');
-                    }
                 }
             }
         }

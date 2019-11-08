@@ -847,8 +847,8 @@
         }
 
         var playerId = strVal(params.playerId), player,
-            width = strVal(params.width),
-            height = strVal(params.height),
+            width = strVal(params.audio_width),
+            height = strVal(params.audio_height),
             url = strVal(params.url),
             options = {
                 pluginPath: '{$BASE_URL;}/data/mediaelement/',

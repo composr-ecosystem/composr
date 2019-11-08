@@ -179,7 +179,7 @@ function get_brand_base_url()
 {
     $value = function_exists('get_value') ? get_value('rebrand_base_url') : null;
     if (empty($value)) {
-        $value = 'http://compo.sr';
+        $value = 'https://compo.sr';
     }
     return $value;
 }

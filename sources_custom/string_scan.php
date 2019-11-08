@@ -6193,7 +6193,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NO_SHELL_ZIP_POSSIBLE2
         NO_SUCH_CONTENT_TYPE
         NO_SUCH_RENDERER
-        NO_SUCH_THEME
         NO_SUCH_THEME_IMAGE
         NO_SUCH_ZONE
         NO_SUICIDAL_SUPER_ADMIN_REMOVAL

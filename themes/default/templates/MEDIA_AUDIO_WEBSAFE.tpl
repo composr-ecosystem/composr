@@ -5,24 +5,27 @@
 	{$REQUIRE_JAVASCRIPT,core_rich_media}
 	{$REQUIRE_CSS,mediaelementplayer}
 
+	{$SET,audio_width,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height}}},400,{WIDTH}}}
+	{$SET,audio_height,{$?,{$AND,{$EQ,{WIDTH},{$CONFIG_OPTION,default_video_width}},{$EQ,{HEIGHT},{$CONFIG_OPTION,default_video_height}}},30,{HEIGHT}}}
+
 	{+START,IF_NON_PASSED_OR_FALSE,WYSIWYG_EDITABLE}
 		{+START,IF_EMPTY,{$METADATA,video}}
 			{$METADATA,video,{URL}}
-			{$METADATA,video:height,{HEIGHT}}
-			{$METADATA,video:width,{WIDTH}}
+			{$METADATA,video:width,{$GET,audio_width}}
+			{$METADATA,video:height,{$GET,audio_height}}
 			{$METADATA,video:type,{MIME_TYPE}}
 		{+END}
 	{+END}
 
 	<audio style="display: none" controls="controls" preload="none" id="{$GET%,player_id}"
-			 data-tpl="mediaAudioWebsafe" data-tpl-params="{+START,PARAMS_JSON,player_id,WIDTH,HEIGHT,LENGTH,URL,THUMB_URL,type,flashplayer,inline_stats,AUTOSTART,CLOSED_CAPTIONS_URL}{_*}{+END}"
-			 {+START,IF_PASSED_AND_TRUE,AUTOSTART} autoplay="true"{+END} data-cms-embedded-media="{ width: {WIDTH%}, height: {HEIGHT%}, emits: ['play', 'pause', 'ended'], listens: ['do-play', 'do-pause'] }">
+			 data-tpl="mediaAudioWebsafe" data-tpl-params="{+START,PARAMS_JSON,player_id,audio_width,audio_height,LENGTH,URL,THUMB_URL,type,flashplayer,inline_stats,AUTOSTART,CLOSED_CAPTIONS_URL}{_*}{+END}"
+			 {+START,IF_PASSED_AND_TRUE,AUTOSTART} autoplay="true"{+END} data-cms-embedded-media="{ width: {$GET%,audio_width}, height: {$GET%,audio_height}, emits: ['play', 'pause', 'ended'], listens: ['do-play', 'do-pause'] }">
 		<source type="{MIME_TYPE*}" src="{$ENSURE_PROTOCOL_SUITABILITY*,{URL}}" />
 		{+START,IF_PASSED,CLOSED_CAPTIONS_URL}{+START,IF_NON_EMPTY,{CLOSED_CAPTIONS_URL}}
 			<track src="{$ENSURE_PROTOCOL_SUITABILITY*,{CLOSED_CAPTIONS_URL}}" kind="captions" label="{!CLOSED_CAPTIONS}" srclang="{$LCASE*,{$LANG}}" />
 		{+END}{+END}
 
-		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{THUMB_URL}}" width="{WIDTH*}" height="{HEIGHT*}" alt="No audio playback capabilities" title="No audio playback capabilities" />
+		<img src="{$ENSURE_PROTOCOL_SUITABILITY*,{THUMB_URL}}" width="{$GET*,audio_width}" height="{$GET*,audio_height}" alt="No audio playback capabilities" title="No audio playback capabilities" />
 	</audio>
 
 	{+START,IF_NON_EMPTY,{DESCRIPTION}}

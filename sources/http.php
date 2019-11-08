@@ -1058,9 +1058,10 @@ class HttpDownloaderCurl extends HttpDownloader
             } else {
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $this->raw_payload);
-                if ($this->files != array()) {
+                if ($this->files != array()) { // We will be doing a multipart/form-data call
                     $curl_headers[] = 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset();
                 }
+                $curl_headers[] = 'Expect:'; // Suppress  automatic Expect header
             }
         }
         if ($this->do_ip_forwarding) {

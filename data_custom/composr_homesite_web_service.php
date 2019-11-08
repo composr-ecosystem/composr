@@ -92,5 +92,9 @@ if ($password_given === null) {
     require_code('users_inactive_occasionals');
     create_session($member);
 
-    call_user_func_array('server__' . $call, $parameters);
+    if (function_exists('server__' . $call)) {
+        call_user_func_array('server__' . $call, $parameters);
+    } else {
+        call_user_func_array('server__public__' . $call, $parameters);
+    }
 }
