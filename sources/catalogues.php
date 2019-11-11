@@ -1560,12 +1560,12 @@ function create_selection_list_catalogue_entries_tree($catalogue_name, $it = nul
 {
     $tree = get_catalogue_entries_tree($catalogue_name, $submitter, null, null, null, null, $editable_filter);
 
-    $out = ''; // XHTMLXHTML
+    $out = '';
     foreach ($tree as $category) {
         foreach ($category['entries'] as $eid => $etitle) {
             $selected = ($eid == $it);
             $line = do_template('CATALOGUE_ENTRIES_LIST_LINE', array('_GUID' => '0ccffeff5b80b1840188b83aaee8d9f2', 'BREADCRUMBS' => $category['breadcrumbs'], 'NAME' => $etitle));
-            $out .= '<option value="' . strval($eid) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>' . "\n";
+            $out .= '<option value="' . strval($eid) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
         }
     }
 

@@ -158,7 +158,7 @@ The blocks provided are [tt]main_activities[/tt] and the status entry box is cal
             'data_custom/activities_updater.php',
             'data_custom/activities_removal.php',
             'data_custom/activities_handler.php',
-            'data_custom/latest_activity.txt',
+            'data_custom/latest_activity.bin',
             'lang_custom/EN/activities.ini',
             'sources_custom/blocks/main_activities_state.php',
             'sources_custom/blocks/main_activities.php',

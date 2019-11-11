@@ -302,7 +302,7 @@ function cns_render_forumview($id, $forum_info, $current_filter_cat, $max, $star
     }
 
     // Work out what moderator actions can be performed (also includes marking read/unread)
-    $moderator_actions = '';
+    $moderator_actions = ''; // XHTMLXHTML
     if (($type == 'pt') && ($of_member_id == get_member()) && (get_option('enable_pt_filtering') == '1')) {
         $moderator_actions .= '<option value="categorise_pts">' . do_lang('_CATEGORISE_PTS') . '</option>';
         $filter_cats = cns_get_filter_cats();

@@ -107,12 +107,12 @@ function cns_create_selection_list_topic_tree($it = null)
 {
     $tree = cns_get_topic_tree();
 
-    $out = ''; // XHTMLXHTML
+    $out = '';
     foreach ($tree as $forum) {
         foreach ($forum['entries'] as $topic_id => $ttitle) {
             $selected = ($topic_id == $it);
             $line = do_template('CNS_FORUM_TOPIC_LIST_LINE', array('_GUID' => 'd58e4176ef0efefa85c83a8b9fa2de51', 'PRE' => $forum['breadcrumbs'], 'TOPIC_TITLE' => $ttitle));
-            $out .= '<option value="' . strval($topic_id) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>';
+            $out .= '<option value="' . strval($topic_id) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
         }
     }
 
@@ -212,7 +212,7 @@ function create_selection_list_forum_tree($member_id = null, $base_forum = null,
         array_splice($tree, $i + 1, 0, $tree[$i]['children']);
     }
 
-    $real_out = '';
+    $real_out = ''; // XHTMLXHTML
     foreach ($tree as $t) {
         if (($updated_since !== null) && (($t['updated_since'] === null) || ($t['updated_since'] < $updated_since))) {
             continue;

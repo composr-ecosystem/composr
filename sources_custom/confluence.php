@@ -212,7 +212,7 @@ function create_selection_list_confluence($selected_page_id = null, $under = nul
     $out = new Tempcode();
 
     foreach ($under['children'] as $child) {
-        $out->attach('<option value="' . strval($child) . '"' . (($selected_page_id == $child) ? ' selected="selected"' : '') . '>' . escape_html($prefix . $mappings[$child]['title']) . '</option>');
+        $out->attach('<option value="' . strval($child) . '"' . (($selected_page_id == $child) ? ' selected="selected"' : '') . '>' . escape_html($prefix . $mappings[$child]['title']) . '</option>'); // XHTMLXHTML
         $out->attach(create_selection_list_confluence($selected_page_id, $mappings[$child], $prefix . $mappings[$child]['title'] . ' > '));
     }
 

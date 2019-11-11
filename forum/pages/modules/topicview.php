@@ -848,7 +848,7 @@ class Module_topicview
         $action_url = build_url(array('page' => 'topics', 'id' => $id), get_module_zone('topics'));
         if ($id !== null) {
             // Moderation options
-            $moderator_actions = '';
+            $moderator_actions = ''; // XHTMLXHTML
             if ($topic_info['forum_id'] === null) {
                 $moderator_actions .= '<option value="categorise_pts">' . do_lang('_CATEGORISE_PTS') . '</option>';
                 $filter_cats = cns_get_filter_cats();
@@ -931,7 +931,7 @@ class Module_topicview
                 $map['threaded'] = $test_threaded;
             }
             $action_url = build_url($map, get_module_zone('topics'), array(), false, true);
-            $marked_post_actions = '';
+            $marked_post_actions = ''; // XHTMLXHTML
             if (array_key_exists('may_move_posts', $topic_info)) {
                 $marked_post_actions .= '<option value="move_posts_a">' . do_lang('MERGE_POSTS') . '</option>';
                 $marked_post_actions .= '<option value="move_posts_b">' . do_lang('SPLIT_POSTS') . '</option>';

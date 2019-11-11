@@ -388,7 +388,7 @@ class Module_vforums
         if (!$topics->is_empty()) {
             $pagination = pagination(do_lang_tempcode('FORUM_TOPICS'), $true_start, 'forum_start', $max, 'forum_max', $max_rows, false, 5, null, '', $keyset_value);
 
-            $moderator_actions = '';
+            $moderator_actions = ''; // XHTMLXHTML
             $moderator_actions .= '<option value="mark_topics_read">' . do_lang('MARK_READ') . '</option>';
             if ($title->evaluate() != do_lang('TOPICS_UNREAD')) {
                 $moderator_actions .= '<option value="mark_topics_unread">' . do_lang('MARK_UNREAD') . '</option>';

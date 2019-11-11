@@ -1785,7 +1785,6 @@ class Module_cms_catalogues_alt extends Standard_crud_module
 
         $fields->attach(form_input_line(do_lang_tempcode('DEFAULT_VALUE'), do_lang_tempcode('DESCRIPTION_FIELD_DEFAULT'), $prefix . 'default', $default, false, null, pow(2, 31) - 1));
 
-        //$order_list = new Tempcode();
         $order_list = '';
         for ($i = 0; $i < $num_fields_to_show; $i++) {
             $order_title = integer_format($i + 1);
@@ -1793,7 +1792,6 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             if (($i == 0) && (substr(get_param_string('id', ''), 0, 1) != '_')) {
                 $order_title .= do_lang('NEW_FIELD_TITLE');
             }
-            //$order_list->attach(form_input_list_entry(strval($i), $order_selected, $order_title));
             $order_list .= '<option value="' . strval($i) . '"' . ($order_selected ? ' selected="selected"' : '') . '>' . escape_html($order_title) . '</option>'; // XHTMLXHTML
         }
         $fields->attach(form_input_list(do_lang_tempcode('ORDER'), do_lang_tempcode('DESCRIPTION_FIELD_ORDER_CLEVER', do_lang_tempcode('CATALOGUE_FIELD')), $prefix . 'order', make_string_tempcode($order_list)));

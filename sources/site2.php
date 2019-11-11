@@ -64,7 +64,7 @@ function get_staff_actions_list()
         'memory' => do_lang_tempcode('_MEMORY_USAGE'),
     );
     $special_page_type = get_param_string('special_page_type', 'view');
-    $staff_actions = '';
+    $staff_actions = ''; // XHTMLXHTML
     $started_opt_group = false;
     foreach ($list as $name => $text) {
         $is_group = (($name[0] == 's') && (substr($name, 0, 7) == 'spacer_'));
@@ -76,8 +76,7 @@ function get_staff_actions_list()
             $started_opt_group = true;
             continue;
         }
-        $staff_actions .= '<option' . (($staff_actions == '') ? ' disabled="disabled" class="label"' : '') . ' ' . (($name == $special_page_type) ? 'selected="selected" ' : '') . 'value="' . escape_html($name) . '">' . (isset($text->codename/*faster than is_object*/) ? $text->evaluate() : escape_html($text)) . '</option>'; // XHTMLXHTML
-        //$staff_actions .= static_evaluate_tempcode(form_input_list_entry($name, ($name == $special_page_type), $text, false, $disabled)); Disabled 'proper' way for performance reasons
+        $staff_actions .= '<option' . (($staff_actions == '') ? ' disabled="disabled" class="label"' : '') . ' ' . (($name == $special_page_type) ? 'selected="selected" ' : '') . 'value="' . escape_html($name) . '">' . (isset($text->codename/*faster than is_object*/) ? $text->evaluate() : escape_html($text)) . '</option>';
     }
     if ($started_opt_group) {
         $staff_actions .= '</optgroup>';

@@ -386,7 +386,7 @@ function nice_get_filedump_files($it, $only_images = false, $base = null)
     foreach ($tree as $f) {
         if ((!$only_images) || (is_image($f, IMAGE_CRITERIA_WEBSAFE, true))) {
             $rel = ($base === null) ? $f : preg_replace('#^' . preg_quote($base, '#') . '/#', '', $f);
-            $out .= '<option value="' . escape_html('uploads/filedump/' . $f) . '"' . (($it === $f) ? ' selected="selected"' : '') . '>' . escape_html($rel) . '</option>' . "\n";
+            $out .= '<option value="' . escape_html('uploads/filedump/' . $f) . '"' . (($it === $f) ? ' selected="selected"' : '') . '>' . escape_html($rel) . '</option>'; // XHTMLXHTML
         }
     }
 
@@ -417,7 +417,7 @@ function nice_get_filedump_places($it, $base = null)
 
     foreach ($directories as $d) {
         $rel = ($base === null) ? $d : preg_replace('#^' . preg_quote($base, '#') . '/#', '', $d);
-        $out .= '<option value="/' . escape_html($d) . (($d == '') ? '' : '/') . '"' . (($it === $d) ? ' selected="selected"' : '') . '>/' . escape_html($rel) . '</option>' . "\n";
+        $out .= '<option value="/' . escape_html($d) . (($d == '') ? '' : '/') . '"' . (($it === $d) ? ' selected="selected"' : '') . '>/' . escape_html($rel) . '</option>'; // XHTMLXHTML
     }
 
     return make_string_tempcode($out);

@@ -796,7 +796,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
     } else {
         $types = $_types;
     }
-    $_type_list = '';
+    $_type_list = ''; // XHTMLXHTML
     $type_list = new Tempcode();
     $last_type = do_lang_tempcode('OTHER');
     foreach ($types as $_type) {
@@ -815,8 +815,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
             }
 
             foreach ($sub_types as $__type => $_title) {
-                //$_type_list->attach(form_input_list_entry($__type, ($__type == $type), $_title));
-                $_type_list .= '<option value="' . escape_html($__type) . '"' . (($__type == $type) ? ' selected="selected"' : '') . '>' . $_title->evaluate() . '</option>'; // XHTMLXHTML
+                $_type_list .= '<option value="' . escape_html($__type) . '"' . (($__type == $type) ? ' selected="selected"' : '') . '>' . $_title->evaluate() . '</option>';
             }
         }
     }
@@ -824,7 +823,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
         $type_list->attach(form_input_list_group($last_type, make_string_tempcode($_type_list)));
     }
 
-    $ret = make_string_tempcode($type_list->evaluate()); // XHTMLXHTML
+    $ret = make_string_tempcode($type_list->evaluate());
 
     $cache[$cache_sig] = $ret;
 

@@ -473,17 +473,17 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
             $order = $row['cf_order'];
             if ($standard_ordering) {
-                $order_list = '';
+                $order_list = ''; // XHTMLXHTML
                 $selected_one = false;
                 for ($i = 0; $i < $num_cpfs; $i++) {
                     $selected = ($i === $order);
                     if ($selected) {
                         $selected_one = true;
                     }
-                    $order_list .= '<option value="' . strval($i) . '"' . ($selected ? ' selected="selected"' : '') . '>' . strval($i + 1) . '</option>'; // XHTMLXHTML
+                    $order_list .= '<option value="' . strval($i) . '"' . ($selected ? ' selected="selected"' : '') . '>' . strval($i + 1) . '</option>';
                 }
                 if (!$selected_one) {
-                    $order_list .= '<option value="' . strval($i) . '" selected="selected">' . (($order == ORDER_AUTOMATED_CRITERIA) ? do_lang('NA') : strval($order + 1)) . '</option>'; // XHTMLXHTML
+                    $order_list .= '<option value="' . strval($i) . '" selected="selected">' . (($order == ORDER_AUTOMATED_CRITERIA) ? do_lang('NA') : strval($order + 1)) . '</option>';
                 }
                 $orderer = do_template('COLUMNED_TABLE_ROW_CELL_SELECT', array('_GUID' => '0c35279246e34d94fd4a41c432cdffed', 'LABEL' => do_lang_tempcode('SORT'), 'NAME' => 'order_' . strval($row['id']), 'LIST' => $order_list));
             } else {

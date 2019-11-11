@@ -501,7 +501,7 @@ class Hook_addon_registry_cns_forum
 
         require_lang('cns');
 
-        $orderings = '<option>1</option><option>2</option><option>3</option>';
+        $orderings = '<option>1</option><option>2</option><option>3</option>'; // XHTMLXHTML
 
         $orderings = '<label for="order_' . strval(1) . '">' . do_lang('SORT') . ' <select id="order_' . strval(1) . '" name="order_' . strval(1) . '">' . $orderings . '</select></label>';
 

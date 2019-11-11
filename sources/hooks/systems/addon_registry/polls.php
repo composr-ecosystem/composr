@@ -120,7 +120,7 @@ class Hook_addon_registry_polls
             'themes/default/templates/POLL_ANSWER.tpl',
             'themes/default/templates/POLL_ANSWER_RESULT.tpl',
             'themes/default/templates/POLL_SCREEN.tpl',
-            'themes/default/templates/POLL_LIST_ENTRY.tpl',
+            'themes/default/templates/POLL_LIST_LINE.tpl',
             'themes/default/templates/POLL_RSS_SUMMARY.tpl',
             'themes/default/css/polls.css',
             'cms/pages/modules/cms_polls.php',
@@ -152,7 +152,7 @@ class Hook_addon_registry_polls
             'templates/POLL_ANSWER.tpl' => 'poll_answer',
             'templates/POLL_ANSWER_RESULT.tpl' => 'poll_answer_result',
             'templates/POLL_BOX.tpl' => 'poll_answer',
-            'templates/POLL_LIST_ENTRY.tpl' => 'poll_list_entry',
+            'templates/POLL_LIST_LINE.tpl' => 'poll_list_line',
             'templates/POLL_SCREEN.tpl' => 'poll_screen',
         );
     }
@@ -331,10 +331,10 @@ class Hook_addon_registry_polls
      *
      * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
      */
-    public function tpl_preview__poll_list_entry()
+    public function tpl_preview__poll_list_line()
     {
         return array(
-            lorem_globalise(do_lorem_template('POLL_LIST_ENTRY', array(
+            lorem_globalise(do_lorem_template('POLL_LIST_LINE', array(
                 'QUESTION' => lorem_phrase(),
                 'STATUS' => lorem_phrase(),
             )), null, '', true)

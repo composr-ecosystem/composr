@@ -604,7 +604,7 @@ function create_selection_list_gallery_tree($it = null, $filter = null, $must_ac
         $tree = $tree[0];
     }
 
-    $out = ''; // XHTMLXHTML
+    $out = '';
     foreach ($tree as $category) {
         if (($addable_filter) && (!$category['addable'])) {
             continue;
@@ -615,7 +615,7 @@ function create_selection_list_gallery_tree($it = null, $filter = null, $must_ac
         }
 
         $selected = ($category['id'] == $it);
-        $out .= '<option value="' . (!$use_compound_list ? $category['id'] : $category['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . escape_html($category['breadcrumbs']) . '</option>' . "\n";
+        $out .= '<option value="' . (!$use_compound_list ? $category['id'] : $category['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . escape_html($category['breadcrumbs']) . '</option>'; // XHTMLXHTML
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -1003,12 +1003,12 @@ function create_selection_list_gallery_content_tree($table, $it = null, $submitt
         $tree = $tree[0];
     }
 
-    $out = ''; // XHTMLXHTML
+    $out = '';
     foreach ($tree as $gallery) {
         foreach ($gallery['entries'] as $eid => $etitle) {
             $selected = ($eid == $it);
             $line = do_template('GALLERY_ENTRY_LIST_LINE', array('_GUID' => '5a6fac8a768e049f9cc6c2d4ec77eeca', 'BREADCRUMBS' => $gallery['breadcrumbs'], 'URL' => $etitle));
-            $out .= '<option value="' . (!$use_compound_list ? strval($eid) : $gallery['compound_list']) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>' . "\n";
+            $out .= '<option value="' . (!$use_compound_list ? strval($eid) : $gallery['compound_list']) . '"' . ($selected ? 'selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
         }
     }
 

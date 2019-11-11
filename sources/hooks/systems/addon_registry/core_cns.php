@@ -383,7 +383,6 @@ class Hook_addon_registry_core_cns
             'sources/cns_join.php',
             'pages/modules/lost_password.php',
             'themes/default/templates/JOIN_FORM.tpl',
-            'themes/default/templates/CNS_AUTO_TIME_ZONE_ENTRY.tpl',
             'themes/default/templates/CNS_DELURK_CONFIRM.tpl',
             'themes/default/templates/CNS_JOIN_STEP2_SCREEN.tpl',
             'lang/EN/cns_lurkers.ini',
@@ -494,7 +493,6 @@ class Hook_addon_registry_core_cns
             'templates/CNS_DELURK_CONFIRM.tpl' => 'administrative__cns_delurk_confirm',
             'templates/CNS_JOIN_STEP1_SCREEN.tpl' => 'cns_join_step1_screen',
             'templates/CNS_JOIN_STEP2_SCREEN.tpl' => 'cns_join_step2_screen',
-            'templates/CNS_AUTO_TIME_ZONE_ENTRY.tpl' => 'cns_auto_time_zone_entry',
             'templates/CNS_USER_MEMBER.tpl' => 'cns_user_member',
             'templates/CNS_MEMBER_ACTION.tpl' => 'cns_member_profile_screen',
             'templates/CNS_EMOTICON_TABLE.tpl' => 'cns_emoticon_table',
@@ -673,37 +671,6 @@ class Hook_addon_registry_core_cns
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD_SPACER', array(
             'TITLE' => lorem_phrase(),
             'THEME_ALSO_INCLUDE_PAGES' => false,
-        )));
-
-        $name = placeholder_random_id();
-        $timezone_list = new Tempcode();
-        foreach (placeholder_array() as $key => $value) {
-            $timezone_list->attach(do_lorem_template('CNS_AUTO_TIME_ZONE_ENTRY', array(
-                'HOUR' => $value,
-                'DW' => placeholder_date_raw(),
-                'NAME' => $name,
-                'SELECTED' => '',
-                'CLASS' => '',
-                'TEXT' => lorem_phrase(),
-            )));
-        }
-        $input = do_lorem_template('FORM_SCREEN_INPUT_LIST', array(
-            'TABINDEX' => placeholder_number(),
-            'REQUIRED' => '',
-            'NAME' => $name,
-            'CONTENT' => $timezone_list,
-            'INLINE_LIST' => false,
-            'SIZE' => '9',
-        ));
-        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', array(
-            'REQUIRED' => true,
-            'SKIP_LABEL' => false,
-            'NAME' => $name,
-            'PRETTY_NAME' => lorem_phrase(),
-            'DESCRIPTION' => lorem_sentence_html(),
-            'DESCRIPTION_SIDE' => '',
-            'INPUT' => $input,
-            'COMCODE' => '',
         )));
 
         $form = do_lorem_template('FORM', array(

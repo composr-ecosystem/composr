@@ -72,7 +72,7 @@ class external_code_considerations_test_set extends cms_test_case
 
             // Check files exists
             $skip = array(
-                'data_custom/latest_activity.txt',
+                'data_custom/latest_activity.bin',
                 'data_custom/permission_checks.log',
                 'data_custom/execute_temp.php',
                 'docs/api',

@@ -48,7 +48,7 @@ test_a
 /*.csprj
 /*.geany
 /.project
-/data_custom/latest_activity.txt
+/data_custom/latest_activity.bin
 tmpfile__*
 *.tmp
 *~

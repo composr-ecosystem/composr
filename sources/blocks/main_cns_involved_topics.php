@@ -102,7 +102,7 @@ class Block_main_cns_involved_topics
                 $max_rows = count($rows); // We don't want bots hogging resources on somewhere they don't need to dig into
             }
 
-            $moderator_actions = '';
+            $moderator_actions = ''; // XHTMLXHTML
             $has_topic_marking = has_delete_permission('mid', get_member(), $member_id_of, 'topics');
             if ($has_topic_marking) {
                 $moderator_actions .= '<option value="delete_topics_and_posts">' . do_lang('DELETE_TOPICS_AND_POSTS') . '</option>';

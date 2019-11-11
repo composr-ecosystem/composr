@@ -82,44 +82,62 @@ class basic_code_formatting_test_set extends cms_test_case
             'txt',
         );
 
-        $exceptions = array(
-            '_tests/tests/unit_tests/tempcode.php',
-            '_tests/tests/unit_tests/xss.php',
-            '_tests/libs/mf_parse.php',
-            'data_custom/sitemaps/news_sitemap.xml',
-            'manifest.xml',
-            'mobiquo/lib/xmlrpc.php',
-            'mobiquo/lib/xmlrpcs.php',
-            'mobiquo/smartbanner/appbanner.css',
-            'mobiquo/smartbanner/appbanner.js',
-            'mobiquo/tapatalkdetect.js',
-            'parameters.xml',
-            'site/pages/comcode/EN/userguide_comcode.txt',
-            'sources_custom/twitter.php',
-            'themes/default/css/widget_color.css',
-            'themes/default/css/widget_select2.css',
-            'themes/default/css/mediaelementplayer.css',
-            'themes/default/javascript/jquery.js',
-            'themes/default/javascript/jquery_ui.js',
-            'themes/default/javascript/plupload.js',
-            'themes/default/javascript/select2.js',
-            'themes/default/javascript/theme_colours.js',
-            'themes/default/javascript/widget_date.js',
-            'themes/default/javascript_custom/columns.js',
-            'themes/default/javascript_custom/jquery_flip.js',
-            'themes/default/javascript/mediaelement-and-player.js',
-            'themes/default/javascript_custom/skitter.js',
-            'themes/default/javascript_custom/sortable_tables.js',
-            'themes/default/javascript_custom/unslider.js',
-            'themes/default/javascript_custom/charts.js',
-        );
-
         foreach ($this->files as $path) {
-            if (in_array($path, $exceptions)) {
+            $exceptions = array(
+                'data_custom/sitemap',
+                'sources_custom/sabredav',
+                'docs/pages/comcode_custom/EN',
+                'data_custom/modules/admin_stats',
+                'data/polyfills',
+                'aps',
+                '_tests/codechecker/netbeans',
+                'data/ace',
+                'data/ckeditor',
+                'sources_custom/composr_mobile_sdk',
+                'tracker',
+                'sources_custom/ILess',
+                'sources_custom/spout',
+                'sources_custom/getid3',
+                'sources_custom/programe',
+                '_tests/simpletest',
+                'data_custom/pdf_viewer',
+            );
+            if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
             }
 
-            if (preg_match('#^(data_custom/sitemap|sources_custom/sabredav|docs/pages/comcode_custom/EN|data_custom/modules/admin_stats|data/polyfills|aps|_tests/codechecker/netbeans|data/ace|data/ckeditor|sources_custom/composr_mobile_sdk|tracker|sources_custom/ILess|sources_custom/spout|sources_custom/getid3|sources_custom/programe|_tests/simpletest)/#', $path) != 0) {
+            $exceptions = array(
+                '_tests/tests/unit_tests/tempcode.php',
+                '_tests/tests/unit_tests/xss.php',
+                '_tests/libs/mf_parse.php',
+                'data_custom/sitemaps/news_sitemap.xml',
+                'manifest.xml',
+                'mobiquo/lib/xmlrpc.php',
+                'mobiquo/lib/xmlrpcs.php',
+                'mobiquo/smartbanner/appbanner.css',
+                'mobiquo/smartbanner/appbanner.js',
+                'mobiquo/tapatalkdetect.js',
+                'parameters.xml',
+                'site/pages/comcode/EN/userguide_comcode.txt',
+                'sources_custom/twitter.php',
+                'themes/default/css/widget_color.css',
+                'themes/default/css/widget_select2.css',
+                'themes/default/css/mediaelementplayer.css',
+                'themes/default/javascript/jquery.js',
+                'themes/default/javascript/jquery_ui.js',
+                'themes/default/javascript/plupload.js',
+                'themes/default/javascript/select2.js',
+                'themes/default/javascript/theme_colours.js',
+                'themes/default/javascript/widget_date.js',
+                'themes/default/javascript_custom/columns.js',
+                'themes/default/javascript_custom/jquery_flip.js',
+                'themes/default/javascript/mediaelement-and-player.js',
+                'themes/default/javascript_custom/skitter.js',
+                'themes/default/javascript_custom/sortable_tables.js',
+                'themes/default/javascript_custom/unslider.js',
+                'themes/default/javascript_custom/charts.js',
+            );
+            if (in_array($path, $exceptions)) {
                 continue;
             }
 
@@ -166,6 +184,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/programe',
                 'sources_custom/sabredav',
                 'tracker',
+                'data_custom/pdf_viewer',
             );
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -224,6 +243,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'lang_custom/(?!EN)\w+',
                 'text_custom/(?!EN)\w+',
                 'comcode_custom/(?!EN)\w+',
+                'data_custom/pdf_viewer',
             );
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -292,6 +312,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'sources_custom/facebook',
                 'sources_custom/aws/Aws',
                 'docs/jsdoc',
+                'data_custom/pdf_viewer',
             );
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -303,7 +324,7 @@ class basic_code_formatting_test_set extends cms_test_case
             $ext = get_file_extension(get_file_base() . '/' . $path);
 
             if (isset($this->text_formats[$ext])) {
-                $c = cms_file_get_contents_safe($path);
+                $c = cms_file_get_contents_safe(get_file_base() . '/' . $path);
 
                 $this->assertTrue(strpos($c, "\r") === false, 'Windows text format detected for ' . $path);
 
@@ -311,45 +332,23 @@ class basic_code_formatting_test_set extends cms_test_case
                     continue;
                 }
 
-                $term_breaks = strlen($c) - strlen(rtrim($c, "\n"));
-
-                $expected_breaks = 1;
-
-                if (in_array($path, array(
-                    'data_custom/latest_activity.txt',
-                    'themes/admin/templates/MENU_BRANCH_dropdown.tpl',
-                    'themes/default/templates/BREADCRUMB_SEPARATOR.tpl',
-                    'themes/default/templates/CHATCODE_EDITOR_BUTTON.tpl',
-                    'themes/default/templates/CHATCODE_EDITOR_MICRO_BUTTON.tpl',
-                    'themes/default/templates/COMCODE_CURRENCY.tpl',
-                    'themes/default/templates/COMCODE_EDITOR_BUTTON.tpl',
-                    'themes/default/templates/COMCODE_EDITOR_MICRO_BUTTON.tpl',
-                    'themes/default/templates/COMCODE_IMG.tpl',
-                    'themes/default/templates/FRACTIONAL_EDIT.tpl',
-                    'themes/default/templates/MENU_BRANCH_dropdown.tpl',
-                    'themes/default/templates/MENU_BRANCH_popup.tpl',
-                    'themes/default/templates/NOTIFICATION_PT_DESKTOP.tpl',
-                    'themes/default/templates/NOTIFICATION_WEB_DESKTOP.tpl',
-                    'themes/default/templates/PAGINATION_CONTINUE.tpl',
-                    'themes/default/templates/PAGINATION_CONTINUE_FIRST.tpl',
-                    'themes/default/templates/PAGINATION_CONTINUE_LAST.tpl',
-                    'themes/default/templates/PAGINATION_NEXT.tpl',
-                    'themes/default/templates/PAGINATION_NEXT_LINK.tpl',
-                    'themes/default/templates/PAGINATION_PAGE_NUMBER.tpl',
-                    'themes/default/templates/PAGINATION_PAGE_NUMBER_LINK.tpl',
-                    'themes/default/templates/PAGINATION_PREVIOUS.tpl',
-                    'themes/default/templates/PAGINATION_PREVIOUS_LINK.tpl',
-                    'themes/default/templates/CURRENCY.tpl',
-                    'themes/default/templates/CROP_TEXT_MOUSE_OVER_INLINE.tpl',
-                    'themes/default/templates/CROP_TEXT_MOUSE_OVER.tpl',
-                    'themes/default/templates/CNS_USER_MEMBER.tpl',
-                    'themes/default/templates/ICON.tpl',
-                    'themes/default/templates/MENU_LINK_PROPERTIES.tpl',
-                ))) {
-                    $expected_breaks = 0;
+                $num_line_breaks_total = substr_count($c, "\n");
+                if (($this->debug) && ($num_line_breaks_total == 1) && ($ext == 'tpl')) {
+                    var_dump('Single line template: ' . $path);
                 }
 
-                $this->assertTrue($term_breaks == $expected_breaks, 'Wrong number of terminating line breaks (got ' . integer_format($term_breaks) . ', expects ' . integer_format($expected_breaks) . ') for ' . $path);
+                $num_term_breaks = strlen($c) - strlen(rtrim($c, "\n"));
+
+                // We expect all text files to end with one single line break, which is a long standing unix convention.
+                //  Some templates need to be loaded with no terminating line, as white-space may cause an issue.
+                //  Composr accomodates for this with a special rule - a terminating line break is stripped from any one-line templates.
+                $expected_term_breaks = 1;
+                if (in_array($path, array(
+                ))) {
+                    $expected_term_breaks = 0;
+                }
+
+                $this->assertTrue($num_term_breaks == $expected_term_breaks, 'Wrong number of terminating line breaks (got ' . integer_format($num_term_breaks) . ', expects ' . integer_format($expected_term_breaks) . ') for ' . $path);
             }
         }
     }

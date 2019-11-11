@@ -120,7 +120,7 @@ function lorem_chunk()
  */
 function lorem_word_html()
 {
-    $text = '<strong>Lorem</strong>';
+    $text = '<strong>Lorem</strong>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -134,7 +134,7 @@ function lorem_word_html()
  */
 function lorem_word_2_html()
 {
-    $text = '<strong>Ipsum</strong>';
+    $text = '<strong>Ipsum</strong>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -148,7 +148,7 @@ function lorem_word_2_html()
  */
 function lorem_phrase_html()
 {
-    $text = '<strong>Lorem ipsum</strong> dolor';
+    $text = '<strong>Lorem ipsum</strong> dolor'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -162,7 +162,7 @@ function lorem_phrase_html()
  */
 function lorem_sentence_html()
 {
-    $text = '<strong>Lorem ipsum</strong> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+    $text = '<strong>Lorem ipsum</strong> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -176,7 +176,7 @@ function lorem_sentence_html()
  */
 function lorem_paragraph_html()
 {
-    $text = '<strong>Lorem ipsum</strong> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+    $text = '<strong>Lorem ipsum</strong> dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -190,7 +190,7 @@ function lorem_paragraph_html()
  */
 function lorem_chunk_html()
 {
-    $text = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies cursus egestas. Nunc orci lacus, viverra a ultrices nec, volutpat eu velit. Maecenas imperdiet tortor eget eros varius mattis. Nullam eget lacus in tellus mollis ornare in lobortis sapien. Duis lectus felis, consequat in ullamcorper at, elementum sed est. In viverra tellus turpis, in tincidunt leo. Donec sagittis rhoncus urna quis eleifend. Nam imperdiet, orci quis bibendum porta, odio neque ullamcorper erat, sed malesuada ante libero vel ligula. Ut porttitor est egestas erat placerat eget placerat lectus ultricies. Morbi eu dolor metus, nec vestibulum nisl. Praesent eget massa tortor, in consequat velit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque eget eros ut erat vestibulum facilisis. Duis eleifend odio in neque pellentesque semper pulvinar dolor feugiat. Proin sed lectus et lectus fringilla gravida. Aliquam a nisl metus. In risus risus, tempus interdum viverra ac, laoreet at sem. Sed sem nunc, rutrum quis convallis eu, hendrerit non libero.</p><p>Sed sollicitudin, dolor ac posuere bibendum, tellus eros hendrerit magna, non accumsan ligula sapien at enim. Curabitur hendrerit lacinia ligula, et dapibus diam porttitor sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nisi arcu, placerat vel ullamcorper non, hendrerit cursus nisl. Aliquam tincidunt, magna sed tempus auctor, enim dolor consequat massa, rhoncus euismod tortor orci fringilla arcu. Nulla et egestas augue. Fusce non enim vitae dolor imperdiet pulvinar vitae sed neque. Sed augue neque, volutpat non tincidunt ac, volutpat eu tellus. Suspendisse sollicitudin nulla eu leo placerat posuere id sit amet metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum sollicitudin porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed imperdiet scelerisque turpis, eleifend tristique justo euismod non. Pellentesque at elit tristique sem venenatis auctor eu vitae dui. Nam hendrerit sapien sit amet risus suscipit vitae interdum arcu blandit. Phasellus quis massa sed mi mollis hendrerit.</p><p>Nunc at elit eget elit convallis auctor sit amet non nisi. Curabitur consequat, nisl sed venenatis feugiat, felis purus vehicula purus, sed scelerisque nulla tellus ac neque. Morbi convallis semper pulvinar. Integer auctor mi ante. Cras aliquam egestas lobortis. Maecenas sodales mi at felis ullamcorper tristique. Fusce viverra laoreet sapien, et vestibulum purus interdum sit amet. Sed at ante quis ipsum pellentesque pretium. Praesent volutpat justo in orci ullamcorper cursus. In non nulla sit amet turpis ultrices dignissim eu cursus justo. Etiam lacinia lacinia odio sit amet fringilla. Vestibulum at auctor nisl.</p>';
+    $text = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultricies cursus egestas. Nunc orci lacus, viverra a ultrices nec, volutpat eu velit. Maecenas imperdiet tortor eget eros varius mattis. Nullam eget lacus in tellus mollis ornare in lobortis sapien. Duis lectus felis, consequat in ullamcorper at, elementum sed est. In viverra tellus turpis, in tincidunt leo. Donec sagittis rhoncus urna quis eleifend. Nam imperdiet, orci quis bibendum porta, odio neque ullamcorper erat, sed malesuada ante libero vel ligula. Ut porttitor est egestas erat placerat eget placerat lectus ultricies. Morbi eu dolor metus, nec vestibulum nisl. Praesent eget massa tortor, in consequat velit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque eget eros ut erat vestibulum facilisis. Duis eleifend odio in neque pellentesque semper pulvinar dolor feugiat. Proin sed lectus et lectus fringilla gravida. Aliquam a nisl metus. In risus risus, tempus interdum viverra ac, laoreet at sem. Sed sem nunc, rutrum quis convallis eu, hendrerit non libero.</p><p>Sed sollicitudin, dolor ac posuere bibendum, tellus eros hendrerit magna, non accumsan ligula sapien at enim. Curabitur hendrerit lacinia ligula, et dapibus diam porttitor sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec nisi arcu, placerat vel ullamcorper non, hendrerit cursus nisl. Aliquam tincidunt, magna sed tempus auctor, enim dolor consequat massa, rhoncus euismod tortor orci fringilla arcu. Nulla et egestas augue. Fusce non enim vitae dolor imperdiet pulvinar vitae sed neque. Sed augue neque, volutpat non tincidunt ac, volutpat eu tellus. Suspendisse sollicitudin nulla eu leo placerat posuere id sit amet metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum sollicitudin porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed imperdiet scelerisque turpis, eleifend tristique justo euismod non. Pellentesque at elit tristique sem venenatis auctor eu vitae dui. Nam hendrerit sapien sit amet risus suscipit vitae interdum arcu blandit. Phasellus quis massa sed mi mollis hendrerit.</p><p>Nunc at elit eget elit convallis auctor sit amet non nisi. Curabitur consequat, nisl sed venenatis feugiat, felis purus vehicula purus, sed scelerisque nulla tellus ac neque. Morbi convallis semper pulvinar. Integer auctor mi ante. Cras aliquam egestas lobortis. Maecenas sodales mi at felis ullamcorper tristique. Fusce viverra laoreet sapien, et vestibulum purus interdum sit amet. Sed at ante quis ipsum pellentesque pretium. Praesent volutpat justo in orci ullamcorper cursus. In non nulla sit amet turpis ultrices dignissim eu cursus justo. Etiam lacinia lacinia odio sit amet fringilla. Vestibulum at auctor nisl.</p>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -206,7 +206,7 @@ function placeholder_form()
 {
     require_css('forms');
 
-    $text = '<p>(A form would go here.)</p>';
+    $text = '<p>(A form would go here.)</p>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -222,7 +222,7 @@ function placeholder_fields()
 {
     require_css('forms');
 
-    $text = '<tr><th>(Some field key would go here.)</th><td>(Some field value would go here.)</td></tr>';
+    $text = '<tr><th>(Some field key would go here.)</th><td>(Some field value would go here.)</td></tr>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -238,7 +238,7 @@ function placeholder_fields_as_divs()
 {
     require_css('forms');
 
-    $text = '<div><div>(Some field key would go here.)</div><div>(Some field value would go here.)</div></div>';
+    $text = '<div><div>(Some field key would go here.)</div><div>(Some field value would go here.)</div></div>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -255,7 +255,7 @@ function placeholder_form_with_field($field_name)
 {
     require_css('forms');
 
-    $text = '<p>(A form would go here.)</p>';
+    $text = '<p>(A form would go here.)</p>'; // XHTMLXHTML
 
     require_code('form_templates');
     $hidden = form_input_hidden($field_name, '0');
@@ -272,7 +272,7 @@ function placeholder_form_with_field($field_name)
  */
 function placeholder_table()
 {
-    $text = '<table class="results-table" width="100%"><tbody><tr><th>(Cell 1)</th><td>(Cell 2)</td></tr><tr><td>(Cell 3)</td><td>(Cell 4)</td></tr></tbody></table>';
+    $text = '<table class="results-table" width="100%"><tbody><tr><th>(Cell 1)</th><td>(Cell 2)</td></tr><tr><td>(Cell 3)</td><td>(Cell 4)</td></tr></tbody></table>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -300,7 +300,7 @@ function placeholder_url()
  */
 function placeholder_link()
 {
-    $text = '<a href="http://www.example.com/">test link</a>';
+    $text = '<a href="http://www.example.com/">test link</a>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -340,7 +340,7 @@ function placeholder_random_id()
  */
 function placeholder_button()
 {
-    $text = '<p>( Buttons would go here.)</p>';
+    $text = '<p>( Buttons would go here.)</p>'; // XHTMLXHTML
     if (function_exists('ocp_mark_as_escaped')) {
         ocp_mark_as_escaped($text);
     }
@@ -356,7 +356,7 @@ function placeholder_options()
 {
     $text = '';
     for ($i = 1; $i <= 3; $i++) {
-        $text .= '<option value="' . lorem_word() . '">' . lorem_word() . '</option>';
+        $text .= '<option value="' . lorem_word() . '">' . lorem_word() . '</option>'; // XHTMLXHTML
     }
 
     return $text;
@@ -385,7 +385,7 @@ function placeholder_array($num_elements = 3)
  */
 function placeholder_list_item()
 {
-    return '<li>A list will display here</li>';
+    return '<li>A list will display here</li>'; // XHTMLXHTML
 }
 
 /**
@@ -914,7 +914,6 @@ function get_text_templates()
         'templates/TRANSLATION_LINKS.tpl',
         'templates/JS_REFRESH.tpl',
         'templates/META_REFRESH_LINE.tpl',
-        'templates/CNS_AUTO_TIME_ZONE_ENTRY.tpl',
         'templates/PREVIEW_SCRIPT_CODE.tpl',
         'templates/HANDLE_CONFLICT_RESOLUTION.tpl',
         'templates/PASSWORD_CHECK_JS.tpl',

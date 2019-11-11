@@ -314,12 +314,12 @@ function create_selection_list_downloads_tree($it = null, $submitter = null, $sh
         $tree = $tree[0];
     }
 
-    $out = ''; // XHTMLXHMTML
+    $out = '';
     foreach ($tree as $category) {
         foreach ($category['entries'] as $eid => $etitle) {
             $selected = ($eid == $it);
             $line = do_template('DOWNLOAD_LIST_LINE', array('_GUID' => '7bb13e4418b500cb2b330e629710138a', 'BREADCRUMBS' => $category['breadcrumbs'], 'DOWNLOAD' => $etitle));
-            $out .= '<option value="' . (!$use_compound_list ? strval($eid) : $category['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>';
+            $out .= '<option value="' . (!$use_compound_list ? strval($eid) : $category['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
         }
     }
 
@@ -445,7 +445,7 @@ function create_selection_list_download_category_tree($it = null, $use_compound_
         $tree = $tree[0];
     }
 
-    $out = ''; // XHTMLXHTML
+    $out = '';
     foreach ($tree as $category) {
         if (($addable_filter) && (!$category['addable'])) {
             continue;
@@ -457,7 +457,7 @@ function create_selection_list_download_category_tree($it = null, $use_compound_
 
         $selected = ($category['id'] == $it);
         $line = do_template('DOWNLOAD_LIST_LINE_2', array('_GUID' => '0ccffeff5b80b1840188b839aee8d9f2', 'BREADCRUMBS' => $category['breadcrumbs'], 'FILECOUNT' => '?'));
-        $out .= '<option value="' . (!$use_compound_list ? strval($category['id']) : $category['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>' . "\n";
+        $out .= '<option value="' . (!$use_compound_list ? strval($category['id']) : $category['compound_list']) . '"' . ($selected ? ' selected="selected"' : '') . '>' . $line->evaluate() . '</option>'; // XHTMLXHTML
     }
 
     if ($GLOBALS['XSS_DETECT']) {

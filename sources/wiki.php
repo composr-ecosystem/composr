@@ -878,9 +878,6 @@ function _create_selection_list_wiki_page_tree(&$wiki_seen, $select, $id, $bread
         }
     }
 
-    /*$out = form_input_list_entry(strval($id), ($select == $id), do_template('WIKI_LIST_TREE_LINE', array('_GUID' => 'd9d4a951df598edd3f08f87be634965b', 'BREADCRUMBS' => $breadcrumbs, 'TITLE' => $title, 'ID' => $id)));
-    $out = '<option value="' . (!$use_compound_list ? $id : $compound_list) . '">' . $breadcrumbs . escape_html($title) . '</option>' . "\n";
-    $out .= $_below;*/
     $out = form_input_list_entry(((!$use_compound_list) ? strval($id) : $compound_list) . ($ins_format ? ('!' . $title) : ''), false, $breadcrumbs . $title);
     $out->attach($_below);
 
