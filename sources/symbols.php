@@ -573,8 +573,8 @@ function ecv($lang, $escaped, $type, $name, $param)
                 }
 
                 // Easy responsive images
-                if ((isset($param[1])) && (is_numeric($param[0]))) {
-                    $viewport_switch = intval($param[0]);
+                if ((isset($param[1])) && (is_numeric($param[0]->evaluate()))) {
+                    $viewport_switch = intval($param[0]->evaluate());
                 } else {
                     $viewport_switch = 983;
                 }
@@ -587,7 +587,7 @@ function ecv($lang, $escaped, $type, $name, $param)
 
                     $new_value .= substr($value, $last_offset, $this_offset - $last_offset);
 
-                    if (strpos($matches[$i][0][0], 'srcset=') !== false || strpos($matches[$i][0][0], 'sizes=') !== false) {
+                    if (strpos($matches[$i][0][0], 'srcset=') !== false || strpos($matches[$i][0][0], 'sizes=') !== false || substr($value, $this_offset - 14, 14) == '<!--picture-->') {
                         // Already responsive?
                         $new_value .= $matches[$i][0][0];
                         $last_offset = $this_offset + strlen($matches[$i][0][0]);
@@ -610,12 +610,16 @@ function ecv($lang, $escaped, $type, $name, $param)
                             $file_path = get_custom_file_base() . substr($url, strlen(get_custom_base_url()));
                             if (is_file($file_path)) {
                                 $ext = get_file_extension($file_path);
-                                $mobile_file_path = dirname($file_path) . '/' . basename($file_path, '.' . $ext) . '_mobile.' . $ext;
-                                if (!is_file($mobile_file_path)) {
-                                    $mobile_file_path = dirname($file_path) . '/' . basename($file_path, '.' . $ext) . '-mobile.' . $ext;
-                                }
-                                if (is_file($mobile_file_path)) {
-                                    $mobile_url = get_custom_base_url() . substr($mobile_file_path, strlen(get_custom_file_base()));
+                                $extensions = array_unique(array_merge(array($ext), array('png', 'gif', 'jpg', 'jpeg', 'webp')));
+                                foreach ($extensions as $_ext) {
+                                    $mobile_file_path = dirname($file_path) . '/' . basename($file_path, '.' . $ext) . '_mobile.' . $_ext;
+                                    if (!is_file($mobile_file_path)) {
+                                        $mobile_file_path = dirname($file_path) . '/' . basename($file_path, '.' . $ext) . '-mobile.' . $_ext;
+                                    }
+                                    if (is_file($mobile_file_path)) {
+                                        $mobile_url = get_custom_base_url() . substr($mobile_file_path, strlen(get_custom_file_base()));
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -631,6 +635,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                     if (is_mobile()) {
                         // Simple <img> element with mobile version URL...
 
+                        $new_value .= '<!--picture-->';
                         $new_value .= $matches[$i][1][0]; // Front of img tag and start src attribute
                         $new_value .= escape_html($mobile_url); // Image URL
                         $new_value .= $matches[$i][3][0]; // Close src attribute
