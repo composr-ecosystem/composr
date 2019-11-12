@@ -1514,6 +1514,9 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         BLOCK_main_members_PARAM_parent_gallery_TITLE
         BLOCK_main_members_PARAM_per_row
         BLOCK_main_members_PARAM_per_row_TITLE
+        BLOCK_main_members_PARAM_include_non_confirmed
+        BLOCK_main_members_PARAM_include_non_confirmed_TITLE
+        MEMBER_DIRECTORY_NON_CONFIRMED
         BLOCK_main_members_PARAM_select
         BLOCK_main_members_PARAM_select_TITLE
         BLOCK_main_members_PARAM_sort

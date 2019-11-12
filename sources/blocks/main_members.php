@@ -53,6 +53,7 @@ class Block_main_members
             'sort',
             'parent_gallery',
             'per_row',
+            'include_non_confirmed',
             'guid',
         );
         return $info;
@@ -82,6 +83,7 @@ class Block_main_members
             get_param_string($block_id.\'_sort\',array_key_exists(\'sort\',$map)?$map[\'sort\']:\'m_join_time DESC\'),
             array_key_exists(\'parent_gallery\',$map)?$map[\'parent_gallery\']:\'\',
             array_key_exists(\'per_row\',$map)?intval($map[\'per_row\']):0,
+            array_key_exists(\'include_non_confirmed\',$map)?$map[\'include_non_confirmed\']:\'exclude\',
             array_key_exists(\'guid\',$map)?$map[\'guid\']:\'\',
         )';
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to CPF permissions
@@ -217,7 +219,11 @@ class Block_main_members
         if ((!has_privilege(get_member(), 'see_unvalidated')) && (addon_installed('unvalidated'))) {
             $where .= ' AND m_validated=1';
         }
-        $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        if ((!has_privilege(get_member(), 'see_unvalidated')) || (!isset($map['include_non_confirmed'])) || ($map['include_non_confirmed'] == 'exclude')) {
+            $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
+        } elseif ((has_privilege(get_member(), 'see_unvalidated')) && ($map['include_non_confirmed'] == 'exclusively')) {
+            $where .= ' AND ' . db_string_not_equal_to('m_validated_email_confirm_code', '');
+        }
 
         $include_form = array_key_exists('include_form', $map) ? ($map['include_form'] == '1') : true;
 
