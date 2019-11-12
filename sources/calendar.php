@@ -1274,7 +1274,7 @@ function cal_utctime_to_usertime($timestamp, $show_in_users_timezone)
  */
 function detect_happening_at($member_id, $skip_id, $our_times, $restrict = true, $period_start = null, $period_end = null)
 {
-    if (count($our_times) == 0) {
+    if (empty($our_times)) {
         return array();
     }
 

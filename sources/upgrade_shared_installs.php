@@ -73,7 +73,7 @@ function upgrade_sharedinstall_sites($from = 0)
 
     $total = count($sites);
 
-    if (count($sites) > 0) {
+    if (!empty($sites)) {
         cms_disable_time_limit();
     }
 

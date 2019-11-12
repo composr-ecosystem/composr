@@ -50,7 +50,7 @@ class Hook_cron_staff_checklist_notify
             $_hooks = find_all_hook_obs('blocks', 'main_staff_checklist', 'Hook_checklist_');
             foreach ($_hooks as $object) {
                 $ret = $object->run();
-                if (($ret !== null) && (count($ret) != 0)) {
+                if (($ret !== null) && (!empty($ret))) {
                     foreach ($ret as $r) {
                         if ($r[2] !== null) {
                             if ($r[2] > 0) {

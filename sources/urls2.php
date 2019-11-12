@@ -108,7 +108,7 @@ function _build_keep_form_fields($page = '', $keep_all = false, $exclude = array
     }
     $out = new Tempcode();
 
-    if (count($_GET) > 0) {
+    if (!empty($_GET)) {
         foreach ($_GET as $key => $val) {
             $process_for_key = ((substr($key, 0, 5) == 'keep_') || ($keep_all)) && (!in_array($key, $exclude)) && ($key != 'page') && (!skippable_keep($key, $val));
 

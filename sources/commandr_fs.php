@@ -268,7 +268,7 @@ class Commandr_fs
             $dir = $this->pwd;
         }
 
-        if (count($dir) == 0) {
+        if (empty($dir)) {
             return true;
         }
         $filename = array_pop($dir);

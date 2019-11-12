@@ -122,7 +122,7 @@ class Module_admin_setupwizard
         $type = get_param_string('type', 'browse');
 
         if (($type != 'browse') && ($type != 'step11') && ($type != 'install_test_content') && ($type != 'uninstall_test_content')) {
-            if ((count($_POST) == 0) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
+            if ((empty($_POST)) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
                 warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
             }
         }
@@ -795,7 +795,7 @@ class Module_admin_setupwizard
             if (post_param_integer('addon_' . $hook, 0) == 1) {
                 if (method_exists($ob, 'get_blocks')) {
                     $ret = $ob->get_blocks();
-                    if (count($ret) != 0) {
+                    if (!empty($ret)) {
                         list($a, $b) = $ret;
                         $main_blocks = array_merge($main_blocks, $a);
                         $side_blocks = array_merge($side_blocks, $b);
@@ -806,7 +806,7 @@ class Module_admin_setupwizard
         ksort($main_blocks);
         ksort($side_blocks);
 
-        if (count($main_blocks) == 0 && count($side_blocks) == 0) {
+        if (empty($main_blocks) && empty($side_blocks)) {
             return $this->step7();
         }
 
@@ -821,7 +821,7 @@ class Module_admin_setupwizard
         require_lang('zones');
         require_code('zones2');
 
-        if (count($main_blocks) > 0) {
+        if (!empty($main_blocks)) {
             $tmp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => 'dfc20251e4f6b37ec1e046d0903250aa', 'TITLE' => do_lang_tempcode('HOME')));
             $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
             foreach ($main_blocks as $block => $position_bits) {
@@ -853,7 +853,7 @@ class Module_admin_setupwizard
             }
         }
 
-        if (count($side_blocks) > 0) {
+        if (!empty($side_blocks)) {
             $tmp = do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '13e0d3002669654d9b45b4739ecbf28c', 'TITLE' => do_lang_tempcode('PANELS')));
             $fields .= $tmp->evaluate(); /*XHTMLXHTML*/
             foreach ($side_blocks as $block => $position_bits) {

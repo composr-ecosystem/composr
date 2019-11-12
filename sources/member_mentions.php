@@ -32,7 +32,7 @@ function dispatch_member_mention_notifications($content_type, $content_id, $subm
     }
 
     global $MEMBER_MENTIONS_IN_COMCODE;
-    if ((!isset($MEMBER_MENTIONS_IN_COMCODE)) || (count($MEMBER_MENTIONS_IN_COMCODE) == 0)) {
+    if ((!isset($MEMBER_MENTIONS_IN_COMCODE)) || (empty($MEMBER_MENTIONS_IN_COMCODE))) {
         return;
     }
 

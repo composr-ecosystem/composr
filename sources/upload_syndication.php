@@ -85,7 +85,7 @@ function get_upload_syndication_json($file_handling_types)
         }
     }
 
-    if (count($struct) > 0) {
+    if (!empty($struct)) {
         return array(json_encode($struct), $syndicatable_filetypes);
     }
     return array(null, $syndicatable_filetypes);
@@ -201,7 +201,7 @@ function handle_upload_syndication($name, $title, $description, $url, $filename,
                 sync_file(rawurldecode($new_url));
             }
 
-            if (count($remote_urls) == 0) {
+            if (empty($remote_urls)) {
                 require_lang('upload_syndication');
                 warn_exit(do_lang_tempcode('UPLOAD_MUST_SYNDICATE', escape_html(get_site_name())));
             }

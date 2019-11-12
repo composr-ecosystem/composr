@@ -31,7 +31,7 @@ function form_input_various_ticks($options, $description, $_tabindex = null, $_p
         return non_overridden__form_input_various_ticks($options, $description, $_tabindex, $_pretty_name, $simple_style, $custom_name, $custom_value);
     }
 
-    if (count($options) == 0) {
+    if (empty($options)) {
         return new Tempcode();
     }
 

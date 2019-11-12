@@ -156,12 +156,12 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
     $default = get_param_string('default', null, INPUT_FILTER_GET_COMPLEX);
 
     if (isset($node['children'])) {
-        $has_children = (count($node['children']) > 0);
+        $has_children = !empty($node['children']);
     } else {
         $has_children = $node['has_possible_children'];
     }
 
-    $selectable = ((!$permissions_needed) || (count($node['permissions']) != 0)) && ($node['page_link'] != '');
+    $selectable = ((!$permissions_needed) || (!empty($node['permissions']))) && ($node['page_link'] != '');
 
     $is_root = (($node['page_link'] == ((get_option('single_public_zone') == '0') ? ':' : '')));
 
@@ -212,7 +212,7 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
                 $overridable_privileges = $_overridable_privileges;
             }
         }
-        if (count($overridable_privileges) > 0) {
+        if (!empty($overridable_privileges)) {
             $privilege_access = _get_privileges_for_node($admin_groups, $groups, $node);
 
             foreach ($overridable_privileges as $overridable => $cat_support) {
@@ -234,11 +234,11 @@ function _sitemap_node_to_xml($admin_groups, $groups, $node, $permissions_needed
                 }
             }
         }
-        if (count(array_diff(array_keys($overridable_privileges), array('submit_highrange_content', 'submit_midrange_content', 'submit_lowrange_content'))) != 0) {
+        if (!empty(array_diff(array_keys($overridable_privileges), array('submit_highrange_content', 'submit_midrange_content', 'submit_lowrange_content')))) {
             $privilege_perms .= ' inherits_something="1"';
         }
 
-        if (count($overridable_privileges) == 0) {
+        if (empty($overridable_privileges)) {
             $privilege_perms .= ' no_privileges="1"';
         }
 

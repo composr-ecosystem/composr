@@ -170,7 +170,7 @@ function get_ticket_type($ticket_type_id)
     }
 
     $rows = $GLOBALS['SITE_DB']->query_select('ticket_types', array('*'), array('id' => $ticket_type_id), '', 1);
-    if (count($rows) == 0) {
+    if (empty($rows)) {
         return $default;
     }
 
@@ -555,7 +555,7 @@ function get_ticket_posts($ticket_id, &$forum = null, &$topic_id = null, &$total
     $topic_id = $GLOBALS['FORUM_DRIVER']->find_topic_id_for_topic_identifier(strval($forum), $ticket_id, do_lang('SUPPORT_TICKET'));
     $ticket_posts = $GLOBALS['FORUM_DRIVER']->get_forum_topic_posts($topic_id, $total_ticket_posts, $max, $start);
 
-    if ((!is_array($ticket_posts)) || (count($ticket_posts) == 0)) {
+    if ((!is_array($ticket_posts)) || (empty($ticket_posts))) {
         return null;
     }
 

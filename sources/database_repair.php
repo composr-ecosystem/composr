@@ -532,7 +532,7 @@ class DatabaseRepair
                         array($drop_key_query . ';'),
                         array_slice($this->sql_fixup, count($this->sql_fixup) - $fields_added)
                     );
-                    if ((count($expected_key_fields) != 0) || ($existent_tables[$table_name][$expected_key_fields[0]] != '*AUTO')) {
+                    if ((!empty($expected_key_fields)) || ($existent_tables[$table_name][$expected_key_fields[0]] != '*AUTO')) {
                         $this->sql_fixup[] = $create_key_query . ';';
                     }
                     $needs_changes = true;

@@ -105,7 +105,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
             }
 
             $start += 100;
-        } while (count($data) != 0);
+        } while (!empty($data));
 
         fwrite($log_file, 'Backed up table ' . $table . "\n");
     }

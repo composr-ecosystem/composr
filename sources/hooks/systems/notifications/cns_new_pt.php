@@ -73,7 +73,7 @@ class Hook_notification_cns_new_pt extends Hook_Notification
     public function list_members_who_have_enabled($notification_code, $category = null, $to_member_ids = null, $from_member_id = null, $start = 0, $max = 300)
     {
         $members = $this->_all_members_who_have_enabled($notification_code, $category, $to_member_ids, $start, $max);
-        if (count($to_member_ids) == 0) { // Only if we're not actually sending a PT now (notification should happen if sending a PT to someone who can't send them, with default settings)
+        if (empty($to_member_ids)) { // Only if we're not actually sending a PT now (notification should happen if sending a PT to someone who can't send them, with default settings)
             $members = $this->_all_members_who_have_enabled_with_privilege($members, 'use_pt', $notification_code, $category, $to_member_ids, $start, $max);
         }
         $members = $this->_all_members_who_have_enabled_with_zone_access($members, 'forum', $notification_code, $category, $to_member_ids, $start, $max);

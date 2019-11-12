@@ -590,7 +590,7 @@ function pull_lang_from_transifex($project_slug, $tar_file, $lang, $core_only, $
         }
 
         // Write addon_registry hook
-        if (count($files) != 0) {
+        if (!empty($files)) {
             $path = 'sources_custom/hooks/systems/addon_registry/language_' . $lang . '.php';
             $full_path = get_file_base() . '/' . $path;
 

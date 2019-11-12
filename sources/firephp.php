@@ -1124,7 +1124,7 @@ class FirePHP {
                     $insightGroupStack[] = $msg->group(md5($label))->open();
                     return $msg->log($label);
                 case self::GROUP_END:
-                    if (count($insightGroupStack) == 0) {
+                    if (empty($insightGroupStack)) {
                         throw new Error('Too many groupEnd() as opposed to group() calls!');
                     }
                     $group = array_pop($insightGroupStack);

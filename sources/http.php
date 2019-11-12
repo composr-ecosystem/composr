@@ -489,7 +489,7 @@ abstract class HttpDownloader
                 if (array_keys($this->post_params) === array('_')) {
                     $_postdetails_params = $this->post_params['_'];
                 } else {
-                    if (count($this->post_params) > 0) {
+                    if (!empty($this->post_params)) {
                         $_postdetails_params .= http_build_query($this->post_params);
                     }
                 }
@@ -513,7 +513,7 @@ abstract class HttpDownloader
                 }
             } else { // If files, use more complex multipart/form-data
                 if (strtolower($this->http_verb) == 'put') {
-                    $this->put_no_delete = (count($this->post_params) == 0) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
+                    $this->put_no_delete = (empty($this->post_params)) && (count($this->files) == 1); // Can we just use the one referenced file as a direct PUT
                     if ($this->put_no_delete) { // Yes
                         reset($this->files);
                         $this->put_path = current($this->files);
@@ -526,7 +526,7 @@ abstract class HttpDownloader
 
                 $this->divider = uniqid('', true);
                 $raw_payload2 = '';
-                if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 0)) {
+                if (($this->put === null) || (!empty($this->post_params)) || (!empty($this->files))) {
                     $this->raw_payload .= 'Content-Type: multipart/form-data; boundary="--cms' . $this->divider . '"; charset=' . get_charset() . "\r\n";
                 }
                 foreach ($this->post_params as $key => $val) {
@@ -545,7 +545,7 @@ abstract class HttpDownloader
                     $raw_payload2 = '';
                 }
                 foreach ($this->files as $upload_field => $file_path) {
-                    if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 1)) {
+                    if (($this->put === null) || (!empty($this->post_params)) || (count($this->files) != 1)) {
                         $raw_payload2 .= '----cms' . $this->divider . "\r\n";
                         if (strpos($upload_field, '/') === false) {
                             $raw_payload2 .= 'Content-Disposition: form-data; name="' . str_replace('"', '\"', $upload_field) . '"; filename="' . str_replace('"', '\"', basename($file_path)) . '"' . "\r\n";
@@ -580,7 +580,7 @@ abstract class HttpDownloader
                     } else {
                         $raw_payload2 .= cms_file_get_contents_safe($file_path, FILE_READ_LOCK);
                     }
-                    if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 1)) {
+                    if (($this->put === null) || (!empty($this->post_params)) || (count($this->files) != 1)) {
                         $raw_payload2 .= "\r\n";
                     }
                     if (($this->put !== null) && (!$this->put_no_delete)) {
@@ -588,7 +588,7 @@ abstract class HttpDownloader
                         $raw_payload2 = '';
                     }
                 }
-                if (($this->put === null) || (count($this->post_params) != 0) || (count($this->files) != 1)) {
+                if (($this->put === null) || (!empty($this->post_params)) || (count($this->files) != 1)) {
                     $raw_payload2 .= '----cms' . $this->divider . "--\r\n";
                 }
                 if (($this->put !== null) && (!$this->put_no_delete)) {
@@ -1067,7 +1067,7 @@ class HttpDownloaderCurl extends HttpDownloader
         if ($this->do_ip_forwarding) {
             $curl_headers[] = 'Host: ' . $this->url_parts['host'];
         }
-        if (count($curl_headers) != 0) {
+        if (!empty($curl_headers)) {
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
         }
@@ -1417,7 +1417,7 @@ class HttpDownloaderSockets extends HttpDownloader
             $time_init = time();
             $line = '';
             while (($chunked) || (!@feof($mysock))) { // @'d because socket might have died. If so fread will will return false and hence we'll break
-                if ((function_exists('stream_select')) && (count($_frh) > 0) && (!@stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)))) {
+                if ((function_exists('stream_select')) && (!empty($_frh)) && (!@stream_select($_frh, $_fwh, $_fwh, intval($this->timeout), intval(fmod($this->timeout, 1.0) / 1000000.0)))) {
                     if (($input === '') && ($time_init + $this->timeout < time())) {
                         if ((!$chunked) || ($buffer_unprocessed == '')) {
                             $line = false; // Manual timeout

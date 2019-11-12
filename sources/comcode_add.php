@@ -518,7 +518,7 @@ function comcode_helper_script_step2()
         $params = $tag_list[$tag];
 
         if (!_try_for_special_comcode_tag_all_params_ui($tag, $actual_tag, $fields, $fields_advanced, $hidden, $done_tag_contents, $defaults, $params, $js_function_calls, $preview)) {
-            if (count($params) > 0) {
+            if (!empty($params)) {
                 require_code('form_templates');
                 foreach ($params as $param) {
                     $parameter_name = _get_comcode_tag_param_name($actual_tag, $param);

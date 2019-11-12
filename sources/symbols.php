@@ -224,7 +224,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                     ) {
                         $keep = symbol_tempcode('KEEP');
                         $url = find_script('fractional_edit') . '?edit_param_name=' . urlencode($edit_param_name) . '&supports_comcode=' . ($supports_comcode ? '1' : '0') . '&zone=' . urlencode($zone) . $keep->evaluate();
-                        if (count($attributes) > 0) {
+                        if (!empty($attributes)) {
                             $url .= '&' . http_build_query($attributes);
                         }
 
@@ -425,7 +425,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                 if (isset($param[0])) {
                     $looking_at = $param[0]->evaluate();
                     if (array_key_exists($looking_at, $param['vars'])) {
-                        if ((is_array($param['vars'][$looking_at])) && (count($param['vars'][$looking_at]) == 0)) {
+                        if ((is_array($param['vars'][$looking_at])) && (empty($param['vars'][$looking_at]))) {
                             $value = $param[1]->evaluate();
                         }
                     }
@@ -436,7 +436,7 @@ function ecv($lang, $escaped, $type, $name, $param)
                 if (isset($param[0])) {
                     $looking_at = $param[0]->evaluate();
                     if (array_key_exists($looking_at, $param['vars'])) {
-                        if ((is_array($param['vars'][$looking_at])) && (count($param['vars'][$looking_at]) != 0)) {
+                        if ((is_array($param['vars'][$looking_at])) && (!empty($param['vars'][$looking_at]))) {
                             $value = $param[1]->evaluate();
                         }
                     }
@@ -3411,7 +3411,7 @@ function ecv_IS_IN_GROUP($lang, $escaped, $param)
             $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id);
         }
         require_code('selectcode');
-        $value = (count(array_intersect(selectcode_to_idlist_using_memory($new_param, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)) != 0) ? '1' : '0';
+        $value = (!empty(array_intersect(selectcode_to_idlist_using_memory($new_param, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list))) ? '1' : '0';
     }
 
     if ($GLOBALS['XSS_DETECT']) {
@@ -6989,7 +6989,7 @@ function ecv_TRANSLATION_LINKS($lang, $escaped, $param)
             }
         }
 
-        if (count($alt_langs) > 0) {
+        if (!empty($alt_langs)) {
             $_value = do_template('TRANSLATION_LINKS', array('_GUID' => '44b1d8c3a82878f365cb1a0b750d935b', 'ALT_LANGS' => $alt_langs));
             $value = $_value->evaluate();
         }

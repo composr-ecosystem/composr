@@ -674,7 +674,7 @@ class Module_admin_cns_members
 
         $lurkers = $this->find_lurkers($max_posts, $max_points, $max_logged_actions, $min_days_since_login, $min_days_since_join, $non_confirmed, $usergroups);
 
-        if (count($lurkers) == 0) {
+        if (empty($lurkers)) {
             inform_exit(do_lang_tempcode('NO_LURKERS_FOUND'));
         }
 

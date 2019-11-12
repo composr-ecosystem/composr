@@ -113,7 +113,7 @@ function notification_poller_script()
         $rows = $GLOBALS['SITE_DB']->query($query);
     }
 
-    if ((count($rows) > 0) || ($forced_update)) {
+    if ((!empty($rows)) || ($forced_update)) {
         foreach ($rows as $row) {
             $xml .= web_notification_to_xml($row);
         }
@@ -129,7 +129,7 @@ function notification_poller_script()
         // Only keep around for X days
         $sql = 'd_frequency=' . strval(A_WEB_NOTIFICATION) . ' AND d_date_and_time<' . strval(time() - 60 * 60 * 24 * intval(get_option('notification_keep_days')));
         $rows = $GLOBALS['SITE_DB']->query('SELECT d_message FROM ' . get_table_prefix() . 'digestives_tin WHERE ' . $sql);
-        if (count($rows) > 0) {
+        if (!empty($rows)) {
             foreach ($rows as $row) {
                 delete_lang($row['d_message']);
             }
@@ -147,7 +147,7 @@ function notification_poller_script()
             require_code('cns_notifications');
             $rows = cns_get_pp_rows(null, true, false, $time_barrier);
 
-            if ((count($rows) > 0) || ($forced_update)) {
+            if ((!empty($rows)) || ($forced_update)) {
                 foreach ($rows as $row) {
                     $xml .= pt_to_xml($row);
                 }

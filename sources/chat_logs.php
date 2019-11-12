@@ -63,7 +63,7 @@ function chat_logs_script()
 
     $messages = chat_get_room_content($room, $room_check, null, false, true, intval($start), intval($finish), null, get_param_string('zone', get_module_zone('chat')));
 
-    if (($messages === null) || (count($messages) == 0)) {
+    if (($messages === null) || (empty($messages))) {
         // There are no messages
         warn_exit(do_lang_tempcode('NO_ENTRIES'));
     }

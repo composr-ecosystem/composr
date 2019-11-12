@@ -112,7 +112,7 @@ class Block_main_staff_tips
                     }
                 }
             }
-            if (count($tips[$level]) == 0) {
+            if (empty($tips[$level])) {
                 $level = $i + 1;
             }
         }

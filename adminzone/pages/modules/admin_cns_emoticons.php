@@ -286,7 +286,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
             $set_name = 'image';
             $required = true;
             $set_title = do_lang_tempcode('IMAGE');
-            $field_set = (count($ids) == 0) ? new Tempcode() : alternate_fields_set__start($set_name);
+            $field_set = (empty($ids)) ? new Tempcode() : alternate_fields_set__start($set_name);
 
             require_code('images');
             $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'file', $required, null, null, true, get_allowed_image_file_types()));
@@ -298,7 +298,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
 
             handle_max_file_size($hidden, 'image');
         } else {
-            if (count($ids) == 0) {
+            if (empty($ids)) {
                 warn_exit(do_lang_tempcode('NO_SELECTABLE_THEME_IMAGES_MSN', 'cns_emoticons'));
             }
 

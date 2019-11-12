@@ -1001,7 +1001,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
             $bookable_id = get_param_integer('bookable_id', null);
             if ($bookable_id === null) {
                 $bookables = $GLOBALS['SITE_DB']->query_select('bookable', array('*'), array(), 'ORDER BY sort_order');
-                if (count($bookables) == 0) {
+                if (empty($bookables)) {
                     inform_exit(do_lang_tempcode('NO_CATEGORIES'));
                 }
 

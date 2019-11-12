@@ -67,7 +67,7 @@ class Hook_preview_quiz
             foreach ($_as as $a) {
                 if ($a != '') {
                     if (substr($a, 0, 1) == ':') { // Is an explanation
-                        if (count($as) != 0) {
+                        if (!empty($as)) {
                             $as[count($as) - 1][1] = trim($as[count($as) - 1][1] . "\n" . trim(substr($a, 1)));
                         }
                     } else {
@@ -76,7 +76,7 @@ class Hook_preview_quiz
                 }
             }
 
-            if (count($as) == 0) {
+            if (empty($as)) {
                 continue; // Was only an orphaned explanation, so ignore
             }
 

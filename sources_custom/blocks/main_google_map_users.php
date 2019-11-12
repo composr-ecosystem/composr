@@ -142,7 +142,7 @@ class Block_main_google_map_users
         // Get results
         $members_to_show = $GLOBALS['FORUM_DB']->query($query);
 
-        if (count($members_to_show) == 0) { // If there's nothing to show
+        if (empty($members_to_show)) { // If there's nothing to show
             if ($geolocate_user == '0') { // Exit, but only if we can't geolocate users via the block (i.e. self-healing)
                 return paragraph(do_lang_tempcode('NO_ENTRIES', 'member'), '79mvf9a2ras03j0ohj9a1u60iccvqqpa', 'nothing-here');
             }

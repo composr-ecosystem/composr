@@ -824,7 +824,7 @@ class Text_Diff_Engine_string
                     while ($i < $end && substr($diff[$i], 0, 1) == '+') {
                         $diff2[] = substr($diff[$i++], 1);
                     }
-                    if (count($diff2) == 0) {
+                    if (empty($diff2)) {
                         $edits[] = new Text_Diff_Op_delete($diff1);
                     } else {
                         $edits[] = new Text_Diff_Op_change($diff1, $diff2);
@@ -896,7 +896,7 @@ class Text_Diff_Engine_string
                 }
                 $array[] = substr($diff[$j++], 2);
             }
-            if (count($array) > 0) {
+            if (!empty($array)) {
                 $edits[] = new Text_Diff_Op_copy($array);
             }
 

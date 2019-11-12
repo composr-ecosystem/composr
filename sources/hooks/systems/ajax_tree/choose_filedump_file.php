@@ -64,7 +64,7 @@ class Hook_ajax_tree_choose_filedump_file
                 $entry_id = cms_rawurlrecode('uploads/filedump/' . (($id == '') ? '' : (str_replace('%2F', '/', rawurlencode($id)) . '/')) . str_replace('%2F', '/', rawurlencode($f)));
 
                 if (is_dir($full_path . '/' . $f)) {
-                    $has_children = (count(get_directory_contents($full_path . '/' . $f, '', IGNORE_ACCESS_CONTROLLERS, false)) > 0);
+                    $has_children = (!empty(get_directory_contents($full_path . '/' . $f, '', IGNORE_ACCESS_CONTROLLERS, false)));
 
                     if ($has_children) {
                         $out .= '<category id="' . xmlentities((($id == '') ? '' : ($id . '/')) . $f) . '" title="' . xmlentities($f) . '" has_children="' . ($has_children ? 'true' : 'false') . '" selectable="' . ($folder ? 'true' : 'false') . '"></category>';

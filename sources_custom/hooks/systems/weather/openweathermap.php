@@ -130,7 +130,7 @@ class Hook_weather_openweathermap
             );
             $forecast_hourly[] = $forecast_arr;
         }
-        if (count($forecast_hourly) == 0) {
+        if (empty($forecast_hourly)) {
             $errormsg = do_lang('NO_ENTRIES');
             return null;
         }
@@ -152,7 +152,7 @@ class Hook_weather_openweathermap
                 $forecasts_within_daytime[] = $forecast_arr;
             }
 
-            if ((count($forecasts_within_daytime) > 0) && ((!$within_daytime) || ($end_of_data))) { // We have data to process into a daily forecast
+            if ((!empty($forecasts_within_daytime)) && ((!$within_daytime) || ($end_of_data))) { // We have data to process into a daily forecast
                 // Finish off day
                 $precipitation = 0.0;
                 $rain = 0.0;

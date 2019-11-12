@@ -698,7 +698,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
                 $start += $max;
             }
-            while (count($rows) > 0);
+            while (!empty($rows));
         }
 
         spellchecker_shutdown();
@@ -863,7 +863,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
                 }
             }
 
-            $this->assertTrue(count($errors) == 0, do_lang('WEB_STANDARDS_PROBLEM', $field_title, '[html]' . implode('; ', $errors) . '[/html]'));
+            $this->assertTrue(empty($errors), do_lang('WEB_STANDARDS_PROBLEM', $field_title, '[html]' . implode('; ', $errors) . '[/html]'));
         }
     }
 

@@ -402,7 +402,7 @@ class Module_topics
     public function validate_posts() // Type
     {
         $posts = $this->get_markers();
-        if (count($posts) == 0) {
+        if (empty($posts)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -441,7 +441,7 @@ class Module_topics
     public function delete_posts() // Type
     {
         $posts = $this->get_markers();
-        if (count($posts) == 0) {
+        if (empty($posts)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -467,7 +467,7 @@ class Module_topics
     public function _delete_posts() // Type
     {
         $posts = $this->get_markers();
-        if (count($posts) == 0) {
+        if (empty($posts)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -496,7 +496,7 @@ class Module_topics
     public function move_posts_a() // Type
     {
         $posts = $this->get_markers();
-        if (count($posts) == 0) {
+        if (empty($posts)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -556,7 +556,7 @@ class Module_topics
     public function move_posts_b() // Type
     {
         $posts = $this->get_markers();
-        if (count($posts) == 0) {
+        if (empty($posts)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -610,7 +610,7 @@ class Module_topics
     public function _move_posts() // Type
     {
         $posts = $this->get_markers();
-        if (count($posts) == 0) {
+        if (empty($posts)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -663,7 +663,7 @@ class Module_topics
     public function mark_topics_read() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -726,7 +726,7 @@ class Module_topics
     public function mark_topics_unread() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -769,7 +769,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -800,7 +800,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -831,7 +831,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -862,7 +862,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -893,7 +893,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -924,7 +924,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -955,7 +955,7 @@ class Module_topics
         require_code('cns_topics_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -987,7 +987,7 @@ class Module_topics
         $mm_id = intval(substr(get_param_string('type', 'browse'), 4));
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1086,7 +1086,7 @@ class Module_topics
         require_code('cns_moderation_action2');
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1114,7 +1114,7 @@ class Module_topics
     public function move_topics() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1163,7 +1163,7 @@ class Module_topics
     public function _move_topics() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1184,7 +1184,7 @@ class Module_topics
     public function delete_topics() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1207,7 +1207,7 @@ class Module_topics
     public function _delete_topics() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
         require_code('cns_topics_action');
@@ -1230,7 +1230,7 @@ class Module_topics
         }
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1257,7 +1257,7 @@ class Module_topics
         }
 
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
 
@@ -1297,7 +1297,7 @@ class Module_topics
     public function categorise_pts() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             $topics[] = get_param_string('id', null);
             if ($topics[0] === null) {
                 warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
@@ -1357,7 +1357,7 @@ class Module_topics
     public function _categorise_pts() // Type
     {
         $topics = $this->get_markers();
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
         }
         require_code('cns_topics_action');
@@ -1442,7 +1442,7 @@ class Module_topics
             'VECTOR' => (substr(find_theme_image('cns_emoticons/none'), -4) == '.svg'),
         )));
 
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return new Tempcode();
         }
         foreach ($rows as $row) {
@@ -1752,7 +1752,7 @@ class Module_topics
         } else {
             $specialisation2->attach(form_input_various_ticks($options, ''));
         }
-        if (count($moderation_options) != 0) {
+        if (!empty($moderation_options)) {
             $specialisation2->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
         }
 
@@ -2018,7 +2018,7 @@ class Module_topics
         }
         $specialisation2 = new Tempcode();
         $specialisation2->attach(form_input_various_ticks($options, ''));
-        if (count($moderation_options) != 0) {
+        if (!empty($moderation_options)) {
             $specialisation2->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
         }
 
@@ -3242,7 +3242,7 @@ END;
 
         $specialisation2 = new Tempcode();
 
-        if (count($moderation_options) != 0) {
+        if (!empty($moderation_options)) {
             $specialisation2->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
         }
 
@@ -3505,7 +3505,7 @@ END;
             $hidden_fields->attach(form_input_hidden('validated', '1'));
         }
         $fields->attach(form_input_various_ticks($options, ''));
-        if (count($moderation_options) != 0) {
+        if (!empty($moderation_options)) {
             $fields->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
         }
 

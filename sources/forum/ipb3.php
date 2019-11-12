@@ -1071,7 +1071,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
                 pop_lax_comcode();
             }
         }
-        if (count($out) != 0) {
+        if (!empty($out)) {
             return $out;
         }
         return null;

@@ -192,7 +192,7 @@ function find_sitemap_object($page_link, $options = 0)
                 }
             }
         }
-        if (count($matches) != 0) {
+        if (!empty($matches)) {
             ksort($matches);
             $hook = current($matches);
             $ob = object_factory('Hook_sitemap_' . filter_naughty_harsh($hook));

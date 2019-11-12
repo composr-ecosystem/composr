@@ -483,7 +483,7 @@ function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join,
 {
     require_code('fields');
     $fields = get_catalogue_fields($catalogue_name);
-    if (count($fields) != 0) {
+    if (!empty($fields)) {
         foreach ($fields as $i => $field) {
             if (get_translated_text($field['cf_name']) == $filter_key) {
                 return _fields_api_filtercode($db, $info, $catalogue_name, $extra_join, $extra_select, 'field_' . strval($field['id']), $filter_val, $db_fields, $table_join_code);
@@ -493,7 +493,7 @@ function _fields_api_filtercode_named($db, $info, $catalogue_name, &$extra_join,
     if (strpos($filter_key, '.') !== false) {
         list($_catalogue_name, $filter_key) = explode('.', $filter_key, 2);
         $fields = get_catalogue_fields($_catalogue_name);
-        if (count($fields) != 0) {
+        if (!empty($fields)) {
             if ($filter_key == 'id') { // ID field of a named catalogue (we need to handle this here, as otherwise a name prefix will be considered a real DB table name)
                 $catalogue_key = generate_filtercode_join_key_from_string($_catalogue_name);
                 $table_join_code_here = $table_join_code . '_' . $catalogue_key;

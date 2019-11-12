@@ -119,7 +119,7 @@ abstract class FieldsSearchHook
         $where_clause = '';
 
         $fields = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'catalogue_fields WHERE ' . db_string_equal_to('c_name', $catalogue_name) . ' AND (cf_include_in_main_search = 1 OR cf_allow_template_search = 1) ORDER BY cf_order,' . $GLOBALS['SITE_DB']->translate_field_ref('cf_name'));
-        if (count($fields) == 0) {
+        if (empty($fields)) {
             return null;
         }
 

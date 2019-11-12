@@ -219,7 +219,7 @@ function cns_get_all_custom_fields_match($groups = null, $public_view = null, $o
 
     $result2 = array();
     foreach ($result as $row) {
-        if (($row['cf_only_group'] == '') || ($groups === null) || (count(array_intersect(explode(',', $row['cf_only_group']), $groups)) != 0)) {
+        if (($row['cf_only_group'] == '') || ($groups === null) || (!empty(array_intersect(explode(',', $row['cf_only_group']), $groups)))) {
             $result2[] = $row;
         }
     }
@@ -334,7 +334,7 @@ function cns_get_all_custom_fields_match_member($member_id, $public_view = null,
                             require_code('selectcode');
 
                             $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
-                            if (count(array_intersect(selectcode_to_idlist_using_memory($cpf_permissions['group_view'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)) > 0) {
+                            if (!empty(array_intersect(selectcode_to_idlist_using_memory($cpf_permissions['group_view'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list))) {
                                 $display_cpf = true;
                             }
                         }

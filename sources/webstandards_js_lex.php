@@ -266,7 +266,7 @@ function webstandards_js_lex($text)
 
                 // If we have any applicable tokens, find the longest and move $i so it's as we just read it
                 $i = $i_current;
-                if (count($applicable_tokens) != 0) {
+                if (!empty($applicable_tokens)) {
                     usort($applicable_tokens, 'jlex__strlen_sort');
                     $token_found = $applicable_tokens[count($applicable_tokens) - 1];
 

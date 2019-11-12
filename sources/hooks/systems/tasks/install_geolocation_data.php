@@ -84,7 +84,7 @@ class Hook_task_install_geolocation_data
         flock($file, LOCK_UN);
         fclose($file);
 
-        if (count($to_insert['begin_num']) != 0) { // Final batch, if there is one
+        if (!empty($to_insert['begin_num'])) { // Final batch, if there is one
             $GLOBALS['SITE_DB']->query_insert('ip_country', $to_insert);
         }
 

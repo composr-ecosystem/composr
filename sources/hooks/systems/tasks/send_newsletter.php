@@ -164,7 +164,7 @@ class Hook_task_send_newsletter
             }
             $start += $max;
 
-            if ($using_drip_queue && count($insert_maps['d_to_email']) > 0) {
+            if (($using_drip_queue) && (!empty($insert_maps['d_to_email']))) {
                 $GLOBALS['SITE_DB']->query_insert('newsletter_drip_send', $insert_maps);
             }
         } while (array_key_exists(0, $addresses));

@@ -258,7 +258,7 @@ class Module_admin_backup
         closedir($handle);
         sort_maps_by($entries, 'mtime');
 
-        if (count($entries) != 0) {
+        if (!empty($entries)) {
             require_code('templates_columned_table');
             $header_row = columned_table_header_row(array(do_lang_tempcode('FILENAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('SIZE'), do_lang_tempcode('DATE'), new Tempcode()));
 

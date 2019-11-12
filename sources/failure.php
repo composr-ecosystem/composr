@@ -65,7 +65,7 @@ function suggest_fatalistic()
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $stack_trace_url = build_url(array('page' => '_SELF', 'keep_fatalistic' => 1), '_SELF', array(), true);
             $st = do_lang_tempcode('WARN_TO_STACK_TRACE', escape_html($stack_trace_url->evaluate()));
-        } elseif (count($_FILES) == 0 || function_exists('is_plupload') && is_plupload()) {
+        } elseif (empty($_FILES) || function_exists('is_plupload') && is_plupload()) {
             $stack_trace_url = build_url(array('page' => '_SELF', 'keep_fatalistic' => 1), '_SELF', array(), true);
             $p = build_keep_post_fields();
             $p->attach(symbol_tempcode('INSERT_SPAMMER_BLACKHOLE'));
@@ -210,7 +210,7 @@ function improperly_filled_in_post($name)
     require_code('global3');
     set_http_status_code(400);
 
-    if ((count($_POST) == 0) && (get_option('user_postsize_errors') == '1')) {
+    if ((empty($_POST)) && (get_option('user_postsize_errors') == '1')) {
         require_code('files');
         $upload_max_filesize = (ini_get('upload_max_filesize') == '0') ? do_lang('NA') : clean_file_size(php_return_bytes(ini_get('upload_max_filesize')));
         $post_max_size = (ini_get('post_max_size') == '0') ? do_lang('NA') : clean_file_size(php_return_bytes(ini_get('post_max_size')));

@@ -306,12 +306,12 @@ class Module_admin_email_log
         $fields['TO_NAME'] = protect_from_escaping(escape_html(implode(', ', $to_name)));
 
         $extra_cc_addresses = ($row['m_extra_cc_addresses'] == '') ? array() : @unserialize($row['m_extra_cc_addresses']);
-        if (count($extra_cc_addresses) != 0) {
+        if (!empty($extra_cc_addresses)) {
             $fields['EXTRA_CC_ADDRESSES'] = protect_from_escaping(escape_html(implode(', ', $extra_cc_addresses)));
         }
 
         $extra_bcc_addresses = ($row['m_extra_bcc_addresses'] == '') ? array() : @unserialize($row['m_extra_bcc_addresses']);
-        if (count($extra_bcc_addresses) != 0) {
+        if (!empty($extra_bcc_addresses)) {
             $fields['EXTRA_BCC_ADDRESSES'] = protect_from_escaping(escape_html(implode(', ', $extra_bcc_addresses)));
         }
 
@@ -326,7 +326,7 @@ class Module_admin_email_log
             $attachments = array();
         }
         require_lang('comcode');
-        if (count($attachments) == 0) {
+        if (empty($attachments)) {
             $fields['ATTACHMENTS'] = do_lang_tempcode('NONE_EM');
         } else {
             $a = new Tempcode();

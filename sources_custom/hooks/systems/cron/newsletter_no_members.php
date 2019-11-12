@@ -51,7 +51,7 @@ class Hook_cron_newsletter_no_members
             }
 
             $this->new_members = $GLOBALS['FORUM_DB']->query($query);
-            if (count($this->new_members) > 0) {
+            if (!empty($this->new_members)) {
                 $or_list = '';
                 foreach ($this->new_members as $new_member) {
                     if ($or_list != '') {
@@ -81,7 +81,7 @@ class Hook_cron_newsletter_no_members
      */
     public function run($last_run)
     {
-        if (count($this->new_members) > 0) {
+        if (!empty($this->new_members)) {
             $or_list = '';
             foreach ($this->new_members as $new_member) {
                 if ($or_list != '') {

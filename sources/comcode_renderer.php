@@ -71,7 +71,7 @@ function _apply_emoticons($text)
         }
     }
 
-    if (count($emoticons) != 0) {
+    if (!empty($emoticons)) {
         $len = strlen($text);
         for ($i = 0; $i < $len; ++$i) { // Has to go through in byte order so double application cannot happen (i.e. emoticon contains [all or portion of] emoticon code somehow)
             $char = $text[$i];
@@ -147,7 +147,7 @@ function check_naughty_javascript_url($source_member, $url, $as_admin)
             for ($i = 0; $i < count($matches[0]); $i++) {
                 $matched_entity = intval($matches[1][$i]);
                 if (($matched_entity < 127) && (array_key_exists(chr($matched_entity), $POTENTIAL_JS_NAUGHTY_ARRAY))) {
-                    if ((count($_POST) != 0) && (get_member() == $source_member)) {
+                    if ((!empty($_POST)) && (get_member() == $source_member)) {
                         log_hack_attack_and_exit('ASCII_ENTITY_URL_HACK', $url);
                     }
                     return '';
@@ -159,7 +159,7 @@ function check_naughty_javascript_url($source_member, $url, $as_admin)
             for ($i = 0; $i < count($matches[0]); $i++) {
                 $matched_entity = intval(base_convert($matches[1][$i], 16, 10));
                 if (($matched_entity < 127) && (array_key_exists(chr($matched_entity), $POTENTIAL_JS_NAUGHTY_ARRAY))) {
-                    if ((count($_POST) != 0) && (get_member() == $source_member)) {
+                    if ((!empty($_POST)) && (get_member() == $source_member)) {
                         log_hack_attack_and_exit('ASCII_ENTITY_URL_HACK', $url);
                     }
                     return '';
@@ -169,7 +169,7 @@ function check_naughty_javascript_url($source_member, $url, $as_admin)
 
         $bad = (strpos($url2, 'script:') !== false) || (strpos($url2, 'data:') !== false);
         if ($bad) {
-            if ((count($_POST) != 0) && (get_member() == $source_member)) {
+            if ((!empty($_POST)) && (get_member() == $source_member)) {
                 log_hack_attack_and_exit('SCRIPT_URL_HACK', $url2);
             }
             return '';
@@ -706,7 +706,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                     array_push($xml_tag_stack, $xml_tag);
                 }
             }
-            if (count($xml_tag_stack) > 0) {
+            if (!empty($xml_tag_stack)) {
                 $html_errors = true;
             }
         }
@@ -2138,7 +2138,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
                         require_code('upload_syndication');
                         list($syndication_json,) = get_upload_syndication_json(CMS_UPLOAD_ANYTHING);
 
-                        if (($daily_quota > 0) || (count($syn_services) == 0)) {
+                        if (($daily_quota > 0) || (empty($syn_services))) {
                             $over_quota_str = 'OVER_DAILY_QUOTA';
                         } else {
                             if (count($syn_services) > 1) {

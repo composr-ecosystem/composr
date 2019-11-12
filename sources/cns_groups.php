@@ -105,7 +105,7 @@ function cns_create_selection_list_usergroups($it = null, $allow_guest_group = t
 function get_first_default_group()
 {
     $default_groups = cns_get_all_default_groups(true);
-    if (count($default_groups) == 0) {
+    if (empty($default_groups)) {
         $default_groups = array(db_get_first_id() + 8);
     }
     return array_pop($default_groups);
@@ -138,7 +138,7 @@ function cns_get_all_default_groups($include_primary = false, $include_all_confi
             $groups = array_merge($groups, collapse_1d_complexity('id', $rows));
         }
 
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_groups', 'id', array('id' => db_get_first_id() + 8));
             if ($test !== null) {
                 $groups[] = db_get_first_id() + 8;

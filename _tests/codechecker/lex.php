@@ -378,7 +378,7 @@ function lex($text = null)
                 $maybe_applicable_tokens = $PTOKENS;
                 $applicable_tokens = array();
                 $token_so_far = '';
-                while (count($maybe_applicable_tokens) != 0) {
+                while (!empty($maybe_applicable_tokens)) {
                     list($reached_end, $i, $char) = plex__get_next_char($i);
                     if ($reached_end) {
                         break 3;
@@ -409,7 +409,7 @@ function lex($text = null)
 
                 // If we have any applicable tokens, find the longest and move $i so it's as we just read it
                 $i = $i_current;
-                if (count($applicable_tokens) != 0) {
+                if (!empty($applicable_tokens)) {
                     usort($applicable_tokens, 'plex__strlen_sort');
                     $token_found = $applicable_tokens[count($applicable_tokens) - 1];
 
@@ -667,21 +667,21 @@ function lex($text = null)
                         } else {
                             $matches = array();
                             if (($char == '[') && ($TEXT[$i] == '\'') && (preg_match('#\[\'([^\']*)\'\]#A', $TEXT, $matches, 0, $i - 1) != 0)) { // NOTE: Have disallowed escaping within the quotes
-                                $heredoc_buildup[] = array((count($heredoc_buildup) == 0) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                                $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
                                 $special_token_value_2 = '';
                                 $heredoc_buildup[] = array('EXTRACT_OPEN', $i);
                                 $heredoc_buildup[] = array('string_literal', $matches[1], $i);
                                 $heredoc_buildup[] = array('EXTRACT_CLOSE', $i);
                                 $i += strlen($matches[1]) + 3;
                             } elseif (($char == '[') && (preg_match('#\[([A-Za-z0-9_]+)\]#A', $TEXT, $matches, 0, $i - 1) != 0)) {
-                                $heredoc_buildup[] = array((count($heredoc_buildup) == 0) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                                $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
                                 $special_token_value_2 = '';
                                 $heredoc_buildup[] = array('EXTRACT_OPEN', $i);
                                 $heredoc_buildup[] = array('IDENTIFIER', $matches[1], $i);
                                 $heredoc_buildup[] = array('EXTRACT_CLOSE', $i);
                                 $i += strlen($matches[1]) + 1;
                             } elseif (($char == '-') && ($TEXT[$i] == '>')) {
-                                $heredoc_buildup[] = array((count($heredoc_buildup) == 0) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                                $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
                                 $special_token_value_2 = '';
                                 $heredoc_buildup[] = array('OBJECT_OPERATOR', $i);
                                 $i++;
@@ -694,7 +694,7 @@ function lex($text = null)
                         // Simple
                         $matches = array();
                         if (($char == '-') && ($TEXT[$i] == '>')) {
-                            $heredoc_buildup[] = array((count($heredoc_buildup) == 0) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                            $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
                             $special_token_value_2 = '';
                             $heredoc_buildup[] = array('OBJECT_OPERATOR', $i);
                             $i++;
@@ -703,7 +703,7 @@ function lex($text = null)
                                 log_warning('Do not use quotes with the simple variable embedding syntax', $i, true);
                                 break 2;
                             }
-                            $heredoc_buildup[] = array((count($heredoc_buildup) == 0) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                            $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
                             $special_token_value_2 = '';
                             $heredoc_buildup[] = array('EXTRACT_OPEN', $i);
                             $heredoc_buildup[] = array('string_literal', $matches[1], $i);
@@ -717,9 +717,9 @@ function lex($text = null)
                     if ($exit) {
                         $lex_state = $previous_state;
                         if ($special_token_value_2 != '') {
-                            $heredoc_buildup[] = array((count($heredoc_buildup) == 0) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
+                            $heredoc_buildup[] = array((empty($heredoc_buildup)) ? 'variable' : 'IDENTIFIER', $special_token_value_2, $i);
                         }
-                        if (count($heredoc_buildup) > 0) {
+                        if (!empty($heredoc_buildup)) {
                             $tokens[] = array('IDENTIFIER', 'strval', $i);
                             $tokens[] = array('PARENTHESIS_OPEN', $i);
                             $tokens = array_merge($tokens, $heredoc_buildup);

@@ -584,7 +584,7 @@ function check_xhtml_webstandards($out, $display_regardless = false, $preview_mo
             $display_regardless || ($preview_mode == 2),
             get_option('csp_enabled') != '0'
         );
-        $show = (count($error['errors']) != 0) || ($display_regardless);
+        $show = (!empty($error['errors'])) || ($display_regardless);
         if ((!$show) && (get_option('webstandards_ext_files') == '1')) {
             $out = array_pop($EXTRA_CHECK);
         }
@@ -643,7 +643,7 @@ function display_webstandards_results($out, $error, $preview_mode = false, $ret 
     }
     $error_lines = array();
     $return_url = new Tempcode();
-    if (count($error['errors']) != 0) {
+    if (!empty($error['errors'])) {
         $errorst = new Tempcode();
         foreach ($error['errors'] as $j => $_error) {
             $errorst->attach(do_template('WEBSTANDARDS_ERROR', array(

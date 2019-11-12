@@ -428,7 +428,7 @@ class Module_catalogues
                         if ($or_list != '') {
                             $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'catalogue_efv_short WHERE ' . $or_list, null, 0, false, true);
                         }
-                    } while (count($rows) != 0);
+                    } while (!empty($rows));
                 }
             }
         }
@@ -939,7 +939,7 @@ class Module_catalogues
         }
         unset($rows);
 
-        if (count($cats) == 0) {
+        if (empty($cats)) {
             inform_exit(do_lang_tempcode('NO_CATEGORIES', 'catalogue_category'));
         }
 

@@ -62,13 +62,13 @@ function init__cms__pages__modules_custom__cms_galleries($code)
     // Here we end the comment we started above, both for images...
     $code = override_str_replace_exactly(
         "\$fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', \$validated == 1));",
-        "require_code('workflows'); if (count(get_all_workflows()) == 0) { <ditto> }",
+        "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> }",
         $code
     );
     // ...and videos.
     $code = override_str_replace_exactly(
         "\$validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', \$validated == 1);",
-        "require_code('workflows'); if (count(get_all_workflows()) == 0) { <ditto> } else { \$validated_field = new Tempcode(); }",
+        "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> } else { \$validated_field = new Tempcode(); }",
         $code
     );
 

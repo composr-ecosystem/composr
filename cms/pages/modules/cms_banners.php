@@ -316,7 +316,7 @@ class Module_cms_banners extends Standard_crud_module
 
         list($fields, $js_function_calls) = get_banner_form_fields(false, $name, $image_url, $site_url, $caption, $direct_code, $notes, $display_likelihood, $campaign_remaining, $deployment_agreement, $expiry_date, $submitter, $validated, $b_type, $b_types, $regions, $title_text);
 
-        if (is_array($js_function_calls) && (count($js_function_calls) > 0)) {
+        if (is_array($js_function_calls) && (!empty($js_function_calls))) {
             $this->js_function_calls = array_merge($this->js_function_calls, $js_function_calls);
         }
 
@@ -756,7 +756,7 @@ class Module_cms_banners_cat extends Standard_crud_module
                 $or_list = '(' . $or_list . ')';
                 $sql = 'SELECT name FROM ' . get_table_prefix() . 'banners WHERE ' . $or_list . ' ORDER BY name';
                 $compatible_banners = $GLOBALS['SITE_DB']->query($sql);
-                if (count($compatible_banners) > 0) {
+                if (!empty($compatible_banners)) {
                     $_compatible_banners = new Tempcode();
                     foreach ($compatible_banners as $compatible_banner) {
                         $_compatible_banners->attach(form_input_list_entry($compatible_banner['name'], in_array($compatible_banner['name'], $banners_in_type)));

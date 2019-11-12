@@ -57,7 +57,7 @@ foreach ($_addons as $addon_name => $place) {
 
         $tutorials = $ob->get_applicable_tutorials();
         $all_tutorials_referenced = array_merge($all_tutorials_referenced, $tutorials);
-        if (count($tutorials) == 0) {
+        if (empty($tutorials)) {
             warn_exit('No tutorial defined for addon: ' . $addon_name);
         }
 

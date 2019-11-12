@@ -308,7 +308,7 @@ class Module_admin_import
             }
             $sessions->attach(form_input_list_entry($session['imp_session'], false, $text));
         }
-        $text = do_lang_tempcode((count($_sessions) == 0) ? 'IMPORT_SESSION_NEW' : 'IMPORT_SESSION_NEW_DELETE');
+        $text = do_lang_tempcode((empty($_sessions)) ? 'IMPORT_SESSION_NEW' : 'IMPORT_SESSION_NEW_DELETE');
         $sessions->attach(form_input_list_entry(strval(-1), false, $text));
         if ($importer == 'cms_merge') {
             $text = do_lang_tempcode('IMPORT_SESSION_NEW_DELETE_CNS_SATELLITE');

@@ -738,7 +738,7 @@ foreach (($map['param'] == '') ? array_keys($collapsed_tree) : explode(',', $map
         }
 
         // List
-        if (count($subsection_items) != 0) {
+        if (!empty($subsection_items)) {
             echo '<div><ul class="main">';
             $see_more = false;
             foreach ($subsection_items as $item) {

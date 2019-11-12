@@ -292,7 +292,7 @@ class Hook_import_smf2
 
         $rows = $db->query('SELECT id_group,group_name,min_posts FROM ' . $table_prefix . 'membergroups WHERE min_posts>0 ORDER BY min_posts DESC');
         // Lets check we are actually going to be performing some updates
-        if (count($rows) > 0) {
+        if (!empty($rows)) {
             $updates = true;
         }
         foreach ($rows as $row) {
@@ -469,7 +469,7 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -713,7 +713,7 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -992,7 +992,7 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1056,7 +1056,7 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1203,7 +1203,7 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1432,7 +1432,7 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1886,6 +1886,6 @@ class Hook_import_smf2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 }

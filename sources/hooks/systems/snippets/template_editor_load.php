@@ -116,7 +116,7 @@ class Hook_snippet_template_editor_load
             }
 
             $guids = find_template_guids($file, $active_guid);
-            if (count($guids) > 0) {
+            if (!empty($guids)) {
                 $guids = array();
             }
 

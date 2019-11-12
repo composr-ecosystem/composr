@@ -90,7 +90,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
         // Sense class boundaries (hackerish: assumes whitespace laid out correctly)
         $ltrim = ltrim($line);
         if (substr($ltrim, 0, 6) == 'class ' || substr($ltrim, 0, 15) == 'abstract class ') {
-            if (count($functions) != 0) {
+            if (!empty($functions)) {
                 $classes[$current_class] = array('functions' => $functions, 'name' => $current_class);
             }
 
@@ -108,7 +108,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
             $current_class_level = strlen($line) - strlen($ltrim);
             $functions = array();
         } elseif (($current_class != '__global') && (substr($line, 0, $current_class_level + 1) == str_repeat(' ', $current_class_level) . '}')) {
-            if (count($functions) != 0) {
+            if (!empty($functions)) {
                 $classes[$current_class] = array('functions' => $functions, 'name' => $current_class);
             }
 
@@ -455,7 +455,7 @@ function get_php_file_api($filename, $include_code = true, $pedantic_warnings = 
         }
     }
 
-    if (count($functions) != 0) {
+    if (!empty($functions)) {
         $classes[$current_class/*will be global*/] = array('functions' => $functions, 'name' => $current_class);
     }
 

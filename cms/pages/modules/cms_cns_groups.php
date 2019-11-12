@@ -216,7 +216,7 @@ class Module_cms_cns_groups extends Standard_crud_module
             $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name', 'g_promotion_target', 'g_is_super_admin', 'g_group_leader'), array('g_is_private_club' => 1), 'ORDER BY g_name');
         } else {
             $rows = $GLOBALS['FORUM_DB']->query_select('f_groups', array('id', 'g_name', 'g_promotion_target', 'g_is_super_admin', 'g_group_leader'), array('g_group_leader' => get_member(), 'g_is_private_club' => 1), 'ORDER BY g_name');
-            if (count($rows) == 0) {
+            if (empty($rows)) {
                 warn_exit(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             }
         }

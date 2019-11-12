@@ -239,7 +239,7 @@ class RevisionEngineFiles
         }
 
         $revisions = $this->find_revisions($directory, $filename_id, $ext, null, null, 1, 0, true);
-        return count($revisions) > 0;
+        return !empty($revisions);
     }
 
     /**

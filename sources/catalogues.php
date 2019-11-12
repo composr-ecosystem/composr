@@ -679,7 +679,7 @@ function get_catalogue_entries($catalogue_name, $category_id, $max, $start, $sel
 
     // If we're listing what IDs to look at, work out SQL for this
     if (($category_id === null) && ($select !== null)) {
-        if (((is_array($select)) && (count($select) == 0)) || ((is_string($select)) && ($select == ''))) {
+        if (((is_array($select)) && (empty($select))) || ((is_string($select)) && ($select == ''))) {
             $entries = array(); // This is saying we are selecting nothing, so just say that - it'll save us a query
         } else { // Put together some SQL for defining what to select
             if (!is_array($select)) {

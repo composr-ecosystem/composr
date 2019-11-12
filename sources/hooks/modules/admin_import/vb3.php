@@ -437,7 +437,7 @@ class Hook_import_vb3
 
             $row_start += 200;
             $GLOBALS['JUMPSTART_import_cns_members'] = $row_start;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -501,7 +501,7 @@ class Hook_import_vb3
 
             $row_start += 200;
             $GLOBALS['JUMPSTART_import_cns_member_files'] = $row_start;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -562,7 +562,7 @@ class Hook_import_vb3
 
             $row_start += 200;
             $GLOBALS['JUMPSTART_import_cns_custom_profile_fields'] = $row_start;
-        } while (count($members) > 0);
+        } while (!empty($members));
     }
 
     /**
@@ -698,7 +698,7 @@ class Hook_import_vb3
 
             $row_start += 200;
             $GLOBALS['JUMPSTART_import_cns_topics'] = $row_start;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
 
         $rows = $db->query_select('announcement', array('*'), 'ORDER BY announcementid', 200, $row_start);
         foreach ($rows as $row) {
@@ -819,7 +819,7 @@ class Hook_import_vb3
 
             $row_start += $max_per_cycle;
             $GLOBALS['JUMPSTART_import_cns_posts'] = $row_start;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -939,7 +939,7 @@ class Hook_import_vb3
 
             $row_start += 200;
             $GLOBALS['JUMPSTART_import_cns_post_files'] = $row_start;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1337,7 +1337,7 @@ class Hook_import_vb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1429,7 +1429,7 @@ class Hook_import_vb3
 
             $row_start += 200;
             $GLOBALS['JUMPSTART_import_points_gifts_and_charges'] = $row_start;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**

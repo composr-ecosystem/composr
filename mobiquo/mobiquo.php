@@ -92,7 +92,7 @@ if ((is_file(TAPATALK_LOG)) && (cms_is_writable(TAPATALK_LOG))) {
     fwrite($log_file, TAPATALK_REQUEST_ID . ' -- ' . loggable_date() . " *REQUEST*:\n");
     fwrite($log_file, 'GET: ' . serialize($_GET) . "\n");
     fwrite($log_file, 'COOKIE: ' . serialize($_COOKIE) . "\n");
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         $post_data = @file_get_contents('php://input');
         fwrite($log_file, 'POST: ' . $post_data . "\n");
     } else {

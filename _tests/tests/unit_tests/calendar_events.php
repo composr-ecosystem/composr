@@ -49,7 +49,7 @@ class calendar_events_test_set extends cms_test_case
         $_period_start = 2 * $period_start - tz_time($period_start, 'Europe/Amsterdam');
         $_period_end = 2 * $period_end - tz_time($period_end, 'Europe/Amsterdam');
         $periods = find_periods_recurrence('Europe/Amsterdam', 0, 2015/*year*/, 4/*month*/, 6/*day*/, 'day_of_month', null, null, null, null, null, 'day_of_month', null, null, 'none', null, $_period_start, $_period_end);
-        $this->assertTrue(count($periods) == 0); // We expect to *not* see it, as the 6th counts as 11pm for Amsterdam (we would have said 5th for all-day-Amsterdam-6th); except DST is also in effect
+        $this->assertTrue(empty($periods)); // We expect to *not* see it, as the 6th counts as 11pm for Amsterdam (we would have said 5th for all-day-Amsterdam-6th); except DST is also in effect
 
         // ---
 

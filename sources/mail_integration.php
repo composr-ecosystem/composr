@@ -934,7 +934,7 @@ abstract class EmailIntegration
     protected function get_email_address_from_header($header)
     {
         $addresses = imap_rfc822_parse_adrlist($header, get_domain());
-        if (count($addresses) == 0) {
+        if (empty($addresses)) {
             return null;
         }
 

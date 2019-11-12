@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     echo '</ol>';
 
-    if (count($addons_involved) != 0) {
+    if (!empty($addons_involved)) {
         $addons_involved = array_unique($addons_involved);
         echo '<p><strong>This was for a non-bundled addon.</strong> Remember to run <a href="' . escape_html(get_base_url()) . '/adminzone/index.php?page=build_addons&amp;addon_limit=' . escape_html(urlencode(implode(',', $addons_involved))) . '">the addon update script</a>, and then upload the appropriate addon TARs and post the has-updated comments (or when the next patch release if this is what is currently preferred).</p>';
     }
@@ -247,9 +247,9 @@ $on_disk_version = get_version_dotted();
 
 $git_found = git_find_uncommitted_files();
 $do_full_scan = (get_param_integer('full_scan', 0) == 1);
-if (($do_full_scan) || (count($git_found) == 0)) {
+if (($do_full_scan) || (empty($git_found))) {
     $files = push_bugfix_do_dir($git_found, 24 * 60 * 60);
-    if (count($files) == 0) {
+    if (empty($files)) {
         $checkout_seconds = time() - filemtime(get_file_base() . '/index.php');
         $days = min(14, intval(round($checkout_seconds / (60 * 60 * 24) - 1)));
         $files = push_bugfix_do_dir($git_found, 24 * 60 * 60 * $days);
@@ -263,7 +263,7 @@ $git_status_2 = ' <span style="font-size: 0.8em">(if not entered a new one will 
 $git_status_3 = 'Git commit ID';
 $choose_files_label = 'Choose files';
 
-if ((count($git_found) == 0) && (!$do_full_scan)) {
+if ((empty($git_found)) && (!$do_full_scan)) {
     echo '<p><em>Found no changed files so done a full filesystem scan (rather than relying on git). You can enter a git ID or select files.</p>';
     $git_status_3 = 'Git commit ID';
     $choose_files_label = 'Choose files';
@@ -341,7 +341,7 @@ echo <<<END
     </fieldset>
 END;
 
-if (count($files) != 0) {
+if (!empty($files)) {
     echo <<<END
     <fieldset>
         <legend>Fix</legend>

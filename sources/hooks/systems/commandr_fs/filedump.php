@@ -278,7 +278,7 @@ class Hook_commandr_fs_filedump
 
             $input = json_decode($contents, true);
 
-            if (count($input) != 0) {
+            if (!empty($input)) {
                 table_from_portable_rows('filedump', array($input), array('name' => cms_mb_substr($dir_name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             }
 
@@ -297,7 +297,7 @@ class Hook_commandr_fs_filedump
             require_code('files');
             cms_file_put_contents_safe($path . '/' . $file_name, $data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
-            if (count($input) != 0) {
+            if (!empty($input)) {
                 table_from_portable_rows('filedump', array($input), array('name' => cms_mb_substr($file_name, 0, 80), 'subpath' => cms_mb_substr($subpath, 0, 80)), TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA);
             }
 

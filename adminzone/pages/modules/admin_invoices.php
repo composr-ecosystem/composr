@@ -347,7 +347,7 @@ class Module_admin_invoices
                 'TYPE_CODE' => $row['i_type_code'],
             );
         }
-        if (count($invoices) == 0) {
+        if (empty($invoices)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

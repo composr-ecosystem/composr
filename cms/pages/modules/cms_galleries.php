@@ -423,7 +423,7 @@ class Module_cms_galleries extends Standard_crud_module
                 }
                 closedir($_dir);
             }
-            if (count($there) != 0) {
+            if (!empty($there)) {
                 cms_mb_asort($there, SORT_FLAG_CASE | SORT_NATURAL);
                 $test1 = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('images', array('url')));
                 $test2 = collapse_1d_complexity('url', $GLOBALS['SITE_DB']->query_select('videos', array('url')));

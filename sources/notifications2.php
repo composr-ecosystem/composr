@@ -74,7 +74,7 @@ function notifications_ui($member_id_of)
     $fields = new Tempcode();
 
     $_notification_types = _get_available_notification_types($member_id_of);
-    if (count($_notification_types) == 0) {
+    if (empty($_notification_types)) {
         return new Tempcode();
     }
 
@@ -159,7 +159,7 @@ function notifications_ui($member_id_of)
             }
         }
     }
-    if (count($notification_sections) == 0) {
+    if (empty($notification_sections)) {
         return new Tempcode();
     }
 
@@ -501,5 +501,5 @@ function copy_notifications_to_new_child($notification_code, $id, $child_id)
         }
 
         $_start += 100;
-    } while (count($notifications_to) != 0);
+    } while (!empty($notifications_to));
 }

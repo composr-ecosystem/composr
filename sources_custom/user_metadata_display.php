@@ -150,5 +150,5 @@ function generate_secure_user_metadata_display_key($member_id)
 
 function has_string_keys($array)
 {
-    return count(array_filter(array_keys($array), 'is_string')) > 0;
+    return !empty(array_filter(array_keys($array), 'is_string'));
 }

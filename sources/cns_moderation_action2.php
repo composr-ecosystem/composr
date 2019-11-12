@@ -138,7 +138,7 @@ function cns_perform_multi_moderation($id, $topic_id, $reason, $post_text = '', 
         $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_title' => $new_title), array('id' => $topic_details[0]['t_cache_first_post_id']), '', 1);
     }
 
-    if (count($update_array) != 0) {
+    if (!empty($update_array)) {
         $GLOBALS['FORUM_DB']->query_update('f_topics', $update_array, array('id' => $topic_id), '', 1);
     }
 

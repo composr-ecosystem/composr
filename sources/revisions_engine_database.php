@@ -143,7 +143,7 @@ class RevisionEngineDatabase
             return array();
         }
 
-        if (($resource_types !== null) && (count($resource_types) == 0) && ($revision_id === null)) {
+        if (($resource_types !== null) && (empty($resource_types)) && ($revision_id === null)) {
             return array();
         }
 
@@ -242,7 +242,7 @@ class RevisionEngineDatabase
             return false;
         }
 
-        return count($this->find_revisions($resource_types, $resource_id, $category_id, $member_id, null, 1, 0, true)) > 0;
+        return !empty($this->find_revisions($resource_types, $resource_id, $category_id, $member_id, null, 1, 0, true));
     }
 
     /**

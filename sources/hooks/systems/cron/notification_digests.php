@@ -77,7 +77,7 @@ class Hook_cron_notification_digests
                         'd_frequency' => $frequency,
                     ), 'ORDER BY d_date_and_time');
 
-                    if (count($messages) > 0) {
+                    if (!empty($messages)) {
                         $GLOBALS['SITE_DB']->query_delete('digestives_tin', array(
                             'd_to_member_id' => $to_member_id,
                             'd_frequency' => $frequency,

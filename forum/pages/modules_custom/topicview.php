@@ -74,7 +74,7 @@ function jestr_filtering($in)
 
     $option = get_option('jestr_piglatin_shown_for');
     if ($option != '') {
-        $passes = (count(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))) != 0);
+        $passes = (!empty(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))));
         if ($passes) {
             $in = jestr_piglatin_filter($in);
         }
@@ -82,7 +82,7 @@ function jestr_filtering($in)
 
     $option = get_option('jestr_leet_shown_for');
     if ($option != '') {
-        $passes = (count(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))) != 0);
+        $passes = (!empty(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))));
         if ($passes) {
             $in = jestr_leet_filter($in);
         }
@@ -90,7 +90,7 @@ function jestr_filtering($in)
 
     $option = get_option('jestr_string_changes_shown_for');
     if ($option != '') {
-        $passes = (count(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))) != 0);
+        $passes = (!empty(array_intersect(selectcode_to_idlist_using_memory($option, $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()))));
         if ($passes) {
             $in = jestr_string_changes_filter($in);
         }

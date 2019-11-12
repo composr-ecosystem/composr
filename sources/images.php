@@ -217,7 +217,7 @@ function get_max_image_size($consider_php_limits = true)
         $possibilities[] = $c;
     }
 
-    return (count($possibilities) == 0) ? (1024 * 1024 * 1024 * 1024) : min($possibilities);
+    return (empty($possibilities)) ? (1024 * 1024 * 1024 * 1024) : min($possibilities);
 }
 
 /**

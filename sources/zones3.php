@@ -48,7 +48,7 @@ function expand_wildcarded_page_links($wildcarded_page_link)
                         }
                         $start += 50;
                     }
-                    while (count($zones) > 0);
+                    while (!empty($zones));
                 } else {
                     $page_links[] = $part;
                 }

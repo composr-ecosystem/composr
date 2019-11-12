@@ -101,7 +101,7 @@ function get_page_warning_details($zone, $codename, $edit_url)
     $uv_warning = do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', 'comcode_page'); // Wear sun cream
     if (!$edit_url->is_empty()) {
         $menu_links = $GLOBALS['SITE_DB']->query('SELECT DISTINCT i_menu FROM ' . get_table_prefix() . 'menu_items WHERE ' . db_string_equal_to('i_url', $zone . ':' . $codename) . ' OR ' . db_string_equal_to('i_url', '_SEARCH:' . $codename));
-        if (count($menu_links) != 0) {
+        if (!empty($menu_links)) {
             $menu_items_linking = new Tempcode();
             foreach ($menu_links as $menu_link) {
                 if (!$menu_items_linking->is_empty()) {
@@ -505,7 +505,7 @@ function _load_comcode_page_cache_off($string, $zone, $codename, $file_base, $ne
     if ($new_comcode_page_row['p_submitter'] === null) {
         $as_admin = true;
         $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
-        if (count($members) != 0) {
+        if (!empty($members)) {
             $new_comcode_page_row['p_submitter'] = $GLOBALS['FORUM_DRIVER']->mrow_id($members[key($members)]);
         } else {
             $new_comcode_page_row['p_submitter'] = db_get_first_id() + 1; // On Conversr and most forums, this is the first admin member

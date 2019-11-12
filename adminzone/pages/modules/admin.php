@@ -181,7 +181,7 @@ class Module_admin
                 }
             }
 
-            if (count($__set) != 0) {
+            if (!empty($__set)) {
                 $_sets[] = $__set;
             }
         }
@@ -322,7 +322,7 @@ class Module_admin
             $_keywords[] = $current_word;
         }
         $_keywords = $this->_strip_junk_words($_keywords);
-        if (count($_keywords) == 0) {
+        if (empty($_keywords)) {
             return do_template('INDEX_SCREEN_FANCIER_SCREEN', array(
                 '_GUID' => '8635190f315a0c1cf1d5bad4009a7955',
                 'TITLE' => get_screen_title('ADMIN_ZONE_SEARCH_RESULTS'),

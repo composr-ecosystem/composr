@@ -555,7 +555,7 @@ class Module_admin_permissions
                 $code .= 'form.elements[\'' . 'p_' . strval($id) . '__' . strval($gid) . '\'].checked=this.value==\'+\';';
             }
 
-            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', array('_GUID' => 'dd692175fe246c130126ece7bd30ffb1', 'ALL_OFF' => count($access_rows) == 0, 'KEY' => $page['page_name'], 'UID' => strval($id), 'CODE' => $code, 'CELLS' => $cells)));
+            $rows->attach(do_template('PERMISSION_KEYS_PERMISSION_ROW', array('_GUID' => 'dd692175fe246c130126ece7bd30ffb1', 'ALL_OFF' => empty($access_rows), 'KEY' => $page['page_name'], 'UID' => strval($id), 'CODE' => $code, 'CELLS' => $cells)));
         }
 
         // Match-key messages
@@ -665,7 +665,7 @@ class Module_admin_permissions
                 $_sections_prior[$ordering] = $x;
             }
         }
-        if (count($_sections_prior) != 0) {
+        if (!empty($_sections_prior)) {
             $_sections_prior[''] = null;
         }
         $_sections = array_merge($_sections_prior, $_sections);
@@ -904,7 +904,7 @@ class Module_admin_permissions
     {
         require_all_lang();
 
-        if ((count($_POST) == 0) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
+        if ((empty($_POST)) && ($_SERVER['REQUEST_METHOD'] != 'POST')) {
             warn_exit(do_lang_tempcode('PERMISSION_TRAGEDY_PREVENTED'));
         }
 

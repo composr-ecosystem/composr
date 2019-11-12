@@ -440,7 +440,7 @@ class Module_cms_downloads extends Standard_crud_module
         if ($id !== null) {
             if (addon_installed('galleries')) {
                 $images = $GLOBALS['SITE_DB']->query_select('images', array('thumb_url', 'the_description'), array('cat' => 'download_' . strval($id)), 'ORDER BY add_date,id', 200);
-                if (count($images) == 0) {
+                if (empty($images)) {
                     $fields->attach($image_upload_field);
                 } else {
                     $selected_path = '';

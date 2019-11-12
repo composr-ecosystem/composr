@@ -283,7 +283,7 @@ class Module_admin_errorlog
                     $lines = explode("\n", $data);
 
                     // Mark if we have truncated the start
-                    if (count($lines) != 0) {
+                    if (!empty($lines)) {
                         if (strlen($data) == 40000) {
                             $lines[0] = '...';
                         }

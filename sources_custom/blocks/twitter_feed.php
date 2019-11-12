@@ -190,7 +190,7 @@ class Block_twitter_feed
             ));
         }
 
-        if (count($twitter_statuses) == 0) {
+        if (empty($twitter_statuses)) {
             return do_template('BLOCK_NO_ENTRIES', array(
                 '_GUID' => '24982bb4c3bfdc2ada1b4ccad92b5039',
                 'BLOCK_ID' => $block_id,

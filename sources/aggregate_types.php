@@ -432,7 +432,7 @@ function resync_all_aggregate_type_instances($type = null)
             sync_aggregate_type_instance($instance['id'], $instance['aggregate_label'], $instance['aggregate_label'], $instance['aggregate_type'], $other_parameters, $other_parameters);
         }
         $start += 100;
-    } while (count($instances) != 0);
+    } while (!empty($instances));
 }
 
 /**
@@ -684,19 +684,19 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
             }
 
             // Set privileges
-            if (($priv_reset) && ((count($group_presets) != 0) || (count($member_presets) != 0) || (count($group_privileges) != 0) || (count($member_privileges) != 0))) {
+            if (($priv_reset) && ((!empty($group_presets)) || (!empty($member_presets)) || (!empty($group_privileges)) || (!empty($member_privileges)))) {
                 $object_fs->reset_resource_privileges($filename);
             }
-            if (count($group_presets) != 0) {
+            if (!empty($group_presets)) {
                 $object_fs->set_resource_privileges_from_preset($filename, $group_presets);
             }
-            if (count($member_presets) != 0) {
+            if (!empty($member_presets)) {
                 $object_fs->set_resource_privileges_from_preset__members($filename, $member_presets);
             }
-            if (count($group_privileges) != 0) {
+            if (!empty($group_privileges)) {
                 $object_fs->set_resource_privileges($filename, $group_privileges);
             }
-            if (count($member_privileges) != 0) {
+            if (!empty($member_privileges)) {
                 $object_fs->set_resource_privileges__members($filename, $member_privileges);
             }
 
@@ -738,10 +738,10 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
                     }
                 }
             }
-            if (count($group_access) != 0) {
+            if (!empty($group_access)) {
                 $object_fs->set_resource_access($filename, $group_access);
             }
-            if (count($member_access) != 0) {
+            if (!empty($member_access)) {
                 $object_fs->set_resource_access__members($filename, $member_access);
             }
         }

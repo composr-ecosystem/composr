@@ -34,7 +34,7 @@ class CMSTopicRead
 
         $member_id = get_member();
 
-        if (count($topic_ids) == 0) {
+        if (empty($topic_ids)) {
             return array();
         }
 
@@ -117,7 +117,7 @@ class CMSTopicRead
             $start
         );
 
-        if (count($_details) > 0) {
+        if (!empty($_details)) {
             $forum_details = $_details[0];
         } else {
             $_forum_details = $GLOBALS['FORUM_DB']->query_select('f_forums f', array('*', 'f.id AS forum_id'), array('f.id' => $forum_id), '', 1);

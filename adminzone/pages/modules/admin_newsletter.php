@@ -327,7 +327,7 @@ class Module_admin_newsletter extends Standard_crud_module
             if ($newsletters->is_empty()) {
                 inform_exit(do_lang_tempcode('NO_CATEGORIES'));
             }
-            if (count($rows) == 0) {
+            if (empty($rows)) {
                 $hidden->attach(form_input_hidden('id', '-1'));
             } else {
                 $fields->attach(form_input_list(do_lang_tempcode('NEWSLETTER'), '', 'id', $newsletters, null, true));
@@ -563,7 +563,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 $bounces[] = post_param_string($key);
             }
         }
-        if (count($bounces) == 0) {
+        if (empty($bounces)) {
             warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
         }
 
@@ -742,7 +742,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $start2 += $max;
         } while (($spreadsheet == 1) && (array_key_exists(0, $rows)));
 
-        if ((count($rows) == 0) && ($start2 == 0)) {
+        if ((empty($rows)) && ($start2 == 0)) {
             if ($spreadsheet == 1) {
                 echo '"(' . do_lang('NONE') . ')"' . "\n";
             } else {
@@ -852,7 +852,7 @@ class Module_admin_newsletter extends Standard_crud_module
             $periodic_options = new Tempcode();
 
             $current_periodic_newsletters = $GLOBALS['SITE_DB']->query_select('newsletter_periodic', array('*'));
-            if (count($current_periodic_newsletters) == 0) {
+            if (empty($current_periodic_newsletters)) {
                 $extra_help = do_lang('PERIODIC_NEWSLETTER_EMPTY');
                 $periodic_choice_name = do_lang('PERIODIC_CREATE');
                 $periodic_choice_help = do_lang('PERIODIC_CREATE_HELP');
@@ -877,7 +877,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
             $fields->attach(form_input_list($periodic_choice_name, $periodic_choice_help, 'periodic_choice', $periodic_options, null, false, false));
 
-            if (count($current_periodic_newsletters) > 0) {
+            if (!empty($current_periodic_newsletters)) {
                 $text = do_lang_tempcode('PERIODIC_NEWSLETTER_AMEND');
             }
         }
@@ -989,7 +989,7 @@ class Module_admin_newsletter extends Standard_crud_module
     public function send_gui($_message = '')
     {
         $blocked = newsletter_block_list();
-        if (count($blocked) != 0) {
+        if (!empty($blocked)) {
             attach_message(do_lang_tempcode('BLOCK_LIST_IN_PLACE', escape_html(number_format(count($blocked)))), 'notice');
         }
 

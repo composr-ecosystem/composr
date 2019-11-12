@@ -242,7 +242,7 @@ class Module_admin_cns_groups extends Standard_crud_module
             $set_name = 'rank_image';
             $required = false;
             $set_title = do_lang_tempcode('RANK_IMAGE');
-            $field_set = (count($ids) == 0) ? new Tempcode() : alternate_fields_set__start($set_name);
+            $field_set = (empty($ids)) ? new Tempcode() : alternate_fields_set__start($set_name);
 
             require_code('images');
             $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'file', $required, null, null, true, get_allowed_image_file_types()));
@@ -254,7 +254,7 @@ class Module_admin_cns_groups extends Standard_crud_module
 
             handle_max_file_size($hidden, 'image');
         } else {
-            if (count($ids) == 0) {
+            if (empty($ids)) {
                 warn_exit(do_lang_tempcode('NO_SELECTABLE_THEME_IMAGES_MSN', 'cns_rank_images'));
             }
 
@@ -537,7 +537,7 @@ class Module_admin_cns_groups extends Standard_crud_module
         $text = $this->edit_text;
         if (addon_installed('ecommerce')) {
             $usergroup_subs = $GLOBALS['FORUM_DB']->query_select('f_usergroup_subs', array('id', 's_title'), array('s_group_id' => intval($id)));
-            if (count($usergroup_subs) != 0) {
+            if (!empty($usergroup_subs)) {
                 $subs = new Tempcode();
                 foreach ($usergroup_subs as $i => $sub) {
                     if ($i != 0) {

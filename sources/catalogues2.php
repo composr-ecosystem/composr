@@ -690,7 +690,7 @@ function rebuild_catalogue_cat_treecache()
         }
 
         $start += $max;
-    } while (count($rows) != 0);
+    } while (!empty($rows));
     $start = 0;
     do {
         $rows = $GLOBALS['SITE_DB']->query_select('catalogue_categories', array('id', 'cc_parent_id'), array(), '', $max, $start);
@@ -700,7 +700,7 @@ function rebuild_catalogue_cat_treecache()
         }
 
         $start += $max;
-    } while (count($rows) != 0);
+    } while (!empty($rows));
 
     cms_set_time_limit($old_limit);
 }

@@ -551,7 +551,7 @@ function set_url_moniker($content_type, $content_id, $fields_to_skip = array(), 
                                 }
                             }
                             $start += 50;
-                        } while (count($zones) != 0);
+                        } while (!empty($zones));
                     }
                 }
 

@@ -2109,12 +2109,12 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
     }
     $tag_output->attach($close_list);
 
-    if (($status != CCP_NO_MANS_LAND) || (count($tag_stack) != 0)) {
+    if (($status != CCP_NO_MANS_LAND) || (!empty($tag_stack))) {
         if (!$lax) {
             $stack_top = array_pop($tag_stack);
             return comcode_parse_error($preparse_mode, array('CCP_BROKEN_END', ($stack_top === null) ? $current_tag : $stack_top[0]), $pos, $comcode, $check_only);
         } else {
-            while (count($tag_stack) > 0) {
+            while (!empty($tag_stack)) {
                 $_last = array_pop($tag_stack);
                 $embed_output = _do_tags_comcode($_last[0], $_last[1], $tag_output, $comcode_dangerous, $pass_id, $pos, $source_member, $as_admin, $db, $comcode, $structure_sweep, $semiparse_mode, array(), null, $in_semihtml, $is_all_semihtml, $html_errors);
                 $in_code_tag = false;
@@ -2239,7 +2239,7 @@ function _opened_tag($as_admin, $source_member, $attribute_map, $current_tag, $p
         }
     }
 
-    if (($current_tag === 'quote') && (count($attribute_map) > 0)) {
+    if (($current_tag === 'quote') && (!empty($attribute_map))) {
         $comcode_dangerous = false;
         $comcode_dangerous_html = false;
     }

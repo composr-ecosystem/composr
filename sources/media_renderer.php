@@ -155,7 +155,7 @@ function find_media_renderers($url, $attributes, $as_admin, $source_member, $acc
             }
         }
     }
-    if (count($found) != 0) {
+    if (!empty($found)) {
         arsort($found);
         if (reset($found) >= MEDIA_RECOG_PRECEDENCE_HIGH) {
             return array_keys($found);
@@ -184,7 +184,7 @@ function find_media_renderers($url, $attributes, $as_admin, $source_member, $acc
             }
         }
     }
-    if (count($found) != 0) {
+    if (!empty($found)) {
         arsort($found);
         return array_keys($found);
     }

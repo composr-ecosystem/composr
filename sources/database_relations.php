@@ -683,10 +683,10 @@ function get_sql_dump($out_file, $include_drops = false, $output_statuses = fals
                 fwrite($out_file, $sql . ";\n");
             }
 
-            if (count($data) != 0) {
+            if (!empty($data)) {
                 $start += 100;
             }
-        } while (count($data) != 0);
+        } while (!empty($data));
 
         // Divider, if we put out some data
         if ($start > 0) {

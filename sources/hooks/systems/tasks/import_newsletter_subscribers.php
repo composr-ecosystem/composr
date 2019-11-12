@@ -192,7 +192,7 @@ class Hook_task_import_newsletter_subscribers
                     $count2++;
                 }
             }
-        } while (count($_spreadsheet_data) != 0);
+        } while (!empty($_spreadsheet_data));
 
         $sheet_reader->close();
 

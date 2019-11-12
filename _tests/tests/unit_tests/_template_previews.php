@@ -111,7 +111,7 @@ class _template_previews_test_set extends cms_test_case
         $lists = find_all_previews__by_template();
         $this->shuffle_assoc($lists); // So parallelism can work
         foreach ($lists as $template => $list) {
-            if (count($only_do_these) != 0) {
+            if (!empty($only_do_these)) {
                 if (!in_array($template, $only_do_these)) {
                     continue;
                 }
@@ -155,7 +155,7 @@ class _template_previews_test_set extends cms_test_case
 
             $flag = false;
             foreach ($lists as $template_2 => $list_2) {
-                if (count($only_do_these) != 0) {
+                if (!empty($only_do_these)) {
                     if (!in_array($template_2, $only_do_these)) {
                         continue;
                     }
@@ -214,7 +214,7 @@ class _template_previews_test_set extends cms_test_case
 
             if ((stripos($_out, '<html') !== false) && (strpos($_out, '<xsl') === false)) {
                 $result = check_xhtml($_out, false, false, false, true, true, true, false, false, true);
-                if (($result !== null) && (count($result['errors']) == 0)) {
+                if (($result !== null) && (empty($result['errors']))) {
                     $result = null;
                 }
             } else {
@@ -342,7 +342,7 @@ class _template_previews_test_set extends cms_test_case
             if ($ATTACHED_MESSAGES === null) {
                 $ATTACHED_MESSAGES = new Tempcode();
             }
-            $put_out = (!$ATTACHED_MESSAGES->is_empty()) || (count($ATTACHED_MESSAGES_RAW) > 0);
+            $put_out = (!$ATTACHED_MESSAGES->is_empty()) || (!empty($ATTACHED_MESSAGES_RAW));
             $this->assertFalse($put_out, 'Messages put out by ' . $function . '  (' . strip_html($ATTACHED_MESSAGES->evaluate()) . ')');
 
             if (!$put_out) {

@@ -481,7 +481,7 @@ function cleanup()
                     call_user_func_array($function, array_merge($row, $extra_params));
                 }
                 //$start+=100;   Actually, don't do this - as deletion will have changed offsets
-            } while (count($rows) != 0);
+            } while (!empty($rows));
         }
     }
 

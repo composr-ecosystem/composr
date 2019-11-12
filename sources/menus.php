@@ -55,7 +55,7 @@ function build_menu($type, $menu_id, $silent_failure = false, $apply_highlightin
         $root = _build_stored_menu($menu_id);
 
         // Empty?
-        if (count($root['children']) == 0) {
+        if (empty($root['children'])) {
             if ($silent_failure) {
                 return array(new Tempcode(), array());
             }

@@ -237,7 +237,7 @@ function _convert_request_data_encodings($known_utf8 = false)
         if ($VALID_ENCODING) {
             $input_charset = $known_utf8 ? 'utf-8' : '';
             if ((function_exists('mb_http_input')) && ($input_charset == '')) {
-                if (count($_POST) != 0) {
+                if (!empty($_POST)) {
                     $input_charset = mb_http_input('P');
                     if ((!is_string($input_charset)) || ($input_charset == 'pass')) {
                         $input_charset = '';

@@ -198,7 +198,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                     $last_cat_id = intval($matches[1]);
 
                     $temp = $object->run(intval($cutoff_time), $lang, $filter);
-                    if (($temp === null) || (count($temp) == 0)) {
+                    if (($temp === null) || (empty($temp))) {
                         continue;
                     }
                     if (!$temp[0]->is_empty()) {
@@ -237,7 +237,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
             }
 
             $temp = $object->run(intval($cutoff_time), $lang, '*', $in_full);
-            if (($temp === null) || (count($temp) == 0)) {
+            if (($temp === null) || (empty($temp))) {
                 continue;
             }
             if (!$temp[0]->is_empty()) {
@@ -252,7 +252,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
             }
         } elseif ($filter != '') {
             $temp = $object->run(intval($cutoff_time), $lang, $filter, $in_full);
-            if (($temp === null) || (count($temp) == 0)) {
+            if (($temp === null) || (empty($temp))) {
                 continue;
             }
             if (!$temp[0]->is_empty()) {
@@ -268,7 +268,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
         }
     }
 
-    if (count($automatic) == 0) {
+    if (empty($automatic)) {
         return null;
     }
 
@@ -1110,7 +1110,7 @@ function delete_newsletter_subscriber($id)
  */
 function remove_email_bounces($bounces)
 {
-    if (count($bounces) == 0) {
+    if (empty($bounces)) {
         return;
     }
 

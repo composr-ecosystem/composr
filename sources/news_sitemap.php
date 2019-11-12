@@ -124,7 +124,7 @@ function build_news_sitemap()
         }
 
         $start += $max;
-    } while ((count($rows) != 0) && ($start < 500/*Let's not go nuts - older news is still in the regular sitemap!*/));
+    } while ((!empty($rows)) && ($start < 500/*Let's not go nuts - older news is still in the regular sitemap!*/));
 
     fwrite($sitemap_file, '
         </urlset>

@@ -41,7 +41,7 @@ function dispatch_sms($message, $to_sms)
     // 140 byte limit for single packet
     // 134*255 byte limit for multiple packets (but there's cost for each additional 134 byte segment)
 
-    if (count($to_sms) == 0) {
+    if (empty($to_sms)) {
         return 0;
     }
 

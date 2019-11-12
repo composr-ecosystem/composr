@@ -175,10 +175,10 @@ class standard_dir_files_test_set extends cms_test_case
             sort($b);
 
             $diff = array_diff($a, $b);
-            $this->assertTrue(count($diff) == 0, 'Missing in sources_custom/hooks/' . $dir . ': ' . serialize($diff));
+            $this->assertTrue(empty($diff), 'Missing in sources_custom/hooks/' . $dir . ': ' . serialize($diff));
 
             $diff = array_diff($b, $a);
-            $this->assertTrue(count($diff) == 0, 'Missing in sources/hooks/' . $dir . ': ' . serialize($diff));
+            $this->assertTrue(empty($diff), 'Missing in sources/hooks/' . $dir . ': ' . serialize($diff));
         }
     }
 }

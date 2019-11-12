@@ -700,7 +700,7 @@ function _build_url($parameters, $zone_name = '', $skip = array(), $keep_all = f
     $self_page = ((!$has_page) || ((function_exists('get_zone_name')) && (get_zone_name() === $zone_name) && (($parameters['page'] === '_SELF') || ($parameters['page'] === get_page_name())))) && ((!isset($parameters['type'])) || ($parameters['type'] === get_param_string('type', 'browse', INPUT_FILTER_GET_COMPLEX))) && ($hash !== '#_top') && (!$KNOWN_AJAX);
     if ($can_try_url_schemes) {
         if ((!$self_page) || ($_what_is_running === 'index')) {
-            $test_rewrite = _url_rewrite_params($zone_name, $parameters, count($keep_actual) > 0);
+            $test_rewrite = _url_rewrite_params($zone_name, $parameters, !empty($keep_actual));
         }
     }
     if ($test_rewrite === null) {

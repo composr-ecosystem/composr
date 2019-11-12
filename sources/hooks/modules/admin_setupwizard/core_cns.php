@@ -49,7 +49,7 @@ class Hook_sw_core_cns
             $sql .= ' AND ' . db_string_not_equal_to('e_code', ':)');
             $sql .= ' AND ' . db_string_not_equal_to('e_code', ':\'(');
             $test = $GLOBALS['FORUM_DB']->query($sql);
-            $settings['have_default_full_emoticon_set'] = (count($test) != 0) ? '1' : '0';
+            $settings['have_default_full_emoticon_set'] = (!empty($test)) ? '1' : '0';
 
             $have_default_cpf_set = false;
             $fields_l = array('interests', 'location', 'occupation');

@@ -356,7 +356,7 @@ class Module_admin_quiz
                 }
             }
 
-            if (count($filtered_entries) == 0) {
+            if (empty($filtered_entries)) {
                 warn_exit(do_lang_tempcode('NO_POSSIBLE_WINNERS'));
             }
 
@@ -522,7 +522,7 @@ class Module_admin_quiz
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'COUNT(*)', $where);
         $rows = $GLOBALS['SITE_DB']->query_select('quiz_entries e JOIN ' . get_table_prefix() . 'quizzes q ON q.id=e.q_quiz', array('e.id AS e_id', 'e.q_time', 'e.q_member', 'e.q_results', 'q.*'), $where, 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
         $result_entries = new Tempcode();
@@ -658,7 +658,7 @@ class Module_admin_quiz
             }
         }
 
-        if (count($to_delete) == 0) {
+        if (empty($to_delete)) {
             warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
         }
 

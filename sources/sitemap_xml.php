@@ -58,7 +58,7 @@ function sitemap_xml_build($callback = null, $force = false)
 
     // Build from sitemap_cache table
     $set_numbers = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('DISTINCT set_number'), array(), $force ? '' : (' WHERE last_updated>=' . strval($last_time)));
-    if (count($set_numbers) > 0) {
+    if (!empty($set_numbers)) {
         foreach ($set_numbers as $set_number) {
             rebuild_sitemap_set($set_number['set_number'], $last_time, $callback);
         }

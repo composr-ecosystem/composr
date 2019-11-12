@@ -109,7 +109,7 @@ class RemoteContentGrabber
                 $where = array();
             }
 
-            if (count($where) == 0) {
+            if (empty($where)) {
                 $extra = 'WHERE 1=1';
             } else {
                 $extra = '';
@@ -131,7 +131,7 @@ class RemoteContentGrabber
             }
 
             //$start += $max;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     protected function process_row($row)
@@ -226,7 +226,7 @@ class RemoteContentGrabber
         }
 
         // No changes?
-        if (count($downloaded_urls) == 0) {
+        if (empty($downloaded_urls)) {
             return;
         }
 

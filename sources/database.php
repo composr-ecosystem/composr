@@ -140,7 +140,7 @@ function peek_db_scope_check()
 function _general_db_init()
 {
     global $TABLE_LANG_FIELDS_CACHE;
-    if (count($TABLE_LANG_FIELDS_CACHE) > 0) {
+    if (!empty($TABLE_LANG_FIELDS_CACHE)) {
         return;
     }
 
@@ -976,7 +976,7 @@ class DatabaseDriver
                 break;
 
             case 'RAND':
-                if (count($args) != 0) {
+                if (!empty($args)) {
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
                 switch (get_db_type()) {
@@ -1967,7 +1967,7 @@ class DatabaseConnector
             } else {
                 $query = 'INSERT INTO ' . $this->table_prefix . $table . ' (' . $keys . ') VALUES (' . $all_values[0] . ')';
             }
-        } elseif (count($all_values) == 0) {
+        } elseif (empty($all_values)) {
             return null;
         } else {
             // So we can do batch inserts...

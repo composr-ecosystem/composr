@@ -994,7 +994,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     }
 
     if (key($fields) == '') {
-        if (($only_titles) && (count($fields) != 0)) {
+        if (($only_titles) && (!empty($fields))) {
             return array();
         }
     }
@@ -1176,7 +1176,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
                 }
             }
 
-            if (count($where_alternative_matches) == 0) {
+            if (empty($where_alternative_matches)) {
                 $where_alternative_matches[] = array($where_clause, '', '', $table_clause, null);
             } else {
                 if (($order == '') && ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) && ($content_where != '')) {
@@ -1436,7 +1436,7 @@ function get_search_rows($meta_type, $meta_id_field, $content, $boolean_search, 
     // NB: We don't use the count_query's any more (except when using huge data sets, see above), because you can't actually just add them because they overlap. So instead we fetch all results and throw some away.
 
     $t_rows = array_merge($t_rows, $t_main_search_rows);
-    if (count($t_rows) > 0) {
+    if (!empty($t_rows)) {
         $t_rows_new = array();
         if ((array_key_exists('id', $t_rows[0])) || (array_key_exists('_primary_id', $t_rows[0]))) {
             $done = array();

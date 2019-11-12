@@ -317,7 +317,7 @@ class Module_newsletter
     public function newsletter_form()
     {
         $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'));
-        if (count($newsletters) == 0) {
+        if (empty($newsletters)) {
             inform_exit(do_lang_tempcode('NO_CATEGORIES'));
         }
 

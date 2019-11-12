@@ -62,7 +62,7 @@ class Hook_commandr_fs_database
         } elseif (count($meta_dir) == 1) {
             // We're in a table; list the row key combinations
             $keys = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name', 'm_type'), array('m_table' => $meta_dir[0]));
-            if (count($keys) == 0) {
+            if (empty($keys)) {
                 return false;
             }
             $select = array();

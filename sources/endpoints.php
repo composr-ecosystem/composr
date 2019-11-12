@@ -65,7 +65,7 @@ function endpoint_script()
             }
 
             // POST data may need switching about
-            if (count($_POST) == 0) {
+            if (empty($_POST)) {
                 if ($_SERVER['REQUEST_METHOD'] != 'HEAD' && $_SERVER['REQUEST_METHOD'] != 'GET') { // i.e. not a simple CSRF case
                     $_POST['data'] = @file_get_contents('php://input');
                 }

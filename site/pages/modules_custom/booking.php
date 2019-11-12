@@ -365,7 +365,7 @@ class Module_booking
 
             $description = get_translated_tempcode('bookable', $bookable, 'the_description');
 
-            if ((!$description->is_empty()) || (count($messages) > 0)) {
+            if ((!$description->is_empty()) || (!empty($messages))) {
                 $has_details = true;
             }
 

@@ -585,7 +585,7 @@ class Module_shopping
 
         update_cart($products_in_cart);
 
-        if (count($product_to_remove) > 0) {
+        if (!empty($product_to_remove)) {
             remove_from_cart($product_to_remove);
         }
 
@@ -657,7 +657,7 @@ class Module_shopping
             );
         }
 
-        if (count($orders) == 0) {
+        if (empty($orders)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

@@ -37,7 +37,7 @@ class Hook_commandr_fs_etc
 
         require_code('resource_fs');
 
-        if (count($meta_dir) > 0) {
+        if (!empty($meta_dir)) {
             return false; // Directory doesn't exist
         }
         load_config_options();
@@ -122,7 +122,7 @@ class Hook_commandr_fs_etc
      */
     public function remove_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
     {
-        if (count($meta_dir) > 0) {
+        if (!empty($meta_dir)) {
             return false; // Directory doesn't exist
         }
 
@@ -140,7 +140,7 @@ class Hook_commandr_fs_etc
      */
     public function read_file($meta_dir, $meta_root_node, $file_name, &$commandr_fs)
     {
-        if (count($meta_dir) > 0) {
+        if (!empty($meta_dir)) {
             return false; // Directory doesn't exist
         }
 
@@ -174,7 +174,7 @@ class Hook_commandr_fs_etc
     {
         require_code('config2');
 
-        if (count($meta_dir) > 0) {
+        if (!empty($meta_dir)) {
             return false; // Directory doesn't exist
         }
 

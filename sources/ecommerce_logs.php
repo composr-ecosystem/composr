@@ -133,7 +133,7 @@ function build_sales_table($filter_member_id, $show_username = false, $show_dele
         $sales_rows[] = $sales_row;
     }
 
-    if (count($sales_rows) == 0) {
+    if (empty($sales_rows)) {
         if ($empty_ok) {
             return null;
         }

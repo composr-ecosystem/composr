@@ -68,7 +68,7 @@ function parse_quiz_question_line($question, $answers, $question_extra_text = ''
     $question = trim($question);
 
     // Type?
-    $type = ((count($answers) == 0) ? 'SHORT' : 'MULTIPLECHOICE');
+    $type = ((empty($answers)) ? 'SHORT' : 'MULTIPLECHOICE');
     foreach (array('MULTIPLECHOICE', 'MULTIMULTIPLE', 'LONG', 'SHORT', 'SHORT_STRICT') as $possible_type) {
         if (strpos($question, ' [' . $possible_type . ']') !== false) {
             $type = $possible_type;
@@ -86,17 +86,17 @@ function parse_quiz_question_line($question, $answers, $question_extra_text = ''
 
     // Some validation
     if ($do_validation) {
-        if (($type == 'MULTIPLECHOICE' || $type == 'MULTIMULTIPLE') && (count($answers) == 0)) { // Error if multiple choice but no choices
+        if (($type == 'MULTIPLECHOICE' || $type == 'MULTIMULTIPLE') && (empty($answers))) { // Error if multiple choice but no choices
             require_lang('quiz');
             attach_message(do_lang_tempcode('QUIZ_INVALID_MULTI_NO_ANSWERS'), 'warn');
             $type = 'SHORT';
         }
-        if (($type == 'LONG') && (count($answers) > 0)) { // Error if any answers for LONG
+        if (($type == 'LONG') && (!empty($answers))) { // Error if any answers for LONG
             require_lang('quiz');
             attach_message(do_lang_tempcode('QUIZ_INVALID_LONG_HAS_ANSWERS'), 'warn');
             $type = 'MULTIPLECHOICE';
         }
-        if (($marked == 0) && (count($answers) > 0)) {
+        if (($marked == 0) && (!empty($answers))) {
             require_lang('quiz');
             attach_message(do_lang_tempcode('QUIZ_INVALID_UNMARKED_HAS_ANSWERS'), 'warn');
             $marked = 1;
@@ -175,7 +175,7 @@ function _save_available_quiz_answers($id, $text, $type)
         foreach ($_as as $a) {
             if ($a != '') {
                 if (substr($a, 0, 1) == ':') { // Is an explanation
-                    if (count($as) != 0) {
+                    if (!empty($as)) {
                         $as[count($as) - 1][1] = trim($as[count($as) - 1][1] . "\n" . trim(substr($a, 1)));
                     }
                 } else {
@@ -184,7 +184,7 @@ function _save_available_quiz_answers($id, $text, $type)
             }
         }
 
-        if (count($as) == 0) {
+        if (empty($as)) {
             continue; // Was only an orphaned explanation, so ignore
         }
 

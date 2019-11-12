@@ -156,7 +156,7 @@ function clear_old_uploads()
     $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'incoming_uploads WHERE i_date_and_time<' . strval($two_days_ago));
 
     // If there are older uploads records found start processing them
-    if (count($rows) > 0) {
+    if (!empty($rows)) {
         // Browse through files
         foreach ($rows as $upload) {
             if (!empty($upload['i_save_url'])) {

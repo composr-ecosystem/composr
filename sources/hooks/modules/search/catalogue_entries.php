@@ -267,7 +267,7 @@ class Hook_search_catalogue_entries extends FieldsSearchHook
         }
 
         $out = array();
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return array();
         }
 

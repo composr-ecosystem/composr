@@ -164,7 +164,7 @@ class Block_main_staff_checklist
         ksort($_hooks);
         foreach ($_hooks as $object) {
             $ret = $object->run();
-            if (($ret !== null) && (count($ret) != 0)) {
+            if (($ret !== null) && (!empty($ret))) {
                 foreach ($ret as $r) {
                     if (($r[1] === null) && ($r[2] === null)) {
                         $rets_no_times[] = $r;

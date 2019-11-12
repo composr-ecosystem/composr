@@ -529,7 +529,7 @@ function referrer_report_script($ret = false)
         $start
     );
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('referees_qualified_for', 'COUNT(*)', ($member_id !== null) ? array('q_referrer' => $member_id) : array()) * 2;
-    if ((count($referrals) == 0) && ($dif === null)) {
+    if ((empty($referrals)) && ($dif === null)) {
         inform_exit(do_lang_tempcode('NO_ENTRIES'), true);
     }
     foreach ($referrals as $ref) {
@@ -555,7 +555,7 @@ function referrer_report_script($ret = false)
         $qualifications = array();
         if (($ref['qualified'] == 1) && ($ref['referee_id'] !== null)) { // Clarify, are they really qualified?
             $qualifications = $GLOBALS['SITE_DB']->query_select('referees_qualified_for', array('q_time', 'q_action'), array('q_referee' => $ref['referee_id'], 'q_scheme_name' => $scheme_name));
-            if (count($qualifications) == 0) {
+            if (empty($qualifications)) {
                 $ref['qualified'] = 0; // Not actually qualified for this scheme
             }
         }

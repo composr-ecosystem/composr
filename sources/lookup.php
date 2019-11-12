@@ -75,7 +75,7 @@ function lookup_member_page($member, &$name, &$id, &$ip)
         if ($ip === null) {
             $ip = '127.0.0.1';
         }
-        if (count($ids) == 0) {
+        if (empty($ids)) {
             return array();
         } else {
             $id = $ids[0]['id'];

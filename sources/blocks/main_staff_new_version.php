@@ -72,7 +72,7 @@ class Block_main_staff_new_version
 
         require_code('addons2');
         $updated_addons = find_updated_addons();
-        $has_updated_addons = (count($updated_addons) != 0);
+        $has_updated_addons = (!empty($updated_addons));
 
         return do_template('BLOCK_MAIN_STAFF_NEW_VERSION', array(
             '_GUID' => '43c7b18d3d44e825247579df23a2ad9c',

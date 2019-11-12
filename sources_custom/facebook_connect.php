@@ -255,7 +255,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             null, // special start
             true // show on join form
         );
-        if ((!$completion_form_submitted) && (count($_custom_fields) != 0) && (get_option('finish_profile') == '1')) { // UI
+        if ((!$completion_form_submitted) && (!empty($_custom_fields)) && (get_option('finish_profile') == '1')) { // UI
             $GLOBALS['FACEBOOK_FINISHING_PROFILE'] = true;
             $middle = cns_member_external_linker_ask('facebook', $username, $email_address, $dob_day, $dob_month, $dob_year);
             $tpl = globalise($middle, null, '', true);
@@ -273,7 +273,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
             }
 
             $username = post_param_string('username', $username); // User may have customised username
-            if ((count($_custom_fields) != 0) && (get_value('no_finish_profile') !== '1')) { // Was not auto-generated, so needs to be checked
+            if ((!empty($_custom_fields)) && (get_value('no_finish_profile') !== '1')) { // Was not auto-generated, so needs to be checked
                 cns_check_name_valid($username, null, null);
             }
             $member_id = cns_member_external_linker('facebook', $username, $facebook_uid, false, $email_address, $dob_day, $dob_month, $dob_year, $timezone, $language, $avatar_url, $photo_url, $photo_thumb_url);

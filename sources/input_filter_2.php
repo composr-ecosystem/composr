@@ -134,7 +134,7 @@ function parse_raw_http_request()
     $matches = array();
     preg_match('#boundary=(.*)$#', $_SERVER['CONTENT_TYPE'], $matches);
 
-    if (count($matches) == 0) {
+    if (empty($matches)) {
         // Content type is probably regular form-encoded
         $post_data = _parse_raw_http_request_urlencoded($input);
     } else {

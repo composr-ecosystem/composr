@@ -59,7 +59,7 @@ class Hook_rss_tickets
 
         $_ticket_types = collapse_2d_complexity('id', '_null', $GLOBALS['SITE_DB']->query_select('ticket_types', array('id', 'NULL as _null')));
         $ticket_types = selectcode_to_idlist_using_memory($_filters, $_ticket_types);
-        if (count($ticket_types) != 0) {
+        if (!empty($ticket_types)) {
             $rows = array();
             foreach ($ticket_types as $ticket_type_id) {
                 if (!has_category_access(get_member(), 'tickets', strval($ticket_type_id))) {

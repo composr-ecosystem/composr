@@ -98,7 +98,7 @@ class Hook_task_export_catalogue
             }
 
             $start += 4000;
-        } while (count($entry_rows) != 0);
+        } while (!empty($entry_rows));
         $sheet_writer->close();
 
         $headers = array();

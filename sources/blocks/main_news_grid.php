@@ -484,7 +484,7 @@ PHP;
             $rss_url = new Tempcode();
         }
 
-        if ((count($rows) == 0) && (count($rows2) == 0)) {
+        if ((empty($rows)) && (empty($rows2))) {
             if ((!isset($map['render_if_empty'])) || ($map['render_if_empty'] == '0')) {
                 return do_template('BLOCK_NO_ENTRIES', array(
                     '_GUID' => '9d7065af4dd4026ffb34243fd931f99d',

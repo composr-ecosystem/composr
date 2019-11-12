@@ -245,7 +245,7 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
                         break;
                 }
             };
-            if (count($_results) > 0) {
+            if (!empty($_results)) {
                 $_sections[$section_label] = array(
                     'RESULTS' => $_results,
 
@@ -262,7 +262,7 @@ function run_health_check(&$has_fails, $sections_to_run = null, $passes = false,
             }
         }
 
-        if (count($_sections) > 0) {
+        if (!empty($_sections)) {
             cms_mb_ksort($_sections, SORT_NATURAL | SORT_FLAG_CASE);
             $categories[$category_label] = array(
                 'SECTIONS' => $_sections,

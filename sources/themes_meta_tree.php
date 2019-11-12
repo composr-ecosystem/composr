@@ -151,7 +151,7 @@ function record_template_tree_used($out)
 function convert_template_tree_metadata_to_screen_tree($metadata)
 {
     if (!in_array($metadata['type'], array(TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE, TEMPLATE_TREE_NODE__PANEL, TEMPLATE_TREE_NODE__PAGE))) {
-        if (count($metadata['children']) == 0) {
+        if (empty($metadata['children'])) {
             return null;
         }
     }
@@ -378,7 +378,7 @@ function find_template_tree_nice($metadata, &$collected_templates)
     $_children = array();
     foreach ($children as $child) {
         if (
-            (count($child['children']) > 0)
+            (!empty($child['children']))
             ||
             ($child['type'] == TEMPLATE_TREE_NODE__TEMPLATE_INSTANCE)
         ) {
@@ -712,7 +712,7 @@ class Meta_tree_builder
                 deldir_contents($_path, false, true);
             }
 
-            if (count($files) > 0) {
+            if (!empty($files)) {
                 if (!is_dir($_path)) {
                     mkdir($_path, 0777);
                     fix_permissions($_path);
@@ -729,7 +729,7 @@ class Meta_tree_builder
                     $_relationships = $GLOBALS['SITE_DB']->query_select('theme_template_relations', array('rel_b'), array('rel_a' => $file['mini_path']));
                     $relationships = collapse_1d_complexity('rel_b', $_relationships);
 
-                    if (count($relationships) > 0) {
+                    if (!empty($relationships)) {
                         foreach ($places_for_referencing as $place) {
                             if (!is_dir($place)) {
                                 @mkdir($place, 0777);

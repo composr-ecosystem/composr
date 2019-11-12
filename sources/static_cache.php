@@ -58,7 +58,7 @@ function static_cache__get_self_url_easy()
         $self_url .= $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     } elseif (!@cms_empty_safe($_SERVER['PHP_SELF'])) {
         $self_url .= $_SERVER['PHP_SELF'];
-        if (count($_GET) != 0) {
+        if (!empty($_GET)) {
             $self_url .= '?' . http_build_query($_GET);
         }
     }

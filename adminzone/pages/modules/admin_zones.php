@@ -638,7 +638,7 @@ class Module_admin_zones
                 $set_name = 'logo_choose_' . $theme;
                 $required = true;
                 $set_title = do_lang_tempcode('LOGO');
-                $field_set = (count($ids) == 0) ? new Tempcode() : alternate_fields_set__start($set_name);
+                $field_set = (empty($ids)) ? new Tempcode() : alternate_fields_set__start($set_name);
 
                 require_code('images');
                 $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'logo_upload_' . $theme, $required, null, null, true, get_allowed_image_file_types()));

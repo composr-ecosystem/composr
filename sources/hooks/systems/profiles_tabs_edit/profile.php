@@ -44,7 +44,7 @@ class Hook_profiles_tabs_edit_profile
                 null, // owner view
                 (($member_id_of === null) || ($member_id_of != $member_id_viewing) || (has_privilege($member_id_viewing, 'view_any_profile_field'))) ? null : 1 // owner set
             );
-            if (count($_custom_fields) == 0) {
+            if (empty($_custom_fields)) {
                 return false;
             }
             return true;

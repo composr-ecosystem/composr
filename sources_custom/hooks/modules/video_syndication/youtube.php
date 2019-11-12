@@ -141,7 +141,7 @@ class Hook_video_syndication_youtube
             }
 
             $start += 50;
-        } while (count($parsed['entry']) > 0);
+        } while (!empty($parsed['entry']));
 
         return $videos;
     }

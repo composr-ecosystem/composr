@@ -406,7 +406,7 @@ class Module_filedump
 
         $thumbnails = array();
 
-        if (count($files) > 0) { // If there are some files
+        if (!empty($files)) { // If there are some files
             require_code('templates_columned_table');
             $header_row = columned_table_header_row(array(
                 do_lang_tempcode('FILENAME'),
@@ -1111,7 +1111,7 @@ class Module_filedump
         }
 
         if ($action != 'edit') {
-            if (count($files) == 0) {
+            if (empty($files)) {
                 warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
             }
         }
@@ -1367,7 +1367,7 @@ class Module_filedump
             $i++;
         }
 
-        if (count($broken) == 0) {
+        if (empty($broken)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

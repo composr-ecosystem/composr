@@ -198,7 +198,7 @@ function get_workflow_form($workflow_content_id)
 
     // Check if this is a valid piece of content for a workflow
     $rows = $GLOBALS['SITE_DB']->query_select('workflow_content', array('*'), array('id' => $workflow_content_id), '', 1);
-    if (count($rows) == 0) {
+    if (empty($rows)) {
         warn_exit(do_lang_tempcode('_MISSING_RESOURCE', escape_html(strval($workflow_content_id)), do_lang_tempcode('WORKFLOW')));
     }
 
@@ -592,16 +592,16 @@ function workflow_update_handler()
             }
         }
     }
-    if (count($notes_approved) + count($notes_disapproved) > 0) {
+    if (count($notes_approved) + !empty($notes_disapproved)) {
         $note_title = get_timezoned_date(time(), false) . ' ' . $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         $workflow_notes = $workflow_notes . "\n\n" . $note_title . "\n" . str_repeat('-', strlen($note_title));
 
         $notes_approved = array_map('get_translated_text', $notes_approved);
         $notes_disapproved = array_map('get_translated_text', $notes_disapproved);
-        if (count($notes_approved) > 0) {
+        if (!empty($notes_approved)) {
             $workflow_notes .= "\n" . do_lang('WORKFLOW_APPROVED') . ': ' . implode(', ', $notes_approved);
         }
-        if (count($notes_disapproved) > 0) {
+        if (!empty($notes_disapproved)) {
             $workflow_notes .= "\n" . do_lang('WORKFLOW_DISAPPROVED') . ': ' . implode(', ', $notes_disapproved);
         }
     }
@@ -682,7 +682,7 @@ function workflow_update_handler()
 
     // At last we can send the e-mail
     require_code('notifications');
-    if (count($send_to_members) > 0) {
+    if (!empty($send_to_members)) {
         $success_message .= do_lang('APPROVAL_CHANGED_NOTIFICATIONS');
     }
     $subject = do_lang('APPROVAL_EMAIL_SUBJECT', $content_title, null, null, get_site_default_lang());

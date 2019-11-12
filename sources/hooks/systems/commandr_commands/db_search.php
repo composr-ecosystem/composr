@@ -54,7 +54,7 @@ class Hook_commandr_command_db_search
             $i = 1;
             while (array_key_exists($i, $parameters)) {
                 $more_fields = $this->find_fields_of($parameters[$i]);
-                if (count($more_fields) > 0) {
+                if (!empty($more_fields)) {
                     $fields = array_merge(
                         $fields,
                         $more_fields
@@ -68,7 +68,7 @@ class Hook_commandr_command_db_search
 
             // Could not find any fields, revert to default types...
 
-            if (count($fields) == 0) {
+            if (empty($fields)) {
                 $field_types = array(
                     'LONG_TRANS',
                     'SHORT_TRANS',
@@ -96,7 +96,7 @@ class Hook_commandr_command_db_search
                 $db = get_db_for($field['m_table']);
                 $ofs = $db->query_select($field['m_table'], array('*'), array($field['m_name'] => $search));
 
-                if (count($ofs) > 0) {
+                if (!empty($ofs)) {
                     $out .= '<h2>' . escape_html($field['m_table']) . ':' . escape_html($field['m_name']) . '</h2>';
 
                     foreach ($ofs as $of) {
@@ -121,7 +121,7 @@ class Hook_commandr_command_db_search
 
             // Generate replacement SQL...
 
-            if (($replace !== null) && (count($sql_for) > 0)) {
+            if (($replace !== null) && (!empty($sql_for))) {
                 $_out = '';
                 foreach ($sql_for as $table_bits) {
                     $_out .= escape_html('UPDATE ' . $table_bits[0] . ' SET ' . $table_bits[1] . '=' . db_function('REPLACE', array($table_bits[1], "'" . db_escape_string($search) . "'", "'" . db_escape_string($replace) . "'")) . ';') . '<br />';

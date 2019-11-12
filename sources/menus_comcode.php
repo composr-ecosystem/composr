@@ -43,7 +43,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
     $root['content_id'] = $menu;
     $current_level = $root;
 
-    if (count($lines) == 0) {
+    if (empty($lines)) {
         return new Tempcode();
     }
 

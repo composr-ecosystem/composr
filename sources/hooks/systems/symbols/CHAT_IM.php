@@ -52,7 +52,7 @@ class Hook_symbol_CHAT_IM
             require_code('chat_sounds');
             get_effect_settings(true, null, true); // Force pre-load
             global $EFFECT_SETTINGS_ROWS;
-            if (count($EFFECT_SETTINGS_ROWS) > 0) {
+            if (!empty($EFFECT_SETTINGS_ROWS)) {
                 $may_cache = false; // Custom sounds for this member
             }
 

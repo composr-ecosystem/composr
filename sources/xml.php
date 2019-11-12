@@ -198,7 +198,7 @@ class CMS_simple_xml_reader
         $this_children = array_pop($this->children_stack);
         $this_text = array_pop($this->text_stack);
 
-        if (count($this->tag_stack) == 0) {
+        if (empty($this->tag_stack)) {
             $this->gleamed = array($this_tag, $this_attributes, $this_text, $this_children);
         } else {
             $next_top_tags_children = array_pop($this->children_stack);
@@ -243,7 +243,7 @@ class CMS_simple_xml_reader
                     $key = $this->_fix_namespace($key, $xml_namespaces);
                     $drawn .= ' ' . $key . '="' . xmlentities($val) . '"';
                 }
-                if (count($children) > 0) {
+                if (!empty($children)) {
                     $data .= '<' . $tag . $drawn . '>' . $this->pull_together($children, $xml_namespaces) . '</' . $tag . '>';
                 } else {
                     // No child nodes, self-close

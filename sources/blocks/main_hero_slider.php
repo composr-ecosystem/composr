@@ -153,7 +153,7 @@ PHP;
 
         require_code('images');
 
-        if (count($all_rows) == 0) {
+        if (empty($all_rows)) {
             if ($blank_if_empty) {
                 return new Tempcode();
             }

@@ -295,7 +295,7 @@ function create_bar_chart($data, $x_label = 'X axis', $y_label = 'Y axis', $x_un
         $average += $value;
     }
     $max_x = count($data);
-    if (count($data) != 0) {
+    if (!empty($data)) {
         $average /= count($data);
     }
     if ($max_y == 0.0) {

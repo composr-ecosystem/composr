@@ -11055,7 +11055,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
                 }
             }
         }
-        if (count($duplicates) > 0) {
+        if (!empty($duplicates)) {
             warn_exit('Duplicated lines in string_scan: ' . implode(', ', $duplicates));
         }
     }

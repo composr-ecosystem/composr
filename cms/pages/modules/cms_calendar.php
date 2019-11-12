@@ -867,14 +867,14 @@ class Module_cms_calendar extends Standard_crud_module
             $start = 0;
             do {
                 $members = array();
-                if (count($rem_groups) != 0) {
+                if (!empty($rem_groups)) {
                     $members = array_keys($GLOBALS['FORUM_DRIVER']->member_group_query($rem_groups, 300, $start));
                     $members = array_diff($members, array(get_member(), $GLOBALS['FORUM_DRIVER']->get_guest_id()));
                 }
                 if (($start == 0) && (post_param_integer('sign_up_reminder', 0) == 1)) { // If this member is signing up
                     $members[] = get_member();
                 }
-                if (count($members) != 0) { // Now add their reminders
+                if (!empty($members)) { // Now add their reminders
                     $secs_before = float_unformat(post_param_string('hours_before', '1.0')) * 3600.0;
 
                     $filled1 = array();
@@ -1013,7 +1013,7 @@ class Module_cms_calendar extends Standard_crud_module
         if (($delete_status == '3') && (!fractional_edit())) {
             // Fix past recurrences
             $past_times = find_periods_recurrence($event['e_timezone'], 1, $event['e_start_year'], $event['e_start_month'], $event['e_start_day'], $event['e_start_monthly_spec_type'], $event['e_start_hour'], $event['e_start_minute'], $event['e_end_year'], $event['e_end_month'], $event['e_end_day'], $event['e_end_monthly_spec_type'], $event['e_end_hour'], $event['e_end_minute'], $event['e_recurrence'], $event['e_recurrences'], utctime_to_usertime(mktime($event['e_start_hour'], $event['e_start_minute'], 0, $event['e_start_month'], $event['e_start_day'], $event['e_start_year'])), utctime_to_usertime(time()));
-            if (count($past_times) > 0) {
+            if (!empty($past_times)) {
                 foreach ($past_times as $past_time) {
                     list($start_year, $start_month, $start_day, $start_hour, $start_minute) = explode('-', date('Y-m-d-h-i', usertime_to_utctime($past_time[0])));
                     if ($event['e_end_day'] === null) {
@@ -1035,7 +1035,7 @@ class Module_cms_calendar extends Standard_crud_module
                 }
 
                 // Find next recurrence in future
-                if (count($past_times) == 0) {
+                if (empty($past_times)) {
                     $start_year = $_start_year;
                     $start_month = $_start_month;
                     $start_day = $_start_day;
@@ -1333,7 +1333,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
         $set_name = 'image';
         $required = true;
         $set_title = do_lang_tempcode('IMAGE');
-        $field_set = (count($ids) == 0) ? new Tempcode() : alternate_fields_set__start($set_name);
+        $field_set = (empty($ids)) ? new Tempcode() : alternate_fields_set__start($set_name);
 
         require_code('images');
         $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), '', 'image', $required, null, null, true, get_allowed_image_file_types()));

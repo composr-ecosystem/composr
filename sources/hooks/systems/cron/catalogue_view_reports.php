@@ -96,7 +96,7 @@ class Hook_cron_catalogue_view_reports
      */
     public function run($last_run)
     {
-        if (count($this->doing) != 0) {
+        if (!empty($this->doing)) {
             require_code('notifications');
             require_code('catalogues');
             require_lang('catalogues');

@@ -352,7 +352,7 @@ function use_captcha()
  */
 function uses_question_captcha()
 {
-    if (count(get_captcha_questions()) == 0) {
+    if (empty(get_captcha_questions())) {
         return false;
     }
 

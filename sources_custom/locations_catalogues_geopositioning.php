@@ -102,7 +102,7 @@ function find_nearest_location($latitude, $longitude, $latitude_field_id = null,
         $locations = $GLOBALS['SITE_DB']->query($query, null, 0, false, false, array('cc_title' => 'SHORT_TRANS'));
     }
 
-    if (count($locations) == 0) {
+    if (empty($locations)) {
         if ($error_tolerance >= 1.0) {
             return null; // Nothing, in whole world
         }

@@ -150,7 +150,7 @@ function cns_member_handle_promotion($member_id = null)
         }
     }
 
-    if (count($promotes_today) != 0) {
+    if (!empty($promotes_today)) {
         require_lang('cns');
         $name = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
         log_it('MEMBER_PROMOTED_AUTOMATICALLY', strval($member_id), $name);
@@ -226,7 +226,7 @@ function cns_send_topic_notification($url, $topic_id, $post_id, $forum_id, $send
         );
     }
 
-    dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, (count($limit_to) == 0) ? null : $limit_to, $sender_member_id, array('no_notify_for__notification_code' => $no_notify_for__notification_code, 'no_notify_for__code_category' => $no_notify_for__code_category, 'extra' => $extra));
+    dispatch_notification('cns_topic', strval($topic_id), $subject, $mail, (empty($limit_to)) ? null : $limit_to, $sender_member_id, array('no_notify_for__notification_code' => $no_notify_for__notification_code, 'no_notify_for__code_category' => $no_notify_for__code_category, 'extra' => $extra));
 }
 
 /**

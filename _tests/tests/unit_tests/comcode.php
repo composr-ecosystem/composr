@@ -243,7 +243,7 @@ class comcode_test_set extends cms_test_case
             if ($expected) {
                 $this->assertTrue(count($MEMBER_MENTIONS_IN_COMCODE) == 1, 'Expected to see a mention for: "' . $test . '"');
             } else {
-                $this->assertTrue(count($MEMBER_MENTIONS_IN_COMCODE) == 0, 'Expected to NOT see a mention for: "' . $test . '"');
+                $this->assertTrue(empty($MEMBER_MENTIONS_IN_COMCODE), 'Expected to NOT see a mention for: "' . $test . '"');
             }
         }
     }

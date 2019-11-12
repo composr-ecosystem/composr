@@ -231,7 +231,7 @@ class Module_login
         }
 
         // POST field relaying
-        if (count($_FILES) == 0) { // Only if we don't have _FILES (which could never be relayed)
+        if (empty($_FILES)) { // Only if we don't have _FILES (which could never be relayed)
             $passion->attach(build_keep_post_fields($this->fields_to_not_relay));
             $redirect_passon = post_param_string('redirect', null, INPUT_FILTER_URL_INTERNAL & ~INPUT_FILTER_TRUSTED_SITES);
             if ($redirect_passon !== null) {

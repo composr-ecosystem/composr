@@ -670,7 +670,7 @@ function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $
             $lgroups = $GLOBALS['CNS_DRIVER']->get_usergroup_list(true, true, false, null, null, true);
             foreach ($lgroups as $key => $val) {
                 if ($key != db_get_first_id()) {
-                    $usergroup_list->attach(form_input_list_entry(strval($key), ($pt_allow == '*') || count(array_intersect(array(strval($key)), explode(',', $pt_allow))) != 0, $val));
+                    $usergroup_list->attach(form_input_list_entry(strval($key), ($pt_allow == '*') || (!empty(array_intersect(array(strval($key)), explode(',', $pt_allow)))), $val));
                 }
             }
 
@@ -1021,7 +1021,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
                 $changes = array_merge($changes, $change);
             }
         }
-        if (count($changes) != 0) {
+        if (!empty($changes)) {
             $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => $member_id), '', 1);
         }
     }

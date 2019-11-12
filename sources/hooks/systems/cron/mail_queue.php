@@ -58,7 +58,7 @@ class Hook_cron_mail_queue
             intval(get_option('max_queued_mails_per_cron_cycle'))
         );
 
-        if (count($mails) != 0) {
+        if (!empty($mails)) {
             require_code('mail');
 
             foreach ($mails as $row) {

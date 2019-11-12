@@ -848,7 +848,7 @@ function demonstratr_delete_old_sites()
     foreach ($sites as $site) {
         demonstratr_delete_site($site['s_server'], $site['s_codename'], true);
     }
-    if (count($sites) != 0) {
+    if (!empty($sites)) {
         reset_aliases();
     }
 

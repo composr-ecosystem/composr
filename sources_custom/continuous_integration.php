@@ -315,10 +315,10 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 
     $results = '';
 
-    if ((count($fails) > 0) || ($verbose)) {
+    if ((!empty($fails)) || ($verbose)) {
         $results .= 'Errors while running automated tests (CI server)...' . "\n\n";
 
-        if (count($fails) > 0) {
+        if (!empty($fails)) {
             foreach ($fails as $test => $details) {
                 $result = $details['result'];
                 if (strlen($result) > 1000) {
@@ -334,7 +334,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
         if ($verbose) {
             $results .= 'Passed tests...' . "\n\n";
 
-            if (count($successes) > 0) {
+            if (!empty($successes)) {
                 foreach ($successes as $test => $details) {
                     $results .= $test . $details['stub'] . "\n";
                 }

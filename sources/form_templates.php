@@ -1448,7 +1448,7 @@ function form_input_tick($pretty_name, $description, $name, $ticked, $tabindex =
  */
 function form_input_various_ticks($options, $description, $_tabindex = null, $_pretty_name = '', $simple_style = false, $custom_name = null, $custom_value = null)
 {
-    if (count($options) == 0) {
+    if (empty($options)) {
         return new Tempcode();
     }
 
@@ -1625,7 +1625,7 @@ function form_input_upload_multi_source($set_title, $set_description, &$hidden, 
 
     if ($images_only) {
         if (($theme_image_type !== null) && (get_option('allow_theme_image_selector') == '1')) {
-            if (count($ids) > 0) {
+            if (!empty($ids)) {
                 $field_choose = $set_name . '__theme_image';
 
                 $theme_image_widget = form_input_theme_image(do_lang_tempcode('STOCK'), '', $field_choose, $ids, $default, null, null, $required);
@@ -1748,7 +1748,7 @@ function form_input_upload_multi($pretty_name, $description, $name, $required, $
     $_required = ($required) ? '-required' : '';
 
     $edit = mixed();
-    if (($default !== null) && (count($default) > 0)) {
+    if (($default !== null) && (!empty($default))) {
         list($edit, $is_image) = make_previewable_url_absolute($default[0]);
     } else {
         $edit = array();
@@ -2100,7 +2100,7 @@ function form_input_theme_image($pretty_name, $description, $name, $ids, $select
         $db = $GLOBALS['SITE_DB'];
     }
 
-    if (count($ids) == 0) {
+    if (empty($ids)) {
         return new Tempcode();
     }
 
@@ -2242,7 +2242,7 @@ function form_input_theme_image($pretty_name, $description, $name, $ids, $select
 
         foreach ($image_maps['without_widths'] as $image_map) {
             $tpl_map = $image_map['tpl_map'];
-            if (count($image_maps['with_widths']) > 0) {
+            if (!empty($image_maps['with_widths'])) {
                 $tpl_map = array('HEIGHT' => $image_maps['with_widths'][0]['tpl_map']['HEIGHT']) + $tpl_map;
             }
             $_category->attach(do_template('FORM_SCREEN_INPUT_THEME_IMAGE_ENTRY', $tpl_map));

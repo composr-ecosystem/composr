@@ -90,7 +90,7 @@ function bookmarks_process_node($node)
         echo '<DT><A HREF="' . escape_html($url) . '">' . escape_html($title) . '</A>' . "\n";
     }
 
-    if ((isset($node['children'])) && (count($node['children']) > 0)) {
+    if (!empty($node['children'])) {
         echo '<DT><H3>' . escape_html($title) . '</H3>' . "\n";
         echo '<DL><p>' . "\n";
         foreach ($node['children'] as $child) {

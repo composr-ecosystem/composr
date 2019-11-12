@@ -55,7 +55,7 @@ abstract class CSSCleanup
      */
     public function save_changes()
     {
-        if (count($this->css_files) == 0) {
+        if (empty($this->css_files)) {
             $this->work_out_changes();
         }
 
@@ -84,7 +84,7 @@ abstract class CSSCleanup
      */
     protected function find_css_files()
     {
-        if (count($this->css_files) > 0) {
+        if (!empty($this->css_files)) {
             return; // Already done
         }
 

@@ -716,7 +716,7 @@ class Hook_import_cms_merge
                 import_id_remap_put('attachment', strval($row['id']), $id_new);
             }
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -755,7 +755,7 @@ class Hook_import_cms_merge
                 }
             }
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -2996,7 +2996,7 @@ class Hook_import_cms_merge
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
         $this->_import_content_reviews($db, $table_prefix, 'member', 'member');
 
         // Group membership
@@ -3318,7 +3318,7 @@ class Hook_import_cms_merge
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
 
         $this->_import_content_reviews($db, $table_prefix, 'topic', 'topic');
 
@@ -3359,7 +3359,7 @@ class Hook_import_cms_merge
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -3435,7 +3435,7 @@ class Hook_import_cms_merge
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
 
         $this->_import_review_supplement($db, $table_prefix, 'post', 'post');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'post', 'post');
@@ -3686,7 +3686,7 @@ class Hook_import_cms_merge
                 import_id_remap_put('aggregate_type_instance', strval($row['id']), $id_new);
             }
             $start += 100;
-        } while (count($rows) != 0);
+        } while (!empty($rows));
     }
 
     /**

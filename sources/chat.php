@@ -539,7 +539,7 @@ function _chat_messages_script_ajax($room_id, $backlog = false, $message_id = nu
                     delete_chatroom($room['id']);
                 } else {
                     $people_in_room = array_map('intval', explode(',', $room['allow_list']));
-                    if (($room['room_name'] == $GLOBALS['FORUM_DRIVER']->get_username(get_member()) || ($room['room_owner'] == get_member())) && (count($people_in_room) > 0)) { // If room named after us, try and switch reported owner/name to that of other person
+                    if (($room['room_name'] == $GLOBALS['FORUM_DRIVER']->get_username(get_member()) || ($room['room_owner'] == get_member())) && (!empty($people_in_room))) { // If room named after us, try and switch reported owner/name to that of other person
                         if ($people_in_room[0] != get_member()) {
                             $room['room_owner'] = $people_in_room[0];
                         } else {
@@ -1587,7 +1587,7 @@ function check_chatroom_access($room, $ret = false, $member_id = null, $must_be_
             $allow2 = array();
         }
 
-        if ((!in_array(strval($member_id), $allow) && ($room['room_owner'] != $member_id) && (count(array_intersect($allow2, $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id))) == 0))) {
+        if ((!in_array(strval($member_id), $allow) && ($room['room_owner'] != $member_id) && (empty(array_intersect($allow2, $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id)))))) {
             if ($ret) {
                 return false;
             }

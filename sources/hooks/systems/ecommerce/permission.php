@@ -491,7 +491,7 @@ class Hook_ecommerce_permission
                     }
                 }
 
-                if (count($attachments) == 0) {
+                if (empty($attachments)) {
                     $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY', $content_title, $content_type_label, array($url_safe, strval(count($attachments))));
                 } elseif ($all_attached) {
                     $message_sub = do_lang('AUTOMATIC_DOWNLOAD_CATEGORY_ACCESS_BODY_ATTACHED', $content_title, $content_type_label, array($url_safe, strval(count($attachments))));

@@ -62,7 +62,7 @@ class Hook_cleanup_page_backups
                 }
             }
             $start += 50;
-        } while (count($zones) != 0);
+        } while (!empty($zones));
 
         // Themes: Templates (various kinds, including CSS files)
         require_code('themes2');

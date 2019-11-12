@@ -96,7 +96,7 @@ function graph_line_chart($datasets, $x_labels = null, $x_axis_label = '', $y_ax
 
     _normalise_graph_dims($width, $height);
 
-    if (count($datasets) == 0) {
+    if (empty($datasets)) {
         warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 

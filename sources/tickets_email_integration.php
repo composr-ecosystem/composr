@@ -254,7 +254,7 @@ class TicketsEmailIntegration extends EmailIntegration
             $this->log_message('Posted in ticket, ' . $existing_ticket_id);
         }
 
-        if (count($attachment_errors) != 0) {
+        if (!empty($attachment_errors)) {
             $this->log_message('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
 
             $this->send_bounce_email__attachment_errors($subject, $body, $from_email, $email_bounce_to, $attachment_errors, $ticket_url);

@@ -261,7 +261,7 @@ function _worldcities_remaining_locations()
 
             $from = $location['id'];
         }
-    } while (count($unknown) != 0);
+    } while (!empty($unknown));
 }
 
 function transcode_remaining_locations()
@@ -331,7 +331,7 @@ function transcode_remaining_locations()
                 $from = $location['id'];
             }
         }
-    } while (count($unknown) != 0);
+    } while (!empty($unknown));
 }
 
 function create_catalogue_category_tree($catalogue_name = 'places', $country = null, $fixup = false/*used to fix old bug where countries without regions were not imported*/)

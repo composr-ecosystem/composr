@@ -216,7 +216,7 @@ function enable_content_translation()
                 $GLOBALS['SITE_DB']->query_update($field['m_table'], array($field['m_name'] => $lang_id), $t, '', 1);
             }
             $start += 100;
-        } while (count($trans) > 0);
+        } while (!empty($trans));
 
         // Delete old fields
         $to_delete = array('old');

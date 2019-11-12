@@ -73,7 +73,7 @@ function get_problem_match_nearest($error_message)
     $sheet_reader->close();
 
     // No matches
-    if (count($matches) == 0) {
+    if (empty($matches)) {
         return null;
     }
 

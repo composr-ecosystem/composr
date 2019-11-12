@@ -212,13 +212,13 @@ class _resource_fs_test_set extends cms_test_case
                     $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test-a'));
                     $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test-b'));
                 }
-                $this->assertTrue(count($results) > 0, 'Failed to find_resource_by_label (folder) ' . $commandr_fs_hook);
+                $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (folder) ' . $commandr_fs_hook);
             }
             $results = array();
             foreach (is_array($ob->file_resource_type) ? $ob->file_resource_type : array($ob->file_resource_type) as $resource_type) {
                 $results = array_merge($results, $ob->find_resource_by_label($resource_type, 'test_content'));
             }
-            $this->assertTrue(count($results) > 0, 'Failed to find_resource_by_label (file) ' . $commandr_fs_hook);
+            $this->assertTrue(!empty($results), 'Failed to find_resource_by_label (file) ' . $commandr_fs_hook);
         }
     }
 

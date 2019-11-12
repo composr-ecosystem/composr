@@ -75,7 +75,7 @@ class Hook_cron_group_points
                             system_gift_transfer('Being in the ' . $group_name . ' usergroup', $points['p_points_per_month'], $member_id);
                         }
                         $start += 100;
-                    } while (count($members) > 0);
+                    } while (!empty($members));
                 }
             }
         }

@@ -26,7 +26,7 @@ function parse($_tokens = null)
     $structure = _parse_php($TOKENS);
     $structure['ok_extra_functions'] = $OK_EXTRA_FUNCTIONS;
     global $FILENAME;
-    if ((count($structure['main']) > 0) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'global.php') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'static_cache.php') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
+    if ((!empty($structure['main'])) && (substr($FILENAME, 0, 7) == 'sources') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'global.php') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'static_cache.php') && ($FILENAME != 'sources' . DIRECTORY_SEPARATOR . 'critical_errors.php') && ((count($structure['main']) > 1) || (($structure['main'][0][0] != 'RETURN') && (($structure['main'][0][0] != 'CALL_DIRECT') || ($structure['main'][0][1] != 'require_code'))))) {
         log_warning('Sources files should not contain loose code');
     }
 
@@ -99,7 +99,7 @@ function _parse_php($inside_namespace = false)
                             // namespace my\name { }
                             pparse__parser_expect('CURLY_OPEN');
                             $temp = _parse_php(true);
-                            if (count($temp['declares']) > 0) {
+                            if (!empty($temp['declares'])) {
                                 log_warning('Declare cannot be done within a namespace');
                             }
                             $program['functions'] = array_merge($program['functions'], $temp['functions']);
@@ -113,7 +113,7 @@ function _parse_php($inside_namespace = false)
                         $key = null;
                         pparse__parser_expect('CURLY_OPEN');
                         $temp = _parse_php(true);
-                        if (count($temp['declares']) > 0) {
+                        if (!empty($temp['declares'])) {
                             log_warning('Declare cannot be done within a namespace');
                         }
                         $program['functions'] = array_merge($program['functions'], $temp['functions']);
@@ -174,7 +174,7 @@ function _parse_php($inside_namespace = false)
 
             case 'INTERFACE':
                 $class = array('is_interface' => true);
-                if (count($modifiers) > 0) {
+                if (!empty($modifiers)) {
                     $class['modifiers'] = $modifiers;
                 }
                 pparse__parser_next();
@@ -206,7 +206,7 @@ function _parse_php($inside_namespace = false)
 
             case 'TRAIT':
                 $class = array('is_trait' => true);
-                if (count($modifiers) > 0) {
+                if (!empty($modifiers)) {
                     $class['modifiers'] = $modifiers;
                 }
                 pparse__parser_next();
@@ -229,7 +229,7 @@ function _parse_php($inside_namespace = false)
                 break;
 
             case 'ABSTRACT':
-                if (count($modifiers) > 0) {
+                if (!empty($modifiers)) {
                     log_warning('Abstract keyword must appear first: ' . implode(', ', $modifiers) . ', abstract');
                 }
                 pparse__parser_next();
@@ -1058,7 +1058,7 @@ function _parse_class_contents($class_modifiers = array(), $is_interface = false
                         log_warning('Abstract keyword found in a non-abstract class.');
                     }
                 } else {
-                    if (count($modifiers) == 0) {
+                    if (empty($modifiers)) {
                         log_warning('Static keyword must not appear before visibility');
                     }
                     $modifiers[] = 'static';
@@ -1115,7 +1115,7 @@ function _parse_class_contents($class_modifiers = array(), $is_interface = false
 function _parse_class_def($modifiers = array())
 {
     $class = array('is_interface' => false); // Classes and interfaces aren't different enough to justify separate handlers
-    if (count($modifiers) > 0) {
+    if (!empty($modifiers)) {
         $class['modifiers'] = $modifiers;
     }
     pparse__parser_next();
@@ -1503,7 +1503,7 @@ function _parse_variable($suppress_error, $can_be_dangling_method_call_instead =
             pparse__parser_next();
             $parameters = _parse_function_call();
             pparse__parser_expect('PARENTHESIS_CLOSE');
-            if (count($variable[2]) == 0) {
+            if (empty($variable[2])) {
                 log_warning('Indirect call');
             }
             return array('CALL_INDIRECT', $variable, $parameters, $suppress_error, $GLOBALS['I']);

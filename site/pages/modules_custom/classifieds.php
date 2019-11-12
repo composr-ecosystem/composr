@@ -187,7 +187,7 @@ class Module_classifieds
 
         $rows = $GLOBALS['SITE_DB']->query_select('catalogue_entries e JOIN ' . get_table_prefix() . 'ecom_classifieds_prices c ON c.c_catalogue_name=e.c_name', array('e.*'), array('ce_submitter' => $member_id), 'ORDER BY ce_add_date DESC');
         $rows = remove_duplicate_rows($rows, 'e_id');
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES', 'catalogue_entry'));
         }
 

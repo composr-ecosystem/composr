@@ -278,7 +278,7 @@ class Module_recommend
             $invites = get_num_invites(get_member());
             if ($invites > 0) {
                 require_lang('cns');
-                $invite = (count($_POST) == 0) ? true : (post_param_integer('invite', 0) == 1);
+                $invite = (empty($_POST)) ? true : (post_param_integer('invite', 0) == 1);
                 $fields->attach(form_input_tick(do_lang_tempcode('USE_INVITE'), do_lang_tempcode('USE_INVITE_DESCRIPTION', $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? do_lang('NA_EM') : integer_format($invites)), 'invite', $invite));
             }
         }
@@ -578,7 +578,7 @@ class Module_recommend
             }
         }
 
-        if (count($email_adrs_to_send) == 0) {
+        if (empty($email_adrs_to_send)) {
             warn_exit(do_lang_tempcode('ERROR_NO_CONTACTS_SELECTED'));
         }
 

@@ -345,7 +345,7 @@ class Module_contact_member
             array(
                 'attachments' => $attachments,
                 'as' => get_member(),
-                'bypass_queue' => (count($attachments) != 0),
+                'bypass_queue' => (!empty($attachments)),
                 'extra_cc_addresses' => $extra_cc_addresses,
                 'extra_bcc_addresses' => $extra_bcc_addresses,
                 'require_recipient_valid_since' => $join_time,

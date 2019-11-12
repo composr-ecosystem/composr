@@ -104,7 +104,7 @@ function bump_password_times_forward()
         }
 
         $start += 500;
-    } while (count($members) > 0);
+    } while (!empty($members));
 }
 
 /**

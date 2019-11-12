@@ -43,7 +43,7 @@ function do_netlink($redir_url = '')
     // For all the names in our network
     require_code('textfiles');
     $lines = explode("\n", read_text_file('netlink', null, true));
-    if (count($lines) == 0) {
+    if (empty($lines)) {
         return new Tempcode();
     }
     $content = new Tempcode();

@@ -249,7 +249,7 @@ function banners_script($ret = false, $type = null, $dest = null, $b_type = null
                         unset($rows[$counter]);
                     }
                 }
-                if (count($rows) == 0) {
+                if (empty($rows)) {
                     $rows = $old_rows;
                 }
             }

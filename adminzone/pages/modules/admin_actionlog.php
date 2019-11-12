@@ -335,7 +335,7 @@ class Module_admin_actionlog
 
         $result_entries = new Tempcode();
         $pos = 0;
-        while ((count($rows) != 0) && (($pos - $start) < $max)) {
+        while ((!empty($rows)) && (($pos - $start) < $max)) {
             $best = 0; // Initialise type to integer
             $_best = 0; // Initialise type to integer
             $best = null;

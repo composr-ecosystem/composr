@@ -94,7 +94,7 @@ abstract class Hook_privacy_base
             }
         }
 
-        if (count($conditions) > 0) {
+        if (!empty($conditions)) {
             $sql .= ' WHERE (';
             foreach ($conditions as $i => $condition) {
                 if ($i != 0) {
@@ -107,7 +107,7 @@ abstract class Hook_privacy_base
         }
 
         if ($table_details['extra_where'] !== null) {
-            if (count($conditions) == 0) {
+            if (empty($conditions)) {
                 $sql .= ' WHERE ';
             } else {
                 $sql .= ' AND ';

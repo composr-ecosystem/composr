@@ -71,7 +71,7 @@ function restricted_manually_enabled_backdoor()
 function get_first_admin_user()
 {
     $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
-    if (count($members) != 0) {
+    if (!empty($members)) {
         $ret = $GLOBALS['FORUM_DRIVER']->mrow_id($members[key($members)]);
     } else {
         $ret = $GLOBALS['FORUM_DRIVER']->get_guest_id() + 1;

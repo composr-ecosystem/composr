@@ -385,7 +385,7 @@ class Hook_payment_gateway_worldpay
     {
         $_name = explode(' ', post_param_string('delvName', ''));
         $name = array();
-        if (count($_name) > 0) {
+        if (!empty($_name)) {
             $name[1] = $_name[count($_name) - 1];
             unset($_name[count($_name) - 1]);
         }

@@ -77,7 +77,7 @@ class Hook_commandr_command_db_table_sizes
             $out .= '</tbody>';
             $out .= '</table>';
 
-            if (count($parameters) != 0) {
+            if (!empty($parameters)) {
                 foreach ($parameters as $p) {
                     if (substr($p, 0, strlen(get_table_prefix())) == get_table_prefix()) {
                         $p = substr($p, strlen(get_table_prefix()));

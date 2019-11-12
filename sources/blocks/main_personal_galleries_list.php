@@ -100,7 +100,7 @@ class Block_main_personal_galleries_list
         $add_image_url = new Tempcode();
         $add_video_url = new Tempcode();
         if ($member_id == get_member()) {
-            if (count($rows) == 0) { // No gallery yet, so create via implication
+            if (empty($rows)) { // No gallery yet, so create via implication
                 $test = $GLOBALS['SITE_DB']->query_select('galleries', array('accept_images', 'accept_videos', 'name'), array('is_member_synched' => 1));
                 if (array_key_exists(0, $test)) {
                     if ($test[0]['accept_images'] == 1) {

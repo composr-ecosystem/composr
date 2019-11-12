@@ -57,10 +57,10 @@ class _commandr_fs_test_set extends cms_test_case
 
         // Check one of the repository-FS filesystems works
         $files = $ob->listing(array('var', 'banners'));
-        $this->assertTrue(count($files[0]) != 0, 'Missing banner types in file system');
+        $this->assertTrue(!empty($files[0]), 'Missing banner types in file system');
         $files = $ob->listing(array('var', 'banners', 'untitled'));
-        $this->assertTrue(count($files[0]) == 0, 'Unexpected subdirectory under banner type');
-        $this->assertTrue(count($files[1]) != 0, 'Missing default banners under banner type');
+        $this->assertTrue(empty($files[0]), 'Unexpected subdirectory under banner type');
+        $this->assertTrue(!empty($files[1]), 'Missing default banners under banner type');
         $path = array('var', 'banners', 'untitled', 'advertise_here.' . RESOURCE_FS_DEFAULT_EXTENSION);
         $GLOBALS['SITE_DB']->query_update('banners', array('edit_date' => null));
         $data1 = $ob->read_file($path);

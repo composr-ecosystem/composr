@@ -87,7 +87,7 @@ class Hook_members_ecommerce
             $subscriptions[] = prepare_templated_subscription($_subscription);
         }
 
-        if (count($subscriptions) == 0) {
+        if (empty($subscriptions)) {
             return array();
         }
 

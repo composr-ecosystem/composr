@@ -35,7 +35,7 @@ function cns_has_mailing_list_style($forum_id = null)
     // Optimisation: for a single forum, does it have it
     if ($forum_id !== null) {
         $test = $GLOBALS['FORUM_DB']->query($sql . $sql_sup, 1);
-        if ((count($test) == 0) || (!cns_supports_mailing_list_style($test[0]))) {
+        if ((empty($test)) || (!cns_supports_mailing_list_style($test[0]))) {
             return array(0, false);
         }
         return array(1, true);

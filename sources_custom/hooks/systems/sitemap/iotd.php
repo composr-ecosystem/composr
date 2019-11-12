@@ -84,7 +84,7 @@ class Hook_sitemap_iotd extends Hook_sitemap_content
             }
 
             $start += SITEMAP_MAX_ROWS_PER_LOOP;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
 
         return $nodes;
     }

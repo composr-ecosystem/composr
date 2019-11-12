@@ -185,7 +185,7 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
                         $val = do_lang('GROUP_MEMBERS', $val, integer_format($num_members));
                     }
                 }
-                $usergroup_list->attach(form_input_list_entry(strval($key), ($allow2_groups == '*') || count(array_intersect(array($key), ($allow2_groups == '') ? array() : explode(',', $allow2_groups))) != 0, $val));
+                $usergroup_list->attach(form_input_list_entry(strval($key), ($allow2_groups == '*') || (!empty(array_intersect(array($key), ($allow2_groups == '') ? array() : explode(',', $allow2_groups)))), $val));
             }
         }
 
@@ -218,7 +218,7 @@ function get_chatroom_fields($id = null, $is_made_by_me = false, $room_name = ''
                         $val = do_lang('GROUP_MEMBERS', $val, integer_format($num_members));
                     }
                 }
-                $usergroup_list->attach(form_input_list_entry(strval($key), ($disallow2_groups == '*') || count(array_intersect(array($key), ($disallow2_groups == '') ? array() : explode(',', $disallow2_groups))) != 0, $val));
+                $usergroup_list->attach(form_input_list_entry(strval($key), ($disallow2_groups == '*') || (!empty(array_intersect(array($key), ($disallow2_groups == '') ? array() : explode(',', $disallow2_groups)))), $val));
             }
         }
 

@@ -71,12 +71,12 @@ define('URL_CONTENT_REGEXP', '\w\-\x80-\xFF'); // PHP is done using ASCII (don't
 define('URL_CONTENT_REGEXP_JS', '\w\-\u0080-\uFFFF'); // JavaScript is done using Unicode
 
 if (!array_key_exists('type', $_GET)) {
-    if (count($_GET) == 0) {
+    if (empty($_GET)) {
         header('Content-type: text/html; charset=utf-8');
     }
 
     echo '<!DOCTYPE html>' . "\n";
-    if (count($_GET) == 0) { // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
+    if (empty($_GET)) { // Special code to skip checks if need-be. The XHTML here is invalid but unfortunately it does need to be.
         echo '<script>
             window.setTimeout(function () { if (!document.getElementsByTagName("div")[0]) window.location+="?skip_slow_checks=1"; }, 30000);
             window.setInterval(function () { if ((!document.getElementsByTagName("div")[0]) && (document.body) && (document.body.innerHTML) && (document.body.innerHTML.indexOf("Maximum execution time")!=-1)) window.location+="?skip_slow_checks=1"; }, 500);
@@ -555,7 +555,7 @@ function step_2()
  */
 function step_3()
 {
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 
@@ -731,7 +731,7 @@ function step_4()
 {
     global $INSTALL_LANG;
 
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 
@@ -1128,7 +1128,7 @@ function step_4()
  */
 function step_5()
 {
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 
@@ -1357,7 +1357,7 @@ function step_5_ftp()
 {
     global $FILE_ARRAY, $DIR_ARRAY;
 
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 
@@ -1652,7 +1652,7 @@ function step_5_checks_a()
 {
     $log = new Tempcode();
 
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 
@@ -2219,7 +2219,7 @@ function step_6()
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 
@@ -2255,7 +2255,7 @@ function big_installation_common()
 {
     cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
 
-    if (count($_POST) == 0) {
+    if (empty($_POST)) {
         exit(do_lang('INST_POST_ERROR'));
     }
 

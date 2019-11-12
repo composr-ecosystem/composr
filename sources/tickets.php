@@ -127,7 +127,7 @@ function get_ticket_forum_id($ticket_type_id = null, $create = false, $silent_er
         if ($_ticket_type_name !== null) {
             $ticket_type_name = get_translated_text($_ticket_type_name);
             $rows = $GLOBALS['FORUM_DB']->query_select('f_forums', array('id'), array('f_parent_forum' => $fid, 'f_name' => $ticket_type_name), '', 1);
-            if (count($rows) == 0) {
+            if (empty($rows)) {
                 require_code('cns_forums_action');
                 require_code('cns_forums_action2');
 

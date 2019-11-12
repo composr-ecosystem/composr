@@ -194,7 +194,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', array('*'), array('w_member_id' => $member_id), 'ORDER BY w_time');
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
         $max_rows = count($rows);
@@ -529,7 +529,7 @@ class Module_warnings extends Standard_crud_module
                         }
                         $posts_deletable[$post['id']] = array($post_context, $post['id'], $post['p_topic_id'], $post['t_cache_first_title'], $post['p_time'], $post['p_cache_forum_id']);
                     }
-                    if (count($spam_urls) > 0) {
+                    if (!empty($spam_urls)) {
                         $this->add_text->attach(paragraph(do_template('CNS_WARN_SPAM_URLS', array('_GUID' => '54bf9592bb5cf793370ff4b38fff92a6', 'USERNAME' => $username, 'SPAM_URLS' => $spam_urls))));
                     }
                 }
@@ -658,7 +658,7 @@ class Module_warnings extends Standard_crud_module
             // See also privacy_purge.php - this code handles deletion of individually-identified high-level content items, while privacy-purging will delete/anonymise on mass for any kinds of database record
             if (addon_installed('commandr')) {
                 $content = $this->find_member_content($member_id);
-                if (count($content) > 0) {
+                if (!empty($content)) {
                     foreach ($content as $content_details) {
                         list($content_type_title, $content_type, $content_id, $content_title, $content_url, $content_timestamp, $auto_selected) = $content_details;
                         if (is_object($content_url)) {

@@ -488,7 +488,7 @@ function category_screen()
 
     // If there are no subcategories, exit with an error saying this
     // NO_SUBCATEGORIES is a lang string which must be defined
-    if (count($rows) == 0) {
+    if (empty($rows)) {
         warn_exit(do_lang_tempcode('NO_SUBCATEGORIES'));
     }
 

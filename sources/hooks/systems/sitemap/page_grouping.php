@@ -389,7 +389,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                 }
             }
 
-            if ((count($children) == 0) && (preg_match('#^(cms|adminzone):admin:#', $page_link) != 0)) {
+            if ((empty($children)) && (preg_match('#^(cms|adminzone):admin:#', $page_link) != 0)) {
                 return null;
             }
 

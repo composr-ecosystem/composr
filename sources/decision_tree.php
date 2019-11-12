@@ -169,7 +169,7 @@ class DecisionTree
                 }
 
                 // Optimisation, to avoid messy POST redirect
-                if (count($_POST) > 0) {
+                if (!empty($_POST)) {
                     $_GET['type'] = $redirect_to;
                     return $this->run(true);
                 }
@@ -177,7 +177,7 @@ class DecisionTree
                 $url = $this->build_url($redirect_to);
             }
 
-            if (count($_POST) > 0) {
+            if (!empty($_POST)) {
                 $post = build_keep_post_fields(array(), true);
                 $refresh = do_template('JS_REFRESH', array('_GUID' => '63cb29a82471b7ba7fd594eb92cc02c1', 'FORM_NAME' => 'redir-form'));
 

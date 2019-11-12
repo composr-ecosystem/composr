@@ -2355,7 +2355,7 @@ abstract class Resource_fs_base
         // Find where we're at
         $cat_id = '';
         $cat_resource_type = null;
-        if (count($meta_dir) != 0) {
+        if (!empty($meta_dir)) {
             if ($this->folder_resource_type === null) {
                 return false; // Should not be possible
             }

@@ -887,7 +887,7 @@ class Module_cms_catalogues extends Standard_crud_module
                     }
                     recalculate_order_costs($d['p_order_id']);
                     $start += 1000;
-                } while (count($details) != 0);
+                } while (!empty($details));
                 $GLOBALS['SITE_DB']->query_delete('shopping_order_details', array('p_type_code' => strval($id)));
                 $GLOBALS['SITE_DB']->query_delete('shopping_cart', array('type_code' => strval($id)));
                 $this->delete_actualisation($_id);

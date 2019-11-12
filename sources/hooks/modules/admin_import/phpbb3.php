@@ -239,7 +239,7 @@ class Hook_import_phpbb3
                 import_id_remap_put('attachment', strval($row['attach_id']), $id_new);
             }
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -494,7 +494,7 @@ class Hook_import_phpbb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -569,7 +569,7 @@ class Hook_import_phpbb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -830,7 +830,7 @@ class Hook_import_phpbb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -923,7 +923,7 @@ class Hook_import_phpbb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1246,7 +1246,7 @@ class Hook_import_phpbb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
 
         $row_start = 0;
         $rows = array();
@@ -1271,7 +1271,7 @@ class Hook_import_phpbb3
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**

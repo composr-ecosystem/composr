@@ -377,8 +377,8 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
     $total_shipping_tax = 0.0;
 
     // Do TaxCloud call
-    if (count($taxcloud_items) > 0) {
-        $do_shipping_in_tax_cloud = (count($non_taxcloud_items) == 0);
+    if (!empty($taxcloud_items)) {
+        $do_shipping_in_tax_cloud = (empty($non_taxcloud_items));
 
         $shipping_tax_details = get_tax_using_tax_codes($taxcloud_items, $field_name_prefix, $do_shipping_in_tax_cloud ? $total_shipping_cost : 0.00/*don't incorporate as we have our own calculation anyway*/);
 
@@ -405,7 +405,7 @@ function derive_cart_amounts($shopping_cart_rows, $field_name_prefix = '')
     }
 
     // Work out taxes for non-TaxCloud
-    if (count($non_taxcloud_items) > 0) {
+    if (!empty($non_taxcloud_items)) {
         foreach ($non_taxcloud_items as $i => $parts) {
             list($item, $details) = $parts;
 
@@ -457,7 +457,7 @@ function copy_shopping_cart_to_order()
 
     $shopping_cart_rows = find_products_in_cart();
 
-    if (count($shopping_cart_rows) == 0) {
+    if (empty($shopping_cart_rows)) {
         warn_exit(do_lang_tempcode('CART_EMPTY'));
     }
 

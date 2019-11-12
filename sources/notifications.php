@@ -738,12 +738,12 @@ function _find_member_statistical_notification_type($to_member_id, $notification
     $setting = null;
 
     $notifications_enabled = $GLOBALS['SITE_DB']->query_select('notifications_enabled', array('l_setting'), array('l_member_id' => $to_member_id, 'l_notification_code' => $notification_code), '', 100/*within reason*/);
-    if (count($notifications_enabled) == 0) {
+    if (empty($notifications_enabled)) {
         $notifications_enabled = $GLOBALS['SITE_DB']->query_select('notifications_enabled', array('l_setting'), array('l_member_id' => $to_member_id, 'l_code_category' => ''), '', 100/*within reason*/);
     }
 
     // If no notifications so far, we look for defaults
-    if (count($notifications_enabled) == 0) {
+    if (empty($notifications_enabled)) {
         foreach ($HOOKS_NOTIFICATION_TYPES_EXTENDED as $hook => $ob) {
             if (method_exists($ob, '_find_member_statistical_notification_type')) {
                 $setting = $ob->_find_member_statistical_notification_type($to_member_id, $notification_code, false);
@@ -1310,7 +1310,7 @@ class Hook_Notification
         // SQL: Member ID filters
         $clause_member_ids = '';
         if ($to_member_ids !== null) {
-            if (count($to_member_ids) == 0) {
+            if (empty($to_member_ids)) {
                 return array(array(), false); // Optimisation: nothing to do
             }
 

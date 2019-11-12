@@ -48,7 +48,7 @@ function download_gateway_script()
     if (!looks_like_url($url)) {
         list($zone, $attributes) = page_link_decode($url);
         $url = find_script('iframe') . '?zone=' . urlencode($zone);
-        if (count($attributes) > 0) {
+        if (!empty($attributes)) {
             $url .= '&' . http_build_query($attributes);
         }
         $keep = symbol_tempcode('KEEP', array('0', '1'));

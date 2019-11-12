@@ -129,7 +129,7 @@ class Block_side_tag_cloud
         }
         cms_mb_ksort($tags, SORT_NATURAL | SORT_FLAG_CASE);
 
-        if (count($tags) == 0) {
+        if (empty($tags)) {
             return do_template('RED_ALERT', array('_GUID' => 'qsgdln7dvorwfrtjwa1fuvqb9fbyf8sj', 'TEXT' => do_lang_tempcode('NO_ENTRIES')));
         }
 

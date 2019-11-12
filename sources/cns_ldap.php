@@ -743,7 +743,7 @@ function cns_get_members_groups_ldap($member_id)
             }
         }
         ldap_free_result($results);
-        if (count($groups) == 0) {
+        if (empty($groups)) {
             $groups = array_flip(cns_get_all_default_groups(true));
         }
     }

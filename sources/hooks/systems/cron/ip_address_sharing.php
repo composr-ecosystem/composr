@@ -74,7 +74,7 @@ class Hook_cron_ip_address_sharing
 
         $table = 'f_usergroup_subs s JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_groups g ON g.id=s.s_group_id';
         $groups = collapse_1d_complexity('id', $GLOBALS['FORUM_DB']->query_select($table, array('g.id')));
-        if (count($groups) > 0) {
+        if (!empty($groups)) {
             $group_or_list_1 = '';
             $group_or_list_2 = '';
             foreach ($groups as $group) {
@@ -116,7 +116,7 @@ class Hook_cron_ip_address_sharing
             }
         }
 
-        if (count($results) > 0) {
+        if (!empty($results)) {
             require_code('cns_groups');
 
             $table = "{|\n";

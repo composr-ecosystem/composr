@@ -143,7 +143,7 @@ class Hook_import_html_site
                 unset($files[$i]);
             }
         }
-        if (count($content_files) == 0) {
+        if (empty($content_files)) {
             warn_exit(do_lang_tempcode('NO_PAGES_FOUND'));
         }
 
@@ -163,7 +163,7 @@ class Hook_import_html_site
         $new_zones = array_unique($new_zones);
 
         // (Maybe AFM needed here - if zones have to be created, and possibly .htaccess changed to incorporate zone names in the redirects)
-        if (count($new_zones) != 0) {
+        if (!empty($new_zones)) {
             require_code('abstract_file_manager');
             force_have_afm_details(array(''));
 

@@ -67,7 +67,7 @@ class Hook_cleanup_orphaned_tags
                 $sql .= ' WHERE r.' . $id_field . ' IS NULL AND ' . db_string_equal_to('m.meta_for_type', $seo_type_code);
                 $db = get_db_for($table);
                 $orphaned = $db->query($sql);
-                if (count($orphaned) != 0) {
+                if (!empty($orphaned)) {
                     foreach ($orphaned as $o) {
                         $keywords = $GLOBALS['SITE_DB']->query_select('seo_meta_keywords', array('meta_keyword'), array('meta_for_type' => $o['meta_for_type'], 'meta_for_id' => $o['meta_for_id']));
                         foreach ($keywords as $k) {

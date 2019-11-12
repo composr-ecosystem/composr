@@ -1318,7 +1318,7 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         $groups[] = $this->get_member_row_field($member, 'group_id');
         if (count($groups) <= 1) {
             $all_groups = $this->get_usergroup_list();
-            if ((count($groups) == 0) || (!array_key_exists($groups[0], $all_groups))) {
+            if ((empty($groups)) || (!array_key_exists($groups[0], $all_groups))) {
                 $groups[] = 1;
             }
         }

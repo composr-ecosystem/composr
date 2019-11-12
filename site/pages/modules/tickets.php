@@ -1002,7 +1002,7 @@ class Module_tickets
         $boolean_operator = 'OR';
         list($content_where) = build_content_where($content, true, $boolean_operator);
         $hook_results = $object->run($content, false, 'ASC', $max, 0, false, $content_where, '', null, null, 'relevance', null, $boolean_operator, $where_clause, null, true);
-        if (($hook_results === null) || (count($hook_results) == 0)) {
+        if (($hook_results === null) || (empty($hook_results))) {
             return null;
         }
 
@@ -1260,7 +1260,7 @@ class Module_tickets
         $forum = 0; // Returned by reference
         $topic_id = 0; // Returned by reference
         $ticket_posts_all = get_ticket_posts($from, $forum, $topic_id);
-        if (count($ticket_posts_all) == 0) {
+        if (empty($ticket_posts_all)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'ticket'));
         }
         foreach ($ticket_posts_all as $comment) {

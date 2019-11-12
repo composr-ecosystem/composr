@@ -394,7 +394,7 @@ class Block_main_members
 
         require_code('templates_results_table');
 
-        if (($display_mode == 'listing') && (count($rows) > 0)) {
+        if (($display_mode == 'listing') && (!empty($rows))) {
             $results_entries = new Tempcode();
 
             $_header_row = array();

@@ -669,7 +669,7 @@ class Module_admin_addons
             $install_files->attach($_files);
         }
 
-        if ((count($installing) == 0) && (count($uninstalling) == 0)) {
+        if ((empty($installing)) && (empty($uninstalling))) {
             warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
         }
 

@@ -189,7 +189,7 @@ class database_misc_test_set extends cms_test_case
     {
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 1>2';
         $result = $GLOBALS['SITE_DB']->query($sql);
-        $this->assertTrue(count($result) == 0);
+        $this->assertTrue(empty($result));
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 2>1';
         $result = $GLOBALS['SITE_DB']->query($sql);
@@ -201,11 +201,11 @@ class database_misc_test_set extends cms_test_case
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 2<1';
         $result = $GLOBALS['SITE_DB']->query($sql);
-        $this->assertTrue(count($result) == 0);
+        $this->assertTrue(empty($result));
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 1>=2';
         $result = $GLOBALS['SITE_DB']->query($sql);
-        $this->assertTrue(count($result) == 0);
+        $this->assertTrue(empty($result));
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 2>=1';
         $result = $GLOBALS['SITE_DB']->query($sql);
@@ -217,7 +217,7 @@ class database_misc_test_set extends cms_test_case
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 2<=1';
         $result = $GLOBALS['SITE_DB']->query($sql);
-        $this->assertTrue(count($result) == 0);
+        $this->assertTrue(empty($result));
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 1=1';
         $result = $GLOBALS['SITE_DB']->query($sql);
@@ -225,7 +225,7 @@ class database_misc_test_set extends cms_test_case
 
         $sql = 'SELECT 1 FROM (SELECT 1 AS x) x WHERE 1=0';
         $result = $GLOBALS['SITE_DB']->query($sql);
-        $this->assertTrue(count($result) == 0);
+        $this->assertTrue(empty($result));
     }
 
     public function testEmoji()

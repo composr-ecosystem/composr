@@ -35,7 +35,7 @@ function form_to_email_entry_script()
 {
     header('X-Robots-Tag: noindex');
 
-    if (($_SERVER['REQUEST_METHOD'] != 'POST') || (count($_POST) == 0)) {
+    if (($_SERVER['REQUEST_METHOD'] != 'POST') || (empty($_POST))) {
         post_param_string('post'); // We need to produce a hard-error if nothing sent
     }
 

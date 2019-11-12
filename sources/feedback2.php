@@ -72,9 +72,9 @@ function set_comment_forum_for($feedback_code, $category_id, $forum_id)
                 }
             }
             $start += 100;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
 
-        if (count($topics) > 0) {
+        if (!empty($topics)) {
             require_code('cns_topics_action2');
             cns_move_topics($_old_forum_id, $_forum_id, $topics, false);
         }

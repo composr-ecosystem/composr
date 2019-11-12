@@ -716,7 +716,7 @@ class Hook_import_ipb2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -828,7 +828,7 @@ class Hook_import_ipb2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -952,7 +952,7 @@ class Hook_import_ipb2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1038,7 +1038,7 @@ class Hook_import_ipb2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1099,7 +1099,7 @@ class Hook_import_ipb2
                     $i++;
                 }
 
-                if (count($a_id) != 0) {
+                if (!empty($a_id)) {
                     $i = 0;
                     foreach ($attachments as $attachment) {
                         if (array_key_exists($i, $a_id)) {
@@ -1117,7 +1117,7 @@ class Hook_import_ipb2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**
@@ -1271,7 +1271,7 @@ class Hook_import_ipb2
             }
 
             $row_start += 200;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 
     /**

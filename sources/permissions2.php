@@ -104,7 +104,7 @@ function _handle_permission_check_logging($member_id, $op, $params, $result)
     }
 
     $str = $op;
-    if (count($params) != 0) {
+    if (!empty($params)) {
         $str .= ': ';
         foreach ($params as $i => $p) {
             if ($i != 0) {
@@ -336,7 +336,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
     }
     foreach ($groups as $id => $group_name) {
         if (!in_array($id, $admin_groups)) {
-            $perhaps = (count($access) == 0) ? 1 : $access[$id];
+            $perhaps = (empty($access)) ? 1 : $access[$id];
             $view_access = $perhaps == 1;
             $tabindex = get_form_field_tabindex(null);
 
@@ -408,7 +408,7 @@ function get_permissions_matrix($server_id, $access, $overridables, $privileges,
             )));
         }
     }
-    if ((count($overridables) == 0) && ($include_outer)) {
+    if ((empty($overridables)) && ($include_outer)) {
         return $permission_rows;
     }
 

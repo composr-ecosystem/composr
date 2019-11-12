@@ -337,7 +337,7 @@ function cns_render_forumview($id, $forum_info, $current_filter_cat, $max, $star
     }
     if (($id !== null) && (addon_installed('cns_multi_moderations')) && (cns_may_perform_multi_moderation($id))) {
         $multi_moderations = cns_list_multi_moderations($id);
-        if (count($multi_moderations) != 0) {
+        if (!empty($multi_moderations)) {
             require_lang('cns_multi_moderations');
             $moderator_actions .= '<optgroup label="' . do_lang('MULTI_MODERATIONS') . '">';
             foreach ($multi_moderations as $mm_id => $mm_name) {

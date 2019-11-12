@@ -43,7 +43,7 @@ function get_privacy_form_fields($content_type, $content_id = null, $show_header
 
     if ($content_id !== null) {
         $rows = $GLOBALS['SITE_DB']->query_select('content_privacy', array('*'), array('content_type' => $content_type, 'content_id' => $content_id));
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             $view_by_guests = true;
             $view_by_members = true;
             $view_by_friends = true;
@@ -196,7 +196,7 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
 
     $GLOBALS['SITE_DB']->query_delete('content_privacy__members', array('content_type' => $content_type, 'content_id' => $content_id));
 
-    if (count($additional_access) != 0) {
+    if (!empty($additional_access)) {
         $invited_members = array();
         foreach ($additional_access as $member) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member);
@@ -212,7 +212,7 @@ function save_privacy_form_fields($content_type, $content_id, $privacy_level, $a
             }
         }
 
-        if ((count($invited_members) != 0) && ($send_invites)) {
+        if ((!empty($invited_members)) && ($send_invites)) {
             require_lang('content_privacy');
             require_code('notifications');
             require_code('content');

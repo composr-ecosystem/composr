@@ -81,7 +81,7 @@ class CMSSearchRead
         }
 
         if ($only_in !== null) {
-            if (count($only_in) == 0) {
+            if (empty($only_in)) {
                 $where .= ' AND 1=0';
             } else {
                 $where .= ' AND t_forum_id IN (' . implode(',', array_map('strval', array_map('intval', $only_in))) . ')';
@@ -89,7 +89,7 @@ class CMSSearchRead
         }
 
         if ($not_in !== null) {
-            if (count($not_in) == 0) {
+            if (empty($not_in)) {
                 $where .= ' AND 1=1';
             } else {
                 $where .= ' AND t_forum_id NOT IN (' . implode(',', array_map('strval', array_map('intval', $not_in))) . ')';
@@ -229,7 +229,7 @@ class CMSSearchRead
         }
 
         if ($only_in !== null) {
-            if (count($only_in) == 0) {
+            if (empty($only_in)) {
                 $sql .= ' AND 1=0';
             } else {
                 $sql .= ' AND p_cache_forum_id IN (' . implode(',', array_map('strval', array_map('intval', $only_in))) . ')';
@@ -237,7 +237,7 @@ class CMSSearchRead
         }
 
         if ($not_in !== null) {
-            if (count($not_in) == 0) {
+            if (empty($not_in)) {
                 $sql .= ' AND 1=1';
             } else {
                 $sql .= ' AND p_cache_forum_id NOT IN (' . implode(',', array_map('strval', array_map('intval', $not_in))) . ')';

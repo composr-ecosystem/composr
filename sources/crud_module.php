@@ -1243,7 +1243,7 @@ abstract class Standard_crud_module
             }
         } elseif (method_exists($this, 'create_selection_list_choose_table')) {
             list($test,) = $this->get_entry_rows();
-            if (count($test) == 0) {
+            if (empty($test)) {
                 inform_exit(do_lang_tempcode(($this->type_code == '') ? 'NO_ENTRIES' : 'NO_CATEGORIES', $this->content_type));
             }
             $table_result = $this->create_selection_list_choose_table($map);

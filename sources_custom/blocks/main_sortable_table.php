@@ -286,7 +286,7 @@ class Block_main_sortable_table
             }
 
             $records = $GLOBALS['SITE_DB']->query_select($file, array('*'));
-            if (count($records) == 0) {
+            if (empty($records)) {
                 return paragraph(do_lang('NO_ENTRIES'), 'et1gqf521gjjz8yaz1ecu1x7of4nt16m', 'nothing-here');
             }
             $header_row = array();

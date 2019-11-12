@@ -208,7 +208,7 @@ class Module_admin_points
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('gifts', 'COUNT(*)');
         $rows = $GLOBALS['SITE_DB']->query_select('gifts', array('*'), array(), 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
         $result_entries = new Tempcode();

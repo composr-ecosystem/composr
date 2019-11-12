@@ -214,7 +214,7 @@ function erase_thumb_cache()
             }
             $start += $max;
         }
-        while (count($rows) > 0);
+        while (!empty($rows));
 
         $GLOBALS['SITE_DB']->query_update($field['m_table'], array($field['m_name'] => ''));
     }
@@ -575,7 +575,7 @@ function erase_comcode_page_cache()
             delete_lang($row['string_index']);
             $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', array('string_index' => $row['string_index']));
         }
-    } while (count($rows) != 0);
+    } while (!empty($rows));
     erase_persistent_cache();
 
     pop_query_limiting();

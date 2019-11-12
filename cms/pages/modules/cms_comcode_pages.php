@@ -418,7 +418,7 @@ class Module_cms_comcode_pages
             if (!has_some_edit_comcode_page_permission(COMCODE_EDIT_ANY)) {
                 if (!has_some_edit_comcode_page_permission(COMCODE_EDIT_OWN)) { // Nothing global, so go per-zone
                     $zone_editability = get_comcode_page_editability_per_zone();
-                    if (count($zone_editability) != 0) {
+                    if (!empty($zone_editability)) {
                         $where_map .= ' AND (';
                         foreach ($zone_editability as $zi => $zone_editability_pair) {
                             if ($zi != 0) {

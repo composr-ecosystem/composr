@@ -233,7 +233,7 @@ function define_custom_field($name, $description = '', $order = 0, $content_type
     $db = $GLOBALS['SITE_DB'];
 
     $field_details = $db->query_select('catalogue_fields', 'id', array($db->translate_field_ref('cf_name') => $name, 'c_name' => '_' . $content_type), '', 1);
-    if (count($field_details) == 0) {
+    if (empty($field_details)) {
         $settings_map += insert_lang('cf_name', $name, 2);
         $settings_map += insert_lang('cf_description', $description, 2);
         $field_id = $db->query_insert('catalogue_fields', $settings_map);
@@ -667,7 +667,7 @@ function save_form_custom_fields($content_type, $id, $old_id = null)
 
         $map[$field['id']] = $value;
     }
-    if (count($fields) == 0) {
+    if (empty($fields)) {
         return;
     }
 
@@ -791,7 +791,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
     if (!$done_one_in_section) {
         array_pop($_types);
     }
-    if (count($types) != 0) {
+    if (!empty($types)) {
         $types = array_merge($_types, array(do_lang_tempcode('FIELD_TYPES__OTHER')), array_keys($types));
     } else {
         $types = $_types;

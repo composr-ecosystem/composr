@@ -325,7 +325,7 @@ class Module_admin_cns_forums extends Standard_crud_module
                 return do_template('RED_ALERT', array('_GUID' => 'tozu1if5yx6og9lmfx7jc0eczhnzahx1', 'TEXT' => do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM')));
             }
         } else {
-            if (count($all_forums) == 0) {
+            if (empty($all_forums)) {
                 $all_forums = $GLOBALS['FORUM_DB']->query_select('f_forums', array('id', 'f_name', 'f_position', 'f_forum_grouping_id', 'f_order_sub_alpha', 'f_parent_forum'), array(), 'ORDER BY f_parent_forum,f_position');
             }
         }
@@ -363,7 +363,7 @@ class Module_admin_cns_forums extends Standard_crud_module
         $forum_grouping_position = 0;
         $forums = null;
         $orderings = '';
-        while (count($subforums) != 0) {
+        while (!empty($subforums)) {
             $i = null;
             if ($forum_grouping_id !== null) {
                 foreach ($subforums as $j => $subforum) {
@@ -651,7 +651,7 @@ class Module_admin_cns_forums extends Standard_crud_module
             }
 
             $test = $GLOBALS['FORUM_DB']->query('SELECT f_name FROM ' . $table . ' WHERE ' . $where);
-            if (count($test) > 0) {
+            if (!empty($test)) {
                 warn_exit(do_lang_tempcode('FORUM_MAIL_USER_CANNOT_BE_SHARED', escape_html($test[0]['f_name'])));
             }
         }

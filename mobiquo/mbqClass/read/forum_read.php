@@ -75,7 +75,7 @@ class CMSForumRead
             $forums = array();
 
             // Do we need a virtual forum for the root forum? As we don't show an actual root forum in Tapatalk
-            if (($forum_id == db_get_first_id()) && (count($forums_with_groupings) == 0) && ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', array('t_forum_id' => $forum_id)) > 1)) {
+            if (($forum_id == db_get_first_id()) && (empty($forums_with_groupings)) && ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', array('t_forum_id' => $forum_id)) > 1)) {
                 $unread_count = get_num_unread_topics(db_get_first_id());
                 $new_post = ($unread_count > 0);
 

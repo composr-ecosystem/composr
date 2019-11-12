@@ -44,7 +44,7 @@ function content_lang_string_translation($lang_from, $lang_to, $content_lang_str
     foreach (array_keys($content_lang_string_changes) as $from) {
         $rows = $GLOBALS['SITE_DB']->query_select('translate', array('id'), array('language' => $lang_from, 'text_original' => $from));
 
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             $errors[] = 'No strings for \'' . $from . '\'';
             unset($content_lang_string_changes[$from]);
         }

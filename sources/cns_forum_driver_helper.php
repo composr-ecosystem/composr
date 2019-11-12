@@ -386,7 +386,7 @@ function _helper_show_forum_topics($this_ref, $name, $limit, $start, &$max_rows,
             $out[$i]['firstpost'] = get_translated_tempcode('f_posts', $post_row, 'p_post', $this_ref->db);
         }
     }
-    if (count($out) != 0) {
+    if (!empty($out)) {
         return $out;
     }
     return null;
@@ -441,7 +441,7 @@ function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $sta
 
     $extra_where = '';
     if ($post_ids !== null) {
-        if (count($post_ids) == 0) {
+        if (empty($post_ids)) {
             $count = 0;
             return array();
         }

@@ -39,7 +39,7 @@ class Hook_symbol_COMMUNITY_BILLBOARD
             $_community_billboard = persistent_cache_get('COMMUNITY_BILLBOARD');
             if ($_community_billboard === null) {
                 $community_billboard = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'community_billboard WHERE active_now=1 AND activation_time+days*60*60*24>' . strval(time()));
-                if (count($community_billboard) == 0) {
+                if (empty($community_billboard)) {
                     persistent_cache_set('COMMUNITY_BILLBOARD', false);
                 } else {
                     $_community_billboard = get_translated_tempcode('community_billboard', $community_billboard[0], 'the_message');

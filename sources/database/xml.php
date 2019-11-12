@@ -707,7 +707,7 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
-        if (count($schema) == 0) {
+        if (empty($schema)) {
             if (!$fail_ok) {
                 $this->failed_query_exit('Internal error: missing schema for ' . $table_name);
             } else {
@@ -1342,7 +1342,7 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         $test_results = $this->query('SELECT * FROM ' . $table_name . ' WHERE ' . $where, $db, 2, 0, $fail_ok);
-        if (count($test_results) == 0) {
+        if (empty($test_results)) {
             return false;
         }
         if (count($test_results) > 1) {
@@ -2454,7 +2454,7 @@ class Database_Static_xml extends DatabaseDriver
                 if ($exists_results === null) {
                     return null;
                 }
-                return count($exists_results) != 0;
+                return !empty($exists_results);
 
             case 'NOT':
                 $value = $this->_execute_expression($expr[1], $bindings, $query, $db, $fail_ok, $full_set);
@@ -3150,7 +3150,7 @@ class Database_Static_xml extends DatabaseDriver
     {
         // Execute to get records
         $done = 0;
-        if (count($joins) == 0) {
+        if (empty($joins)) {
             $records = array(array());
         }
         elseif ((count($joins) == 1) && (!is_array($joins[0][1])) && ($where_expr == array('LITERAL', true)) && ($select === array(array('COUNT', '*'))) && ($orders === null)) { // Quick fudge to get fast table counts
@@ -3432,9 +3432,9 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         // If there are no records, but some functions, we need to add a row
-        if ((count($results) == 0) && ($group_by === null)) {
+        if ((empty($results)) && ($group_by === null)) {
             $rep = $this->_function_set_scoping(array(), $select, array(), $query, $db, $fail_ok);
-            if (count($rep) != 0) {
+            if (!empty($rep)) {
                 foreach ($select as $i => $want) {
                     $as = null;
                     if ($want[0] == 'AS') {
@@ -3469,7 +3469,7 @@ class Database_Static_xml extends DatabaseDriver
         // Try and validate some stuff PostgreSQL wouldn't like, so we make XML driver as strict as possible
         //  It's not perfect, only works if we actually have a non-zero result set.
         //  Can't dig into expressions because the XML driver doesn't support ordering by them.
-        if (count($results) > 0) {
+        if (!empty($results)) {
             if ($orders !== null) {
                 $matches = array();
                 if (preg_match('#^\!?(\w+)$#', $orders, $matches) != 0) {
@@ -3606,7 +3606,7 @@ class Database_Static_xml extends DatabaseDriver
                     break;
 
                 case 'X_GROUP_CONCAT':
-                    if (count($set) == 0) {
+                    if (empty($set)) {
                         $rep[$as] = null;
                     } else {
                         $temp_str = '';
@@ -3622,7 +3622,7 @@ class Database_Static_xml extends DatabaseDriver
                     break;
 
                 case 'AVG':
-                    if (count($set) == 0) {
+                    if (empty($set)) {
                         $rep[$as] = null;
                     } else {
                         $temp = 0;

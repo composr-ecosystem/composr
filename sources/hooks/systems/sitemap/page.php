@@ -245,7 +245,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                         return null;
                     }
 
-                    if (count($entry_points) > 0) {
+                    if (!empty($entry_points)) {
                         $struct['has_possible_children'] = true;
 
                         $entry_point_sitemap_ob = $this->_get_sitemap_object('entry_point');

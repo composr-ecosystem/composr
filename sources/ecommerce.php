@@ -1308,7 +1308,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_start_date'), $card_start_date, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_expiry_date'), $card_expiry_date, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_payment_card_issue_number'), $card_issue_number, null, true);
-        if (count($changes) != 0) {
+        if (!empty($changes)) {
             $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => get_member()), '', 1);
         }
     }
@@ -1322,7 +1322,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_state'), $billing_state, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_post_code'), $billing_post_code, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_billing_country'), $billing_country, null, true);
-        if (count($changes) != 0) {
+        if (!empty($changes)) {
             $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => get_member()), '', 1);
         }
     }
@@ -1339,7 +1339,7 @@ function do_local_transaction($payment_gateway, $payment_gateway_object)
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_post_code'), $shipping_post_code, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_country'), $shipping_country, null, true);
         $changes += cns_set_custom_field(get_member(), find_cms_cpf_field_id('cms_mobile_phone_number'), $shipping_phone, null, true);
-        if (count($changes) != 0) {
+        if (!empty($changes)) {
             $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $changes, array('mf_member_id' => get_member()), '', 1);
         }
     }

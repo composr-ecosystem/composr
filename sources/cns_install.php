@@ -304,7 +304,7 @@ function install_cns($upgrade_from = null)
                 }
             }
             $start += $max;
-        } while (count($members) > 0);
+        } while (!empty($members));
 
         $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_options', 'SHORT_TEXT');
 

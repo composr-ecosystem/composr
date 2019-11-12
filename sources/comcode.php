@@ -202,7 +202,7 @@ function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false,
     }
 
     // Optimised code path (still has to support emoticons though, as those are arbitrary)
-    $attachments = (count($_FILES) != 0);
+    $attachments = (!empty($_FILES));
     foreach ($_POST as $key => $value) {
         if (is_integer($key)) {
             $key = strval($key);

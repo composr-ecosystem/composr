@@ -656,7 +656,7 @@ class Forum_driver_smf2 extends Forum_driver_base
                 pop_lax_comcode();
             }
         }
-        if (count($out) != 0) {
+        if (!empty($out)) {
             return $out;
         }
         return null;
@@ -837,7 +837,7 @@ class Forum_driver_smf2 extends Forum_driver_base
         if ($rows === null) {
             $rows = $this->db->query('SELECT id_ban FROM ' . $this->db->get_table_prefix() . 'ban_items i LEFT JOIN ' . $this->db->get_table_prefix() . 'ban_groups g on i.id_ban_group=g.id_ban_group WHERE id_member=' . strval($member) . ' AND expire_time IS NULL OR expire_time>' . strval(time()));
         }
-        return count($rows) > 0;
+        return !empty($rows);
     }
 
     /**

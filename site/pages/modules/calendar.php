@@ -473,7 +473,7 @@ class Module_calendar
                 $types_has[] = $t;
             }
         }
-        if (count($types_has) == 0) {
+        if (empty($types_has)) {
             $filter = array();
         }
         elseif (count($types_has) == 1) { // Viewing a single calendar type

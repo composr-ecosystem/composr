@@ -160,7 +160,7 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
             $worked = false;
         }
         if (($error == '') && (!$result)) {
-            if (count($failures) == 0) {
+            if (empty($failures)) {
                 $error = 'Unknown error';
             } else {
                 $error = 'Rejected addresses: ' . implode(', ', $failures);

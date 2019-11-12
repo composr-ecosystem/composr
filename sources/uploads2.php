@@ -115,10 +115,10 @@ function reorganise_uploads($content_type, $upload_directory, $upload_field, $wh
         }
         $start += $max;
     }
-    while (count($rows) > 0);
+    while (!empty($rows));
 
     // Cleanup
-    if (count($where) == 0) {
+    if (empty($where)) {
         clean_empty_upload_directories($upload_directory);
     }
 }

@@ -166,7 +166,7 @@ class file_type_whitelisting_test_set extends cms_test_case
         $file_types = array_diff($file_types, array('MAD', 'MAI', 'MYD', 'MYI', 'alt', 'api', 'bat', 'cat', 'cgi', 'cms', 'com', 'crt', 'dir', 'dll', 'for', 'gcd', 'gid', 'git', 'inc', 'inf', 'jit', 'key', 'lcd', 'low', 'max', 'min', 'msg', 'net', 'old', 'org', 'pem', 'pid', 'pre', 'pwl', 'pws', 'rel', 'rev', 'src', 'swf', 'tcp', 'tld', 'tmp', 'uid', 'xap', 'xxx')); // Lots of stuff that is not needed to have any explicit handling
 
         $diff = array_diff($file_types, $this->file_types);
-        $this->assertTrue(count($diff) == 0, 'File types used in code unknown to mime_types.php: ' . serialize($diff));
+        $this->assertTrue(empty($diff), 'File types used in code unknown to mime_types.php: ' . serialize($diff));
     }
 
     public function testTrackerValidTypes()

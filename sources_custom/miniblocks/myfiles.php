@@ -28,7 +28,7 @@ $baseurl = get_custom_base_url() . '/uploads/filedump/' . rawurlencode($GLOBALS[
 
 $files = file_exists($basedir) ? get_directory_contents($basedir) : array();
 
-if (count($files) == 0) {
+if (empty($files)) {
     echo '<p class="nothing-here">No files have been uploaded for you yet.</p>';
 } else {
     sort($files);

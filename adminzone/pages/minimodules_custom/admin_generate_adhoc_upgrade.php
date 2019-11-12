@@ -186,7 +186,7 @@ if ($type == 'auto_probe') {
                             ' . $message . '&hellip;
                     </p>
             ';
-            if (count($manual_changes[$d]) != 0) {
+            if (!empty($manual_changes[$d])) {
                 echo '<ul>';
                 foreach ($manual_changes[$d] as $file => $caption) {
                     echo '<li>';

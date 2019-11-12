@@ -479,7 +479,7 @@ class Module_admin_stats
         foreach ($rows as $value) {
             $date = get_timezoned_date($value['date_and_time'], false);
             // If there's no data, or if this isn't the same as the last record and is more than an hour later than it
-            if ((count($data) == 0) || ($data[count($data) - 1]['key'] != $date)) {
+            if ((empty($data)) || ($data[count($data) - 1]['key'] != $date)) {
                 $data[] = array('t' => $value['date_and_time'] - $base, 'key' => $date, 'value' => $value['peak']);
             } else {
                 $data[count($data) - 1]['value'] = max($value['peak'], $data[count($data) - 1]['value']);
@@ -566,7 +566,7 @@ class Module_admin_stats
             if ($t < 0) {
                 $t = 0 - $t;
             }
-            if ((count($data) == 0) || ($data[count($data) - 1]['key'] != $date)) {
+            if ((empty($data)) || ($data[count($data) - 1]['key'] != $date)) {
                 $data[] = array('t' => $t, 'key' => $date, 'value' => $value['cnt']);
             } else {
                 $data[count($data) - 1]['value'] += $value['cnt'];

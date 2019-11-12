@@ -332,7 +332,7 @@ function init__global2()
                 (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') &&
                 (
                     (get_forum_type() == 'cns') && (!isset($_COOKIE[$SITE_INFO['user_cookie']])) && (!isset($_COOKIE[$SITE_INFO['session_cookie']])) ||
-                    (count(array_diff_key($_COOKIE, array('__utma' => 0, '__utmc' => 0, '__utmz' => 0, 'has_cookies' => 0, 'last_visit' => 0))) == 0)
+                    (empty(array_diff_key($_COOKIE, array('__utma' => 0, '__utmc' => 0, '__utmz' => 0, 'has_cookies' => 0, 'last_visit' => 0))))
                 ) &&
                 ((!isset($SITE_INFO['backdoor_ip'])) || ($SITE_INFO['backdoor_ip'] != @strval($_SERVER['REMOTE_ADDR']))) &&
                 (!isset($_GET['keep_session'])
@@ -543,7 +543,7 @@ function init__global2()
         register_shutdown_function('memory_tracking');
     }
 
-    if (count(array_diff(array_keys($_POST), array('x', 'y', 'http_referer'/*added by our JS*/))) != 0) {
+    if (!empty(array_diff(array_keys($_POST), array('x', 'y', 'http_referer'/*added by our JS*/)))) {
         // Detect and deal with spammers that triggered the spam blackhole
         if (get_option('spam_blackhole_detection') == '1') {
             $blackhole = post_param_string('y' . md5(get_site_name() . ': antispam'), '');
@@ -645,13 +645,13 @@ function fixup_bad_php_env_vars()
         if (isset($_SERVER['REDIRECT_URL'])) {
             $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_URL'];
             if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
-                if (count($_GET) != 0) {
+                if (!empty($_GET)) {
                     $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($_GET)); // Messy as rewrite URL-embedded parameters will be doubled, but if you've got a broken server don't push it to do rewrites
                 }
             }
         } else {
             $_SERVER['REQUEST_URI'] = $php_self; // Same as PHP_SELF, but...
-            if (count($_GET) != 0) { // add in query string data if we have it
+            if (!empty($_GET)) { // add in query string data if we have it
                 $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($_GET));
             }
 

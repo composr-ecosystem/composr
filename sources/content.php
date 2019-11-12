@@ -232,7 +232,7 @@ function content_get_details($content_type, $content_id, $resource_fs_style = fa
             list($zone, $page) = explode(':', $content_id, 2);
 
             $members = $GLOBALS['FORUM_DRIVER']->member_group_query($GLOBALS['FORUM_DRIVER']->get_super_admin_groups(), 1);
-            if (count($members) != 0) {
+            if (!empty($members)) {
                 $submitter_id = $GLOBALS['FORUM_DRIVER']->mrow_id($members[key($members)]);
             } else {
                 $submitter_id = db_get_first_id() + 1; // On Conversr and most forums, this is the first admin member

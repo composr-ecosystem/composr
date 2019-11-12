@@ -75,7 +75,7 @@ function reprocess_url($url, $operation_base_url)
         $accept_language = null;
     }
     $post_relayed = null;
-    if (count($_POST) != 0) {
+    if (!empty($_POST)) {
         $post_relayed = array();
         foreach ($_POST as $key => $val) {
             if (is_array($val)) {

@@ -48,7 +48,7 @@ function _generate_map_color_pool(&$color_pool)
         );
     }
 
-    if (count($color_pool) == 0) {
+    if (empty($color_pool)) {
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
 }

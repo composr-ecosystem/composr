@@ -583,7 +583,7 @@ function cns_find_birthdays($time = null)
  */
 function cns_button_screen_wrap($buttons)
 {
-    if (count($buttons) == 0) {
+    if (empty($buttons)) {
         return new Tempcode();
     }
 

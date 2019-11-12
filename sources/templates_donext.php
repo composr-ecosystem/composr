@@ -306,7 +306,7 @@ function do_next_manager($title, $text, $main = array(), $main_title = null, $ur
  */
 function _do_next_section($list, $title, $entry_content_type = null, $category_content_type = null)
 {
-    if (count($list) == 0) {
+    if (empty($list)) {
         return new Tempcode();
     }
 

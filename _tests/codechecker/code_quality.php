@@ -906,7 +906,7 @@ function check_variable_list($LOCAL_VARIABLES, $offset = -1)
                     $non_mixed = true;
                 }
             }
-            if ((!$non_mixed) && (count($v['types']) != 0)) {
+            if ((!$non_mixed) && (!empty($v['types']))) {
                 log_warning('Solely mixed variable: ' . $name, $v['first_mention']);
             }
         }
@@ -1076,7 +1076,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 add_variable_reference($c[2][1], $c_pos, false);
                 if ($c[3][0] == 'LIST') {
                     foreach ($c[3][1] as $var) {
-                        if (count($var[2]) == 0) {
+                        if (empty($var[2])) {
                             add_variable_reference($var[1], $c_pos, false);
                         }
                     }
@@ -1100,7 +1100,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
                 if ($c[2][0] == 'LIST') {
                     foreach ($c[2][1] as $var) {
-                        if (count($var[2]) == 0) {
+                        if (empty($var[2])) {
                             add_variable_reference($var[1], $c_pos, false);
                         }
                     }
@@ -1149,7 +1149,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 }
 
                 if ($continue_level > count($jump_structures)) {
-                    if (count($jump_structures) == 0) {
+                    if (empty($jump_structures)) {
                         log_warning('Nothing to continue out of', $c_pos);
                     } else {
                         log_warning('Continue level greater than loop/switch depth', $c_pos);
@@ -1172,7 +1172,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                     infer_expression_type_to_variable_type('integer', $c[1]);
                 }
 
-                if (count($jump_structures) == 0) {
+                if (empty($jump_structures)) {
                     log_warning('Nothing to break out of', $c_pos);
                 }
                 break;
@@ -1234,7 +1234,7 @@ function check_method($c, $c_pos, $function_guard = '')
             return actual_check_method($class, $method, $params, $c_pos, $function_guard);
         }
 
-        if ((isset($c[1][2][0])) && ($c[1][2][0] == 'DEREFERENCE') && (count($c[1][2][2]) == 0)) {
+        if ((isset($c[1][2][0])) && ($c[1][2][0] == 'DEREFERENCE') && (empty($c[1][2][2]))) {
             $object = $c[1][1];
             $method = $c[1][2][1][1];
             add_variable_reference($object, $c_pos);
@@ -1358,7 +1358,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
             $ret = $potential['return'];
         }
         foreach ($potential['parameters'] as $i => $param) {
-            if ((!isset($params[$i])) && ((count($params) == 0) || (!$params[count($params) - 1][1]/*not a vadiadic call*/)) && (!$param['is_variadic']/*not variadic parameter spot*/) && (!array_key_exists('default', $param))) {
+            if ((!isset($params[$i])) && ((empty($params)) || (!$params[count($params) - 1][1]/*not a vadiadic call*/)) && (!$param['is_variadic']/*not variadic parameter spot*/) && (!array_key_exists('default', $param))) {
                 log_warning('Insufficient parameters to function \'' . $function . '\'', $c_pos);
                 break;
             }
@@ -1394,7 +1394,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
                 break;
             }
         }
-        if ((count($potential['parameters']) < count($params)) && (count($potential['parameters']) != 0) && (!$potential['parameters'][count($potential['parameters']) - 1]['is_variadic']/*not a variadic function*/)) {
+        if ((count($potential['parameters']) < count($params)) && (!empty($potential['parameters'])) && (!$potential['parameters'][count($potential['parameters']) - 1]['is_variadic']/*not a variadic function*/)) {
             log_warning('Too many parameters to function \'' . $function . '\'', $c_pos);
         }
 
@@ -1465,7 +1465,7 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
         return $ret['type'];
     }
     if (!$found) {
-        if ((isset($FUNCTION_SIGNATURES['__global'])) && (count($FUNCTION_SIGNATURES['__global']['functions']) == 0)) {
+        if ((isset($FUNCTION_SIGNATURES['__global'])) && (empty($FUNCTION_SIGNATURES['__global']['functions']))) {
             static $warned_missing_api_once = false;
             if (!$warned_missing_api_once) {
                 log_warning('No API function metabase available', $c_pos);
@@ -1696,7 +1696,7 @@ function check_assignment($c, $c_pos, $function_guard = '')
             infer_expression_type_to_variable_type('array', $c[3]);
         }
         foreach ($target[1] as $var) {
-            if (count($var[2]) == 0) {
+            if (empty($var[2])) {
                 add_variable_reference($var[1], $c_pos, false);
             }
         }
@@ -1715,7 +1715,7 @@ function check_assignment($c, $c_pos, $function_guard = '')
 
     // check_variable will do the internalised checks. Type conflict checks will be done at the end of the function, based on all the types the variable has been set with. Variable type usage checks are done inside expressions.
     if ($target[0] == 'VARIABLE') {
-        if (($op == 'EQUAL') && (count($target[2]) == 0)) {
+        if (($op == 'EQUAL') && (empty($target[2]))) {
             add_variable_reference($target[1], $c_pos, false);
             $v = $LOCAL_VARIABLES[$target[1]];
             if (($made_call !== null) && (((!$v['conditioned_null']) && (isset($GLOBALS['NULL_ERROR_FUNCS'][$made_call]))) || ((!$v['conditioned_false']) && (isset($GLOBALS['FALSE_ERROR_FUNCS'][$made_call]))))) {
@@ -1760,7 +1760,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         return check_variable($e, false, $function_guard);
     }
     if ((in_array($e[0], array('DIVIDE', 'REMAINDER', 'DIV_EQUAL'))) && ($e[2][0] != 'LITERAL')) {
-        if (($assignment) && (@count($e[2][1][2]) == 0)) {
+        if (($assignment) && (@is_array($e[2][1][2])) && (empty($e[2][1][2]))) {
             $GLOBALS['LOCAL_VARIABLES'][$e[2][1][1]]['conditioner'][] = '_divide_';
         } elseif (isset($GLOBALS['PEDANTIC'])) {
             log_warning('Divide by zero un-handled', $c_pos);
@@ -1868,7 +1868,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
         if ($x[1][0] == 'EMBEDDED_ASSIGNMENT') {
             $x = $e[1];
         }
-        if (($x[1][0] == 'VARIABLE') && (@count($x[1][1][2]) == 0) && ($e[2][0] == 'LITERAL')) {
+        if (($x[1][0] == 'VARIABLE') && (@is_array($x[1][1][2])) && (empty($x[1][1][2])) && ($e[2][0] == 'LITERAL')) {
             if (in_array($e[0], array('IS_IDENTICAL', 'IS_NOT_IDENTICAL'))) {
                 if (($e[2][1][0] == 'BOOLEAN') && (!$e[2][1][1])) {
                     $GLOBALS['LOCAL_VARIABLES'][$x[1][1][1]]['conditioned_false'] = true;
@@ -1927,7 +1927,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             }
             if ($assignment) {
                 $GLOBALS['MADE_CALL'] = $inner[1];
-                if ((@$e[2][0][0] == 'VARIABLE') && (@count($e[2][0][1][2]) == 0) && ($e[1] == 'is_null')) {
+                if ((@$e[2][0][0] == 'VARIABLE') && (@is_array($e[2][0][1][2])) && (empty($e[2][0][1][2])) && ($e[1] == 'is_null')) {
                     $GLOBALS['LOCAL_VARIABLES'][$e[2][0][1][1]]['conditioned_null'] = true;
                 }
             } else {
@@ -1998,7 +1998,7 @@ function check_expression($e, $assignment = false, $equate_false = false, $funct
             foreach ($inner[2] as $param) {
                 check_expression($param, false, false, $function_guard);
             }
-            if (count($inner[2]) != 0) {
+            if (!empty($inner[2])) {
                 check_call(array('CALL_METHOD', '__construct', $inner[2]), $c_pos, $inner[1], $function_guard);
             }
             return 'object-' . $inner[1];
@@ -2052,8 +2052,8 @@ function check_variable($variable, $reference = false, $function_guard = '')
         }
 
         // Add to reference count if: this specifically is a reference, or it's complex therefore the base is explicitly a reference, or we are forced to add it because it is yet unseen
-        if (($reference) || (count($variable[2]) != 0) || (!isset($LOCAL_VARIABLES[$identifier]))) {
-            add_variable_reference($identifier, $variable[count($variable) - 1], ($reference) || (count($variable[2]) != 0));
+        if (($reference) || (!empty($variable[2])) || (!isset($LOCAL_VARIABLES[$identifier]))) {
+            add_variable_reference($identifier, $variable[count($variable) - 1], ($reference) || (!empty($variable[2])));
         }
 
         $variable_stem = $variable;
@@ -2135,7 +2135,7 @@ function scan_extractive_expressions($variable)
         check_expression($variable[1]);
     }
 
-    if ((($variable[0] == 'ARRAY_AT') || ($variable[0] == 'DEREFERENCE')) && (count($variable[2]) != 0)) {
+    if ((($variable[0] == 'ARRAY_AT') || ($variable[0] == 'DEREFERENCE')) && (!empty($variable[2]))) {
         scan_extractive_expressions($variable[2]);
     }
 }
@@ -2146,7 +2146,7 @@ function get_variable_type($variable)
 
     $identifier = $variable[1];
 
-    if (count($variable[2]) != 0) {
+    if (!empty($variable[2])) {
         return 'mixed'; // Too complex
     }
 
@@ -2154,7 +2154,7 @@ function get_variable_type($variable)
         return 'mixed';
     }
 
-    if (count($LOCAL_VARIABLES[$identifier]['types']) == 0) {
+    if (empty($LOCAL_VARIABLES[$identifier]['types'])) {
         return 'mixed'; // There is a problem, but it will be identified elsewhere.
     }
 
@@ -2162,7 +2162,7 @@ function get_variable_type($variable)
     if ($temp == array('boolean-false', 'boolean')) {
         return 'boolean';
     }
-    if (count($temp) != 0) {
+    if (!empty($temp)) {
         return is_array($temp[0]) ? $temp[0][0] : $temp[0]; // We'll assume the first set type is the actual type
     }
     return 'mixed';
@@ -2253,7 +2253,7 @@ function reinitialise_local_variables($inside_class = false)
 // If the given expression is a direct variable expression, this function will infer the type as the given type. This therefore allows type infering on usage as well as on assignment
 function infer_expression_type_to_variable_type($type, $expression)
 {
-    /*if (($expression[0] == 'VARIABLE') && (count($expression[1][2]) == 0)) {      Not reliable
+    /*if (($expression[0] == 'VARIABLE') && (empty($expression[1][2]))) {      Not reliable
         $identifier = $expression[1][1];
         set_composr_type($identifier, $type);
     }*/

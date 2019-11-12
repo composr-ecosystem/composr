@@ -74,7 +74,7 @@ class Hook_commandr_command_fs_search
 
             // Generate replacement SQL...
 
-            if ((isset($parameters[2])) && (count($matched_files) > 0)) {
+            if ((isset($parameters[2])) && (!empty($matched_files))) {
                 if (isset($parameters[1])) {
                     $out_filename = $parameters[2];
                     if (substr($out_filename, -4) != '.tar') {

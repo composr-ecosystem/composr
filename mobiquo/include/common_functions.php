@@ -290,7 +290,7 @@ function tapatalk_strip_comcode($data)
             $smilies[$code] = $imgcode;
         }
     }
-    if (count($smilies) != 0) {
+    if (!empty($smilies)) {
         $len = strlen($data);
         for ($i = 0; $i < $len; ++$i) { // Has to go through in byte order so double application cannot happen (i.e. smiley contains [all or portion of] smiley code somehow)
             $char = $data[$i];

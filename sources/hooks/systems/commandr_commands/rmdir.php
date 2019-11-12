@@ -48,7 +48,7 @@ class Hook_commandr_command_rmdir
 
             if (!array_key_exists('f', $options)) {
                 $listing = $commandr_fs->listing($parameters[0]);
-                if ((count($listing[0]) != 0) || (count($listing[1]) != 0)) {
+                if ((!empty($listing[0])) || (!empty($listing[1]))) {
                     return array('', '', '', do_lang('NOT_EMPTY_FORCE', '1'));
                 }
             }

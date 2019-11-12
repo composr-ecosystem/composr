@@ -130,7 +130,7 @@ class Hook_profiles_tabs_edit
         $hidden = new Tempcode();
 
         // Session ID check, if saving
-        if ((count($_POST) != 0) && (count($tabs) != 0)) {
+        if ((!empty($_POST)) && (!empty($tabs))) {
             global $SESSION_CONFIRMED_CACHE;
             if ((!$SESSION_CONFIRMED_CACHE) && ((post_param_string('edit_password', '', INPUT_FILTER_NONE) != '') || ($member_id_viewing != $member_id_of))) {
                 access_denied('SESSION', '', true);

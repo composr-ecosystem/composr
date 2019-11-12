@@ -53,7 +53,7 @@ function upgrader_file_upgrade_screen()
             }
         }
     }
-    if (count($found_upgraders) == 0) {
+    if (empty($found_upgraders)) {
         $upgrader_tar_url = base64_decode(get_param_string('tar_url', '', INPUT_FILTER_URL_GENERAL));
     } else {
         arsort($found_upgraders);
@@ -362,7 +362,7 @@ function _upgrader_file_upgrade_screen()
             // Show the dry-run results
             $out .= '<p>' . do_lang('FILES') . ':</p>';
             $out .= '<ul>';
-            if (count($metadata['todo']) == 0) {
+            if (empty($metadata['todo'])) {
                 $out .= '<li><em>' . do_lang('NONE') . '</em></li>';
             } else {
                 foreach ($metadata['todo'] as $file) {

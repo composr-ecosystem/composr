@@ -26,7 +26,7 @@ class Hook_preview_iotd
     public function applies()
     {
         require_code('uploads');
-        $applies = (addon_installed('iotds')) && (get_page_name() == 'cms_iotds') && ((get_param_string('type') == '_edit') || (get_param_string('type') == 'add')) && ((is_plupload()) || (count($_FILES) != 0));
+        $applies = (addon_installed('iotds')) && (get_page_name() == 'cms_iotds') && ((get_param_string('type') == '_edit') || (get_param_string('type') == 'add')) && ((is_plupload()) || (!empty($_FILES)));
         return array($applies, null, false);
     }
 

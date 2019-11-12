@@ -642,7 +642,7 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
             $delete_where = array();
         }
 
-        if (count($lang_fields) != 0 || count($upload_fields) != 0) {
+        if (!empty($lang_fields) || !empty($upload_fields)) {
             $old_rows = $db->query_select($table, array_merge($lang_fields, $upload_fields), $delete_where);
 
             foreach ($old_rows as $old_row) {
@@ -683,7 +683,7 @@ function table_from_portable_rows($table, $rows, $extra_field_data, $replace_mod
         $row = table_row_from_portable_row($row, $db_fields, $relation_map, $db);
 
         if ($replace_mode == TABLE_REPLACE_MODE_NONE) {
-            if (count($lang_fields) != 0 || count($upload_fields) != 0) {
+            if (!empty($lang_fields) || !empty($upload_fields)) {
                 $old_rows = $db->query_select($table, array_merge($lang_fields, $upload_fields), array_intersect_key($row, $keys));
 
                 foreach ($old_rows as $old_row) {

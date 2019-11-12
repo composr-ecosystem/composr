@@ -293,7 +293,7 @@ class Module_admin_workflow extends Standard_crud_module
 
         // First we must be given a name (defaulting to the given name if it has been passed). We want to show the user which names are unavailable, so search the database for this information.
         $workflows = get_all_workflows();
-        if (count($workflows) > 0) {
+        if (!empty($workflows)) {
             $defined_names = do_lang_tempcode('DEFINED_WORKFLOWS', escape_html(implode(', ', $workflows)));
         } else {
             $defined_names = do_lang_tempcode('NO_DEFINED_WORKFLOWS');
@@ -408,7 +408,7 @@ class Module_admin_workflow extends Standard_crud_module
         $usergroups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true, true, false, array(), null);
 
         // Add the form elements for each section
-        if (count($clarify_points) > 0) {
+        if (!empty($clarify_points)) {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
                 '_GUID' => '956a8b51ebbbd5e581092520534bd332',
                 'TITLE' => do_lang_tempcode('DEFINE_WORKFLOW_POINTS'),
@@ -430,7 +430,7 @@ class Module_admin_workflow extends Standard_crud_module
             }
         }
 
-        if (count($redefine_points) > 0) {
+        if (!empty($redefine_points)) {
             $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array(
                 '_GUID' => '1670e74ade97bd18b8dc798033a14f36',
                 'TITLE' => do_lang_tempcode('REDEFINE_WORKFLOW_POINTS'),

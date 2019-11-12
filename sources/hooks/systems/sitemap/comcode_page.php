@@ -255,7 +255,7 @@ class Hook_sitemap_comcode_page extends Hook_sitemap_page
                             }
                         }
                         $start += SITEMAP_MAX_ROWS_PER_LOOP;
-                    } while (count($child_rows[$sz]) > 0);
+                    } while (!empty($child_rows[$sz]));
                 }
             }
             $struct['children'] = $children;

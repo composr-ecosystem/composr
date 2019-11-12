@@ -277,7 +277,7 @@ function cns_delete_topic($topic_id, $reason = '', $post_target_topic_id = null,
                 delete_lang($post['p_post'], $GLOBALS['FORUM_DB']);
                 $GLOBALS['FORUM_DB']->query_delete('f_posts', array('id' => $post['id']), '', 1);
             }
-        } while (count($_postdetails) != 0);
+        } while (!empty($_postdetails));
     }
 
     // Delete stuff
@@ -423,7 +423,7 @@ function cns_move_topics($from, $to, $topics = null, $check_perms = true) // NB:
         require_code('sitemap_xml');
         notify_sitemap_node_edit('_SEARCH:topicview:id=' . strval($topics[0]), has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'forums', strval($to)));
     } else { // Unknown number
-        if (count($topics) == 0) {
+        if (empty($topics)) {
             return; // Nuts, lol
         }
 

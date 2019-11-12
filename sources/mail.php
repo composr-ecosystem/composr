@@ -1442,9 +1442,9 @@ function filter_css($c, $theme, $context)
         }
 
         if (($pos1 === false) || (($pos2 !== false) && ($pos2 < $pos1))) {
-            if (count($stack) != 0) {
+            if (!empty($stack)) {
                 $start = array_pop($stack);
-                if (count($stack) == 0) { // We've finished a top-level section
+                if (empty($stack)) { // We've finished a top-level section
                     $real_start = strrpos(substr($css, 0, $start), '}');
                     $real_start = ($real_start === false) ? 0 : ($real_start + 1);
                     $selectors = explode(',', trim(substr($css, $real_start, $start - $real_start)));

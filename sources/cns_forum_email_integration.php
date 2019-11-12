@@ -293,7 +293,7 @@ class ForumEmailIntegration extends EmailIntegration
 
         $this->log_message('Created post #' . strval($post_id));
 
-        if (count($attachment_errors) != 0) {
+        if (!empty($attachment_errors)) {
             $this->log_message('Had some issues creating an attachment(s) [non-fatal], e-mailing them about it');
 
             $post_url = $GLOBALS['FORUM_DRIVER']->post_url($post_id, '');

@@ -146,7 +146,7 @@ $cnt = 0;
 foreach ($directories as $directory) {
     $_files = get_directory_contents($directory, '', null, false, true);
     $_directories = get_directory_contents($directory, '', null, false, false);
-    if ((count($_files) == 0) && (count($_directories) == 0)) {
+    if ((empty($_files)) && (empty($_directories))) {
         echo 'rmdir ' . cms_escapeshellarg($directory) . "\n";
         $cnt++;
     }

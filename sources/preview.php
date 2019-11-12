@@ -98,7 +98,7 @@ function build_preview($multi_return = false)
                 require_code('webstandards');
                 require_code('webstandards2');
                 $error = check_css($val);
-                $show = (count($error['errors']) != 0);
+                $show = (!empty($error['errors']));
                 if ($show) {
                     $webstandards->attach(display_webstandards_results($val, $error, true, true));
                 }
@@ -260,7 +260,7 @@ function build_preview($multi_return = false)
                 foreach ($mispellings as $word_bad => $words_good) {
                     $_misspellings[] = array('WORD' => $word_bad, 'CORRECTIONS' => implode(', ', $words_good));
                 }
-                if (count($_misspellings) != 0) {
+                if (!empty($_misspellings)) {
                     $spelling->attach(do_template('PREVIEW_SCRIPT_SPELLING', array('_GUID' => '9649572982c01995a8f47c58d16fda39', 'FIELD' => $key_nice, 'MISSPELLINGS' => $_misspellings)));
                 }
             }
@@ -281,7 +281,7 @@ function build_preview($multi_return = false)
                     foreach ($keywords as $ti => $meta_keyword) {
                         unset($keywords[$ti]['sort']);
                     }
-                    if (count($keywords) != 0) {
+                    if (!empty($keywords)) {
                         $keyword_density->attach(do_template('PREVIEW_SCRIPT_KEYWORD_DENSITY', array('_GUID' => '4fa05e9f52023958a3594d1610b00747', 'FIELD' => $key_nice, 'KEYWORDS' => $keywords)));
                     }
                 }

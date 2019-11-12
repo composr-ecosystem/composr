@@ -215,7 +215,7 @@ function activities_updater_script()
     if ($proceed_selection === true) {
         $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ((' . $where_clause . ') AND id>' . (($last_id == '') ? '-1' : $last_id) . ') ORDER BY a_time DESC', intval($map['max']));
 
-        if (count($activities) > 0) {
+        if (!empty($activities)) {
             $list_items = '';
             foreach ($activities as $row) {
                 list($message, $member_avatar, $timestamp, $member_url, $is_public) = render_activity($row);

@@ -1344,7 +1344,7 @@ function check_xhtml($out, $well_formed_only = false, $is_fragment = false, $web
 
     $token = _get_next_tag();
     while ($token !== null) {
-        while ((is_array($token)) && (count($token) != 0)) { // Some kind of error in our token
+        while ((is_array($token)) && (!empty($token))) { // Some kind of error in our token
             if ($WEBSTANDARDS_CHECKER_OFF === null) {
                 foreach ($token[1] as $error) {
                     $errors[] = _xhtml_error($error[0], array_key_exists(1, $error) ? $error[1] : '', array_key_exists(2, $error) ? $error[2] : '', array_key_exists(3, $error) ? $error[3] : '', array_key_exists('raw', $error) ? $error['raw'] : false, array_key_exists('pos', $error) ? $error['pos'] : 0);

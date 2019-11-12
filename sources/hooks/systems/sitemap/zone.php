@@ -345,7 +345,7 @@ class Hook_sitemap_zone extends Hook_sitemap_base
                         $orphaned_pages = array();
                     }
 
-                    if ((count($page_grouping_pages) == 0) && (count($row) == 0)) {
+                    if ((empty($page_grouping_pages)) && (empty($row))) {
                         continue;
                     }
 

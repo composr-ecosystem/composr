@@ -146,7 +146,7 @@ class Hook_ajax_tree_choose_theme_files
                 case 'addons':
                     $addons = find_all_hooks('systems', 'addon_registry');
                     foreach (array_keys($addons) as $addon_name) {
-                        $has_children = (count($this->templates_for_addons($addon_name)) > 0);
+                        $has_children = !empty($this->templates_for_addons($addon_name));
 
                         $out .= '
                         <category

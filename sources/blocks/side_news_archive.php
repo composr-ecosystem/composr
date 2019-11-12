@@ -92,7 +92,7 @@ class Block_side_news_archive
         $rows = remove_duplicate_rows($rows, 'id');
         $rows = array_reverse($rows);
 
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return do_template('RED_ALERT', array('_GUID' => '2kkpdv5vq2zbhuu4j4n6gteucgi1mee1', 'TEXT' => do_lang_tempcode('NO_ENTRIES')));
         }
         $first = $rows[0]['date_and_time'];

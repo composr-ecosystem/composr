@@ -42,7 +42,7 @@ class CMSPtWrite
 
         cns_check_make_private_topic();
 
-        if (count($user_name_list) == 0) {
+        if (empty($user_name_list)) {
             warn_exit(do_lang_tempcode('NO_RECIPIENTS_GIVEN'));
         }
 

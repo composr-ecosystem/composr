@@ -661,7 +661,7 @@ function upgrader__integrity_scan_screen()
             }
             foreach (array_reverse($subdirs) as $subdir) {
                 $files = @scandir(get_file_base() . '/' . $subdir);
-                if (($files !== false) && (count(array_diff($files, array('..', '.', '.DS_Store'))) == 0)) {
+                if (($files !== false) && (empty(array_diff($files, array('..', '.', '.DS_Store'))))) {
                     @unlink(get_file_base() . '/' . $subdir . '/.DS_Store');
                     @rmdir(get_file_base() . '/' . $subdir);
                 }

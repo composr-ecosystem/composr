@@ -245,7 +245,7 @@ function cns_edit_post($post_id, $validated, $title, $post, $skip_sig, $is_empha
  */
 function cns_delete_posts_topic($topic_id, $posts, $reason = '', $check_perms = true, $cleanup = true, $save_revision = true)
 {
-    if (count($posts) == 0) {
+    if (empty($posts)) {
         return false;
     }
 
@@ -472,7 +472,7 @@ function cns_move_posts($from_topic_id, $to_topic_id, $posts, $reason, $to_forum
             $to_topic_id = cns_make_topic($to_forum_id);
         }
 
-        if (($title !== null) && (count($posts) != 0)) {
+        if (($title !== null) && (!empty($posts))) {
             $GLOBALS['FORUM_DB']->query_update('f_posts', array('p_title' => $title), array('id' => $posts[0]), '', 1);
         }
     }

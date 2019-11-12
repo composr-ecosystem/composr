@@ -716,7 +716,7 @@ function make_files_manifest() // Builds files.bin, the Composr file manifest (u
 
     require_code('version2');
 
-    if (count($MAKE_INSTALLERS__FILE_ARRAY) == 0) {
+    if (empty($MAKE_INSTALLERS__FILE_ARRAY)) {
         populate_build_files_list();
     }
 

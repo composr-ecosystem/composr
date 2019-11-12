@@ -53,7 +53,7 @@ class notifications_test_set extends cms_test_case
 
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');
-        $this->assertTrue(count($results[0]) == 0);
+        $this->assertTrue(empty($results[0]));
         $results = $ob->list_members_who_have_enabled('comment_posted', null, array(get_member())); // Just make sure the member-ID filter doesn't crash
 
         $ob = new Hook_notification_cns_password_changed();
@@ -84,7 +84,7 @@ class notifications_test_set extends cms_test_case
 
         $ob = new Hook_notification_cns_password_changed();
         $results = $ob->list_members_who_have_enabled('cns_password_changed');
-        $this->assertTrue(count($results[0]) == 0);
+        $this->assertTrue(empty($results[0]));
 
         // Check with locking...
 
@@ -99,7 +99,7 @@ class notifications_test_set extends cms_test_case
 
         $ob = new Hook_notification_comment_posted();
         $results = $ob->list_members_who_have_enabled('comment_posted');
-        $this->assertTrue(count($results[0]) == 0);
+        $this->assertTrue(empty($results[0]));
 
         $ob = new Hook_notification_cns_password_changed();
         $results = $ob->list_members_who_have_enabled('cns_password_changed');

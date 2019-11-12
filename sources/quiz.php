@@ -189,7 +189,7 @@ function score_quiz($entry_id, $quiz_id = null, $quiz = null, $questions = null,
 
             $correct_answer = new Tempcode();
             $correct_explanation = null;
-            if (count($question['answers']) == 0) {
+            if (empty($question['answers'])) {
                 $potential_extra_marks++;
                 $unknowns[] = array($question_text, $given_answer);
                 $was_correct = null;

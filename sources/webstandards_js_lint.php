@@ -356,7 +356,7 @@ function js_check_variable_list($JS_LOCAL_VARIABLES)
                 if (($t2[0] == '!') && (isset($JS_PROTOTYPES[substr($t2, 1)][2]))) {
                     $potentials2 += $JS_PROTOTYPES[substr($t2, 1)][2];
                 }
-                if (count(array_intersect(array_keys($potentials1), array_keys($potentials2))) == 0) {
+                if (empty(array_intersect(array_keys($potentials1), array_keys($potentials2)))) {
                     $conflict = true;
                 }
             }
@@ -385,7 +385,7 @@ function js_check_variable_list($JS_LOCAL_VARIABLES)
  */
 function js_check_command($command, $depth)
 {
-    if (count($command) == 0) {
+    if (empty($command)) {
         return;
     }
 
@@ -593,7 +593,7 @@ function js_check_assignment($c, $c_pos)
 
     // js_check_variable will do the internalised checks. Type conflict checks will be done at the end of the function, based on all the types the variable has been set with. Variable type usage checks are done inside expressions.
     if ($target[0] == 'VARIABLE') {
-        if (($op == 'EQUAL') && (count($target[2]) == 0) && (is_string($target[1]))) {
+        if (($op == 'EQUAL') && (empty($target[2])) && (is_string($target[1]))) {
             if ($target[1] == 'this') {
                 js_log_warning('CHECKER', '\'this\' is immutable', $c_pos);
             }
@@ -792,7 +792,7 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
             foreach ($inner[2] as $param) {
                 js_check_expression($param);
             }
-            if (count($inner[2]) != 0) {
+            if (!empty($inner[2])) {
                 js_check_call(array('CALL', array('VARIABLE', $inner[1], array(), $c_pos), $inner[2]), $c_pos, $inner[1]);
             }
             if ($inner[1] == 'Array') {
@@ -858,8 +858,8 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
     if ($class === null) {
         if ($identifier[0] != '!') { // Sometimes we use fake static objects (like !Object), and we can't start referencing these as real variables
             // Add to reference count if: this specifically is a reference, or it's complex therefore the base is explicitly a reference, or we are forced to add it because it is yet unseen
-            if (($reference) || (count($variable[2]) != 0) || (!isset($JS_LOCAL_VARIABLES[$identifier]))) {
-                js_add_variable_reference($identifier, $variable[count($variable) - 1], !$reference, ($reference) || (count($variable[2]) != 0), null, $is_call && count($variable[2]) == 0);
+            if (($reference) || (!empty($variable[2])) || (!isset($JS_LOCAL_VARIABLES[$identifier]))) {
+                js_add_variable_reference($identifier, $variable[count($variable) - 1], !$reference, ($reference) || (!empty($variable[2])), null, $is_call && empty($variable[2]));
             } else {
                 js_mention_undeclared_variables($identifier, $variable[3]); // js_add_variable_reference would have itself called this, but as that was not called we must do it here instead
             }
@@ -875,7 +875,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
                 }
             }
             if (($class != 'self') && ($class != 'Window') && ($identifier != $class) && ($class != 'Object')) { // We're allowed to freely add to Object because we need to to make our own. It's also not likely people will "mistakingly" handle things they think Object has but it doesn't.
-                if (($GLOBALS['JS_PARSING_CONDITIONAL']) && (count($variable[2]) == 0)) { // We're running a conditional on this, meaning the user is likely checking to see if it exists (if it's a boolean that doesn't exist, we're in trouble, but unfortunately it's ambiguous).
+                if (($GLOBALS['JS_PARSING_CONDITIONAL']) && (empty($variable[2]))) { // We're running a conditional on this, meaning the user is likely checking to see if it exists (if it's a boolean that doesn't exist, we're in trouble, but unfortunately it's ambiguous).
                     // We add the variable, because it might have been guaranteed. We're screwed if it is not a guaranteeing conditional, but it's impossible to test that ("the halting problem")
                     if (($class == 'Window') || ($class == 'Self')) {
                         //js_add_variable_reference($identifier, $variable[count($variable) - 1], true, false, null, true); Causes confusion
@@ -885,7 +885,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
             }
             if ($found === null) {
                 if (($class != 'self') && ($class != 'Window') && ($identifier != $class) && ($class != 'Object')) { // We're allowed to freely add to Object because we need to to make our own. It's also not likely people will "mistakingly" handle things they think Object has but it doesn't.
-                    if ((!$GLOBALS['JS_PARSING_CONDITIONAL']) || (count($variable[2]) != 0)) { // We're running a conditional on this, meaning the user is likely checking to see if it exists (if it's a boolean that doesn't exist, we're in trouble, but unfortunately it's ambiguous).
+                    if ((!$GLOBALS['JS_PARSING_CONDITIONAL']) || (!empty($variable[2]))) { // We're running a conditional on this, meaning the user is likely checking to see if it exists (if it's a boolean that doesn't exist, we're in trouble, but unfortunately it's ambiguous).
                         if ($GLOBALS['WEBSTANDARDS_MANUAL']) {
                             if ($reference) {
                                 js_log_warning('CHECKER', '\'' . $identifier . '\' is an unknown member of the class \'' . $class . '\'', $variable[3]);
@@ -899,7 +899,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
                 return '!Object';
             } else {
                 $_class = $found[0];
-                if (count($variable[2]) == 0) {
+                if (empty($variable[2])) {
                     if ($function_duality) {
                         return array($found[0], isset($found[2]) ? $found[2] : null);
                     }
@@ -914,9 +914,9 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
         }
     }
 
-    if (count($variable[2]) != 0) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index expressions
+    if (!empty($variable[2])) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index expressions
         // Further depth to scan extractive expressions for?
-        if ((in_array($variable[2][0], array('ARRAY_AT', 'OBJECT_OPERATOR'))) && (count($variable[2][2]) != 0)) {
+        if ((in_array($variable[2][0], array('ARRAY_AT', 'OBJECT_OPERATOR'))) && (!empty($variable[2][2]))) {
             js_scan_extractive_expressions($variable[2][2]);
         }
 
@@ -933,7 +933,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
             } else {
                 $exp_type = '!Object';
             }
-            if (count($variable[2][2]) != 0) {
+            if (!empty($variable[2][2])) {
                 return js_check_variable(array('VARIABLE', $exp_type, $variable[2][2], $variable[count($variable) - 1]), true, $function_duality, $exp_type, true);
             }
             if ($function_duality) {
@@ -942,7 +942,7 @@ function js_check_variable($variable, $reference = false, $function_duality = fa
             return $exp_type;
         }
         if ($variable[2][0] == 'OBJECT_OPERATOR') {
-            if (count($variable[2][1][2]) != 0) {
+            if (!empty($variable[2][1][2])) {
                 if ($function_duality) {
                     return array('!Object', '!Object');
                 }
@@ -990,7 +990,7 @@ function js_scan_extractive_expressions($variable)
         js_check_expression($variable[1]);
     }
 
-    if ((($variable[0] == 'ARRAY_AT') || ($variable[0] == 'OBJECT_OPERATOR')) && (count($variable[2]) != 0)) {
+    if ((($variable[0] == 'ARRAY_AT') || ($variable[0] == 'OBJECT_OPERATOR')) && (!empty($variable[2]))) {
         js_scan_extractive_expressions($variable[2]);
     }
 }
@@ -1007,7 +1007,7 @@ function js_get_variable_type($variable)
 
     $identifier = $variable[1];
 
-    if (count($variable[2]) != 0) {
+    if (!empty($variable[2])) {
         return '!Object'; // Too complex
     }
 
@@ -1015,12 +1015,12 @@ function js_get_variable_type($variable)
         return '!Object';
     }
 
-    if (count($JS_LOCAL_VARIABLES[$identifier]['types']) == 0) {
+    if (empty($JS_LOCAL_VARIABLES[$identifier]['types'])) {
         return '!Object'; // There is a problem, but it will be identified elsewhere.
     }
 
     $temp = array_unique(array_values(array_diff($JS_LOCAL_VARIABLES[$identifier]['types'], array('Null', 'Undefined'))));
-    if (count($temp) != 0) {
+    if (!empty($temp)) {
         return $temp[0]; // We'll assume the first set type is the actual type
     }
     return '!Object';
@@ -1085,7 +1085,7 @@ function js_add_variable_reference($identifier, $first_mention, $instantiation =
 function js_infer_expression_type_to_variable_type($type, $expr)
 {
     /* Not reliable enough, JS is very dynamic
-    if (($expression[0] == 'VARIABLE') && (count($expression[1][2]) == 0)) {
+    if (($expression[0] == 'VARIABLE') && (empty($expression[1][2]))) {
         $identifier = $expression[1][1];
         js_set_composr_type($identifier, $type);
     }

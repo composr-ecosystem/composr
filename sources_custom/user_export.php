@@ -73,7 +73,7 @@ function do_user_export($to_file = true)
             $sheet_writer->write_row($sheet_row);
         }
         $start += $max;
-    } while (count($rows) > 0);
+    } while (!empty($rows));
 
     if ($to_file) {
         $sheet_writer->close();

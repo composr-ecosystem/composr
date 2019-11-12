@@ -281,7 +281,7 @@ function store_exif($content_type, $content_id, $exif, $map = array())
             }
         }
     }
-    if (count($map) == 0) {
+    if (empty($map)) {
         return;
     }
 

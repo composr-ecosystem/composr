@@ -36,7 +36,7 @@ $sql .= $GLOBALS['SITE_DB']->translate_field_ref('reason') . ' LIKE \'' . db_enc
 $sql .= ' GROUP BY gift_to ORDER BY cnt DESC';
 $gifts = $GLOBALS['SITE_DB']->query($sql, 10, 0, false, false, array('reason' => 'SHORT_TRANS'));
 
-if (count($gifts) == 0 && $GLOBALS['DEV_MODE']) {
+if (empty($gifts) && $GLOBALS['DEV_MODE']) {
     $gifts[] = array('gift_to' => 2, 'cnt' => 123);
     $gifts[] = array('gift_to' => 3, 'cnt' => 7334);
 }

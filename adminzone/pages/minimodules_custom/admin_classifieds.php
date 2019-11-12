@@ -34,7 +34,7 @@ require_javascript('checking');
 require_javascript('editing');
 
 // Handle result, if set
-if (count($_POST) != 0) {
+if (!empty($_POST)) {
     foreach (array_keys($_POST) as $key) {
         $matches = array();
         if (preg_match('#^catalogue_(existing|new)_(\d*)$#', $key, $matches) != 0) {

@@ -554,7 +554,7 @@ function get_max_file_size($source_member = null, $db = null, $consider_php_limi
         $possibilities[] = $d;
     }
 
-    return (count($possibilities) == 0) ? (1024 * 1024 * 1024 * 1024) : min($possibilities);
+    return (empty($possibilities)) ? (1024 * 1024 * 1024 * 1024) : min($possibilities);
 }
 
 /**

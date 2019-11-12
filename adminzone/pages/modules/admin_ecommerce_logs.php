@@ -645,7 +645,7 @@ class Module_admin_ecommerce_logs
 
         $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'ecom_transactions WHERE ' . $where);
         $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_transactions WHERE ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return inform_screen($this->title, do_lang_tempcode('NO_ENTRIES'));
         }
         $result_entries = new Tempcode();
@@ -1017,7 +1017,7 @@ class Module_admin_ecommerce_logs
         }
 
         $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', array('*'), $where, 'ORDER BY s_type_code,s_time', 10000/*reasonable limit*/);
-        if (count($subscriptions) == 0) {
+        if (empty($subscriptions)) {
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

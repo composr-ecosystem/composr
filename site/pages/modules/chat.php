@@ -836,7 +836,7 @@ class Module_chat
         url_default_parameters__enable();
 
         $blocked = $GLOBALS['SITE_DB']->query_select('chat_blocking', array('member_blocked'), array('member_blocker' => get_member()));
-        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '85cbdbced505a6621ccbedc2de50c5f9', 'TITLE' => do_lang_tempcode('EXISTING_BLOCKS'), 'HELP' => (count($blocked) != 0) ? new Tempcode() : do_lang_tempcode('NONE_EM'))));
+        $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '85cbdbced505a6621ccbedc2de50c5f9', 'TITLE' => do_lang_tempcode('EXISTING_BLOCKS'), 'HELP' => (!empty($blocked)) ? new Tempcode() : do_lang_tempcode('NONE_EM'))));
         foreach ($blocked as $row) {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_blocked'], true, USERNAME_DEFAULT_NULL);
             if ($username !== null) {
@@ -1058,7 +1058,7 @@ class Module_chat
                     $members[] = intval(substr($key, 7));
                 }
             }
-            if (count($members) == 0) {
+            if (empty($members)) {
                 either_param_integer('member_id'); // Force error
             }
             $username = do_lang('_MULTIPLE');
@@ -1127,7 +1127,7 @@ class Module_chat
         $posting_name = do_lang_tempcode('CHAT_DOWNLOAD_LOGS');
         $posting_url = build_url(array('page' => '_SELF', 'type' => '_download_logs'), '_SELF', array(), false, true);
 
-        if (count($chatrooms) == 0) {
+        if (empty($chatrooms)) {
             inform_exit(do_lang_tempcode('NO_CATEGORIES', 'chat'));
         }
 

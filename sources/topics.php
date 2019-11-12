@@ -128,7 +128,7 @@ class CMS_Topic
         }
 
         if (!$this->error) {
-            if ((count($this->all_posts_ordered) == 0) && ($invisible_if_no_comments)) {
+            if ((empty($this->all_posts_ordered)) && ($invisible_if_no_comments)) {
                 return new Tempcode();
             }
 
@@ -266,7 +266,7 @@ class CMS_Topic
         }
 
         if (!$this->error) {
-            if ((count($this->all_posts_ordered) == 0) && ($invisible_if_no_comments)) {
+            if ((empty($this->all_posts_ordered)) && ($invisible_if_no_comments)) {
                 return new Tempcode();
             }
 
@@ -508,7 +508,7 @@ class CMS_Topic
 
         if ($this->is_threaded) {
             $tree = $this->_arrange_posts_in_tree($parent_post_id, $posts/*passed by reference*/, $queue, $max_thread_depth);
-            if (count($posts) != 0) { // E.g. if parent was deleted at some time
+            if (!empty($posts)) { // E.g. if parent was deleted at some time
                 $sort = $this->_get_sort_order($this->reverse);
                 switch ($sort) {
                     case 'newest':
@@ -526,7 +526,7 @@ class CMS_Topic
                         break;
                 }
 
-                while (count($posts) != 0) {
+                while (!empty($posts)) {
                     $orphaned_post = array_shift($posts);
 
                     $tree2 = $this->_arrange_posts_in_tree($orphaned_post['id'], $posts/*passed by reference*/, $queue, $max_thread_depth);
@@ -549,10 +549,10 @@ class CMS_Topic
                 $other_ids[] = strval($u['id']);
             }
         }
-        $ret->attach(do_template('POST_CHILD_LOAD_LINK', array('_GUID' => '79e1f3feec7a6d48cd554b41e831b287', 'NUM_TO_SHOW_LIMIT' => strval($num_to_show_limit), 'OTHER_IDS' => $other_ids, 'ID' => '', 'CHILDREN' => (($other_ids === null) || (count($other_ids) == 0)) ? '' : '1')));
+        $ret->attach(do_template('POST_CHILD_LOAD_LINK', array('_GUID' => '79e1f3feec7a6d48cd554b41e831b287', 'NUM_TO_SHOW_LIMIT' => strval($num_to_show_limit), 'OTHER_IDS' => $other_ids, 'ID' => '', 'CHILDREN' => (($other_ids === null) || (empty($other_ids))) ? '' : '1')));
 
         if ($this->topic_id !== null) {
-            $serialized_options = json_encode(array($this->topic_id, $num_to_show_limit, true, false, strval($forum_id), $this->reverse, $may_reply, $highlight_by_member, count($all_individual_review_ratings) != 0));
+            $serialized_options = json_encode(array($this->topic_id, $num_to_show_limit, true, false, strval($forum_id), $this->reverse, $may_reply, $highlight_by_member, !empty($all_individual_review_ratings)));
             require_code('crypt');
             $hash = ratchet_hash($serialized_options, get_site_salt());
         } else {
@@ -573,7 +573,7 @@ class CMS_Topic
     protected function _decide_what_to_render($num_to_show_limit, &$queue)
     {
         $posts = array();
-        while ((count($posts) < $num_to_show_limit) && (count($queue) != 0)) {
+        while ((count($posts) < $num_to_show_limit) && (!empty($queue))) {
             $next = reset($queue);
 
             if ($next['p_poster'] == get_member()) {
@@ -762,7 +762,7 @@ class CMS_Topic
             if (get_forum_type() == 'cns') {
                 require_code('cns_topicview');
                 require_code('cns_posts');
-                $only_post = (($depth == 0) && (count($rendered) == 1) && ((!isset($post['children'])) || (count($post['children']) == 0)));
+                $only_post = (($depth == 0) && (count($rendered) == 1) && ((!isset($post['children'])) || (empty($post['children']))));
                 $post += cns_get_details_to_show_post($post, $topic_info, $only_post);
             }
 
@@ -968,7 +968,7 @@ class CMS_Topic
                 'POST_COMCODE' => isset($post['message_comcode']) ? $post['message_comcode'] : null,
                 'POST_NUMBER' => strval($post['number']),
                 'CHILDREN' => $children,
-                'OTHER_IDS' => (count($other_ids) == 0) ? null : $other_ids,
+                'OTHER_IDS' => (empty($other_ids)) ? null : $other_ids,
                 'RATING' => $rating,
                 'EMPHASIS' => $emphasis,
                 'BUTTONS' => $buttons,

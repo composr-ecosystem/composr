@@ -721,7 +721,7 @@ function _comcode_lang_string($lang_code)
  */
 function mass_delete_lang($table, $attrs, $db)
 {
-    if (count($attrs) == 0) {
+    if (empty($attrs)) {
         return;
     }
 
@@ -742,5 +742,5 @@ function mass_delete_lang($table, $attrs, $db)
             }
         }
         $start += 1000;
-    } while (($rows !== null) && (count($rows) > 0));
+    } while (($rows !== null) && (!empty($rows)));
 }

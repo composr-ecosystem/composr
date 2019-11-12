@@ -564,7 +564,7 @@ class Module_groups
         $start = get_param_integer('p_start', 0);
         $max = get_param_integer('p_max', intval(get_option('primary_members_per_page')));
         $_primary_members = cns_get_group_members_raw($id, true, true, false, false, $max, $start);
-        if (count($_primary_members) > 0) {
+        if (!empty($_primary_members)) {
             $max_rows = cns_get_group_members_raw_count($id, true, true, false, false);
             $primary_members = new Tempcode();
             foreach ($_primary_members as $i => $primary_member) {

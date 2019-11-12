@@ -136,7 +136,7 @@ class IOSPushNotifications
 
         // Examine the error message container
         $error_queue = $push->getErrors();
-        if (count($error_queue) != 0) {
+        if (!empty($error_queue)) {
             $all_errors = array();
             foreach ($error_queue as $message_arr) {
                 foreach ($message_arr['ERRORS'] as $error) {

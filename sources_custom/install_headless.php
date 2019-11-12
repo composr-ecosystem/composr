@@ -177,7 +177,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
     foreach ($stages as $stage) {
         list($get, $post) = $stage;
         $url = get_base_url() . '/install.php?keep_safe_mode=' . ($safe_mode ? '1' : '0');
-        if (count($get) > 0) {
+        if (!empty($get)) {
             $url .= '&' . http_build_query($get);
         }
         $http_result = cms_http_request($url, array('convert_to_internal_encoding' => true, 'post_params' => $post, 'timeout' => 240.0/*If XML DB may be VERY slow*/));

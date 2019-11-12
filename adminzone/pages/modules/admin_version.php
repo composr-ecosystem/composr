@@ -805,7 +805,7 @@ class Module_admin_version
                     $start += $max;
                 }
             }
-            while (count($keywords) > 0);
+            while (!empty($keywords));
 
             $GLOBALS['SITE_DB']->delete_table_field('seo_meta', 'meta_keywords');
 

@@ -609,7 +609,7 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
         }
         $_incompatibilities->attach(escape_html($in));
     }
-    if (count($incompatibilities) != 0) {
+    if (!empty($incompatibilities)) {
         $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => '7ee5935df99b7b863477ec96989df0eb', 'WARNING' => do_lang_tempcode('ADDON_WARNING_INCOMPATIBILITIES', $_incompatibilities, escape_html($file)))));
     }
 
@@ -643,7 +643,7 @@ function inform_about_addon_install($file, $also_uninstalling = array(), $also_i
         }
         $_dependencies_str->attach($in_tpl);
     }
-    if (count($dependencies) != 0) {
+    if (!empty($dependencies)) {
         if (($info['author'] == 'Core Team') && (!$always_return)) {
             $post_fields = build_keep_post_fields();
             foreach ($dependencies as $in) {
@@ -1046,7 +1046,7 @@ function find_updated_addons()
     }
 
     $addons = find_installed_addons(true, false);
-    if (count($addons) == 0) {
+    if (empty($addons)) {
         return array();
     }
 
@@ -1201,7 +1201,7 @@ function inform_about_addon_uninstall($addon_name, $also_uninstalling = array(),
         }
         $_dependencies_str->attach(escape_html($in));
     }
-    if (count($dependencies) != 0) {
+    if (!empty($dependencies)) {
         if (($addon_info['author'] == 'Core Team') && (!$always_return)) {
             $post_fields = build_keep_post_fields();
             foreach ($dependencies as $in) {
@@ -1231,7 +1231,7 @@ function inform_about_addon_uninstall($addon_name, $also_uninstalling = array(),
  */
 function find_addons_for_files($paths)
 {
-    if (count($paths) == 0) {
+    if (empty($paths)) {
         return array();
     }
 

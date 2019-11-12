@@ -64,7 +64,7 @@ function adminzone_extended_breadcrumbs()
         return $breadcrumbs;
     }
 
-    if ((count($BREADCRUMB_SET_PARENTS) > 0) && (!is_object($BREADCRUMB_SET_PARENTS[0][0]))) { // Ideally
+    if ((!empty($BREADCRUMB_SET_PARENTS)) && (!is_object($BREADCRUMB_SET_PARENTS[0][0]))) { // Ideally
         // Works by finding where our oldest ancestor connects on to the do-next menus, and carries from there
         list($zone, $attributes,) = page_link_decode($BREADCRUMB_SET_PARENTS[0][0]);
         $type = array_key_exists('type', $attributes) ? $attributes['type'] : 'browse';

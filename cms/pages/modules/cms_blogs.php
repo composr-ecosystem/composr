@@ -218,7 +218,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_news') ? null : get_member();
         list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, ($only_owned === null) ? null : array('submitter' => $only_owned), false, ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL');
-        if (count($rows) == 0) {
+        if (empty($rows)) {
             return null;
         }
         foreach ($rows as $row) {
@@ -303,7 +303,7 @@ class Module_cms_blogs extends Standard_crud_module
         }
 
         $cats1 = create_selection_list_news_categories($main_news_category, false, true, false, true);
-        $cats2 = create_selection_list_news_categories((($news_category === null) || (count($news_category) == 0)) ? array(get_param_integer('cat', null)) : $news_category, false, true, true, false);
+        $cats2 = create_selection_list_news_categories((($news_category === null) || (empty($news_category))) ? array(get_param_integer('cat', null)) : $news_category, false, true, true, false);
 
         $fields = new Tempcode();
         $fields2 = new Tempcode();

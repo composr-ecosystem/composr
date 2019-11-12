@@ -142,7 +142,7 @@ class Module_admin_cns_ldap
         $members_delete = new Tempcode();
 
         $all_ldap_groups = cns_get_all_ldap_groups();
-        if ($GLOBALS['DEV_MODE'] && count($all_ldap_groups) == 0) {
+        if ($GLOBALS['DEV_MODE'] && empty($all_ldap_groups)) {
             $all_ldap_groups[] = 'Example LDAP group';
         }
         foreach ($all_ldap_groups as $group) {

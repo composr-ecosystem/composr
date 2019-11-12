@@ -527,7 +527,7 @@ class Forum_driver_vb3 extends Forum_driver_base
             $fp_rows = $this->db->query('SELECT title,pagetext,userid FROM ' . $this->db->get_table_prefix() . 'post WHERE pagetext NOT LIKE \'' . db_encode_like(do_lang('SPACER_POST', '', '', '', get_site_default_lang()) . '%') . '\' AND threadid=' . strval($out[$i]['id']) . ' ORDER BY dateline DESC', 1);
             $out[$i]['lastmemberid'] = $fp_rows[0]['userid'];
         }
-        if (count($out) != 0) {
+        if (!empty($out)) {
             return $out;
         }
         return null;

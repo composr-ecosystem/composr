@@ -835,7 +835,7 @@ global $SITE_INFO;
  */
 $SITE_INFO = array();
 @include($FILE_BASE . '/_config.php');
-if (count($SITE_INFO) == 0) {
+if (empty($SITE_INFO)) {
     // LEGACY
     if ((!is_file($FILE_BASE . '/_config.php')) && (is_file($FILE_BASE . '/info.php'))) {
         @copy($FILE_BASE . '/info.php', $FILE_BASE . '/_config.php');
@@ -850,7 +850,7 @@ if (count($SITE_INFO) == 0) {
         @include($FILE_BASE . '/_config.php');
     }
 }
-if (count($SITE_INFO) == 0) {
+if (empty($SITE_INFO)) {
     if (!is_file($FILE_BASE . '/_config.php')) {
         critical_error('_CONFIG.PHP_MISSING');
     } elseif (strlen(trim(file_get_contents($FILE_BASE . '/_config.php'))) == 0) {
@@ -936,7 +936,7 @@ if ($rate_limiting) {
                             unset($RATE_LIMITING_DATA[$_ip][$i]);
                         }
                     }
-                    if (count($RATE_LIMITING_DATA[$_ip]) == 0) {
+                    if (empty($RATE_LIMITING_DATA[$_ip])) {
                         unset($RATE_LIMITING_DATA[$_ip]);
                     }
                 }

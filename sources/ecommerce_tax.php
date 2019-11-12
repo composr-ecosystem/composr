@@ -129,7 +129,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
         }
     }
 
-    if (($has_eu_digital_goods) || (count($taxcloud_item_details) != 0)) {
+    if (($has_eu_digital_goods) || (!empty($taxcloud_item_details))) {
         $shipping_email = '';
         $shipping_phone = '';
         $shipping_firstname = '';
@@ -176,7 +176,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
         }
     }
 
-    if (count($taxcloud_item_details) != 0) {
+    if (!empty($taxcloud_item_details)) {
         check_taxcloud_configured_correctly();
 
         if ($country == 'US') {
@@ -402,7 +402,7 @@ function get_tax_using_tax_codes(&$item_details, $field_name_prefix = '', $shipp
         $item_details[$i] = $free_item_details[$i];
     }
 
-    if (count($taxcloud_item_details) == 0) {
+    if (empty($taxcloud_item_details)) {
         if ($shipping_cost != 0.00) {
             list($shipping_tax_derivation, $shipping_tax, , ) = calculate_tax_due(null, $tax_code, $amount, 0.00, $member_id); // This will force a call back into our function, but won't recurse again
         }
@@ -474,7 +474,7 @@ function taxcloud_declare_completed($tracking_id, $txn_id, $member_id, $session_
                 $messages[] = $message['Message'];
             }
         }
-        if (count($messages) != 0) {
+        if (!empty($messages)) {
             trigger_error(implode('; ', $messages), E_USER_WARNING);
         }
     }
@@ -637,7 +637,7 @@ function generate_tax_invoice($txn_id)
             'TAX_RATE' => float_format(backcalculate_tax_rate($item['unit_price'], $item['unit_tax']), 1, true),
         );
     }
-    if (count($invoicing_breakdown) == 0) {
+    if (empty($invoicing_breakdown)) {
         // We don't have a break-down so at least find a single line-item
 
         list($details) = find_product_details($transaction_row['t_type_code']);

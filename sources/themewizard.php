@@ -890,7 +890,7 @@ function calculate_dynamic_css_colours($colours, $source_theme)
     // Then we resolve our expressions
     $resolved_landscaped = array();
     $safety_count = 0;
-    while (count($landscape) != 0) {
+    while (!empty($landscape)) {
         foreach ($landscape as $i => $peak) {
             if ($peak[3] === null) {
                 $peak[3] = execute_css_colour_expression($peak[1], $colours);

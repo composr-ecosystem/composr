@@ -15,7 +15,7 @@
 
 function get_tracker_issue_titles($ids, $version = null)
 {
-    if ((count($ids) == 0) && ($version === null)) {
+    if ((empty($ids)) && ($version === null)) {
         return array();
     }
 

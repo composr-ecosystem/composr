@@ -355,12 +355,12 @@ function breadcrumbs_get_default_stub($link_to_self_entrypoint = true)
         if ($label !== null) {
             $label_eval = is_object($label) ? $label->evaluate() : $label;
             $last_breadcrumb_label_eval = mixed();
-            $last_breadcrumb_label_eval = (count($BREADCRUMB_SET_PARENTS) == 0) ? '' : $BREADCRUMB_SET_PARENTS[count($BREADCRUMB_SET_PARENTS) - 1][1];
+            $last_breadcrumb_label_eval = (empty($BREADCRUMB_SET_PARENTS)) ? '' : $BREADCRUMB_SET_PARENTS[count($BREADCRUMB_SET_PARENTS) - 1][1];
             if (is_object($last_breadcrumb_label_eval)) {
                 $last_breadcrumb_label_eval = $last_breadcrumb_label_eval->evaluate();
             }
             if ($label_eval != $last_breadcrumb_label_eval) {
-                if (count($BREADCRUMB_SET_PARENTS) != 0) {
+                if (!empty($BREADCRUMB_SET_PARENTS)) {
                     $stub->attach(do_template('BREADCRUMB_SEPARATOR'));
                 }
 
@@ -889,7 +889,7 @@ function do_site()
             }
             attach_message(protect_from_escaping($message['r_message']), $message['r_type']);
         }
-        if (count($messages) != 0) {
+        if (!empty($messages)) {
             $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'messages_to_render WHERE ' . db_string_equal_to('r_session_id', get_session_id()) . ' OR r_time<' . strval(time() - 60 * 60));
         }
     }
@@ -980,7 +980,7 @@ function do_site()
                             } else {
                                 require_code('selectcode');
                                 $real_group_list = $GLOBALS['FORUM_DRIVER']->get_members_groups(get_member());
-                                $group_pass = (count(array_intersect(selectcode_to_idlist_using_memory($site_message['site_message_usergroup_select'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)) != 0);
+                                $group_pass = (!empty(array_intersect(selectcode_to_idlist_using_memory($site_message['site_message_usergroup_select'], $GLOBALS['FORUM_DRIVER']->get_usergroup_list()), $real_group_list)));
                             }
 
                             if ($group_pass) {
@@ -1170,7 +1170,7 @@ function save_static_caching($out, $mime_type = 'text/html')
 
         return;
     }
-    if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (count(array_diff(array_keys($_GET), array('page', 'keep_session', 'keep_devtest', 'keep_failover'))) > 0)) {
+    if ((get_zone_name() == '') && (get_zone_default_page('') == get_page_name()) && (!empty(array_diff(array_keys($_GET), array('page', 'keep_session', 'keep_devtest', 'keep_failover'))))) {
         if ($debugging) {
             if (php_function_allowed('error_log')) {
                 @error_log('SC save: No, home page has spurious parameters, likely a bot probing');

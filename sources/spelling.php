@@ -96,7 +96,7 @@ function spell_correct_phrase($text)
 
     $out = '';
     foreach ($parts as $part) {
-        if ((isset($errors[cms_mb_strtolower($part)])) && (count($errors[cms_mb_strtolower($part)]) != 0)) {
+        if ((isset($errors[cms_mb_strtolower($part)])) && (!empty($errors[cms_mb_strtolower($part)]))) {
             $out .= $errors[cms_mb_strtolower($part)][0];
         } else {
             $out .= $part;
@@ -125,7 +125,7 @@ function run_spellcheck($text, $lang = null, $skip_known_words_in_db = true, $pr
     }
 
     $words = _find_words($text, $unicode_accepted);
-    if (count($words) == 0) {
+    if (empty($words)) {
         return array();
     }
 

@@ -323,6 +323,6 @@ class Hook_health_check_marketing_seo extends Hook_Health_Check
             }
             $start += 100;
         }
-        while (count($rows) > 0);
+        while (!empty($rows));
     }
 }

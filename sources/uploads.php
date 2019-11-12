@@ -354,7 +354,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
         }
     }
 
-    if (count($filearrays) != 0) {
+    if (!empty($filearrays)) {
         cms_profile_start_for('get_url');
     }
 
@@ -604,7 +604,7 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
         $out[2] = cms_rawurlrecode($out[2]);
     }
 
-    if (count($filearrays) != 0) {
+    if (!empty($filearrays)) {
         cms_profile_end_for('get_url', $attach_name);
     }
 

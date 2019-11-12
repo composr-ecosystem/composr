@@ -827,7 +827,7 @@ class Module_wiki
 
         $merged = '';
         $markers = $this->get_markers();
-        if (count($markers) == 0) {
+        if (empty($markers)) {
             warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
         }
         foreach ($markers as $id) {

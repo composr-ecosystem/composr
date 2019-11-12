@@ -539,8 +539,8 @@ class Block_main_multi_content
             }
         }
 
-        if (count($pinned_order) > 0) { // Re-sort with pinned awards if appropriate
-            if (count($rows) > 0) {
+        if (!empty($pinned_order)) { // Re-sort with pinned awards if appropriate
+            if (!empty($rows)) {
                 $old_rows = $rows;
                 $rows = array();
                 $total_count = count($old_rows) + count($pinned_order);
@@ -675,7 +675,7 @@ class Block_main_multi_content
         }
 
         // Empty? Bomb out somehow
-        if (count($rendered_content) == 0) {
+        if (empty($rendered_content)) {
             if ((isset($map['render_if_empty'])) && ($map['render_if_empty'] == '0')) {
                 return new Tempcode();
             }

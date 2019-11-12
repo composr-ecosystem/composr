@@ -263,13 +263,13 @@ function fixup_bad_php_env_vars()
         if (isset($_SERVER['REDIRECT_URL'])) {
             $_SERVER['REQUEST_URI'] = $_SERVER['REDIRECT_URL'];
             if (strpos($_SERVER['REQUEST_URI'], '?') === false) {
-                if (count($_GET) != 0) {
+                if (!empty($_GET)) {
                     $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($_GET)); // Messy as rewrite URL-embedded parameters will be doubled, but if you've got a broken server don't push it to do rewrites
                 }
             }
         } else {
             $_SERVER['REQUEST_URI'] = $php_self; // Same as PHP_SELF, but...
-            if (count($_GET) != 0) { // add in query string data if we have it
+            if (!empty($_GET)) { // add in query string data if we have it
                 $_SERVER['REQUEST_URI'] .= '?' . str_replace('/', '%2F', http_build_query($_GET));
             }
 

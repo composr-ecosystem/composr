@@ -404,7 +404,7 @@ foreach ($out as $file) {
 }
 
 if (!empty($_GET['zip'])) {
-    if (count($files) == 0) {
+    if (empty($files)) {
         exit('No files');
     }
 

@@ -263,7 +263,7 @@ class Module_admin_broken_urls
         }
         sort_maps_by($urls, 'FULL_URL');
 
-        if (count($urls) == 0) {
+        if (empty($urls)) {
             warn_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 

@@ -363,7 +363,7 @@ END;
         } else {
             $files = get_directory_contents('C:\\', '', null, false);
         }
-        $this->assertTrue(count($files) == 0, do_lang('WARNING_OPEN_BASEDIR'));
+        $this->assertTrue(empty($files), do_lang('WARNING_OPEN_BASEDIR'));
     }
 
     /**

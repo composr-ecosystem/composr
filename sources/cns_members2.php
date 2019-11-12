@@ -213,7 +213,7 @@ function cns_may_whisper($target, $member_id = null)
 
     require_code('selectcode');
     $groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id);
-    $answer = count(array_intersect(selectcode_to_idlist_using_memory($pt_allow, $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, false, array(), $member_id)), $groups)) != 0;
+    $answer = !empty(array_intersect(selectcode_to_idlist_using_memory($pt_allow, $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, false, array(), $member_id)), $groups));
 
     if ((!$answer) && (addon_installed('chat'))) {
         require_code('chat');
