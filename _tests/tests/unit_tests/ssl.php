@@ -27,7 +27,7 @@ class ssl_test_set extends cms_test_case
 
     public function testHTTPSStatus()
     {
-        if (strpos(get_base_url(), 'https://') === 0) {
+        if (whole_site_https()) {
             $this->assertTrue(false, 'Test can only run on HTTP site');
             return;
         }

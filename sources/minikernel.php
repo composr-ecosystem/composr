@@ -64,6 +64,7 @@ function init__minikernel()
         define('INPUT_FILTER_NONE', 0);
     }
 
+    fixup_bad_php_env_vars_pre();
     fixup_bad_php_env_vars();
 
     global $EXITING;
@@ -157,11 +158,11 @@ function peek_suppress_error_death()
 }
 
 /**
- * PHP's environment can be a real mess across servers. Cleanup the best we can.
- * See phpstub.php for info on what environmental data we can rely on.
- * See Chris's own comments on http://php.net/manual/en/reserved.variables.server.php also.
+ * PHP's environment can be a real mess across servers. Cleanup $_SERVER from $_ENV for IIS if needed.
+ * Also see fixup_bad_php_env_vars.
+ * 
  */
-function fixup_bad_php_env_vars()
+function fixup_bad_php_env_vars_pre()
 {
     // Variables may be defined in $_ENV on some servers
     $understood = array(
@@ -181,7 +182,7 @@ function fixup_bad_php_env_vars()
         'HTTP_USER_AGENT',
         'HTTP_X_FORWARDED_FOR',
         'HTTP_X_FORWARDED_PROTO',
-        'HTTPS',
+        'HTTP_CF_CONNECTING_IP',
         'PHP_SELF',
         'QUERY_STRING',
         'REMOTE_ADDR',
@@ -192,17 +193,31 @@ function fixup_bad_php_env_vars()
         'SERVER_ADDR',
         'SERVER_NAME',
         'SERVER_SOFTWARE',
+        'HTTP_AUTHORIZATION',
+        'REDIRECT_HTTP_AUTHORIZATION',
+        'REMOTE_USER',
+        'REDIRECT_REMOTE_USER',
+        'PHP_AUTH_USER',
+        'PHP_AUTH_PW',
     );
     foreach ($understood as $key) {
-        if (@cms_empty_safe($_SERVER[$key])) {
-            if (@cms_empty_safe($_ENV[$key])) {
-                $_SERVER[$key] = '';
-            } else {
+        if (!isset($_SERVER[$key])) {
+            if (isset($_ENV[$key])) {
                 $_SERVER[$key] = $_ENV[$key];
+            } else {
+                $_SERVER[$key] = '';
             }
         }
     }
+}
 
+/**
+ * PHP's environment can be a real mess across servers. Cleanup the best we can.
+ * See phpstub.php for info on what environmental data we can rely on.
+ * See Chris's own comments on http://php.net/manual/en/reserved.variables.server.php also.
+ */
+function fixup_bad_php_env_vars()
+{
     // We can trust these to be there
     $script_filename = $_SERVER['SCRIPT_FILENAME']; // If was not here, was added by our front-end controller script
 
@@ -391,6 +406,7 @@ function appengine_is_live()
 
 /**
  * Are we currently running HTTPS.
+ * Also see whole_site_https.
  *
  * @return boolean If we are
  */

@@ -18,12 +18,6 @@
  * @package    core
  */
 
-$script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : (isset($_ENV['SCRIPT_NAME']) ? $_ENV['SCRIPT_NAME'] : '');
-if ((strpos($script_name, '/sources/') !== false) || (strpos($script_name, '/sources_custom/') !== false)) {
-    header('Content-type: text/plain; charset=utf-8');
-    exit('May not be included directly');
-}
-
 /**
  * This function is a very important one when coding. It allows you to include a source code file (from root/sources/ or root/sources_custom/) through the proper channels.
  * You should remember this function, and not substitute anything else for it, as that will likely make your code unstable.
@@ -493,6 +487,7 @@ function appengine_is_live()
 
 /**
  * Are we currently running HTTPS.
+ * Also see whole_site_https.
  *
  * @return boolean If we are
  */
@@ -500,7 +495,7 @@ function tacit_https()
 {
     static $tacit_https = null;
     if ($tacit_https === null) {
-        $tacit_https = (($_SERVER['HTTPS'] != '') && ($_SERVER['HTTPS'] != 'off')) || ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
+        $tacit_https = (($_SERVER['HTTPS'] != '') && ($_SERVER['HTTPS'] != 'off'/*IIS quirk*/));
     }
     return $tacit_https;
 }
@@ -656,6 +651,60 @@ function filter_naughty_harsh($in, $preg = false)
 }
 
 /**
+ * PHP's environment can be a real mess across servers. Cleanup $_SERVER from $_ENV for IIS if needed.
+ * Also see fixup_bad_php_env_vars.
+ * 
+ */
+function fixup_bad_php_env_vars_pre()
+{
+    // Variables may be defined in $_ENV on some servers
+    $understood = array(
+        'DOCUMENT_ROOT',
+        'HTTP_ACCEPT',
+        'HTTP_ACCEPT_CHARSET',
+        'HTTP_ACCEPT_LANGUAGE',
+        'HTTP_CLIENT_IP',
+        'HTTP_HOST',
+        'HTTP_IF_MODIFIED_SINCE',
+        'HTTP_ORIGIN',
+        'PATH_INFO',
+        'HTTP_PREFER',
+        'HTTP_RANGE',
+        'HTTP_REFERER',
+        'HTTP_UA_OS',
+        'HTTP_USER_AGENT',
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_X_FORWARDED_PROTO',
+        'HTTP_CF_CONNECTING_IP',
+        'PHP_SELF',
+        'QUERY_STRING',
+        'REMOTE_ADDR',
+        'REQUEST_METHOD',
+        'REQUEST_URI',
+        'SCRIPT_FILENAME',
+        'SCRIPT_NAME',
+        'SERVER_ADDR',
+        'SERVER_NAME',
+        'SERVER_SOFTWARE',
+        'HTTP_AUTHORIZATION',
+        'REDIRECT_HTTP_AUTHORIZATION',
+        'REMOTE_USER',
+        'REDIRECT_REMOTE_USER',
+        'PHP_AUTH_USER',
+        'PHP_AUTH_PW',
+    );
+    foreach ($understood as $key) {
+        if (!isset($_SERVER[$key])) {
+            if (isset($_ENV[$key])) {
+                $_SERVER[$key] = $_ENV[$key];
+            } else {
+                $_SERVER[$key] = '';
+            }
+        }
+    }
+}
+
+/**
  * Find if an IP address is within a CIDR range. Based on comment in PHP manual: http://php.net/manual/en/ref.network.php.
  *
  * @param  IP $ip IP address
@@ -732,6 +781,14 @@ cms_ini_set('docref_root', 'http://php.net/manual/en/');
 cms_ini_set('docref_ext', '.php');
 cms_ini_set('pcre.jit', '0'); // Compatibility issue in PHP 7.3, "JIT compilation failed: no more memory"
 
+fixup_bad_php_env_vars_pre();
+
+$script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+if ((strpos($script_name, '/sources/') !== false) || (strpos($script_name, '/sources_custom/') !== false)) {
+    header('Content-type: text/plain; charset=utf-8');
+    exit('May not be included directly');
+}
+
 // Get ready for some global variables
 global $REQUIRED_CODE, $REQUIRING_CODE, $CURRENT_SHARE_USER, $PURE_POST, $IN_MINIKERNEL_VERSION;
 /** Details of what code files have been loaded up.
@@ -807,14 +864,22 @@ if (count($SITE_INFO) == 0) {
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     if (empty($SITE_INFO['trusted_proxies'])) {
         $trusted_proxies = '173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/12,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32';
+        $is_cloudflare = true;
     } else {
         $trusted_proxies = $SITE_INFO['trusted_proxies'];
+        $is_cloudflare = false;
     }
     foreach (explode(',', $trusted_proxies) as $proxy) {
         if (((strpos($proxy, '/') !== false) && (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy))) || ($_SERVER['REMOTE_ADDR'] == $proxy)) {
             if (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy)) {
-                $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                $_SERVER['REMOTE_ADDR'] = (($is_cloudflare) && (isset($_SERVER['HTTP_CF_CONNECTING_IP']))) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['HTTP_X_FORWARDED_FOR'];
                 $_SERVER['HTTP_X_FORWARDED_FOR'] = '';
+                if ($is_cloudflare) {
+                    unset($_SERVER['HTTP_CF_CONNECTING_IP']);
+                }
+                if ((isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) && ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) {
+                    $_SERVER['HTTPS'] = 'on';
+                }
                 break;
             }
         }

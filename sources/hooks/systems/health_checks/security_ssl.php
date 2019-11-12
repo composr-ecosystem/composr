@@ -111,7 +111,7 @@ class Hook_health_check_security_ssl extends Hook_Health_Check
             return;
         }
 
-        if (substr(get_base_url(), 0, 8) != 'https://') {
+        if (!whole_site_https()) {
             return;
         }
 

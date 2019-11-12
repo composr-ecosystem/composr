@@ -53,7 +53,7 @@ class Hook_config_csp_allow_insecure_resources
      */
     public function get_default()
     {
-        if (substr(get_base_url(), 0, 8) != 'https://') {
+        if (!whole_site_https()) {
             return null;
         }
 

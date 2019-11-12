@@ -297,10 +297,8 @@ function load_csp($options = null, $enable_more_open_html_for = null)
     }
 
     // upgrade-insecure-requests
-    if (function_exists('addon_installed')) { // If not still booting
-        if (substr(get_base_url(), 0, 8) == 'https://') {
-            $clauses[] = 'upgrade-insecure-requests';
-        }
+    if (whole_site_https()) {
+        $clauses[] = 'upgrade-insecure-requests';
     }
 
     // report-uri

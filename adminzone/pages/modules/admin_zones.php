@@ -617,7 +617,7 @@ class Module_admin_zones
         if (!cms_empty_safe($zone)) {
             global $SITE_INFO;
             if (isset($SITE_INFO['ZONE_MAPPING_' . $zone])) {
-                $base_url = (tacit_https() ? 'https://' : 'http://') . $SITE_INFO['ZONE_MAPPING_' . $zone][0] . '/' . $SITE_INFO['ZONE_MAPPING_' . $zone][1];
+                $base_url = (whole_site_https() ? 'https://' : 'http://') . $SITE_INFO['ZONE_MAPPING_' . $zone][0] . '/' . $SITE_INFO['ZONE_MAPPING_' . $zone][1];
             }
         }
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) {

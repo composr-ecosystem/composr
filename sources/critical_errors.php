@@ -19,7 +19,7 @@
  */
 
 if ((isset($_SERVER['argv'][0])) && (strpos($_SERVER['argv'][0], 'critical_errors.php') !== false)) {
-    $cli = ((function_exists('php_sapi_name')) && (strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])) && (empty($_ENV['REMOTE_ADDR'])));
+    $cli = ((function_exists('php_sapi_name')) && (strpos(ini_get('disable_functions'), 'php_sapi_name') === false) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR'])));
     if ($cli) {
         // Critical error monitoring mode
         chdir(dirname(__DIR__));
@@ -168,7 +168,7 @@ if (!function_exists('critical_error')) {
 
         $extra = '';
 
-        $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : (isset($_ENV['SCRIPT_NAME']) ? $_ENV['SCRIPT_NAME'] : '');
+        $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
         $in_upgrader = (strpos($script_name, 'upgrader.php') !== false);
 
         if (

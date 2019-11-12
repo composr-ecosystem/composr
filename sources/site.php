@@ -544,29 +544,13 @@ function do_site_prep()
     if ((running_script('index')) && (!is_cli())) {
         $request_hostname = get_request_hostname();
 
-        // Detect bad access domain
-        global $SITE_INFO;
-        if (($request_hostname != '') && (isset($_SERVER['HTTP_HOST'])) && (empty($GLOBALS['EXTERNAL_CALL']))) {
-            $base_url_hostname = get_base_url_hostname();
-
-            if ($base_url_hostname != $request_hostname) {
-                if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
-                    if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
-                        attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($base_url_hostname), escape_html($request_hostname)), 'warn');
-                    }
-
-                    set_http_status_code(301);
-                    header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
-                    exit();
-                }
+        // Detect bad access protocol (also see handle_bad_access_context function)
+        if (addon_installed('ssl')) {
+            if (is_page_https(get_zone_name(), get_page_name()) != tacit_https()) {
+                set_http_status_code(301);
+                header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
+                exit();
             }
-        }
-
-        // Detect bad access protocol
-        if ((get_value('access_protocol_redirect') === '1') && ((substr(get_base_url(), 0, 8) == 'https://') && (!tacit_https()) || (substr(get_base_url(), 0, 7) == 'http://') && (tacit_https()))) {
-            set_http_status_code(301);
-            header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
-            exit();
         }
 
         if (get_value('disable_cookie_checks') !== '1') {

@@ -57,11 +57,7 @@ function cloudinary_transfer_upload($path, $upload_folder, $filename, $obfuscate
         warn_exit($e->getMessage(), false, true);
     }
 
-    if (strpos(get_base_url(), 'https://') === false) {
-        $url = $result['url'];
-    } else {
-        $url = $result['secure_url'];
-    }
+    $url = $result['secure_url'];
 
     if (is_image($filename, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) {
         // 1024 version

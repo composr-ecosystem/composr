@@ -53,6 +53,7 @@ function init__global2()
     define('INPUT_FILTER_NONE', 0);
 
     fixup_bad_php_env_vars();
+    handle_bad_access_context();
 
     cms_ini_set('log_errors', '1');
     if ((GOOGLE_APPENGINE) && (!appengine_is_live())) {
@@ -582,55 +583,10 @@ function init__global2()
  * PHP's environment can be a real mess across servers. Cleanup the best we can.
  * See phpstub.php for info on what environmental data we can rely on.
  * See Chris's own comments on http://php.net/manual/en/reserved.variables.server.php also.
+ * Also see fixup_bad_php_env_vars_pre.
  */
 function fixup_bad_php_env_vars()
 {
-    // Variables may be defined in $_ENV on some servers
-    $understood = array(
-        'DOCUMENT_ROOT',
-        'HTTP_ACCEPT',
-        'HTTP_ACCEPT_CHARSET',
-        'HTTP_ACCEPT_LANGUAGE',
-        'HTTP_CLIENT_IP',
-        'HTTP_HOST',
-        'HTTP_IF_MODIFIED_SINCE',
-        'HTTP_ORIGIN',
-        'PATH_INFO',
-        'HTTP_PREFER',
-        'HTTP_RANGE',
-        'HTTP_REFERER',
-        'HTTP_UA_OS',
-        'HTTP_USER_AGENT',
-        'HTTP_X_FORWARDED_FOR',
-        'HTTP_X_FORWARDED_PROTO',
-        'HTTPS',
-        'PHP_SELF',
-        'QUERY_STRING',
-        'REMOTE_ADDR',
-        'REQUEST_METHOD',
-        'REQUEST_URI',
-        'SCRIPT_FILENAME',
-        'SCRIPT_NAME',
-        'SERVER_ADDR',
-        'SERVER_NAME',
-        'SERVER_SOFTWARE',
-        'HTTP_AUTHORIZATION',
-        'REDIRECT_HTTP_AUTHORIZATION',
-        'REMOTE_USER',
-        'REDIRECT_REMOTE_USER',
-        'PHP_AUTH_USER',
-        'PHP_AUTH_PW',
-    );
-    foreach ($understood as $key) {
-        if (@cms_empty_safe($_SERVER[$key])) {
-            if (@cms_empty_safe($_ENV[$key])) {
-                $_SERVER[$key] = '';
-            } else {
-                $_SERVER[$key] = $_ENV[$key];
-            }
-        }
-    }
-
     // We can trust these to be there
     $script_filename = $_SERVER['SCRIPT_FILENAME']; // If was not here, was added by our front-end controller script
 
@@ -724,6 +680,58 @@ function fixup_bad_php_env_vars()
         } elseif (!@cms_empty_safe($_SERVER['REMOTE_USER'])) {
             $_SERVER['PHP_AUTH_USER'] = $_SERVER['REMOTE_USER'];
         }
+    }
+}
+
+/**
+ * Find whether the whole site is HTTPS.
+ * Also see tacit_https.
+ *
+ * @return boolean Whether it is
+ */
+function whole_site_https()
+{
+    global $SITE_INFO;
+    if (empty($SITE_INFO['base_url'])) {
+        return tacit_https();
+    }
+    return (strpos($SITE_INFO['base_url'], 'https://') !== false);
+}
+
+/**
+ * Redirect away if the domain or protocol is incorrect.
+ * This may be a security measure - in case someone links the site on the wrong protocol in order to tap network traffic.
+ * Also see do_site_prep function.
+ */
+function handle_bad_access_context()
+{
+    $request_hostname = get_request_hostname();
+
+    // Detect bad access domain
+    global $SITE_INFO;
+    if (($request_hostname != '') && (isset($_SERVER['HTTP_HOST'])) && (empty($GLOBALS['EXTERNAL_CALL']))) {
+        $base_url_hostname = get_base_url_hostname();
+
+        if ($base_url_hostname != $request_hostname) {
+            if (empty($SITE_INFO['ZONE_MAPPING_' . get_zone_name()])) {
+                if (($GLOBALS['FORUM_DRIVER'] !== null) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
+                    attach_message(do_lang_tempcode('BAD_ACCESS_DOMAIN', escape_html($base_url_hostname), escape_html($request_hostname)), 'warn');
+                }
+
+                set_http_status_code(301);
+                header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
+                exit();
+            }
+        }
+    }
+
+    // Detect bad access protocol
+    if (((whole_site_https()) && (!tacit_https()) || ((!whole_site_https()) && (tacit_https()) && (!is_file(get_file_base() . '/sources/hooks/systems/addon_registry/ssl.php'))))) {
+        // Note we don't output Strict-Transport-Security as that is a domain-level signal and we cannot assume we control the whole domain - it may be set in .htaccess if desired
+
+        set_http_status_code(301);
+        header('Location: ' . escape_header(get_self_url(true, false))); // assign_refresh not used, as it is a pre-page situation
+        exit();
     }
 }
 
@@ -1633,7 +1641,7 @@ function get_base_url($https = null, $zone_for = null)
         if (!empty($SITE_INFO['ZONE_MAPPING_' . $zone_doing])) {
             $domain = $SITE_INFO['ZONE_MAPPING_' . $zone_doing][0];
             $path = $SITE_INFO['ZONE_MAPPING_' . $zone_doing][1];
-            $base_url = ((strpos($base_url, 'https://') === false) ? 'http://' : 'https://') . $domain;
+            $base_url = ((whole_site_https()) ? 'https://' : 'http://') . $domain;
             if ($path !== '') {
                 $base_url .= '/' . $path;
             }

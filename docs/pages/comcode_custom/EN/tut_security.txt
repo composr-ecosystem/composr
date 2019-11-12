@@ -497,37 +497,20 @@ You can set HTTPS for a whole site via changing the base URL. In this situation 
 
 [title="4"]Migrating HTTP websites[/title]
 
-If you are on Apache then you can add this to your [tt].htaccess[/tt] file:
+It you change the protocol (or domain name) in the base URL, Composr will automatically provide redirects to the corrected version of the URL.
+The CSP implementation will also provide automatic redirects. We just don't rely on all clients having a CSP implementation.
+
+If you are on Apache then you can add this to your [tt].htaccess[/tt] file to tell web users to use HTTPS for the whole domain:
 [code="htaccess"]
-RewriteEngine on
-
-RewriteCond %{HTTPS} off
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteRule ^$ https://%{HTTP_HOST}%{REQUEST_URI} [L,NE,R=301]
-
-RewriteCond %{HTTPS} off
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteRule ^.*\.(php|htm).*$ https://%{HTTP_HOST}%{REQUEST_URI} [L,NE,R=301]
-
-RewriteCond %{HTTPS} off
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteRule ^.*/pg/.*$ https://%{HTTP_HOST}%{REQUEST_URI} [L,NE,R=301]
+Header always set Strict-Transport-Security "max-age=31536000"
 [/code]
 
-On IIS you can add another rewrite rule to [tt]web.config[/tt]:
+Or merge this into the [tt]<customHeaders>[/tt] section you have in [tt]web.config[/tt] for IIS :
 [code="XML"]
-<rule name="HTTP/S to HTTPS Redirect" enabled="true" stopProcessing="true">
-	<match url="(.*)" />
-	<conditions logicalGrouping="MatchAny">
-		<add input="{SERVER_PORT_SECURE}" pattern="^0$" />
-	</conditions>
-	<action type="Redirect" url="https://{HTTP_HOST}{REQUEST_URI}" redirectType="Permanent" appendQueryString="false" />
-</rule>
+<add name="Strict-Transport-Security" value="max-age=31536000"/>
 [/code]
 
-Don't just redirect HTTP traffic to the root of the domain because that could hurt your SEO.
-
-The CSP implementation will also provide automatic redirects.
+Don't add any rules to just redirect HTTP traffic to the root of the domain because that could hurt your SEO.
 
 [title="3"]Secured zones[/title]
 
