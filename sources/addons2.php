@@ -45,6 +45,7 @@ DEPENDENCY MANAGEMENT
 function resolve_addon_dependency_problems(&$installing, &$uninstalling)
 {
     require_lang('addons');
+    require_code('addons');
 
     preload_all_ocproducts_addons_info();
 

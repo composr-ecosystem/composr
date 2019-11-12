@@ -1487,6 +1487,8 @@ class Module_admin_setupwizard
         $uninstalling = array();
 
         require_lang('addons');
+        require_code('addons');
+        require_code('addons2');
 
         preload_all_ocproducts_addons_info();
 
