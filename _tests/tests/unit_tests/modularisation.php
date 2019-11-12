@@ -153,7 +153,7 @@ class modularisation_test_set extends cms_test_case
         // List any missing files...
 
         foreach ($addon_data as $addon_name => $addon_files) {
-            $ok = (file_exists(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php') || file_exists(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php'));
+            $ok = addon_installed($addon_name, false, false, false);
             $this->assertTrue($ok, 'Addon registry files missing / referenced twice... \'sources/hooks/systems/addon_registry/' . $addon_name . '.php\',');
             foreach ($addon_files as $path) {
                 if ($path == 'data_custom/execute_temp.php') {
@@ -167,8 +167,8 @@ class modularisation_test_set extends cms_test_case
         // List any alien files...
 
         ksort($unput_files);
-        foreach ($unput_files as $addon => $paths) {
-            echo '<br /><strong>' . htmlentities($addon) . '</strong>';
+        foreach ($unput_files as $addon_name => $paths) {
+            echo '<br /><strong>' . htmlentities($addon_name) . '</strong>';
             foreach ($paths as $path) {
                 $this->assertTrue(false, 'Could not find the addon for... \'' . $path . '\',');
             }

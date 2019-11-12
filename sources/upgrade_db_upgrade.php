@@ -418,14 +418,14 @@ function upgrade_modules()
 
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');
-    foreach ($addons as $addon => $type) {
-        $ret = upgrade_addon_soft($addon);
+    foreach ($addons as $addon_name => $type) {
+        $ret = upgrade_addon_soft($addon_name);
         if ($ret == 1) {
-            $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon) . '</kbd>') . '</li>';
+            $out .= '<li>' . do_lang('UPGRADER_UPGRADED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
         } elseif ($ret == -2) {
-            reinstall_addon_soft($addon);
+            reinstall_addon_soft($addon_name);
 
-            $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon) . '</kbd>') . '</li>';
+            $out .= '<li>' . do_lang('UPGRADER_INSTALLED_ADDON', '<kbd>' . escape_html($addon_name) . '</kbd>') . '</li>';
         }
     }
 

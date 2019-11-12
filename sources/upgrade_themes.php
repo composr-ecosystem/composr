@@ -90,7 +90,20 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
 
     if (!$test_run) {
         require_code('abstract_file_manager');
-        force_have_afm_details();
+        force_have_afm_details(array(
+            'themes/' . $theme . '/images_custom',
+            'themes/' . $theme . '/images_custom/*',
+            'themes/' . $theme . '/css_custom',
+            'themes/' . $theme . '/css_custom/*.css',
+            'themes/' . $theme . '/templates_custom',
+            'themes/' . $theme . '/templates_custom/*.tpl',
+            'themes/' . $theme . '/javascript_custom',
+            'themes/' . $theme . '/javascript_custom/*.js',
+            'themes/' . $theme . '/xml_custom',
+            'themes/' . $theme . '/xml_custom/*.xml',
+            'themes/' . $theme . '/text_custom',
+            'themes/' . $theme . '/text_custom/*.txt',
+        ));
     }
 
     $css_replace__single_match = array();

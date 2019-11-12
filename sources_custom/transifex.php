@@ -101,19 +101,19 @@ function init__transifex()
     global $LANGUAGE_FILES_ADDON, $EXISTING_LANGUAGE_AUTHORS;
     $LANGUAGE_FILES_ADDON = array();
     $EXISTING_LANGUAGE_AUTHORS = array();
-    foreach (array_keys($addons) as $addon) {
-        $info = read_addon_info($addon);
+    foreach (array_keys($addons) as $addon_name) {
+        $info = read_addon_info($addon_name);
         $matches = array();
         foreach ($info['files'] as $file) {
             if (preg_match('#^lang(_custom)?/' . fallback_lang() . '/(\w+)\.ini$#', $file, $matches) != 0) {
-                $LANGUAGE_FILES_ADDON[$matches[2]] = $addon;
+                $LANGUAGE_FILES_ADDON[$matches[2]] = $addon_name;
             }
 
             if (preg_match('#^(.*/' . fallback_lang() . '/.*\.txt)$#', $file, $matches) != 0) {
-                $LANGUAGE_FILES_ADDON[$matches[1]] = $addon;
+                $LANGUAGE_FILES_ADDON[$matches[1]] = $addon_name;
             }
         }
-        if (preg_match('#^language_(\w+)$#', $addon, $matches) != 0) {
+        if (preg_match('#^language_(\w+)$#', $addon_name, $matches) != 0) {
             $EXISTING_LANGUAGE_AUTHORS[$matches[1]] = explode(', ', $info['author']);
         }
     }

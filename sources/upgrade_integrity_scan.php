@@ -279,14 +279,14 @@ function run_integrity_check($basic = false, $allow_merging = true, $unix_help =
 
     // Alien files
     if (!$basic) {
-        list($alien, $addon) = check_alien(get_file_base() . '/', '', false, null, null, array_flip($files_to_check));
-        if (($alien != '') || ($addon != '')) {
+        list($alien, $addon_name) = check_alien(get_file_base() . '/', '', false, null, null, array_flip($files_to_check));
+        if (($alien != '') || ($addon_name != '')) {
             $ret_str .= '<div>';
             if ($alien != '') {
                 $ret_str .= do_lang('WARNING_FILE_ALIEN', $alien);
             }
-            if ($addon != '') {
-                $ret_str .= do_lang('WARNING_FILE_ADDON', $addon);
+            if ($addon_name != '') {
+                $ret_str .= do_lang('WARNING_FILE_ADDON', $addon_name);
             }
             $ret_str .= '
                 <script>
@@ -714,12 +714,12 @@ function upgrader__addon_remove_screen()
     $addons = explode("\n", $_addons);
     $addon_files = array();
     require_code('addons');
-    foreach ($addons as $addon) {
-        $addon = trim($addon);
-        if ($addon == '') {
+    foreach ($addons as $addon_name) {
+        $addon_name = trim($addon_name);
+        if ($addon_name == '') {
             continue;
         }
-        $details = read_addon_info($addon);
+        $details = read_addon_info($addon_name);
         $addon_files = array_merge($addon_files, $details['files']);
     }
     foreach ($addon_files as $addon_file) {

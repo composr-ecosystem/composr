@@ -98,14 +98,14 @@ class addon_guards_test_set extends cms_test_case
                 $this->assertTrue(false, 'Could not detect addon in ' . $path);
                 continue;
             }
-            $addon = $matches[1];
+            $addon_name = $matches[1];
 
-            $has = (strpos($c, 'addon_installed(\'' . addslashes($addon) . '\')') !== false) || (strpos($c, 'addon_installed__messaged(\'' . addslashes($addon) . '\'') !== false);
+            $has = (strpos($c, 'addon_installed(\'' . addslashes($addon_name) . '\')') !== false) || (strpos($c, 'addon_installed__messaged(\'' . addslashes($addon_name) . '\'') !== false);
 
             if (
-                ($addon == 'core') || // No checks needed for core
-                (substr($addon, 0, 5) == 'core_') || // No checks needed for core
-                (($hook_type !== null) && (array_key_exists($hook_type . '/' . $hook_subtype, $this->hook_ownership)) && ($addon == $this->hook_ownership[$hook_type . '/' . $hook_subtype])) // No checks needed for self-ownership of hooks of particular addons
+                ($addon_name == 'core') || // No checks needed for core
+                (substr($addon_name, 0, 5) == 'core_') || // No checks needed for core
+                (($hook_type !== null) && (array_key_exists($hook_type . '/' . $hook_subtype, $this->hook_ownership)) && ($addon_name == $this->hook_ownership[$hook_type . '/' . $hook_subtype])) // No checks needed for self-ownership of hooks of particular addons
             ) {
                 $this->assertTrue(!$has, 'No need to do addon check for ' . $path);
             } else {
@@ -119,14 +119,14 @@ class addon_guards_test_set extends cms_test_case
         $files_in_addons = array();
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-        foreach ($addons as $addon => $ob) {
+        foreach ($addons as $addon_name => $ob) {
             $files = $ob->get_file_list();
             foreach ($files as $path) {
-                $files_in_addons[$path] = $addon;
+                $files_in_addons[$path] = $addon_name;
             }
         }
 
-        foreach ($addons as $addon => $ob) {
+        foreach ($addons as $addon_name => $ob) {
             $files = $ob->get_file_list();
 
             $dependencies = $ob->get_dependencies();
@@ -171,7 +171,7 @@ class addon_guards_test_set extends cms_test_case
                         if (isset($files_in_addons[$included_file])) {
                             $file_in_addon = $files_in_addons[$included_file];
                             if (
-                                ($file_in_addon != $addon) &&
+                                ($file_in_addon != $addon_name) &&
                                 (substr($file_in_addon, 0, 5) != 'core_') &&
                                 ($file_in_addon != 'core') &&
                                 (strpos($path, $file_in_addon) === false) && // looks like a hook for this addon
@@ -197,7 +197,7 @@ class addon_guards_test_set extends cms_test_case
                                     }
                                 }
 
-                                $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon . '], due to ' . $matches[0][$i];
+                                $error_message = 'Cannot find a guard for the ' . $file_in_addon . ' addon in ' . $path . ' [' . $addon_name . '], due to ' . $matches[0][$i];
 
                                 if (in_array($error_message, array(
                                     'Cannot find a guard for the google_appengine addon in sources/global.php [core], due to require_code(\'google_appengine\')',

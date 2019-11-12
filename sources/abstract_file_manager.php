@@ -41,23 +41,49 @@ function init__abstract_file_manager()
 
 /**
  * Make sure that the AFM connection details have been posted. If not, get them and loop back.
- */
-function force_have_afm_details()
+ *
+ * @param  array $writable_paths A list of file or directory paths to check first for writability. Only works for suEXEC-style. Advisable because we don't want to fail in the middle of something. May be glob style, or end in '/*' for recursion.
+*/
+function force_have_afm_details($writable_paths = array())
 {
-    if (is_suexec_like()) {
-        set_value('uses_ftp', '0');
-        return; // No need for FTP
+    $no_ftp_conditions = array(
+        is_suexec_like(), // No need for FTP
+        get_file_base() != get_custom_file_base(), // Shared installs are assumed to have the necessary AFM permissions where needed
+        (!function_exists('ftp_ssl_connect')) && (!function_exists('ftp_connect')), // FTP not available
+    );
+    foreach ($no_ftp_conditions as $no_ftp_condition) {
+        if ($no_ftp_condition) {
+            foreach (array_unique($writable_paths) as $path) {
+                $full_path = get_file_base() . (($path == '') ? ''  : '/') . $path;
+
+                if (substr($full_path, -2) == '/*') {
+                    require_code('files2');
+                    $_full_path = substr($full_path, 0, strlen($full_path) - 2);
+                    $all_full_paths = array_merge(array($_full_path), get_directory_contents($_full_path, $_full_path));
+                } elseif (preg_match('#\.\w+$#', $path) != 0) {
+                    $all_full_paths = glob($full_path);
+                } else {
+                    $all_full_paths = array($full_path);
+                }
+
+                foreach ($all_full_paths as $_full_path) {
+                    while (!file_exists($_full_path)) {
+                        $_full_path = dirname($_full_path);
+                    }
+
+                    if (!cms_is_writable($_full_path)) {
+                        warn_exit(do_lang_tempcode('WRITE_ERROR'));
+                    }
+                }
+            }
+
+            set_value('uses_ftp', '0');
+
+            return;
+        }
     }
 
-    if (get_file_base() != get_custom_file_base()) { // Shared installs are assumed to have the necessary AFM permissions where needed
-        set_value('uses_ftp', '0');
-        return;
-    }
-
-    if ((!function_exists('ftp_ssl_connect')) && (!function_exists('ftp_connect'))) {
-        set_value('uses_ftp', '0');
-        return;
-    }
+    // FTP...
 
     $got_ftp_details = post_param_integer('got_ftp_details', 0);
     $ftp_password = get_value('ftp_password');

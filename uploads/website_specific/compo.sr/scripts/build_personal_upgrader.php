@@ -86,13 +86,13 @@ $addon_name_remap = array(
 $addons = array();
 foreach (array_keys($_GET) as $key) {
     if (substr($key, 0, 6) == 'addon_') {
-        $addon = substr($key, 6);
+        $addon_name = substr($key, 6);
 
-        if (isset($addon_name_remap[$addon])) {
-            $addon = $addon_name_remap[$addon];
+        if (isset($addon_name_remap[$addon_name])) {
+            $addon_name = $addon_name_remap[$addon_name];
         }
 
-        $addons[$addon] = true;
+        $addons[$addon_name] = true;
     }
 }
 ksort($addons);

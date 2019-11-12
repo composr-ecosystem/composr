@@ -694,12 +694,12 @@ class Meta_tree_builder
         }
 
         $addons = $this->addons;
-        foreach ($addons as $iteration => $addon) {
+        foreach ($addons as $iteration => $addon_name) {
             if ($callback !== null) {
-                call_user_func_array($callback, array(' Processing addon ' . $addon, $iteration, count($addons)));
+                call_user_func_array($callback, array(' Processing addon ' . $addon_name, $iteration, count($addons)));
             }
 
-            $files = $this->find_theme_files_from_addon($addon, $subdir, $theme);
+            $files = $this->find_theme_files_from_addon($addon_name, $subdir, $theme);
 
             if ($filter_level_b !== null) {
                 if (!isset($files[$subdir . '/' . $filter_level_b])) {
@@ -707,7 +707,7 @@ class Meta_tree_builder
                 }
             }
 
-            $_path = $path . '/' . $addon;
+            $_path = $path . '/' . $addon_name;
             if (is_dir($_path)) {
                 deldir_contents($_path, false, true);
             }
@@ -764,22 +764,22 @@ class Meta_tree_builder
     /**
      * Find all of a particular kind of file in an addon.
      *
-     * @param  ID_TEXT $addon The addon
+     * @param  ID_TEXT $addon_name The addon
      * @param  ID_TEXT $subdir The theme subdirectory we're working against
      * @param  ID_TEXT $theme The theme
      * @return array The files
      */
-    protected function find_theme_files_from_addon($addon, $subdir, $theme)
+    protected function find_theme_files_from_addon($addon_name, $subdir, $theme)
     {
         static $cache = array();
-        if (isset($cache[$addon][$subdir])) {
-            return $cache[$addon][$subdir];
+        if (isset($cache[$addon_name][$subdir])) {
+            return $cache[$addon_name][$subdir];
         }
 
         $files = array();
 
-        require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon, true));
-        $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon, true));
+        require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name, true));
+        $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name, true));
         $_files = $ob->get_file_list();
         $test_for = 'themes/default/' . $subdir . '/';
         $test_for_2 = 'themes/default/' . $subdir . '_custom/';
@@ -801,7 +801,7 @@ class Meta_tree_builder
             }
         }
 
-        $cache[$addon][$subdir] = $files;
+        $cache[$addon_name][$subdir] = $files;
 
         return $files;
     }

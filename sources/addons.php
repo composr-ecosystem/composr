@@ -30,11 +30,11 @@ function init__addons()
 }
 
 /**
- * Find detail addon details.
+ * Find detail addon info.
  *
- * @return array Map of default addon details
+ * @return array Map of default addon info
  */
-function get_default_addon_details()
+function get_default_addon_info()
 {
     return array(
         'name' => '',
@@ -59,9 +59,9 @@ function preload_all_ocproducts_addons_info()
     global $ADDON_INFO_CACHE;
 
     $hooks = find_all_hooks('systems', 'addon_registry');
-    foreach ($hooks as $addon => $hook_dir) {
-        $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon) . '.php';
-        $ADDON_INFO_CACHE[$addon] = read_addon_info($addon, false, null, null, $hook_path);
+    foreach ($hooks as $addon_name => $hook_dir) {
+        $hook_path = get_file_base() . '/' . $hook_dir . '/hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name) . '.php';
+        $ADDON_INFO_CACHE[$addon_name] = read_addon_info($addon_name, false, null, null, $hook_path);
     }
 
     // Now fill in the 'dependencies' data
@@ -115,7 +115,7 @@ function read_addon_info($addon_name, $get_dependencies_on_this = false, $row = 
         } else {
             $dep = array();
         }
-        $defaults = get_default_addon_details();
+        $defaults = get_default_addon_info();
         if ($_hook_bits[1] !== null) {
             $version = is_array($_hook_bits[1]) ? call_user_func_array($_hook_bits[1][0], $_hook_bits[1][1]) : cms_eval($_hook_bits[1], $path, false);
         } else {

@@ -204,11 +204,11 @@ function get_addons_list_under_category($category_name, $version_branch)
                     tar_close($tar);
                     $_category_name = $ini_info['category'];
 
-                    $addon = $matches[1];
+                    $addon_name = $matches[1];
                     if (!isset($addons_in_cats[$_category_name])) {
                         $addons_in_cats[$_category_name] = array();
                     }
-                    $addons_in_cats[$_category_name][] = $addon;
+                    $addons_in_cats[$_category_name][] = $addon_name;
                 }
             }
             closedir($dh);
@@ -219,10 +219,10 @@ function get_addons_list_under_category($category_name, $version_branch)
 
     // Look in local filesystem too
     $addons = find_all_hooks('systems', 'addon_registry');
-    foreach ($addons as $addon => $place) {
+    foreach ($addons as $addon_name => $place) {
         if ($place == 'sources_custom') {
-            require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon));
-            $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon));
+            require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name));
+            $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
             if (method_exists($ob, 'get_category')) {
                 $category_name_here = $ob->get_category();
             } else {
@@ -230,7 +230,7 @@ function get_addons_list_under_category($category_name, $version_branch)
             }
 
             if ($category_name_here == $category_name) {
-                $addons_here[] = $addon;
+                $addons_here[] = $addon_name;
             }
         }
     }
@@ -244,10 +244,10 @@ function find_addon_category_list()
     $categories = array();
 
     $addons = find_all_hooks('systems', 'addon_registry');
-    foreach ($addons as $addon => $place) {
+    foreach ($addons as $addon_name => $place) {
         if ($place == 'sources_custom') {
-            require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon));
-            $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon));
+            require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name));
+            $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
             if (method_exists($ob, 'get_category')) {
                 $category_name = $ob->get_category();
             } else {

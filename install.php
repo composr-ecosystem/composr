@@ -2327,13 +2327,13 @@ function step_7()
 
     require_code('addons2');
     $addons = find_all_hooks('systems', 'addon_registry');
-    foreach ($addons as $addon => $place) {
+    foreach ($addons as $addon_name => $place) {
         send_http_output_ping();
 
         //if ($place == 'sources_custom') continue;  Now we are actually installing custom addons too
 
-        reinstall_addon_soft($addon);
-        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon)))));
+        reinstall_addon_soft($addon_name);
+        $log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '9fafb3dd014d589fcc057bba54fc4ag3', 'SOMETHING' => do_lang_tempcode('INSTALLED_ADDON', escape_html($addon_name)))));
     }
 
     $url = prepare_installer_url('install.php?step=8');

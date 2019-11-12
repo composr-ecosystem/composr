@@ -757,7 +757,7 @@ class Module_admin_zones
         check_zone_name($zone);
 
         require_code('abstract_file_manager');
-        force_have_afm_details();
+        force_have_afm_details(array(''));
 
         $_title = post_param_string('title');
         $default_page = post_param_string('default_page');

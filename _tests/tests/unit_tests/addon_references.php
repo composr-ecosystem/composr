@@ -41,8 +41,8 @@ class addon_references_test_set extends cms_test_case
             $matches = array();
             $num_matches = preg_match_all('#addon_installed\(\'([^\']*)\'\)#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                $addon = $matches[1][$i];
-                $this->assertTrue(addon_installed($addon), 'Could not find PHP-referenced addon, ' . $addon);
+                $addon_name = $matches[1][$i];
+                $this->assertTrue(addon_installed($addon_name), 'Could not find PHP-referenced addon, ' . $addon_name);
             }
         }
     }
@@ -58,8 +58,8 @@ class addon_references_test_set extends cms_test_case
             $matches = array();
             $num_matches = preg_match_all('#\{\$ADDON_INSTALLED,(\w+)\}#', $c, $matches);
             for ($i = 0; $i < $num_matches; $i++) {
-                $addon = $matches[1][$i];
-                $this->assertTrue(addon_installed($addon), 'Could not find template-referenced addon, ' . $addon);
+                $addon_name = $matches[1][$i];
+                $this->assertTrue(addon_installed($addon_name), 'Could not find template-referenced addon, ' . $addon_name);
             }
         }
     }

@@ -3482,12 +3482,12 @@ class _lang_spelling_epic_test_set extends cms_test_case
         // Now check addon descriptions...
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-        foreach ($addons as $addon => $ob) {
-            if (($this->only !== null) && ($this->only != $addon) && ($this->only != '(addons)')) {
+        foreach ($addons as $addon_name => $ob) {
+            if (($this->only !== null) && ($this->only != $addon_name) && ($this->only != '(addons)')) {
                 continue;
             }
 
-            $this->assertTrue(method_exists($ob, 'get_description'), 'Missing get_description for ' . $addon);
+            $this->assertTrue(method_exists($ob, 'get_description'), 'Missing get_description for ' . $addon_name);
 
             $c = $ob->get_description();
 
@@ -3495,7 +3495,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
             $misspellings = run_spellcheck($c, null, false/*would be too slow and is not needed*/, false, false);
             foreach (array_keys($misspellings) as $word) {
-                $this->assertTrue(false, 'Misspelling: ' . $word . ' (' . $addon . ' addon description)');
+                $this->assertTrue(false, 'Misspelling: ' . $word . ' (' . $addon_name . ' addon description)');
             }
         }
 

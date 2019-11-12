@@ -43,7 +43,7 @@ $tables_by_addon = get_innodb_tables_by_addon();
 
 $file_array = array();
 
-foreach ($tables_by_addon as $addon => $tables_in_addon) {
+foreach ($tables_by_addon as $addon_name => $tables_in_addon) {
     $tables_in_addon_detailed = array();
     foreach ($tables_in_addon as $table_in_addon) {
         if (array_key_exists($table_in_addon, $all_tables_detailed)) {
@@ -56,7 +56,7 @@ foreach ($tables_by_addon as $addon => $tables_in_addon) {
     $file_array[] = array(
         'time' => time(),
         'data' => $data,
-        'name' => 'composr_erd__' . $addon . '.sql',
+        'name' => 'composr_erd__' . $addon_name . '.sql',
     );
 }
 

@@ -145,14 +145,14 @@ class Hook_ajax_tree_choose_theme_files
 
                 case 'addons':
                     $addons = find_all_hooks('systems', 'addon_registry');
-                    foreach (array_keys($addons) as $addon) {
-                        $has_children = (count($this->templates_for_addons($addon)) > 0);
+                    foreach (array_keys($addons) as $addon_name) {
+                        $has_children = (count($this->templates_for_addons($addon_name)) > 0);
 
                         $out .= '
                         <category
                             id="' . xmlentities($this->get_next_id()) . '"
-                            serverid="' . xmlentities('<' . $addon . '>') . '"
-                            title="' . xmlentities($addon) . '"
+                            serverid="' . xmlentities('<' . $addon_name . '>') . '"
+                            title="' . xmlentities($addon_name) . '"
                             has_children="' . ($has_children ? 'true' : 'false') . '"
                             selectable="true"
                         ></category>';
@@ -298,8 +298,8 @@ class Hook_ajax_tree_choose_theme_files
 
         $_templates_for_addons = array();
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-        foreach ($addons as $addon => $ob) {
-            if (($filter_addon !== null) && ($filter_addon != $addon)) {
+        foreach ($addons as $addon_name => $ob) {
+            if (($filter_addon !== null) && ($filter_addon != $addon_name)) {
                 continue;
             }
 
@@ -313,7 +313,7 @@ class Hook_ajax_tree_choose_theme_files
                         $file = basename($file_path);
 
                         if (($file != 'index.html') && ($file != '.htaccess')) {
-                            $_templates_for_addons[$subdir . '/' . $file] = $addon;
+                            $_templates_for_addons[$subdir . '/' . $file] = $addon_name;
                         }
                     }
                 }

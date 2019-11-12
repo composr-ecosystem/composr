@@ -74,11 +74,11 @@ if (!check_master_password($password)) {
 header('Content-type: text/plain; charset=' . get_charset());
 
 $mode = get_param_string('mode'); // bundle | unbundle
-$addon = get_param_string('addon');
+$addon_name = get_param_string('addon');
 
 if ($mode == 'unbundle') {
-    require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon));
-    $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon));
+    require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name));
+    $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
     $files = $ob->get_file_list();
     foreach ($files as $file) {
         $new_file = null;

@@ -24,7 +24,7 @@ class addon_screenshots_test_set extends cms_test_case
         while (($file = readdir($dh)) !== false) {
             if ((substr($file, -5) != '.html') && ($file[0] != '.')) {
                 $hook = preg_replace('#\..*$#', '', $file);
-                $this->assertTrue(is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $hook . '.php'), 'Unrecognised addon screenshot: ' . $file);
+                $this->assertTrue(addon_installed($hook, false, false, false), 'Unrecognised addon screenshot: ' . $file);
             }
         }
         closedir($dh);

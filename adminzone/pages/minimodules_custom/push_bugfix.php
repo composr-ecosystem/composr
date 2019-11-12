@@ -96,11 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $addons_involved = array();
     $hooks = find_all_hooks('systems', 'addon_registry');
     foreach ($fixed_files as $file) {
-        foreach ($hooks as $addon => $place) {
+        foreach ($hooks as $addon_name => $place) {
             if ($place == 'sources_custom') {
-                $addon_info = read_addon_info($addon);
+                $addon_info = read_addon_info($addon_name);
                 if (in_array($file, $addon_info['files'])) {
-                    $addons_involved[] = $addon;
+                    $addons_involved[] = $addon_name;
                 }
             }
         }

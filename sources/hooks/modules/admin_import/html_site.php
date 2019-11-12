@@ -165,7 +165,7 @@ class Hook_import_html_site
         // (Maybe AFM needed here - if zones have to be created, and possibly .htaccess changed to incorporate zone names in the redirects)
         if (count($new_zones) != 0) {
             require_code('abstract_file_manager');
-            force_have_afm_details();
+            force_have_afm_details(array(''));
 
             // Create new zones as needed (and set them to our chosen theme too)
             require_code('zones2');

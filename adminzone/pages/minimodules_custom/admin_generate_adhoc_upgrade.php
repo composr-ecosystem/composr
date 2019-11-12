@@ -79,14 +79,14 @@ if ($type == 'auto_probe') {
         $SITE_INFO = $backup;
 
         // Via filesystem (non-bundled ones)
-        foreach ($addons['non_bundled'] as $addon => $files) {
-            if ($addon == 'simplified_emails') {
+        foreach ($addons['non_bundled'] as $addon_name => $files) {
+            if ($addon_name == 'simplified_emails') {
                 continue; // Two common false positives
             }
 
             foreach ($files as $file) {
                 if (file_exists($probe_dir . '/' . $file)) {
-                    $auto_probe[] = $addon;
+                    $auto_probe[] = $addon_name;
                 }
             }
         }
@@ -229,8 +229,8 @@ if ($type == 'go') {
 
     $done = array();
 
-    foreach ($addons['non_bundled'] + $addons['bundled'] as $addon => $files) {
-        if (post_param_integer('addon_' . $addon, 0) == 1) {
+    foreach ($addons['non_bundled'] + $addons['bundled'] as $addon_name => $files) {
+        if (post_param_integer('addon_' . $addon_name, 0) == 1) {
             foreach ($files as $file) {
                 if (preg_match('#^_config.php$#', $file) == 0) {
                     if (filemtime(get_file_base() . '/' . $file) > $cutoff_point) {
@@ -313,14 +313,14 @@ if (post_param_string('probe_dir', '') !== '') {
     ';
 }
 
-foreach (array_merge(array_keys($addons['bundled']), array_keys($addons['non_bundled'])) as $addon) {
-    $checked = (substr($addon, 0, 5) == 'core_') || ($addon == 'core') || (in_array($addon, $auto_probe));
+foreach (array_merge(array_keys($addons['bundled']), array_keys($addons['non_bundled'])) as $addon_name) {
+    $checked = (substr($addon_name, 0, 5) == 'core_') || ($addon_name == 'core') || (in_array($addon_name, $auto_probe));
 
     echo '
         <p>
-            <label for="addon_' . escape_html($addon) . '">
-                    <input ' . ($checked ? ' checked="checked"' : '') . 'type="checkbox" value="1" name="addon_' . escape_html($addon) . '" id="addon_' . escape_html($addon) . '" />
-                    ' . escape_html($addon) . '
+            <label for="addon_' . escape_html($addon_name) . '">
+                    <input ' . ($checked ? ' checked="checked"' : '') . 'type="checkbox" value="1" name="addon_' . escape_html($addon_name) . '" id="addon_' . escape_html($addon_name) . '" />
+                    ' . escape_html($addon_name) . '
             </label>
         </p>
     ';

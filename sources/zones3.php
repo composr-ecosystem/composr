@@ -247,7 +247,7 @@ function actual_edit_zone($zone, $title, $default_page, $header_text, $theme, $r
 
         require_code('abstract_file_manager');
         if (!$skip_afm) {
-            force_have_afm_details();
+            force_have_afm_details(array('', $zone));
         }
         afm_move($zone, $new_zone);
     }
@@ -358,7 +358,7 @@ function actual_delete_zone($zone, $force = false, $skip_afm = false)
 
     require_code('abstract_file_manager');
     if (!$skip_afm) {
-        force_have_afm_details();
+        force_have_afm_details(array($zone));
     }
 
     if (!$force) {
@@ -863,6 +863,27 @@ function rename_live_comcode_page($zone, $file, $new_zone, $new_file, $create_re
 }
 
 /**
+ * Get the file extension for a page type.
+ *
+ * @param  ID_TEXT $type The page type (including any language subdirectory)
+ * @return string The file extension
+ */
+function get_page_type_file_extension($type)
+{
+    $ext = '';
+    if (substr($type, 0, 7) == 'modules') {
+        $ext = 'php';
+    } elseif (substr($type, 0, 7) == 'comcode') {
+        $ext = 'txt';
+    } elseif (substr($type, 0, 4) == 'html') {
+        $ext = 'htm';
+    } else {
+        fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
+    }
+    return $ext;
+}
+
+/**
  * Delete a Composr page.
  *
  * @param  ID_TEXT $zone The zone
@@ -877,14 +898,7 @@ function delete_cms_page($zone, $page, $type = null, $use_afm = false)
         $type = 'comcode_custom/' . fallback_lang();
     }
 
-    $_page = '';
-    if (substr($type, 0, 7) == 'modules') {
-        $_page = $page . '.php';
-    } elseif (substr($type, 0, 7) == 'comcode') {
-        $_page = $page . '.txt';
-    } elseif (substr($type, 0, 4) == 'html') {
-        $_page = $page . '.htm';
-    }
+    $_page = $page . '.' . get_page_type_file_extension($type);
 
     $GLOBALS['SITE_DB']->query_delete('menu_items', array('i_url' => $zone . ':' . $page));
     delete_cache_entry('menu');

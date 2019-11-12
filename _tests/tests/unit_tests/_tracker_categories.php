@@ -25,9 +25,9 @@ class _tracker_categories_test_set extends cms_test_case
         $_categories = http_get_contents($brand_base_url . '/data_custom/composr_homesite_web_service.php?call=get_tracker_categories', array('convert_to_internal_encoding' => true, 'ua' => 'Composr Test Platform', 'post_params' => $post));
         $categories = json_decode($_categories, true);
         $addons = find_all_hooks('systems', 'addon_registry');
-        foreach ($addons as $addon => $place) {
+        foreach ($addons as $addon_name => $place) {
             if ($place == 'sources') {
-                $this->assertTrue(in_array($addon, $categories), $addon);
+                $this->assertTrue(in_array($addon_name, $categories), $addon_name);
             }
         }
     }

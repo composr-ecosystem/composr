@@ -1532,11 +1532,13 @@ function has_no_forum()
  * Will also include check database tables for addons that are hook-based, just in case filesystem and database got out of sync.
  * For addons with no addon_registry hook can also check the database (if requested via $check_hookless).
  *
- * @param  ID_TEXT $addon The addon name
+ * @param  ID_TEXT $addon_name The addon name
  * @param  boolean $check_hookless Whether to check addons with no addon_registry hook (it's very rare to need this)
+ * @param  boolean $deep_scan Do a deep scan of the database to see if the addon is fully installed
+ * @param  boolean $disabled_scan Consider whether the addon is set as disabled
  * @return boolean Whether it is
  */
-function addon_installed($addon, $check_hookless = false)
+function addon_installed($addon_name, $check_hookless = false, $deep_scan = true, $disabled_scan = true)
 {
     global $ADDON_INSTALLED_CACHE;
     if ($ADDON_INSTALLED_CACHE == array()) {
@@ -1546,15 +1548,15 @@ function addon_installed($addon, $check_hookless = false)
             }
         }
     }
-    if (isset($ADDON_INSTALLED_CACHE[$addon])) {
-        return $ADDON_INSTALLED_CACHE[$addon];
+    if ((isset($ADDON_INSTALLED_CACHE[$addon_name])) && ($deep_scan) && ($disabled_scan)) {
+        return $ADDON_INSTALLED_CACHE[$addon_name];
     }
 
     // Check addon_registry hook
-    $addon = filter_naughty($addon, true);
-    $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
+    $addon_name = filter_naughty($addon_name, true);
+    $answer = is_file(get_file_base() . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
     if ((!$answer) && (!in_safe_mode())) {
-        $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon . '.php');
+        $answer = is_file(get_file_base() . '/sources_custom/hooks/systems/addon_registry/' . $addon_name . '.php');
     }
 
     // Check addons table
@@ -1562,21 +1564,21 @@ function addon_installed($addon, $check_hookless = false)
         require_code('database');
 
         if ((!$answer) && ($check_hookless)) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', array('addon_name' => $addon));
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', array('addon_name' => $addon_name));
             if ($test !== null) {
                 $answer = true;
             }
 
             // Won't check tables because we don't know them for hookless addons (not in db_meta.bin)
         } else {
-            if ($answer) {
+            if (($answer) && ($deep_scan)) {
                 // Check tables defined in db_meta.bin (bundled addons)
                 static $data = null;
                 if ($data === null) {
                     $data = unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK));
                 }
                 foreach ($data['tables'] as $table_name => $table) {
-                    if ($table['addon'] == $addon) {
+                    if ($table['addon'] == $addon_name) {
                         $db = get_db_for($table_name);
                         if (!$db->table_exists($table_name)) {
                             $answer = false;
@@ -1587,18 +1589,20 @@ function addon_installed($addon, $check_hookless = false)
             }
         }
 
-        if ($answer) {
+        if (($answer) && ($disabled_scan)) {
             global $VALUES_FULLY_LOADED;
-            if (($VALUES_FULLY_LOADED) && (get_value('addon_disabled_' . $addon) === '1')) {
+            if (($VALUES_FULLY_LOADED) && (get_value('addon_disabled_' . $addon_name) === '1')) {
                 $answer = false;
             }
         }
     }
 
-    $ADDON_INSTALLED_CACHE[$addon] = $answer;
-    if (function_exists('persistent_cache_set')) {
-        if (!in_safe_mode()) {
-            persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
+    if (($deep_scan) && ($disabled_scan)) {
+        $ADDON_INSTALLED_CACHE[$addon_name] = $answer;
+        if (function_exists('persistent_cache_set')) {
+            if (!in_safe_mode()) {
+                persistent_cache_set('ADDONS_INSTALLED', $ADDON_INSTALLED_CACHE);
+            }
         }
     }
 
@@ -1608,14 +1612,14 @@ function addon_installed($addon, $check_hookless = false)
 /**
  * Check to see if an addon is installed. If not, install return an error message with a link to manage addons.
  *
- * @param  ID_TEXT $addon The addon name
+ * @param  ID_TEXT $addon_name The addon name
  * @param  Tempcode $error_msg Put an error message in here
  * @return boolean Whether it is
  */
-function addon_installed__messaged($addon, &$error_msg)
+function addon_installed__messaged($addon_name, &$error_msg)
 {
-    if (!addon_installed($addon)) {
-        $_error_msg = do_lang('MISSING_ADDON', escape_html($addon));
+    if (!addon_installed($addon_name)) {
+        $_error_msg = do_lang('MISSING_ADDON', escape_html($addon_name));
         $addon_manage_url = build_url(array('page' => 'admin_addons'), 'adminzone');
         $error_msg = do_lang_tempcode('BROKEN_ADDON_REMEDIES', $_error_msg, escape_html(find_script('upgrader')), escape_html(static_evaluate_tempcode($addon_manage_url)));
 

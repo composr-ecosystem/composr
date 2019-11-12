@@ -76,9 +76,9 @@ if (get_param_integer('import_addons', 1) == 1) {
     foreach ($categories as $category) {
         $cat_id = find_addon_category_download_category($category, $c_main_id);
         $addon_arr = get_addons_list_under_category($category, $version_branch);
-        foreach ($addon_arr as $addon) {
+        foreach ($addon_arr as $addon_name) {
             $addon_count++;
-            publish_addon($addon, $version_branch, $cat_id);
+            publish_addon($addon_name, $version_branch, $cat_id);
         }
     }
 
@@ -113,9 +113,9 @@ if (get_param_integer('import_themes', 1) == 1) {
     }
 }
 
-function publish_addon($addon, $version_branch, $cat_id)
+function publish_addon($addon_name, $version_branch, $cat_id)
 {
-    $file = $addon . '-' . $version_branch . '.tar';
+    $file = $addon_name . '-' . $version_branch . '.tar';
 
     $from = get_custom_file_base() . '/exports/addons/' . $file;
     $to = get_custom_file_base() . '/uploads/downloads/' . $file;
@@ -142,7 +142,7 @@ function publish_addon($addon, $version_branch, $cat_id)
         $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
         tar_close($tar);
 
-        $addon_info = read_addon_info($addon, false, null, $ini_info);
+        $addon_info = read_addon_info($addon_name, false, null, $ini_info);
 
         $name = titleify($addon_info['name']);
         $author = $addon_info['author'];
@@ -154,9 +154,9 @@ function publish_addon($addon, $version_branch, $cat_id)
         if ($download_owner === null) {
             $download_owner = DOWNLOAD_OWNER;
         }
-        $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
+        $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $addon_name . '.tar', $fsize, 0, 0, null, null, 0, 0, $download_owner);
 
-        $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon . '.png';
+        $screenshot_url = 'data_custom/images/addon_screenshots/' . $addon_name . '.png';
         if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {
             add_image('', 'download_' . strval($download_id), '', $screenshot_url, '', 1, 0, 0, 0, '', null, null, null, 0);
         }
@@ -165,8 +165,8 @@ function publish_addon($addon, $version_branch, $cat_id)
 
 function publish_theme($file, $version_branch, $cat_id)
 {
-    $addon = basename($file, '.tar');
-    $new_file = $addon . '-' . $version_branch . '.tar';
+    $addon_name = basename($file, '.tar');
+    $new_file = $addon_name . '-' . $version_branch . '.tar';
 
     $from = get_custom_file_base() . '/exports/addons/' . $file;
     $to = get_custom_file_base() . '/uploads/downloads/' . $new_file;
@@ -193,9 +193,8 @@ function publish_theme($file, $version_branch, $cat_id)
         $ini_info = cms_parse_ini_file_fast(null, $info_file['data']);
         tar_close($tar);
 
-        $addon_info = read_addon_info($addon, false, null, $ini_info);
+        $addon_info = read_addon_info($addon_name, false, null, $ini_info);
 
-        $name = $addon_info['name'];
         $description = $addon_info['description'];
         $author = $addon_info['author'];
 
@@ -203,7 +202,7 @@ function publish_theme($file, $version_branch, $cat_id)
         if ($download_owner === null) {
             $download_owner = DOWNLOAD_OWNER;
         }
-        $download_id = add_download($cat_id, $name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
+        $download_id = add_download($cat_id, $addon_name, $addon_url, $description, $author, '', null, 1, 1, 2, 1, '', $new_file, $fsize, 0, 0, null, null, 0, 0, $download_owner);
 
         $screenshot_url = 'data_custom/images/addon_screenshots/' . urlencode(preg_replace('#^theme-#', 'theme__', preg_replace('#\d+$#', '', basename($file, '.tar'))) . '.png');
         if (file_exists(get_custom_file_base() . '/' . $screenshot_url)) {

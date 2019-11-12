@@ -775,9 +775,9 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
         $contents = cms_file_get_contents_safe(get_file_base() . '/' . $file);
         $matches = array();
         if (preg_match('#@package\s+(\w+)\r?\n#', $contents, $matches) != 0) {
-            $addon = $matches[1];
-            if ($addon == 'installer') {
-                $addon = 'core';
+            $addon_name = $matches[1];
+            if ($addon_name == 'installer') {
+                $addon_name = 'core';
             }
 
             $table_regexp = '#->create_table\(\'(\w+)\'#';
@@ -785,7 +785,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             $table_num_matches = preg_match_all($table_regexp, $contents, $table_matches);
             for ($i = 0; $i < $table_num_matches; $i++) {
                 $table_name = $table_matches[1][$i];
-                $table_addons[$table_name] = $addon;
+                $table_addons[$table_name] = $addon_name;
             }
 
             $index_regexp = '#->create_index\(\'(\w+)\',\s*\'([\#\w]+)\'#';
@@ -795,7 +795,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
                 $table_name = $index_matches[1][$i];
                 $index_name = $index_matches[2][$i];
                 $universal_index_key = $table_name . '__' . $index_name;
-                $index_addons[$universal_index_key] = $addon;
+                $index_addons[$universal_index_key] = $addon_name;
             }
 
             if ($file == 'sources/cns_install.php') {
@@ -809,7 +809,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             $privilege_num_matches = preg_match_all($privilege_regexp, $contents, $privilege_matches);
             for ($i = 0; $i < $privilege_num_matches; $i++) {
                 $privilege_name = $privilege_matches[1][$i];
-                $privilege_addons[$privilege_name] = $addon;
+                $privilege_addons[$privilege_name] = $addon_name;
             }
         }
     }

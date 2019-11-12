@@ -462,7 +462,8 @@ class Module_admin_setupwizard
         $hidden = static_evaluate_tempcode(build_keep_post_fields());
 
         $addons_installed = find_installed_addons();
-        $addons_not_installed = list_to_map('name', find_available_addons(false, false));
+        $_addons_not_installed = find_available_addons(false, false);
+        $addons_not_installed = list_to_map('name', $_addons_not_installed);
 
         $fields = '';
         $fields_advanced = '';
@@ -620,7 +621,7 @@ class Module_admin_setupwizard
                 }
             }
         }
-        $addons_not_installed = list_to_map('name', find_available_addons(false, false, list_to_map('file', $addons_not_installed))); // Re-search for these, as more may have been downloaded above
+        $addons_not_installed = list_to_map('name', find_available_addons(false, false, $_addons_not_installed)); // Re-search for these, as more may have been downloaded above
 
         $all_addons = $addons_installed + $addons_not_installed;
         foreach ($all_addons as $addon_name => $row) {
@@ -1061,8 +1062,33 @@ class Module_admin_setupwizard
     {
         push_query_limiting(false);
 
+        $doing_themewizard = $this->has_themewizard_step();
+
+        $name = post_param_string('site_name');
+        $new_theme_name = $this->generate_theme_name($name);
+        $generating_new_theme = !file_exists(get_custom_file_base() . '/themes/' . $new_theme_name);
+
+        require_code('addons2');
+
+        // Initialise AFM...
+
         require_code('abstract_file_manager');
-        force_have_afm_details();
+        $writable_paths = array();
+        if ((post_param_integer('skip_8', 0) == 0) && ($doing_themewizard)) {
+            if ($generating_new_theme) {
+                $writable_paths[] = 'themes';
+            }
+        }
+        if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
+            list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
+            foreach (array_keys($addons_uninstall) as $addon_name) {
+                $writable_paths = array_merge($writable_paths, get_addon_uninstall_writable_paths($addon_name));
+            }
+            foreach (array_keys($addons_install) as $addon_file) {
+                $writable_paths = array_merge($writable_paths, get_addon_install_writable_paths($addon_file));
+            }
+        }
+        force_have_afm_details($writable_paths);
 
         // Proceed...
 
@@ -1076,7 +1102,6 @@ class Module_admin_setupwizard
         require_code('images');
 
         $header_text = post_param_string('header_text');
-        $name = post_param_string('site_name');
         require_code('fonts');
         $font = post_param_string('font', find_default_font());
         $installprofile = post_param_string('installprofile', '');
@@ -1106,7 +1131,6 @@ class Module_admin_setupwizard
             $installprofileblocks = array();
         }
 
-        $doing_themewizard = $this->has_themewizard_step();
         $doing_logowizard = (function_exists('imagepng')) && (addon_installed('themewizard')) && (get_theme_option('enable_logowizard', null, $source_theme) == '1');
 
         if ((post_param_integer('skip_8', 0) == 0) && ($doing_themewizard || $doing_logowizard)) {
@@ -1114,11 +1138,9 @@ class Module_admin_setupwizard
 
             // Make/set theme and logos
             if ($doing_themewizard) {
-                $new_theme_name = substr(preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $name), 0, 40);
-
                 global $THEME_IMAGES_CACHE;
                 $old_img_codes_site = $GLOBALS['SITE_DB']->query_select('theme_images', array('id', 'url'), array('theme' => $GLOBALS['FORUM_DRIVER']->get_theme(), 'lang' => user_lang()));
-                if (!file_exists(get_custom_file_base() . '/themes/' . $new_theme_name)) {
+                if ($generating_new_theme) {
                     make_theme($new_theme_name, 'default', 'equations', post_param_string('seed_hex'), /*$use=*/true, post_param_integer('dark', 0) == 1);
                 }
 
@@ -1310,87 +1332,34 @@ class Module_admin_setupwizard
 
         // Set addons
         if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
-            require_lang('addons');
-            require_code('addons2');
-            preload_all_ocproducts_addons_info();
-            $addons_installed = find_installed_addons(false, true, true);
-            $uninstalling = array();
-            foreach ($addons_installed as $i => $addon_info) {
-                if (post_param_integer('addon_' . $addon_info['name'], 0) == 0 && $addon_info['name'] != 'core' && substr($addon_info['name'], 0, 5) != 'core_') {
-                    $uninstalling[$addon_info['name']] = $addon_info;
+            list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
+
+            foreach ($addons_uninstall as $addon_name => $addon_info) {
+                // Archive it off to exports/addons
+                if ($addon_info['files'] != array()) {
+                    $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $addon_name)) . '.tar';
+                    create_addon(
+                        $file,
+                        $addon_info['files'],
+                        $addon_name,
+                        implode(',', $addon_info['incompatibilities']),
+                        implode(',', $addon_info['dependencies']),
+                        $addon_info['author'],
+                        $addon_info['organisation'],
+                        $addon_info['version'],
+                        $addon_info['category'],
+                        implode("\n", $addon_info['copyright_attribution']),
+                        $addon_info['licence'],
+                        $addon_info['description'],
+                        'imports/addons'
+                    );
                 }
 
-                $addons_installed[$i] = $addon_info;
+                uninstall_addon($addon_name);
             }
-            $addons_not_installed = find_available_addons(false);
-            $installing = array();
-            foreach ($addons_not_installed as $addon_info) {
-                if (post_param_integer('addon_' . $addon_info['name'], 0) == 1) {
-                    $installing[] = $addon_info['name'];
-                }
 
-                $addons_installed[$i] = $addon_info;
-            }
-            do {
-                $cnt = count($uninstalling);
-                foreach ($addons_installed as $addon_info) {
-                    if (array_key_exists($addon_info['name'], $uninstalling)) {
-                        $addon_info['author'] = ''; // Fudge, to stop it dying on warnings for official addons
-
-                        // Check dependencies
-                        $dependencies = isset($addon_info['dependencies_on_this']) ? $addon_info['dependencies_on_this'] : array();
-                        foreach (array_keys($uninstalling) as $d) {
-                            if (in_array($d, $dependencies)) { // Can mark this dependency as irrelevant, as we are uninstalling the addon for it anyway
-                                unset($dependencies[array_search($d, $dependencies)]);
-                            }
-                        }
-
-                        if (count($dependencies) != 0) { // Can't uninstall, has dependencies
-                            unset($uninstalling[$addon_info['name']]);
-                        }
-                    }
-                }
-            } while ($cnt != count($uninstalling)); // Dependency chains can be complex, so loop until we're stopped finding anything changing
-
-            if (!file_exists(get_file_base() . '/.git')) { // Only uninstall if we're not working from a git repository
-                foreach ($uninstalling as $addon_info) {
-                    // Archive it off to exports/addons
-                    if ($addon_info['files'] != array()) {
-                        $file = preg_replace('#^[_\.\-]#', 'x', preg_replace('#[^\w\.\-]#', '_', $addon_info['name'])) . '.tar';
-                        create_addon(
-                            $file,
-                            $addon_info['files'],
-                            $addon_info['name'],
-                            implode(',', $addon_info['incompatibilities']),
-                            implode(',', $addon_info['dependencies']),
-                            $addon_info['author'],
-                            $addon_info['organisation'],
-                            $addon_info['version'],
-                            $addon_info['category'],
-                            implode("\n", $addon_info['copyright_attribution']),
-                            $addon_info['licence'],
-                            $addon_info['description'],
-                            'imports/addons'
-                        );
-                    }
-
-                    uninstall_addon($addon_info['name']);
-                }
-            }
-            foreach ($addons_not_installed as $addon_file => $addon_info) {
-                if (post_param_integer('addon_' . $addon_info['name'], 0) == 1) {
-                    // Check dependencies
-                    $dependencies = explode(',', $addon_info['dependencies']);
-                    foreach (array_keys($uninstalling) as $d) {
-                        if ((addon_installed($d)) || (in_array($d, $installing))) {
-                            unset($dependencies[array_search($d, $dependencies)]);
-                        }
-                    }
-
-                    if (count($dependencies) == 0) { // If all dependencies installed / will be installed
-                        install_addon($addon_file);
-                    }
-                }
+            foreach (array_keys($addons_install) as $addon_file) {
+                install_addon($addon_file);
             }
         }
 
@@ -1496,6 +1465,53 @@ class Module_admin_setupwizard
 
         $url = build_url(array('page' => '_SELF', 'type' => 'step11'), '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
+    }
+
+    /**
+     * Generate a new theme name for the new site name.
+     *
+     * @param  string $name The new site name
+     * @return string The new theme name
+     */
+    protected function generate_theme_name($name)
+    {
+        return substr(preg_replace('#[^' . URL_CONTENT_REGEXP . ']#', '_', $name), 0, 40);
+    }
+
+    /**
+     * Find what addon operations to perform.
+     *
+     * @return array A pair: The list of addons to install, The list of addons to uninstall
+     */
+    protected function detect_addon_operations()
+    {
+        $installing = array();
+        $uninstalling = array();
+
+        require_lang('addons');
+
+        preload_all_ocproducts_addons_info();
+
+        $addons_not_installed = find_available_addons(false); // filename => addon details
+        $addons_installed = find_installed_addons(false, true, true); // addon name => addon details
+
+        // What is being installed?
+        foreach ($addons_not_installed as $addon_file => $addon_info) {
+            if (post_param_integer('addon_' . $addon_info['name'], 0) == 1) {
+                $installing[$addon_file] = $addon_info;
+            }
+        }
+
+        // What is being uninstalled?
+        foreach ($addons_installed as $addon_name => $addon_info) {
+            if ((post_param_integer('addon_' . $addon_name, 0) == 0) && ($addon_name != 'core') && (substr($addon_name, 0, 5) != 'core_')) {
+                $uninstalling[$addon_name] = $addon_info;
+            }
+        }
+
+        resolve_addon_dependency_problems($installing, $uninstalling);
+
+        return array($installing, $uninstalling);
     }
 
     /**

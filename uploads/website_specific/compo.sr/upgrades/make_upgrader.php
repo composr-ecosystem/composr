@@ -172,10 +172,10 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
 
         // Build all addon TARs
         global $CACHE_FROM_ADDONS;
-        foreach ($CACHE_FROM_ADDONS as $addon => $addon_files) {
-            $addon_info = read_addon_info($addon, true, null, null, $new_base_path . '/sources/hooks/systems/addon_registry/' . $addon . '.php');
+        foreach ($CACHE_FROM_ADDONS as $addon_name => $addon_files) {
+            $addon_info = read_addon_info($addon_name, true, null, null, $new_base_path . '/sources/hooks/systems/addon_registry/' . $addon_name . '.php');
             create_addon(
-                $addon . '.tar',
+                $addon_name . '.tar',
                 $addon_files,
                 $addon_info['name'],
                 implode(',', $addon_info['incompatibilities']),
@@ -192,7 +192,7 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
                 $new_base_path
             );
 
-            rename($wip_path . '/exports/addons/' . $addon . '.tar', $wip_path . '/imports/addons/' . $addon . '.tar');
+            rename($wip_path . '/exports/addons/' . $addon_name . '.tar', $wip_path . '/imports/addons/' . $addon_name . '.tar');
         }
     }
 
@@ -254,8 +254,8 @@ function make_upgrader_do_dir($build_path, $new_base_path, $old_base_path, $addo
             $contents = cms_file_get_contents_safe($new_base_path . '/' . $dir . $file, FILE_READ_UNIXIFIED_TEXT);
             if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || ($contents != cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file, FILE_READ_UNIXIFIED_TEXT))) {
                 if ($addons_in_upgrader !== null) {
-                    $addon = find_file_addon($new_base_path, $dir . $file);
-                    if ((!isset($addons_in_upgrader[$addon])) && (substr($addon, 0, 5) != 'core_')) {
+                    $addon_name = find_file_addon($new_base_path, $dir . $file);
+                    if ((!isset($addons_in_upgrader[$addon_name])) && (substr($addon_name, 0, 5) != 'core_')) {
                         continue;
                     }
                 }
@@ -275,10 +275,10 @@ function find_file_addon($new_base_path, $file)
     return isset($CACHE_FROM_PATHS[$file]) ? $CACHE_FROM_PATHS[$file] : null;
 }
 
-function find_addon_files($new_base_path, $addon)
+function find_addon_files($new_base_path, $addon_name)
 {
     global $CACHE_FROM_ADDONS;
-    return isset($CACHE_FROM_ADDONS[$addon]) ? $CACHE_FROM_ADDONS[$addon] : array();
+    return isset($CACHE_FROM_ADDONS[$addon_name]) ? $CACHE_FROM_ADDONS[$addon_name] : array();
 }
 
 function _find_helper($new_base_path)

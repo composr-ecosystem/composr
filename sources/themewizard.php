@@ -432,9 +432,10 @@ function make_theme($theme_name, $source_theme, $algorithm, $seed, $use, $dark =
 
     if (file_exists(get_custom_file_base() . '/themes/' . $theme_name)) {
         require_code('abstract_file_manager');
-        force_have_afm_details();
+        force_have_afm_details(array('themes/' . $theme_name . '/css_custom/*', 'themes/' . $theme_name . '/images_custom/*'));
         $extending_existing = true;
     } else {
+        // The below operations will also activate the AFM
         if ($source_theme == 'default') {
             actual_add_theme($theme_name);
         } else {

@@ -188,9 +188,13 @@ class Module_admin_debrand
         require_code('config2');
         require_code('files');
 
+        $critical_errors_path = 'sources_custom/critical_errors.php';
+
         if ($GLOBALS['CURRENT_SHARE_USER'] === null) { // Only if not a shared install
             require_code('abstract_file_manager');
-            force_have_afm_details();
+            force_have_afm_details(array(
+                $critical_errors_path,
+            ));
         }
 
         set_value('rebrand_name', post_param_string('rebrand_name'));
@@ -218,7 +222,6 @@ class Module_admin_debrand
             $critical_errors = str_replace('Composr', addslashes(post_param_string('rebrand_name')), $critical_errors);
             $critical_errors = str_replace('http://compo.sr', addslashes(post_param_string('rebrand_base_url', false, INPUT_FILTER_URL_GENERAL)), $critical_errors);
             $critical_errors = str_replace('ocProducts', 'ocProducts/' . addslashes(post_param_string('company_name')), $critical_errors);
-            $critical_errors_path = 'sources_custom/critical_errors.php';
 
             afm_make_file($critical_errors_path, $critical_errors, false);
         }

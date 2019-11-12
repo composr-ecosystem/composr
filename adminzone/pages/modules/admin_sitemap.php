@@ -224,6 +224,7 @@ class Module_admin_sitemap
         $zone = post_param_string('zone', null);
 
         $afm_needed = false;
+        $writable_paths = array();
         $pages = find_all_pages_wrap($zone);
         foreach ($pages as $page => $type) {
             if (is_integer($page)) {
@@ -238,6 +239,7 @@ class Module_admin_sitemap
                 if ($type != 'comcode_custom') {
                     $afm_needed = true;
                 }
+                $writable_paths[] = $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $page . '.' . get_page_type_file_extension($type);
             }
         }
 
@@ -245,7 +247,7 @@ class Module_admin_sitemap
             appengine_live_guard();
 
             require_code('abstract_file_manager');
-            force_have_afm_details();
+            force_have_afm_details($writable_paths);
         }
 
         foreach ($pages as $page => $type) {
@@ -254,8 +256,7 @@ class Module_admin_sitemap
             }
 
             if (post_param_integer('page__' . $page, 0) == 1) {
-                require_code('zones3');
-                delete_cms_page($zone, $page, $type, $afm_needed);
+                delete_cms_page($zone, $page, $type, !empty($afm_needed));
             }
         }
 
@@ -317,6 +318,10 @@ class Module_admin_sitemap
         }
 
         $afm_needed = false;
+        $writable_paths = array();
+
+        $cannot_move = new Tempcode();
+
         foreach ($pages as $page => $type) {
             if (is_integer($page)) {
                 $page = strval($page);
@@ -326,6 +331,20 @@ class Module_admin_sitemap
                 if ($type != 'comcode_custom') {
                     $afm_needed = true;
                 }
+
+                $_page = $page . '.' . get_page_type_file_extension($type);
+                $source_path = $zone . (($zone == '') ? '' : '/') . 'pages/' . $type . '/' . $_page;
+                $destination_path = zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page);
+                if (file_exists($destination_path)) {
+                    if (!$cannot_move->is_empty()) {
+                        $cannot_move->attach(do_lang_tempcode('LIST_SEP'));
+                    }
+                    $cannot_move->attach(do_lang_tempcode('PAGE_WRITE', escape_html($page)));
+                } else {
+                    $writable_paths[] = $source_path;
+                    $writable_paths[] = dirname($source_path);
+                    $writable_paths[] = dirname($destination_path);
+                }
             }
         }
 
@@ -333,30 +352,7 @@ class Module_admin_sitemap
             appengine_live_guard();
 
             require_code('abstract_file_manager');
-            force_have_afm_details();
-        }
-        $cannot_move = new Tempcode();
-        foreach ($pages as $page => $type) {
-            if (!is_string($page)) {
-                $page = strval($page);
-            }
-
-            if (post_param_integer('page__' . $page, 0) == 1) {
-                if (substr($type, 0, 7) == 'modules') {
-                    $_page = $page . '.php';
-                } elseif (substr($type, 0, 7) == 'comcode') {
-                    $_page = $page . '.txt';
-                } elseif (substr($type, 0, 4) == 'html') {
-                    $_page = $page . '.htm';
-                }
-                if (file_exists(zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page))) {
-                    if (!$cannot_move->is_empty()) {
-                        $cannot_move->attach(do_lang_tempcode('LIST_SEP'));
-                    }
-                    $cannot_move->attach(do_lang_tempcode('PAGE_WRITE', escape_html($page)));
-                    continue;
-                }
-            }
+            force_have_afm_details($writable_paths);
         }
 
         $moved_something = null;
@@ -368,14 +364,9 @@ class Module_admin_sitemap
             if (post_param_integer('page__' . $page, 0) == 1) {
                 $moved_something = $page;
 
-                if (substr($type, 0, 7) == 'modules') {
-                    $_page = $page . '.php';
-                } elseif (substr($type, 0, 7) == 'comcode') {
-                    $_page = $page . '.txt';
-
+                $_page = $page . '.' . get_page_type_file_extension($type);
+                if (substr($type, 0, 7) == 'comcode') {
                     rename_live_comcode_page($zone, $page, $new_zone, $page);
-                } elseif (substr($type, 0, 4) == 'html') {
-                    $_page = $page . '.htm';
                 }
                 if (file_exists(zone_black_magic_filterer(get_custom_file_base() . '/' . filter_naughty($new_zone) . (($new_zone != '') ? '/' : '') . 'pages/' . filter_naughty($type) . '/' . $_page))) {
                     continue;

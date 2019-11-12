@@ -115,7 +115,7 @@ function actual_add_theme($name)
     }
 
     require_code('abstract_file_manager');
-    force_have_afm_details();
+    force_have_afm_details(array('themes'));
 
     // Create directories
     $dir_list = array(
@@ -194,7 +194,7 @@ function actual_rename_theme($theme, $to)
     }
 
     require_code('abstract_file_manager');
-    force_have_afm_details();
+    force_have_afm_details(array('themes', 'themes/' . $theme));
     afm_move('themes/' . $theme, 'themes/' . $to);
 
     $GLOBALS['SITE_DB']->query_update('theme_images', array('theme' => $to), array('theme' => $theme));
@@ -228,7 +228,7 @@ function actual_copy_theme($theme, $to)
 
     require_code('abstract_file_manager');
     require_code('files2');
-    force_have_afm_details();
+    force_have_afm_details(array('themes'));
     $contents = get_directory_contents(get_custom_file_base() . '/themes/' . $theme, '', null);
     foreach ($contents as $c) {
         afm_make_directory(dirname('themes/' . $to . '/' . $c), true, true);
@@ -279,7 +279,7 @@ function actual_delete_theme($theme)
     }
 
     require_code('abstract_file_manager');
-    force_have_afm_details();
+    force_have_afm_details(array('themes/' . $theme));
     afm_delete_directory('themes/' . $theme, true);
 
     $GLOBALS['SITE_DB']->query_delete('theme_images', array('theme' => $theme));

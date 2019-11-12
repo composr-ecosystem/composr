@@ -50,20 +50,20 @@ $addons = array();
 $all_tutorials_referenced = array();
 $_addons = find_all_hooks('systems', 'addon_registry');
 ksort($_addons);
-foreach ($_addons as $addon => $place) {
+foreach ($_addons as $addon_name => $place) {
     if ($place == 'sources') {
-        require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon));
-        $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon));
+        require_code('hooks/systems/addon_registry/' . filter_naughty_harsh($addon_name));
+        $ob = object_factory('Hook_addon_registry_' . filter_naughty_harsh($addon_name));
 
         $tutorials = $ob->get_applicable_tutorials();
         $all_tutorials_referenced = array_merge($all_tutorials_referenced, $tutorials);
         if (count($tutorials) == 0) {
-            warn_exit('No tutorial defined for addon: ' . $addon);
+            warn_exit('No tutorial defined for addon: ' . $addon_name);
         }
 
         $dependencies = $ob->get_dependencies();
 
-        $pretty = titleify($addon);
+        $pretty = titleify($addon_name);
 
         $stemmed_addon = strtolower($stemmer->stem($pretty));
         $_synonyms = array();
@@ -79,22 +79,22 @@ foreach ($_addons as $addon => $place) {
                 if ($test !== false) {
                     unset($_synonyms[$test]);
                 }
-                $test = array_search($addon, $_synonyms);
+                $test = array_search($addon_name, $_synonyms);
                 if ($test !== false) {
                     unset($_synonyms[$test]);
                 }
             }
         }
 
-        $addons[$addon] = array(
+        $addons[$addon_name] = array(
             'pretty' => $pretty,
-            'icon' => find_addon_icon($addon, false),
+            'icon' => find_addon_icon($addon_name, false),
             'description' => $ob->get_description(),
-            'core' => (substr($addon, 0, 4) == 'core'),
+            'core' => (substr($addon_name, 0, 4) == 'core'),
             'dependencies' => $dependencies['requires'],
             'tutorials' => $tutorials,
             'synonyms' => $_synonyms,
-            'tracker_url' => 'https://compo.sr/tracker/search.php?project_id=1&category=' . urlencode($addon) . '&status_id=10',
+            'tracker_url' => 'https://compo.sr/tracker/search.php?project_id=1&category=' . urlencode($addon_name) . '&status_id=10',
         );
     }
 }
@@ -128,9 +128,9 @@ $out = '
     </thead>
 ';
 
-foreach ($addons as $addon => $addon_details) {
+foreach ($addons as $addon_name => $addon_info) {
     $tutorials = '';
-    foreach ($addon_details['tutorials'] as $tutorial) {
+    foreach ($addon_info['tutorials'] as $tutorial) {
         if ($tutorials != '') {
             $tutorials .= '<br /><br />';
         }
@@ -139,23 +139,23 @@ foreach ($addons as $addon => $addon_details) {
         $tutorials .= '<a href="' . escape_html(get_tutorial_url($tutorial)) . '">' . escape_html($tutorial_title) . '</a>';
     }
 
-    if ($addon_details['icon'] == '') {
+    if ($addon_info['icon'] == '') {
         $icon = '';
     } else {
-        $icon = '<img class="right" src="' . escape_html($addon_details['icon']) . '" />';
+        $icon = '<img class="right" src="' . escape_html($addon_info['icon']) . '" />';
     }
 
     $out .= '
         <tr>
             <td>
-                ' . $icon . escape_html($addon_details['pretty']) . '<br />(<kbd>' . escape_html($addon) . '</kbd>)<br /><br />
-                <strong>Core</strong>: ' . escape_html($addon_details['core'] ? 'Yes' : 'No') . '<br /><br />
-                <strong>Dependencies</strong>: ' . (($addon_details['dependencies'] == array()) ? '<em>None</em>' : ('<kbd>' . implode('</kbd>, <kbd>', array_map('escape_html', $addon_details['dependencies'])) . '</kbd>')) . '
+                ' . $icon . escape_html($addon_info['pretty']) . '<br />(<kbd>' . escape_html($addon_name) . '</kbd>)<br /><br />
+                <strong>Core</strong>: ' . escape_html($addon_info['core'] ? 'Yes' : 'No') . '<br /><br />
+                <strong>Dependencies</strong>: ' . (($addon_info['dependencies'] == array()) ? '<em>None</em>' : ('<kbd>' . implode('</kbd>, <kbd>', array_map('escape_html', $addon_info['dependencies'])) . '</kbd>')) . '
             </td>
-            <td>' . escape_html($addon_details['description']) . '</td>
+            <td>' . escape_html($addon_info['description']) . '</td>
             <td>' . $tutorials . '</td>
-            <td>' . implode('<br /><br />', array_map('escape_html', $addon_details['synonyms'])) . '</td>
-            <td><a href="' . escape_html($addon_details['tracker_url']) . '">Link</a></td>
+            <td>' . implode('<br /><br />', array_map('escape_html', $addon_info['synonyms'])) . '</td>
+            <td><a href="' . escape_html($addon_info['tracker_url']) . '">Link</a></td>
         </tr>
     ';
 }

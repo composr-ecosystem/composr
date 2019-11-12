@@ -26,14 +26,14 @@ class addon_hook_quality_test_set extends cms_test_case
         set_throw_errors(true);
 
         $addons = find_all_hook_obs('systems', 'addon_registry', 'Hook_addon_registry_');
-        foreach ($addons as $addon => $ob) {
-            $this->assertTrue(method_exists($ob, 'get_chmod_array'), 'Missing get_chmod_array for ' . $addon);
-            $this->assertTrue(method_exists($ob, 'get_version'), 'Missing get_version for ' . $addon);
-            $this->assertTrue(method_exists($ob, 'get_description'), 'Missing get_description for ' . $addon);
-            $this->assertTrue(method_exists($ob, 'get_applicable_tutorials'), 'Missing get_applicable_tutorials for ' . $addon);
-            $this->assertTrue(method_exists($ob, 'get_dependencies'), 'Missing get_dependencies for ' . $addon);
-            $this->assertTrue(method_exists($ob, 'get_default_icon'), 'Missing get_default_icon for ' . $addon);
-            $this->assertTrue(method_exists($ob, 'get_file_list'), 'Missing get_file_list for ' . $addon);
+        foreach ($addons as $addon_name => $ob) {
+            $this->assertTrue(method_exists($ob, 'get_chmod_array'), 'Missing get_chmod_array for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_version'), 'Missing get_version for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_description'), 'Missing get_description for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_applicable_tutorials'), 'Missing get_applicable_tutorials for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_dependencies'), 'Missing get_dependencies for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_default_icon'), 'Missing get_default_icon for ' . $addon_name);
+            $this->assertTrue(method_exists($ob, 'get_file_list'), 'Missing get_file_list for ' . $addon_name);
 
             $description = $ob->get_description();
 
@@ -41,7 +41,7 @@ class addon_hook_quality_test_set extends cms_test_case
                 check_comcode($description);
             }
             catch (Exception $e) {
-                $this->assertTrue(false, 'Failed to parse addon description for ' . $addon . ', ' . $e->getMessage());
+                $this->assertTrue(false, 'Failed to parse addon description for ' . $addon_name . ', ' . $e->getMessage());
             }
         }
 

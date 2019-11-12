@@ -104,8 +104,8 @@ class Hook_admin_setupwizard_installprofiles_mycustomprofile
 END;
 $addons = find_installed_addons();
 sort($addons);
-foreach ($addons as $addon) {
-    $profile .= "\t\t\t\t\"" . php_addslashes($addon['name']) . "\",\n";
+foreach ($addons as $addon_info) {
+    $profile .= "\t\t\t\t\"" . php_addslashes($addon_info['name']) . "\",\n";
 }
 $profile .= <<<END
             ),
@@ -116,8 +116,8 @@ $profile .= <<<END
 END;
 $non_installed_addons = find_available_addons(false);
 sort($non_installed_addons);
-foreach ($non_installed_addons as $addon) {
-    $profile .= "\t\t\t\t\"" . php_addslashes($addon['name']) . "\",\n";
+foreach ($non_installed_addons as $addon_info) {
+    $profile .= "\t\t\t\t\"" . php_addslashes($addon_info['name']) . "\",\n";
 }
 $profile .= <<<END
             ),
@@ -251,7 +251,7 @@ $profile .= <<<END
 END;
 
 $site_name = get_option('site_name');
-$addoninf = <<<END
+$addon_inf = <<<END
 name="My Custom installprofile"
 author="Me"
 organisation="{$site_name}"
@@ -273,7 +273,7 @@ require_code('tar');
 $tar = tar_open('php://stdout', 'wb');
 
 tar_add_file($tar, 'sources_custom/hooks/modules/admin_setupwizard_installprofiles/mycustomprofile.php', $profile);
-tar_add_file($tar, 'addon.inf', $addoninf);
+tar_add_file($tar, 'addon.inf', $addon_inf);
 
 tar_close($tar);
 
