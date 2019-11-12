@@ -1067,6 +1067,7 @@ class Module_admin_setupwizard
         $name = post_param_string('site_name');
         $new_theme_name = $this->generate_theme_name($name);
         $generating_new_theme = !file_exists(get_custom_file_base() . '/themes/' . $new_theme_name);
+        list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
 
         require_code('addons2');
 
@@ -1080,7 +1081,6 @@ class Module_admin_setupwizard
             }
         }
         if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
-            list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
             foreach (array_keys($addons_uninstall) as $addon_name) {
                 $writable_paths = array_merge($writable_paths, get_addon_uninstall_writable_paths($addon_name));
             }
@@ -1332,8 +1332,6 @@ class Module_admin_setupwizard
 
         // Set addons
         if ((post_param_integer('skip_4', 0) == 0) && ($GLOBALS['CURRENT_SHARE_USER'] === null)) {
-            list($addons_install, $addons_uninstall) = $this->detect_addon_operations();
-
             foreach ($addons_uninstall as $addon_name => $addon_info) {
                 // Archive it off to exports/addons
                 if ($addon_info['files'] != array()) {
@@ -1497,7 +1495,7 @@ class Module_admin_setupwizard
 
         // What is being installed?
         foreach ($addons_not_installed as $addon_file => $addon_info) {
-            if (post_param_integer('addon_' . $addon_info['name'], 0) == 1) {
+            if ((post_param_integer('addon_' . $addon_info['name'], 0) == 1) && (!addon_installed($addon_info['name'], true))) {
                 $installing[$addon_file] = $addon_info;
             }
         }

@@ -72,11 +72,11 @@ function resolve_addon_dependency_problems(&$installing, &$uninstalling)
         foreach ($installing as $addon_file => $addon_info) {
             $addon_name = $addon_info['name'];
 
-            $dependencies = $addon_info['dependencies'];
+            $dependencies = isset($addon_info['dependencies']) ? explode(',', $addon_info['dependencies']) : array();
             foreach ($dependencies as $dep) {
                 $dep_filename = isset($addon_names_to_filenames[$dep]) ? $addon_names_to_filenames[$dep] : null;
 
-                if ((!addon_installed($dep)) && (($dep_filename === null) || (!in_array($dep_filename, $installing)))) {
+                if ((!addon_installed($dep, true)) && (($dep_filename === null) || (!in_array($dep_filename, $installing)))) {
                     if (($dep_filename !== null) && (in_array($dep_filename, $addons_not_installed))) {
                         $installing[$dep_filename] = $addons_not_installed[$dep];
                     } else {
