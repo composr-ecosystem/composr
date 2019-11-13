@@ -49,7 +49,12 @@ class Block_side_news_categories
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array(array_key_exists(\'select\',$map)?$map[\'select\']:\'\',array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
+        $info['cache_on'] = <<<'PHP'
+        array(
+            array_key_exists('select', $map) ? $map['select'] : '',
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24);
         return $info;

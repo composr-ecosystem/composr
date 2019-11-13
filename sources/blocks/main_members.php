@@ -67,25 +67,27 @@ class Block_main_members
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '(strpos(serialize($_GET),\'filter_\')!==false)?null:array(
-            array_key_exists(\'display_mode\',$map)?$map[\'display_mode\']:\'avatars\',
-            array_key_exists(\'must_have_avatar\',$map)?($map[\'must_have_avatar\']==\'1\'):false,
-            array_key_exists(\'must_have_photo\',$map)?($map[\'must_have_photo\']==\'1\'):false,
-            array_key_exists(\'include_form\',$map)?($map[\'include_form\']==\'1\'):true,
-            array_key_exists(\'filter\',$map)?$map[\'filter\']:\'*\',
-            array_key_exists(\'filters_row_a\',$map)?$map[\'filters_row_a\']:\'\',
-            array_key_exists(\'filters_row_b\',$map)?$map[\'filters_row_b\']:\'\',
-            array_key_exists(\'select\',$map)?$map[\'select\']:\'\',
-            array_key_exists(\'usergroup\',$map)?$map[\'usergroup\']:\'\',
-            get_param_integer($block_id.\'_max\',array_key_exists(\'max\',$map)?intval($map[\'max\']):30),
-            get_param_integer($block_id.\'_start\',array_key_exists(\'start\',$map)?intval($map[\'start\']):0),
-            ((array_key_exists(\'pagination\',$map)?$map[\'pagination\']:\'0\')==\'1\'),
-            get_param_string($block_id.\'_sort\',array_key_exists(\'sort\',$map)?$map[\'sort\']:\'m_join_time DESC\'),
-            array_key_exists(\'parent_gallery\',$map)?$map[\'parent_gallery\']:\'\',
-            array_key_exists(\'per_row\',$map)?intval($map[\'per_row\']):0,
-            array_key_exists(\'include_non_confirmed\',$map)?$map[\'include_non_confirmed\']:\'exclude\',
-            array_key_exists(\'guid\',$map)?$map[\'guid\']:\'\',
-        )';
+        $info['cache_on'] = <<<'PHP'
+        (strpos(serialize($_GET), 'filter_') !== false) ? null : array(
+            array_key_exists('display_mode', $map) ? $map['display_mode'] : 'avatars',
+            array_key_exists('must_have_avatar', $map) ? ($map['must_have_avatar'] == '1') : false,
+            array_key_exists('must_have_photo', $map) ? ($map['must_have_photo'] == '1') : false,
+            array_key_exists('include_form', $map) ? ($map['include_form'] == '1') : true,
+            array_key_exists('filter', $map) ? $map['filter'] : '*',
+            array_key_exists('filters_row_a', $map) ? $map['filters_row_a'] : '',
+            array_key_exists('filters_row_b', $map) ? $map['filters_row_b'] : '',
+            array_key_exists('select', $map) ? $map['select'] : '',
+            array_key_exists('usergroup', $map) ? $map['usergroup'] : '',
+            get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : 30),
+            get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0),
+            ((array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1'),
+            get_param_string($block_id . '_sort', array_key_exists('sort', $map) ? $map['sort'] : 'm_join_time DESC'),
+            array_key_exists('parent_gallery', $map) ? $map['parent_gallery'] : '',
+            array_key_exists('per_row', $map) ? intval($map['per_row']) : 0,
+            array_key_exists('include_non_confirmed', $map) ? $map['include_non_confirmed'] : 'exclude',
+            array_key_exists('guid', $map) ? $map['guid'] : '',
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to CPF permissions
         $info['ttl'] = 60;
         return $info;

@@ -44,7 +44,9 @@ class Block_main_sortable_table
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '$map';
+        $info['cache_on'] = <<<'PHP'
+        $map
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
         $info['ttl'] = 60 * 60 * 24 * 365 * 5;
         return $info;

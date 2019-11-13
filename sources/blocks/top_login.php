@@ -49,7 +49,14 @@ class Block_top_login
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'is_guest() ? null : array()'; // No caching for guests due to self URL redirect
+        // No caching for guests due to self URL redirect
+        $info['cache_on'] = <<<'PHP'
+        is_guest()
+        ?
+        null
+        :
+        array()
+PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24);
         return $info;
     }

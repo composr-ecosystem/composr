@@ -48,16 +48,16 @@ class Block_main_hero_slider
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-            array(
-                isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false,
-                !empty($map['effect']) ? $map['effect'] : 'slide',
-                !empty($map['fullscreen']),
-                !empty($map['show_indicators']),
-                !empty($map['show_scroll_down']),
-                isset($map['interval']) ? strval(intval($map['interval'])) : false,
-                isset($map['check_perms']) ? !empty($map['check_perms']) : true,
-                isset($map['gallery_name']) ? $map['gallery_name'] : '',
-            )
+        array(
+            isset($map['blank_if_empty']) ? !empty($map['blank_if_empty']) : false,
+            !empty($map['effect']) ? $map['effect'] : 'slide',
+            !empty($map['fullscreen']),
+            !empty($map['show_indicators']),
+            !empty($map['show_scroll_down']),
+            isset($map['interval']) ? strval(intval($map['interval'])) : false,
+            isset($map['check_perms']) ? !empty($map['check_perms']) : true,
+            isset($map['gallery_name']) ? $map['gallery_name'] : '',
+        )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
         return $info;

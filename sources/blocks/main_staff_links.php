@@ -58,7 +58,14 @@ class Block_main_staff_links
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '(count($_POST)>0)?null:array()'; // No cache on POST as this is when we save text data
+        // No cache on POST as this is when we save text data
+        $info['cache_on'] = $info['cache_on'] = <<<'PHP'
+        (count($_POST) > 0)
+        ?
+        null
+        :
+        array()
+PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 5);
         return $info;
     }

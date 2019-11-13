@@ -49,7 +49,17 @@ class Block_main_forum_news
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array(array_key_exists(\'optimise\',$map)?$map[\'optimise\']:\'0\',array_key_exists(\'title\',$map)?$map[\'title\']:\'\',array_key_exists(\'member_based\',$map)?$map[\'member_based\']:\'0\',array_key_exists(\'forum\',$map)?$map[\'forum\']:\'Announcements\',array_key_exists(\'param\',$map)?intval($map[\'param\']):14,array_key_exists(\'date_key\',$map)?$map[\'date_key\']:\'firsttime\',array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
+        $info['cache_on'] = <<<'PHP'
+        array(
+            array_key_exists('optimise', $map) ? $map['optimise'] : '0',
+            array_key_exists('title', $map) ? $map['title'] : '',
+            array_key_exists('member_based', $map) ? $map['member_based'] : '0',
+            array_key_exists('forum', $map) ? $map['forum'] : 'Announcements',
+            array_key_exists('param', $map) ? intval($map['param']) : 14,
+            array_key_exists('date_key', $map) ? $map['date_key'] : 'firsttime',
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
         return $info;

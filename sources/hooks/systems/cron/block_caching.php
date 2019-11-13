@@ -104,7 +104,9 @@ class Hook_cron_block_caching
                         $info = $object->caching_environment();
                     } else {
                         $info = array();
-                        $info['cache_on'] = 'array($map)';
+                        $info['cache_on'] = $info['cache_on'] = <<<'PHP'
+                        $map
+PHP;
                         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
                         $info['ttl'] = 60 * 24;
                     }

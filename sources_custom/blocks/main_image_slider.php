@@ -44,7 +44,9 @@ class Block_main_image_slider
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '$map';
+        $info['cache_on'] = <<<'PHP'
+        $map
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
         return $info;

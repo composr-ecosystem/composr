@@ -44,7 +44,9 @@ class Block_main_unslider
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array($map)';
+        $info['cache_on'] = <<<'PHP'
+        $map
+PHP;
         $info['ttl'] = 1000; /* Page include is going to happen within Tempcode, so caching won't affect that */
         return $info;
     }

@@ -49,7 +49,37 @@ class Block_main_news
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '((preg_match(\'#<\w+>#\',array_key_exists(\'filter\',$map)?$map[\'filter\']:\'\'))!=0)?null:array(array_key_exists(\'optimise\',$map)?$map[\'optimise\']:\'0\',(array_key_exists(\'pagination\',$map)?$map[\'pagination\']:\'0\'==\'1\'),array_key_exists(\'title\',$map)?escape_html($map[\'title\']):\'(default title)\',array_key_exists(\'as_guest\',$map)?($map[\'as_guest\']==\'1\'):false,get_param_integer($block_id.\'_start\',array_key_exists(\'start\',$map)?intval($map[\'start\']):0),array_key_exists(\'filter\',$map)?$map[\'filter\']:\'\',array_key_exists(\'show_in_full\',$map)?$map[\'show_in_full\']:\'0\',array_key_exists(\'render_if_empty\',$map)?$map[\'render_if_empty\']:\'0\',((array_key_exists(\'attach_to_url_filter\',$map)?$map[\'attach_to_url_filter\']:\'0\')==\'1\'),array_key_exists(\'no_links\',$map)?$map[\'no_links\']:0,array_key_exists(\'title\',$map)?$map[\'title\']:\'\',array_key_exists(\'member_based\',$map)?$map[\'member_based\']:\'0\',array_key_exists(\'blogs\',$map)?$map[\'blogs\']:\'-1\',array_key_exists(\'historic\',$map)?$map[\'historic\']:\'\',array_key_exists(\'param\',$map)?intval($map[\'param\']):14,array_key_exists(\'multiplier\',$map)?floatval($map[\'multiplier\']):0.5,array_key_exists(\'fallback_full\',$map)?intval($map[\'fallback_full\']):3,array_key_exists(\'fallback_archive\',$map)?intval($map[\'fallback_archive\']):6,array_key_exists(\'select\',$map)?$map[\'select\']:\'\',array_key_exists(\'zone\',$map)?$map[\'zone\']:get_module_zone(\'news\'),array_key_exists(\'select_and\',$map)?$map[\'select_and\']:\'\',array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
+        $info['cache_on'] = <<<'PHP'
+        ((preg_match('#<\w+>#', array_key_exists('filter', $map) ? $map['filter'] : '')) != 0)
+        ?
+        null
+        :
+        array(
+            array_key_exists('optimise', $map) ? $map['optimise'] : '0',
+            (array_key_exists('pagination', $map) ? $map['pagination'] : '0' == '1'),
+            array_key_exists('title', $map) ? escape_html($map['title']) : '(default title)',
+            array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
+            get_param_integer($block_id . '_start',
+            array_key_exists('start', $map) ? intval($map['start']) : 0),
+            array_key_exists('filter', $map) ? $map['filter'] : '',
+            array_key_exists('show_in_full', $map) ? $map['show_in_full'] : '0',
+            array_key_exists('render_if_empty', $map) ? $map['render_if_empty'] : '0',
+            ((array_key_exists('attach_to_url_filter', $map) ? $map['attach_to_url_filter'] : '0') == '1'),
+            array_key_exists('no_links', $map) ? $map['no_links'] : 0,
+            array_key_exists('title', $map) ? $map['title'] : '',
+            array_key_exists('member_based', $map) ? $map['member_based'] : '0',
+            array_key_exists('blogs', $map) ? $map['blogs'] : '-1',
+            array_key_exists('historic', $map) ? $map['historic'] : '',
+            array_key_exists('param', $map) ? intval($map['param']) : 14,
+            array_key_exists('multiplier', $map) ? floatval($map['multiplier']) : 0.5,
+            array_key_exists('fallback_full', $map) ? intval($map['fallback_full']) : 3,
+            array_key_exists('fallback_archive', $map) ? intval($map['fallback_archive']) : 6,
+            array_key_exists('select', $map) ? $map['select'] : '',
+            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
+            array_key_exists('select_and', $map) ? $map['select_and'] : '',
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {
             $info['special_cache_flags'] |= CACHE_AGAINST_MEMBER;

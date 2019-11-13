@@ -49,7 +49,14 @@ class Block_main_banner_wave
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array(array_key_exists(\'param\',$map)?$map[\'param\']:\'\',array_key_exists(\'name\',$map)?$map[\'name\']:\'\',array_key_exists(\'region\',$map)?$map[\'region\']:\'\',array_key_exists(\'max\',$map)?intval($map[\'max\']):100)';
+        $info['cache_on'] = <<<'PHP'
+        array(
+            array_key_exists('param', $map) ? $map['param'] : '',
+            array_key_exists('name', $map) ? $map['name'] : '',
+            array_key_exists('region', $map) ? $map['region'] : '',
+            array_key_exists('max', $map) ? intval($map['max']) : 100
+        )
+PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 5; // due to shuffle, can't cache long
         return $info;
     }

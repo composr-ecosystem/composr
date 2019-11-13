@@ -50,16 +50,16 @@ class Block_bottom_latest_news
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-            array(
-                array_key_exists('param', $map) ? intval($map['param']) : 5,
-                array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-                array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
-                array_key_exists('blogs', $map) ? intval($map['blogs']) : -1,
-                array_key_exists('historic', $map) ? $map['historic'] : '',
-                array_key_exists('select', $map) ? $map['select'] : '*',
-                array_key_exists('select_and', $map) ? $map['select_and'] : '',
-                array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
-            )
+        array(
+            array_key_exists('param', $map) ? intval($map['param']) : 5,
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
+            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
+            array_key_exists('blogs', $map) ? intval($map['blogs']) : -1,
+            array_key_exists('historic', $map) ? $map['historic'] : '',
+            array_key_exists('select', $map) ? $map['select'] : '*',
+            array_key_exists('select_and', $map) ? $map['select_and'] : '',
+            array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
+        )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {

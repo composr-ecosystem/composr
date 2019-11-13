@@ -49,7 +49,23 @@ class Block_main_contact_catalogues
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '(post_param_string(\'subject\',\'\')!=\'\')?null:array(array_key_exists(\'param\',$map)?$map[\'param\']:\'\',array_key_exists(\'to\',$map)?$map[\'to\']:\'\',array_key_exists(\'guid\',$map)?$map[\'guid\']:\'\',array_key_exists(\'redirect\',$map)?$map[\'redirect\']:\'\',array_key_exists(\'subject\',$map)?$map[\'subject\']:\'\',array_key_exists(\'body_prefix\',$map)?$map[\'body_prefix\']:\'\',array_key_exists(\'body_suffix\',$map)?$map[\'body_suffix\']:\'\',array_key_exists(\'subject_prefix\',$map)?$map[\'subject_prefix\']:\'\',array_key_exists(\'subject_suffix\',$map)?$map[\'subject_suffix\']:\'\')';
+        $info['cache_on'] = <<<'PHP'
+        (post_param_string('subject', '') != '')
+        ?
+        null
+        :
+        array(
+            array_key_exists('param', $map) ? $map['param'] : '',
+            array_key_exists('to', $map) ? $map['to'] : '',
+            array_key_exists('guid', $map) ? $map['guid'] : '',
+            array_key_exists('redirect', $map) ? $map['redirect'] : '',
+            array_key_exists('subject', $map) ? $map['subject'] : '',
+            array_key_exists('body_prefix', $map) ? $map['body_prefix'] : '',
+            array_key_exists('body_suffix', $map) ? $map['body_suffix'] : '',
+            array_key_exists('subject_prefix', $map) ? $map['subject_prefix'] : '',
+            array_key_exists('subject_suffix', $map) ? $map['subject_suffix'] : ''
+        )
+PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24 * 7);
         return $info;
     }

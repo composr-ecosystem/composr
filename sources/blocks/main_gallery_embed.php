@@ -51,25 +51,28 @@ class Block_main_gallery_embed
         $info = array();
         $info['cache_on'] = <<<'PHP'
             (preg_match('#<\w+>#', ((array_key_exists('filter', $map) ? $map['filter'] : '') . (array_key_exists('video_filter', $map) ? $map['video_filter'] : ''))) != 0)
-                ? null : array(
-                    array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
-                    get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : null),
-                    get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0),
-                    empty($map['sort']) && ((array_key_exists('show_sorting', $map) ? $map['show_sorting'] : '0') == '1'),
-                    ((array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1'),
-                    ((array_key_exists('root', $map)) && ($map['root'] != '')) ? $map['root'] : get_param_string('keep_gallery_root', null),
-                    array_key_exists('filter', $map) ? $map['filter'] : '',
-                    array_key_exists('video_filter', $map) ? $map['video_filter'] : '',
-                    array_key_exists('render_if_empty', $map) ? $map['render_if_empty'] : '0',
-                    array_key_exists('days', $map) ? $map['days'] : '',
-                    !empty($map['sort']) ? $map['sort'] : get_param_string('sort', get_option('gallery_media_default_sort_order'), INPUT_FILTER_GET_COMPLEX),
-                    array_key_exists('param', $map) ? $map['param'] : db_get_first_id(),
-                    array_key_exists('zone', $map) ? $map['zone'] : '',
-                    (($map === null) || (!array_key_exists('select', $map))) ? '*' : $map['select'],
-                    (($map === null) || (!array_key_exists('video_select', $map))) ? '*' : $map['video_select'],
-                    array_key_exists('title', $map) ? $map['title'] : '',
-                    array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-                )
+            ?
+            null
+            :
+            array(
+                array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
+                get_param_integer($block_id . '_max', array_key_exists('max', $map) ? intval($map['max']) : null),
+                get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0),
+                empty($map['sort']) && ((array_key_exists('show_sorting', $map) ? $map['show_sorting'] : '0') == '1'),
+                ((array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1'),
+                ((array_key_exists('root', $map)) && ($map['root'] != '')) ? $map['root'] : get_param_string('keep_gallery_root', null),
+                array_key_exists('filter', $map) ? $map['filter'] : '',
+                array_key_exists('video_filter', $map) ? $map['video_filter'] : '',
+                array_key_exists('render_if_empty', $map) ? $map['render_if_empty'] : '0',
+                array_key_exists('days', $map) ? $map['days'] : '',
+                !empty($map['sort']) ? $map['sort'] : get_param_string('sort', get_option('gallery_media_default_sort_order'), INPUT_FILTER_GET_COMPLEX),
+                array_key_exists('param', $map) ? $map['param'] : db_get_first_id(),
+                array_key_exists('zone', $map) ? $map['zone'] : '',
+                (($map === null) || (!array_key_exists('select', $map))) ? '*' : $map['select'],
+                (($map === null) || (!array_key_exists('video_select', $map))) ? '*' : $map['video_select'],
+                array_key_exists('title', $map) ? $map['title'] : '',
+                array_key_exists('check', $map) ? ($map['check'] == '1') : true,
+            )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {

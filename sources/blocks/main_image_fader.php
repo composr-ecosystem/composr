@@ -49,7 +49,16 @@ class Block_main_image_fader
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array(array_key_exists(\'as_guest\',$map)?($map[\'as_guest\']==\'1\'):false,array_key_exists(\'order\',$map)?$map[\'order\']:\'\',array_key_exists(\'time\',$map)?intval($map[\'time\']):8000,array_key_exists(\'zone\',$map)?$map[\'zone\']:get_module_zone(\'galleries\'),array_key_exists(\'param\',$map)?$map[\'param\']:\'\',array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
+        $info['cache_on'] = <<<'PHP'
+        array(
+            array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
+            array_key_exists('order', $map) ? $map['order'] : '',
+            array_key_exists('time', $map) ? intval($map['time']) : 8000,
+            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('galleries'),
+            array_key_exists('param', $map) ? $map['param'] : '',
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {
             $info['special_cache_flags'] |= CACHE_AGAINST_MEMBER;

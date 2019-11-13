@@ -49,7 +49,28 @@ class Block_main_cc_embed
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = '(preg_match(\'#<\w+>#\',(array_key_exists(\'filter\',$map)?$map[\'filter\']:\'\'))!=0)?null:array(array_key_exists(\'as_guest\',$map)?($map[\'as_guest\']==\'1\'):false,get_param_integer($block_id.\'_max\',array_key_exists(\'max\',$map)?intval($map[\'max\']):30),get_param_integer($block_id.\'_start\',array_key_exists(\'start\',$map)?intval($map[\'start\']):0),((array_key_exists(\'pagination\',$map)?$map[\'pagination\']:\'0\')==\'1\'),((array_key_exists(\'root\',$map)) && ($map[\'root\']!=\'\'))?intval($map[\'root\']):null,((array_key_exists(\'sorting\',$map)?$map[\'sorting\']:\'0\')==\'1\'),array_key_exists(\'select\',$map)?$map[\'select\']:\'\',get_param_string($block_id.\'_order\',array_key_exists(\'sort\',$map)?$map[\'sort\']:\'\'),array_key_exists(\'display_type\',$map)?$map[\'display_type\']:get_param_string(\'keep_cat_display_type\',\'\'),array_key_exists(\'template_set\',$map)?$map[\'template_set\']:\'\',array_key_exists(\'filter\',$map)?$map[\'filter\']:\'\',array_key_exists(\'param\',$map)?$map[\'param\']:db_get_first_id(),array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
+        $info['cache_on'] = <<<'PHP'
+        (preg_match('#<\w+>#', (array_key_exists('filter', $map) ? $map['filter'] : '')) != 0)
+        ?
+        null
+        :
+        array(
+            array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
+            get_param_integer($block_id . '_max',
+            array_key_exists('max', $map) ? intval($map['max']) : 30), 
+            get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0),
+            ((array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1'),
+            ((array_key_exists('root', $map)) && ($map['root'] != '')) ? intval($map['root']) : null,
+            ((array_key_exists('sorting', $map) ? $map['sorting'] : '0') == '1'),
+            array_key_exists('select', $map) ? $map['select'] : '',
+            get_param_string($block_id . '_order', array_key_exists('sort', $map) ? $map['sort'] : ''),
+            array_key_exists('display_type', $map) ? $map['display_type'] : get_param_string('keep_cat_display_type', ''),
+            array_key_exists('template_set', $map) ? $map['template_set'] : '',
+            array_key_exists('filter', $map) ? $map['filter'] : '',
+            array_key_exists('param', $map) ? $map['param'] : db_get_first_id(),
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {
             $info['special_cache_flags'] |= CACHE_AGAINST_MEMBER;

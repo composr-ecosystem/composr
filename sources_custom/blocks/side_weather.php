@@ -45,7 +45,14 @@ class Block_side_weather
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array((array_key_exists(\'units\',$map) && ($map[\'units\']!=\'\'))?$map[\'units\']:\'metric\',isset($map[\'max_days\'])?intval($map[\'max_days\']):5,array_key_exists(\'param\',$map)?$map[\'param\']:\'\',(array_key_exists(\'api\',$map)&&($map[\'api\']!=\'\'))?$map[\'api\']:null)';
+        $info['cache_on'] = <<<'PHP'
+        array(
+            (array_key_exists('units', $map) && ($map['units'] != '')) ? $map['units'] : 'metric',
+            isset($map['max_days']) ? intval($map['max_days']) : 5,
+            array_key_exists('param', $map) ? $map['param'] : '',
+            (array_key_exists('api', $map) && ($map['api'] != '')) ? $map['api'] : null
+        )
+PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_STAFF_STATUS;
         $info['ttl'] = 60;
         return $info;

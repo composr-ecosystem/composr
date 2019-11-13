@@ -49,7 +49,9 @@ class Block_main_staff_new_version
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array()';
+        $info['cache_on'] = <<<'PHP'
+        array()
+PHP;
         $info['ttl'] = 60 * 3;
         return $info;
     }

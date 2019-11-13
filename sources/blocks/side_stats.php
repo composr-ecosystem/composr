@@ -49,7 +49,9 @@ class Block_side_stats
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array()';
+        $info['cache_on'] = <<<'PHP'
+        array()
+PHP;
         $info['ttl'] = 15;
         return $info;
     }

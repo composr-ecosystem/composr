@@ -49,7 +49,16 @@ class Block_main_staff_actions
     public function caching_environment()
     {
         $info = array();
-        $info['cache_on'] = 'array((get_param_integer(\'filter_by_member\',array_key_exists(\'filter_by_member\',$map)?intval($map[\'filter_by_member\']):0) == 1),(get_param_integer(\'include_duplicates\',isset($_GET[\'filter_by_member\']) ? 0 : (array_key_exists(\'include_duplicates\',$map)?intval($map[\'include_duplicates\']):1)) == 1),(get_param_integer(\'include_user_activities\',isset($_GET[\'filter_by_member\']) ? 0 : (array_key_exists(\'include_user_activities\',$map)?intval($map[\'include_user_activities\']):0)) == 1)?get_member():null,get_param_integer(\'sa_start\',0),get_param_integer(\'sa_max\',array_key_exists(\'max\',$map)?intval($map[\'max\']):10),get_param_string(\'sa_sort\',array_key_exists(\'sort\',$map)?$map[\'sort\']:\'date_and_time DESC\'))';
+        $info['cache_on'] = <<<'PHP'
+        array(
+            (get_param_integer('filter_by_member', array_key_exists('filter_by_member', $map) ? intval($map['filter_by_member']) : 0) == 1),
+            (get_param_integer('include_duplicates', isset($_GET['filter_by_member']) ? 0 : (array_key_exists('include_duplicates', $map) ? intval($map['include_duplicates']) : 1)) == 1),
+            (get_param_integer('include_user_activities', isset($_GET['filter_by_member']) ? 0 : (array_key_exists('include_user_activities', $map) ? intval($map['include_user_activities']) : 0)) == 1) ? get_member() : null,
+            get_param_integer('sa_start', 0),
+            get_param_integer('sa_max', array_key_exists('max', $map) ? intval($map['max']) : 10),
+            get_param_string('sa_sort', array_key_exists('sort', $map) ? $map['sort'] : 'date_and_time DESC')
+        )
+PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 5);
         return $info;
     }
