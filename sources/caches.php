@@ -652,6 +652,31 @@ function get_cache_entry($codename, $cache_identifier, $special_cache_flags, $tt
 }
 
 /**
+ * Get a cache signature that can accurately represent what permissions a member will have.
+ *
+ * @return string Cache signature
+ */
+function permissive_groups_cache_signature()
+{
+    static $groups_cache = null;
+
+    if ($groups_cache === null) {
+        $actual_groups = filter_group_permissivity($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member()));
+        $m_zone = collapse_1d_complexity('zone_name', $GLOBALS['SITE_DB']->query_select('member_zone_access', array('zone_name'), array('member_id' => get_member())));
+        $m_page = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_page_access', array('page_name', 'zone_name'), array('member_id' => get_member()), 'ORDER BY zone_name,page_name'));
+        $m_privileges = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_privileges', array('privilege', 'the_page', 'module_the_name', 'category_name', 'the_value'), array('member_id' => get_member()), 'ORDER BY privilege,the_page,module_the_name,category_name,the_value'));
+        $m_categories = array_map('array_values', $GLOBALS['SITE_DB']->query_select('member_category_access', array('module_the_name', 'category_name'), array('member_id' => get_member()), 'ORDER BY module_the_name,category_name'));
+        if ((empty($m_zone)) && (empty($m_page)) && (empty($m_privileges)) && (empty($m_categories))) {
+            $groups_cache = implode(',', array_map('strval', $actual_groups));
+        } else {
+            $groups_cache = json_encode(array($actual_groups, $m_zone, $m_page, $m_privileges, $m_categories));
+        }
+    }
+
+    return $groups_cache;
+}
+
+/**
  * Ability to do multiple get_cache_entry at once, for performance reasons.
  *
  * @param  array $dets An array of tuples of parameters (as per get_cache_entry, almost)
@@ -673,7 +698,7 @@ function _get_cache_entries($dets, $special_cache_flags = null)
     require_code('temporal');
     $staff_status = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_STAFF_STATUS) !== 0)) ? ($GLOBALS['FORUM_DRIVER']->is_staff(get_member()) ? 1 : 0) : null;
     $member = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_MEMBER) !== 0)) ? get_member() : null;
-    $groups = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0)) ? implode(',', array_map('strval', filter_group_permissivity($GLOBALS['FORUM_DRIVER']->get_members_groups(get_member())))) : '';
+    $groups = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_PERMISSIVE_GROUPS) !== 0)) ? permissive_groups_cache_signature() : '';
     $is_bot = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_BOT_STATUS) !== 0)) ? (is_null(get_bot_type()) ? 0 : 1) : null;
     $timezone = (($special_cache_flags !== null) && (($special_cache_flags & CACHE_AGAINST_TIMEZONE) !== 0)) ? get_users_timezone(get_member()) : '';
 
