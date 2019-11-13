@@ -26,16 +26,18 @@
 function adminzone_common_pages_code()
 {
     // Run a Health Check
-    $health_check = array();
-    if (addon_installed('health_check')) {
-        require_code('health_check');
-        $has_fails = false;
-        $categories = run_health_check($has_fails, array('Stability \\ Error log'));
-        if ($has_fails) {
-            foreach ($categories as $category_label => $sections) {
-                foreach ($sections['SECTIONS'] as $section_label => $results) {
-                    foreach ($results['RESULTS'] as $result) {
-                        attach_message($result['MESSAGE'], 'warn');
+	if (has_zone_access(get_member(), 'adminzone')) {
+        $health_check = array();
+        if (addon_installed('health_check')) {
+            require_code('health_check');
+            $has_fails = false;
+            $categories = run_health_check($has_fails, array('Stability \\ Error log'));
+            if ($has_fails) {
+                foreach ($categories as $category_label => $sections) {
+                    foreach ($sections['SECTIONS'] as $section_label => $results) {
+                        foreach ($results['RESULTS'] as $result) {
+                            attach_message($result['MESSAGE'], 'warn');
+                        }
                     }
                 }
             }

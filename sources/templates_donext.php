@@ -35,9 +35,6 @@ function do_next_manager_hooked($title, $text, $type, $main_title = null)
         $main_title = $title;
     }
 
-    require_code('site_adminzone');
-    adminzone_common_pages_code();
-
     require_lang('menus');
 
     $hooks = find_all_hook_obs('systems', 'page_groupings', 'Hook_page_groupings_');
@@ -122,6 +119,9 @@ function has_simplified_donext()
  */
 function do_next_manager($title, $text, $main = array(), $main_title = null, $url_add_one = null, $url_edit_this = null, $url_edit_one = null, $url_view_this = null, $url_view_archive = null, $url_add_one_category = null, $url_edit_one_category = null, $url_edit_this_category = null, $url_view_this_category = null, $entry_extras = array(), $category_extras = array(), $additional_extras = array(), $additional_title = null, $intro = null, $entries_title = null, $categories_title = null, $entry_content_type = null, $category_content_type = null)
 {
+    require_code('site_adminzone');
+    adminzone_common_pages_code();
+
     if ($intro === null) {
         $intro = new Tempcode();
     }
