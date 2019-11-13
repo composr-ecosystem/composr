@@ -35,6 +35,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = array(
+            'centres',
             'munafo',
             'utomatically',
             'grawlixes',

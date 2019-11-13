@@ -68,7 +68,11 @@ class Block_main_members
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        (strpos(serialize($_GET), 'filter_') !== false) ? null : array(
+        (strpos(serialize($_GET), 'filter_') !== false)
+        ?
+        null
+        :
+        array(
             array_key_exists('display_mode', $map) ? $map['display_mode'] : 'avatars',
             array_key_exists('must_have_avatar', $map) ? ($map['must_have_avatar'] == '1') : false,
             array_key_exists('must_have_photo', $map) ? ($map['must_have_photo'] == '1') : false,

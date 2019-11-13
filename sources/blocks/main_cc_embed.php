@@ -57,7 +57,7 @@ class Block_main_cc_embed
         array(
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
             get_param_integer($block_id . '_max',
-            array_key_exists('max', $map) ? intval($map['max']) : 30), 
+            array_key_exists('max', $map) ? intval($map['max']) : 30),
             get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0),
             ((array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1'),
             ((array_key_exists('root', $map)) && ($map['root'] != '')) ? intval($map['root']) : null,

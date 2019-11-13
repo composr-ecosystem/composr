@@ -69,7 +69,7 @@ $required_settings = array(
 
 global $SITE_INFO;
 foreach ($required_settings as $setting) {
-    if (@cms_empty_safe($SITE_INFO[$setting])) {
+    if ((!isset($SITE_INFO[$setting])) || ($SITE_INFO[$setting] == '')) {
         exit('Missing/empty _config.php setting: ' . $setting);
     }
 }

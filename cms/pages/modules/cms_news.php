@@ -847,7 +847,7 @@ class Module_cms_news extends Standard_crud_module
             $rss_feed = post_param_string('rss_feed_url', null, INPUT_FILTER_URL_GENERAL);
             $is_filesystem_path = false;
         }
-        if ($rss_url === null) {
+        if ($rss_feed === null) {
             warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
         }
 
@@ -856,7 +856,7 @@ class Module_cms_news extends Standard_crud_module
 
         // Cleanup
         if ($is_filesystem_path) { // Means it is a temp file
-            @unlink($rss_url);
+            @unlink($rss_feed);
         }
 
         require_code('tasks');

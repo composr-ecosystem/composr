@@ -1,1 +1,0 @@
-{BREADCRUMBS}{TITLE*} ({ID*})

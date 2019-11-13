@@ -251,12 +251,10 @@ END;
 END;
         }
         echo '<h1 class="screen-title">Critical error &ndash; bailing out</h1>' . "\n" . '<div class="red-alert" role="error">' . $error . '</div>' . "\n";
-        flush();
         if (($in_upgrader) && (strpos($error, 'Allowed memory') === false)) {
             require_code('upgrade_integrity_scan');
             echo '<div class="box guid-{_GUID}"><div class="box-inner"><h2>Integrity check</h2><p><strong>If you think this problem could be due to corruption caused by a failed upgrade (e.g. time-out during extraction), check the following integrity check&hellip;</strong></p>', run_integrity_check(true), '</div></div><br />';
         }
-        flush();
         echo $extra, "\n";
         if ($may_show_footer) {
             echo '<p>Details here are intended only for the website/system-administrator, not for regular website users.<br />&raquo; <strong>If you are a regular website user, please let the website staff deal with this problem.</strong></p>' . "\n" . '<p class="associated-details">Depending on the error, and only if the website installation finished, you may need to <a href="#!" onclick="if (!window.confirm(\'Are you staff on this site?\')) return false; this.href=\'' . htmlentities($edit_url) . '\';">edit the installation options</a> (the <kbd>_config.php</kbd> file).</p>' . "\n" . '<p class="associated-details">ocProducts maintains full documentation for all procedures and tools (including <a href="https://compo.sr/docs/tut-disaster.htm">disaster recovery</a>). These may be found on the <a href="http://compo.sr">Composr website</a>. If you are unable to easily solve this problem, we may be contacted from our website and can help resolve it for you.</p>' . "\n" . '<hr />' . "\n" . '<p style="font-size: 0.8em"><a href="https://compo.sr/">Composr</a> is a <abbr title="Content Management System">CMS</abbr> for building websites, developed by ocProducts.</p>' . "\n";

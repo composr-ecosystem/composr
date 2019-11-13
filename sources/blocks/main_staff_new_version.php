@@ -50,7 +50,8 @@ class Block_main_staff_new_version
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        array()
+        array(
+        )
 PHP;
         $info['ttl'] = 60 * 3;
         return $info;

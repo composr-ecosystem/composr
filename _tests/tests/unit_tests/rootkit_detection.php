@@ -22,7 +22,7 @@ class rootkit_detection_test_set extends cms_test_case
     {
         $password = '';
         global $SITE_INFO;
-        if ((!empty($SITE_INFO['master_password'])) && (strlen($SITE_INFO['master_password']) != 32)) {
+        if ((!empty($SITE_INFO['master_password'])) && (strlen($SITE_INFO['master_password']) != 32) && (strlen($SITE_INFO['master_password']) != 60)) {
             $password = $SITE_INFO['master_password'];
         }
 

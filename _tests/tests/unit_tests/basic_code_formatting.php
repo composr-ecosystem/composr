@@ -341,10 +341,9 @@ class basic_code_formatting_test_set extends cms_test_case
 
                 // We expect all text files to end with one single line break, which is a long standing unix convention.
                 //  Some templates need to be loaded with no terminating line, as white-space may cause an issue.
-                //  Composr accomodates for this with a special rule - a terminating line break is stripped from any one-line templates.
+                //  Composr accommodates for this with a special rule - a terminating line break is stripped from any one-line templates.
                 $expected_term_breaks = 1;
-                if (in_array($path, array(
-                ))) {
+                if (in_array($path, array())) {
                     $expected_term_breaks = 0;
                 }
 

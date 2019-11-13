@@ -50,7 +50,7 @@ class Block_main_emoticon_codes
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        array
+        array(
             array_key_exists('num_columns', $map) ? intval($map['num_columns']) : 5
         )
 PHP;

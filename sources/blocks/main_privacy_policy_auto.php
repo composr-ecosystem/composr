@@ -50,7 +50,8 @@ class Block_main_privacy_policy_auto
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        array()
+        array(
+        )
 PHP;
         $info['ttl'] = (60 * 60 * 24 * 365 * 5/*5 year timeout*/);
         return $info;

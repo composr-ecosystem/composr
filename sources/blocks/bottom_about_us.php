@@ -50,12 +50,12 @@ class Block_bottom_about_us
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-            array(
-                !empty($map['facebook']) ? $map['facebook'] : '',
-                !empty($map['twitter']) ? $map['twitter'] : '',
-                !empty($map['instagram']) ? $map['instagram'] : '',
-                !empty($map['youtube']) ? $map['youtube'] : '',
-            )
+        array(
+            !empty($map['facebook']) ? $map['facebook'] : '',
+            !empty($map['twitter']) ? $map['twitter'] : '',
+            !empty($map['instagram']) ? $map['instagram'] : '',
+            !empty($map['youtube']) ? $map['youtube'] : '',
+        )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
         return $info;

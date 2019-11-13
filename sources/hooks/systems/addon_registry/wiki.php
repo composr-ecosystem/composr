@@ -124,7 +124,6 @@ class Hook_addon_registry_wiki
             'sources/hooks/systems/addon_registry/wiki.php',
             'sources/hooks/modules/admin_themewizard/wiki.php',
             'sources/hooks/modules/admin_import_types/wiki.php',
-            'themes/default/templates/WIKI_LIST_TREE_LINE.tpl',
             'themes/default/templates/WIKI_MANAGE_TREE_SCREEN.tpl',
             'themes/default/templates/WIKI_PAGE_SCREEN.tpl',
             'themes/default/templates/WIKI_POST.tpl',
@@ -166,7 +165,6 @@ class Hook_addon_registry_wiki
     {
         return array(
             'templates/WIKI_MANAGE_TREE_SCREEN.tpl' => 'administrative__wiki_manage_tree_screen',
-            'templates/WIKI_LIST_TREE_LINE.tpl' => 'wiki_list_tree',
             'templates/WIKI_POST.tpl' => 'wiki_page_screen',
             'templates/WIKI_PAGE_SCREEN.tpl' => 'wiki_page_screen',
             'templates/WIKI_RATING.tpl' => 'wiki_page_screen',
@@ -192,24 +190,6 @@ class Hook_addon_registry_wiki
                 'TITLE' => lorem_title(),
                 'FORM' => placeholder_form(),
                 'WIKI_TREE' => placeholder_options(),
-            )), null, '', true)
-        );
-    }
-
-    /**
-     * Get a preview(s) of a (group of) template(s), as a full standalone piece of HTML in Tempcode format.
-     * Uses sources/lorem.php functions to place appropriate stock-text. Should not hard-code things, as the code is intended to be declarative.
-     * Assumptions: You can assume all Lang/CSS/JavaScript files in this addon have been pre-required.
-     *
-     * @return array Array of previews, each is Tempcode. Normally we have just one preview, but occasionally it is good to test templates are flexible (e.g. if they use IF_EMPTY, we can test with and without blank data).
-     */
-    public function tpl_preview__wiki_list_tree()
-    {
-        return array(
-            lorem_globalise(do_lorem_template('WIKI_LIST_TREE_LINE', array(
-                'BREADCRUMBS' => lorem_phrase(),
-                'TITLE' => lorem_word(),
-                'ID' => placeholder_id(),
             )), null, '', true)
         );
     }

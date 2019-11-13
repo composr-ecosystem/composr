@@ -78,6 +78,7 @@ class file_naming_test_set extends cms_test_case
             '_tests/assets/text/iso-8859-1.txt',
             '_tests/assets/spreadsheets/test-tsv.txt',
             '_tests/assets/spreadsheets/test-scsv.txt',
+            'data_custom/pdf_viewer/',
         );
 
         $ignore_substrings = array(

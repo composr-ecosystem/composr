@@ -653,7 +653,6 @@ function filter_naughty_harsh($in, $preg = false)
 /**
  * PHP's environment can be a real mess across servers. Cleanup $_SERVER from $_ENV for IIS if needed.
  * Also see fixup_bad_php_env_vars.
- * 
  */
 function fixup_bad_php_env_vars_pre()
 {

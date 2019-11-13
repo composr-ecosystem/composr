@@ -592,7 +592,7 @@ function workflow_update_handler()
             }
         }
     }
-    if (count($notes_approved) + !empty($notes_disapproved)) {
+    if (count($notes_approved) + count($notes_disapproved) != 0) {
         $note_title = get_timezoned_date(time(), false) . ' ' . $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         $workflow_notes = $workflow_notes . "\n\n" . $note_title . "\n" . str_repeat('-', strlen($note_title));
 

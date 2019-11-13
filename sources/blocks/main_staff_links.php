@@ -59,7 +59,7 @@ class Block_main_staff_links
     {
         $info = array();
         // No cache on POST as this is when we save text data
-        $info['cache_on'] = $info['cache_on'] = <<<'PHP'
+        $info['cache_on'] = <<<'PHP'
         (count($_POST) > 0)
         ?
         null

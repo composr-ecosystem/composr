@@ -50,7 +50,8 @@ class Block_side_stats
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        array()
+        array(
+        )
 PHP;
         $info['ttl'] = 15;
         return $info;

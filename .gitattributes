@@ -23,6 +23,7 @@
 *.xml text
 *.xsd text
 *.xsl text
+*.map text
 
 # Other text formats
 *.bat text
@@ -156,6 +157,7 @@
 *.xls binary
 *.xlsx binary
 *.zip binary
+*.bcmap text
 
 # Other binary formats
 *.aiml binary
