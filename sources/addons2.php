@@ -864,7 +864,7 @@ function uninstall_addon($addon, $clear_caches = true)
     // Try and cleanup some empty/unneeded dirs
     krsort($dirs);
     foreach (array_keys($dirs) as $dir) {
-        if (array_diff(scandir($dir), array('..', '.')) == array()) {
+        if (array_diff(scandir(get_file_base() . '/' . $dir), array('..', '.')) == array()) {
             afm_delete_directory($dir);
         }
     }
