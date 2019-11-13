@@ -210,7 +210,7 @@ class Hook_health_check_stability extends Hook_Health_Check
 
             fclose($myfile);
 
-            $this->assertTrue(count($dates) < $threshold_count, 'Large number of logged errors @ ' . integer_format(count($dates)) . ' in the last day');
+            $this->assertTrue(count($dates) < $threshold_count, 'Large number of [page="_SEARCH:admin_errorlog"]logged errors[/page] @ ' . integer_format(count($dates)) . ' in the last day');
 
             if ($manual_checks) {
                 if (filesize($path) > 20) {

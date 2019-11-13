@@ -274,7 +274,10 @@ class Module_admin_errorlog
                     fseek($myfile, -40000, SEEK_END);
                     $data = '';
                     while (!feof($myfile)) {
-                        $data .= cms_fgets($myfile, $myfile_file_charset);
+                        $line = cms_fgets($myfile, $myfile_file_charset);
+                        if ($line !== false) {
+                            $data .= $line;
+                        }
                     }
                     flock($myfile, LOCK_UN);
                     fclose($myfile);

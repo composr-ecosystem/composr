@@ -35,6 +35,9 @@ function do_next_manager_hooked($title, $text, $type, $main_title = null)
         $main_title = $title;
     }
 
+    require_code('site_adminzone');
+    adminzone_common_pages_code();
+
     require_lang('menus');
 
     $hooks = find_all_hook_obs('systems', 'page_groupings', 'Hook_page_groupings_');

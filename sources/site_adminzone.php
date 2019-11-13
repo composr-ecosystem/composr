@@ -19,12 +19,39 @@
  */
 
 /**
+ * Run code for common admin/CMS pages.
+ *
+ * @param  ID_TEXT $codename The page being loaded
+ */
+function adminzone_common_pages_code()
+{
+    // Run a Health Check
+    $health_check = array();
+    if (addon_installed('health_check')) {
+        require_code('health_check');
+        $has_fails = false;
+        $categories = run_health_check($has_fails, array('Stability \\ Error log'));
+        if ($has_fails) {
+            foreach ($categories as $category_label => $sections) {
+                foreach ($sections['SECTIONS'] as $section_label => $results) {
+                    foreach ($results['RESULTS'] as $result) {
+                        attach_message($result['MESSAGE'], 'warn');
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
  * Special code to render Admin Zone Comcode pages with special significances.
  *
  * @param  ID_TEXT $codename The page being loaded
  */
 function adminzone_special_cases($codename)
 {
+    adminzone_common_pages_code();
+
     /*
     The current design does not require these, but this code may be useful in the future.
     If we put it back, we should do it with hooks, for proper modularity.
