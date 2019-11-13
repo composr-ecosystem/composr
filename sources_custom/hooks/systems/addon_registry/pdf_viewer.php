@@ -533,6 +533,7 @@ class Hook_addon_registry_pdf_viewer
             'data_custom/pdf_viewer/web/viewer.html',
             'data_custom/pdf_viewer/web/viewer.js',
             'data_custom/pdf_viewer/web/viewer.js.map',
+            'themes/default/templates_custom/MEDIA_PDF.tpl',
         );
     }
 }
