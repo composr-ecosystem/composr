@@ -866,7 +866,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                         }
                         if ($found_list) {
                             if ((($list_indent - $old_list_indent) > 1) && (!$lax)) {
-                                return comcode_parse_error($preparse_mode, array('CCP_LIST_JUMPYNESS'), $pos, $comcode, $check_only);
+                                return comcode_parse_error_exit($preparse_mode, array('CCP_LIST_JUMPYNESS'), $pos, $comcode, $check_only);
                             }
                             for ($i = $old_list_indent; $i < $list_indent; ++$i) { // Or open any started
                                 switch ($list_type) {
@@ -1748,7 +1748,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
                 } elseif ($next === '[') {
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     $next = ']';
@@ -1774,7 +1774,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                                 $status = CCP_NO_MANS_LAND;
                                 break;
                             }
-                            return comcode_parse_error($preparse_mode, array('CCP_NO_CLOSE', $current_tag), strrpos(substr($comcode, 0, $pos), '['), $comcode, $check_only);
+                            return comcode_parse_error_exit($preparse_mode, array('CCP_NO_CLOSE', $current_tag), strrpos(substr($comcode, 0, $pos), '['), $comcode, $check_only);
                         }
                         $has_it = false;
                         foreach (array_reverse($tag_stack) as $t) {
@@ -1790,7 +1790,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                             $_last = array_pop($tag_stack);
                             if ($_last[0] != $current_tag) {
                                 if (!$lax) {
-                                    return comcode_parse_error($preparse_mode, array('CCP_NO_CLOSE_MATCH', $current_tag, $_last[0]), $pos, $comcode, $check_only);
+                                    return comcode_parse_error_exit($preparse_mode, array('CCP_NO_CLOSE_MATCH', $current_tag, $_last[0]), $pos, $comcode, $check_only);
                                 }
                                 do {
                                     $embed_output = _do_tags_comcode($_last[0], $_last[1], $tag_output, $comcode_dangerous, $pass_id, $pos, $source_member, $as_admin, $db, $comcode, $structure_sweep, $semiparse_mode, array(), null, $in_semihtml, $is_all_semihtml, $html_errors);
@@ -1815,7 +1815,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                             $extraneous_semihtml = ((!$is_all_semihtml) && (!$in_semihtml)) || (($current_tag != 'html') && ($current_tag != 'semihtml'));
                             if ((!$lax) && ($extraneous_semihtml)) {
                                 $_last = array_pop($tag_stack);
-                                return comcode_parse_error($preparse_mode, array('CCP_NO_CLOSE_MATCH', $current_tag, $_last[0]), $pos, $comcode, $check_only);
+                                return comcode_parse_error_exit($preparse_mode, array('CCP_NO_CLOSE_MATCH', $current_tag, $_last[0]), $pos, $comcode, $check_only);
                             }
                             $status = CCP_NO_MANS_LAND;
                             break;
@@ -1888,14 +1888,14 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
             case CCP_STARTING_TAG:
                 if ($next === '[') { // Can't actually occur though
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     $status = CCP_NO_MANS_LAND;
                     $pos--;
                 } elseif ($next === ']') { // Can't actual occur though
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_CLOSE_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_CLOSE_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     $status = CCP_NO_MANS_LAND;
@@ -1926,7 +1926,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     }
                 } elseif ($next === '[') {
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     if ($current_tag === 'title') {
@@ -1957,7 +1957,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     $status = CCP_NO_MANS_LAND;
                     $pos--;
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     if ($current_tag === 'title') {
@@ -1977,7 +1977,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     }
                 } elseif ($next === ']') {
                     if (($attribute_map === array()) && (!$lax)) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_CLOSE_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_CLOSE_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     if ($attribute_map != array()) {
@@ -2006,7 +2006,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                 } elseif (trim($next) != '') {
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_ATTRIBUTE_ERROR', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_ATTRIBUTE_ERROR', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
                     }
 
                     if ($next === '[') {
@@ -2022,14 +2022,14 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
             case CCP_IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT:
                 if ($next === '[') { // Can't actually occur though
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_OPEN_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
                     $pos--;
                 } elseif ($next === ']') { // Can't actually occur though
                     if (!$lax) {
-                        return comcode_parse_error($preparse_mode, array('CCP_TAG_CLOSE_ANOMALY'), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_TAG_CLOSE_ANOMALY'), $pos, $comcode, $check_only);
                     }
 
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
@@ -2050,12 +2050,12 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                 if ($next === ' ') {
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
                     if ((isset($attribute_map[$current_attribute_name])) && (!$lax)) {
-                        return comcode_parse_error($preparse_mode, array('CCP_DUPLICATE_ATTRIBUTES', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_DUPLICATE_ATTRIBUTES', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_value;
                 } elseif ($next === ']') {
                     if ((isset($attribute_map[$current_attribute_name])) && (!$lax)) {
-                        return comcode_parse_error($preparse_mode, array('CCP_DUPLICATE_ATTRIBUTES', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_DUPLICATE_ATTRIBUTES', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
                     }
 
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
@@ -2073,7 +2073,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
                     }
                     $status = CCP_IN_TAG_BETWEEN_ATTRIBUTES;
                     if ((isset($attribute_map[$current_attribute_name])) && (!$lax)) {
-                        return comcode_parse_error($preparse_mode, array('CCP_DUPLICATE_ATTRIBUTES', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
+                        return comcode_parse_error_exit($preparse_mode, array('CCP_DUPLICATE_ATTRIBUTES', $current_attribute_name, $current_tag), $pos, $comcode, $check_only);
                     }
                     $attribute_map[$current_attribute_name] = $current_attribute_value;
                 } else {
@@ -2112,7 +2112,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
     if (($status != CCP_NO_MANS_LAND) || (!empty($tag_stack))) {
         if (!$lax) {
             $stack_top = array_pop($tag_stack);
-            return comcode_parse_error($preparse_mode, array('CCP_BROKEN_END', ($stack_top === null) ? $current_tag : $stack_top[0]), $pos, $comcode, $check_only);
+            return comcode_parse_error_exit($preparse_mode, array('CCP_BROKEN_END', ($stack_top === null) ? $current_tag : $stack_top[0]), $pos, $comcode, $check_only);
         } else {
             while (!empty($tag_stack)) {
                 $_last = array_pop($tag_stack);

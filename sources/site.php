@@ -933,7 +933,7 @@ function do_site()
     $site_closed = get_option('site_closed');
     if (($site_closed == '1') && (!has_privilege(get_member(), 'access_closed_site')) && (!$GLOBALS['IS_ACTUALLY_ADMIN'])) {
         require_code('site2');
-        closed_site();
+        closed_site_exit();
     }
 
     // Warning about whether the Setup Wizard still needs running

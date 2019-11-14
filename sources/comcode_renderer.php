@@ -340,7 +340,7 @@ function _comcode_to_tempcode($comcode, $source_member = null, $as_admin = false
  * @param  boolean $check_only Whether to only check the Comcode
  * @return Tempcode An error message to put in the output stream (shown in certain situations, where in other situations we bomb out)
  */
-function comcode_parse_error($preparse_mode, $_message, $pos, $comcode, $check_only = false)
+function comcode_parse_error_exit($preparse_mode, $_message, $pos, $comcode, $check_only = false)
 {
     require_lang('comcode');
     if ($_message[0] === null) {

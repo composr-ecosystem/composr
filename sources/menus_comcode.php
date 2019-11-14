@@ -84,7 +84,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
 
         if ($level > $last_level + 1) {
             require_code('comcode_renderer');
-            comcode_parse_error(false, array('CCP_MENU_JUMPYNESS'), $i, $comcode);
+            comcode_parse_error_exit(false, array('CCP_MENU_JUMPYNESS'), $i, $comcode);
         }
         if (($last_level - $level == 0) && ($current_level['content_type'] == 'comcode_drawer_branch') && (strpos($line, '=') === false)) { // little hack to make case of branch having no children work
             $last_level++;
@@ -92,7 +92,7 @@ function build_comcode_menu($comcode, $menu, $source_member, $type)
         for ($x = 0; $x < $last_level - $level; $x++) {
             if (strpos($line, '=') !== false) {
                 require_code('comcode_renderer');
-                comcode_parse_error(false, array('CCP_MENU_JUMPYNESS'), $i, $comcode);
+                comcode_parse_error_exit(false, array('CCP_MENU_JUMPYNESS'), $i, $comcode);
             }
 
             $this_level = $current_level;
