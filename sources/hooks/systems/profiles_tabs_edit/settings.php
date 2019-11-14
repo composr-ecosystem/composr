@@ -328,7 +328,7 @@ class Hook_profiles_tabs_edit_settings
 
         $myrow = $GLOBALS['FORUM_DRIVER']->get_member_row($member_id_of);
         if ($myrow === null) {
-            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
         }
 
         require_code('cns_members_action2');

@@ -939,7 +939,7 @@ abstract class Standard_crud_module
                     'VISIBLE' => ($i == 0) ? true : null,
                     'NAME' => do_lang_tempcode('NEW_FIELD', strval($i + 1)),
                     'ID' => 'NEW_FIELD_' . strval($i + 1),
-                    'FIELDS' => $_fields_new->evaluate()/*FUDGE*/,
+                    'FIELDS' => $_fields_new->evaluate()/*Conserve memory*/,
                 ));
                 $fields_new->attach($temp);
                 $hidden->attach($_hidden_new);
@@ -953,8 +953,8 @@ abstract class Standard_crud_module
                 'PREVIEW' => $this->do_preview,
                 'TEXT' => $this->add_text,
                 'URL' => $post_url,
-                'FIELDS' => $fields->evaluate()/*FUDGE*/,
-                'FIELDS_NEW' => $fields_new->evaluate()/*FUDGE*/,
+                'FIELDS' => $fields->evaluate()/*Conserve memory*/,
+                'FIELDS_NEW' => $fields_new->evaluate()/*Conserve memory*/,
                 'SUBMIT_ICON' => 'menu/cms/catalogues/add_one_catalogue',
                 'SUBMIT_NAME' => $submit_name,
                 'JS_FUNCTION_CALLS' => $this->js_function_calls,
@@ -967,7 +967,7 @@ abstract class Standard_crud_module
                 'PREVIEW' => $this->do_preview,
                 'SEPARATE_PREVIEW' => $this->second_stage_preview,
                 'TEXT' => $this->add_text,
-                'POSTING_FORM' => $posting_form->evaluate()/*FUDGE*/,
+                'POSTING_FORM' => $posting_form->evaluate()/*Conserve memory*/,
                 'JS_FUNCTION_CALLS' => $this->js_function_calls,
                 'SUPPORT_AUTOSAVE' => true,
                 'CANCEL_URL' => $cancel_url,
@@ -983,7 +983,7 @@ abstract class Standard_crud_module
                     'SKIP_WEBSTANDARDS' => $this->skip_webstandards,
                     'TEXT' => $this->add_text,
                     'URL' => $post_url,
-                    'FIELDS' => $fields->evaluate()/*FUDGE*/,
+                    'FIELDS' => $fields->evaluate()/*Conserve memory*/,
                     'SUBMIT_ICON' => $submit_icon,
                     'SUBMIT_NAME' => $submit_name,
                     'JS_FUNCTION_CALLS' => $this->js_function_calls,
@@ -1371,7 +1371,7 @@ abstract class Standard_crud_module
             'TITLE' => $this->title,
             'TEXT' => $text,
             'URL' => $post_url,
-            'FIELDS' => $fields->evaluate()/*FUDGE*/,
+            'FIELDS' => $fields->evaluate()/*Conserve memory*/,
             'SUBMIT_ICON' => 'admin/edit_this',
             'SUBMIT_NAME' => $submit_name,
             'SKIP_WEBSTANDARDS' => true,
@@ -1569,7 +1569,7 @@ abstract class Standard_crud_module
                     '_GUID' => '1492d973db45cbecff892ad4ac1af28f' . get_class($this),
                     'NAME' => $name . ' (ID #' . strval($myrow['id']) . ')',
                     'ID' => 'FIELD_' . strval($i + 1),
-                    'FIELDS' => $_fields_existing->evaluate()/*FUDGE*/,
+                    'FIELDS' => $_fields_existing->evaluate()/*Conserve memory*/,
                 ));
                 $fields_existing->attach($temp);
                 $hidden->attach($_fields_hidden);
@@ -1585,7 +1585,7 @@ abstract class Standard_crud_module
                     '_GUID' => '8b9a632eafae003ccc6b007eefb0ce3d' . get_class($this),
                     'NAME' => do_lang_tempcode('NEW_FIELD', strval($i + 1)),
                     'ID' => 'NEW_FIELD_' . strval($i + 1),
-                    'FIELDS' => $_fields_new->evaluate()/*FUDGE*/,
+                    'FIELDS' => $_fields_new->evaluate()/*Conserve memory*/,
                 ));
                 $fields_new->attach($temp);
                 $hidden->attach($_fields_hidden);
@@ -1601,9 +1601,9 @@ abstract class Standard_crud_module
                 'PREVIEW' => $this->do_preview,
                 'TEXT' => $this->add_text,
                 'URL' => $post_url,
-                'FIELDS' => $fields->evaluate()/*FUDGE*/,
-                'FIELDS_EXISTING' => $fields_existing->evaluate()/*FUDGE*/,
-                'FIELDS_NEW' => $fields_new->evaluate()/*FUDGE*/,
+                'FIELDS' => $fields->evaluate()/*Conserve memory*/,
+                'FIELDS_EXISTING' => $fields_existing->evaluate()/*Conserve memory*/,
+                'FIELDS_NEW' => $fields_new->evaluate()/*Conserve memory*/,
                 'SUBMIT_ICON' => 'menu/cms/catalogues/edit_this_catalogue',
                 'SUBMIT_NAME' => $submit_name,
                 'JS_FUNCTION_CALLS' => $this->js_function_calls,
@@ -1625,7 +1625,7 @@ abstract class Standard_crud_module
                 'PING_URL' => $ping_url,
                 'WARNING_DETAILS' => $warning_details,
                 'TEXT' => $this->add_text,
-                'POSTING_FORM' => $posting_form->evaluate()/*FUDGE*/,
+                'POSTING_FORM' => $posting_form->evaluate()/*Conserve memory*/,
                 'JS_FUNCTION_CALLS' => $this->js_function_calls,
                 'SUPPORT_AUTOSAVE' => true,
                 'CANCEL_URL' => $cancel_url,
@@ -1643,7 +1643,7 @@ abstract class Standard_crud_module
                 'HIDDEN' => $hidden,
                 'TEXT' => $this->edit_text,
                 'URL' => $post_url,
-                'FIELDS' => $fields->evaluate()/*FUDGE*/,
+                'FIELDS' => $fields->evaluate()/*Conserve memory*/,
                 'SUBMIT_ICON' => $submit_icon,
                 'SUBMIT_NAME' => $submit_name,
                 'JS_FUNCTION_CALLS' => $this->js_function_calls,

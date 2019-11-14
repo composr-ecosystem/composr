@@ -300,7 +300,7 @@ class Module_contact_member
                     if (!is_email_address($address)) {
                         $address = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_email_address', array('m_username' => $address));
                         if ($address === null) {
-                            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+                            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                         }
                         if (!is_email_address($address)) {
                             warn_exit(do_lang_tempcode('INVALID_EMAIL_ADDRESS'));

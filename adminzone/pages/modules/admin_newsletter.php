@@ -564,7 +564,7 @@ class Module_admin_newsletter extends Standard_crud_module
             }
         }
         if (empty($bounces)) {
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
         remove_email_bounces($bounces);
@@ -1298,7 +1298,7 @@ class Module_admin_newsletter extends Standard_crud_module
             'TITLE' => $this->title,
             'TEXT' => (($periodic_action == 'make' || $periodic_action == 'replace') ? do_lang_tempcode('PERIODIC_NO_EDIT') : do_lang_tempcode('NEWSLETTER_SEND_TEXT')),
             'HIDDEN' => $hidden,
-            'FIELDS' => $fields->evaluate()/*FUDGE*/,
+            'FIELDS' => $fields->evaluate()/*Conserve memory*/,
             'SUBMIT_ICON' => 'buttons/preview',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,

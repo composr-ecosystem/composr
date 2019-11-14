@@ -392,7 +392,7 @@ function webstandards_js_lex($text)
                     break 2;
                 }
 
-                // Exit case
+                // Exit case (FUDGE #3934)
                 if (($char == '/') && (($i < 2) || ($JS_TEXT[$i - 2] != '\\') || ($JS_TEXT[$i - 3] == '\\') && ($JS_TEXT[$i - 4] != '\\'))) {
                     do {
                         list($reached_end, $i, $char) = lex__get_next_chars($i, 1);

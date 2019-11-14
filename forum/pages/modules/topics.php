@@ -251,7 +251,7 @@ class Module_topics
         if ($type == 'browse') {
             header('X-Robots-Tag: noindex');
 
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
         return new Tempcode();
@@ -403,7 +403,7 @@ class Module_topics
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $post_info = $GLOBALS['FORUM_DB']->query_select('f_posts', array('*'), array('id' => $posts[0]), '', 1);
@@ -442,7 +442,7 @@ class Module_topics
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $posts[0]));
@@ -468,7 +468,7 @@ class Module_topics
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $topic_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_posts', 'p_topic_id', array('id' => $posts[0]));
@@ -497,7 +497,7 @@ class Module_topics
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $post_url = build_url(array('page' => '_SELF', 'type' => '_move_posts'), '_SELF');
@@ -557,7 +557,7 @@ class Module_topics
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $post_url = build_url(array('page' => '_SELF', 'type' => '_move_posts'), '_SELF');
@@ -611,7 +611,7 @@ class Module_topics
     {
         $posts = $this->get_markers();
         if (empty($posts)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $to_forum_id = null;
@@ -664,7 +664,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -727,7 +727,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -770,7 +770,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -801,7 +801,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -832,7 +832,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -863,7 +863,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -894,7 +894,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -925,7 +925,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -956,7 +956,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -988,7 +988,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -1087,7 +1087,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $forum_id = null;
@@ -1115,7 +1115,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 'id', array('id' => $topics[0]));
@@ -1164,7 +1164,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $to = post_param_integer('to');
@@ -1185,7 +1185,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $topic_id = $topics[0];
@@ -1208,7 +1208,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -1231,7 +1231,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         $topic_id = $topics[0];
@@ -1258,7 +1258,7 @@ class Module_topics
 
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
 
         require_code('cns_topics_action');
@@ -1300,7 +1300,7 @@ class Module_topics
         if (empty($topics)) {
             $topics[] = get_param_string('id', null);
             if ($topics[0] === null) {
-                warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+                warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
             }
             $_REQUEST['mark_' . $topics[0]] = 1;
         }
@@ -1358,7 +1358,7 @@ class Module_topics
     {
         $topics = $this->get_markers();
         if (empty($topics)) {
-            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'));
+            warn_exit(do_lang_tempcode('NO_MARKERS_SELECTED'), false, false, 400);
         }
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
@@ -2258,7 +2258,7 @@ class Module_topics
             if ($member_username != '') {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member_username);
                 if ($member_id === null) {
-                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($member_username)));
+                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($member_username)), false, false, 404);
                 }
             }
             foreach ($_POST as $key => $_invited_member) {
@@ -2308,7 +2308,7 @@ class Module_topics
             } else {
                 $intended_solely_for = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_intended_solely_for);
                 if ($intended_solely_for === null) {
-                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_intended_solely_for)));
+                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_intended_solely_for)), false, false, 404);
                 }
             }
         } else {
@@ -2624,7 +2624,7 @@ END;
             if ($member_username != '') {
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($member_username);
                 if ($member_id === null) {
-                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($member_username)));
+                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($member_username)), false, false, 404);
                 }
             }
             foreach ($_POST as $key => $_invited_member) {
@@ -3699,7 +3699,7 @@ END;
         $username = trim(post_param_string('username'));
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         if ($member_id === null) {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
         }
         $topic_id = get_param_integer('topic_id');
 
@@ -4230,11 +4230,11 @@ END;
         $_b = post_param_string('b');
         $a = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_a);
         if ($a === null) {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_a)));
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_a)), false, false, 404);
         }
         $b = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_b);
         if ($b === null) {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_b)));
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_b)), false, false, 404);
         }
 
         $GLOBALS['FORUM_DB']->query_update('f_topics', array('t_pt_from' => $a, 't_pt_to' => $b, 't_forum_id' => null), array('id' => $topic_id), '', 1);

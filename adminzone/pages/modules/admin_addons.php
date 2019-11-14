@@ -670,7 +670,7 @@ class Module_admin_addons
         }
 
         if ((empty($installing)) && (empty($uninstalling))) {
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
         $url = build_url(array('page' => '_SELF', 'type' => '_multi_action'), '_SELF');

@@ -187,7 +187,7 @@ function lex($text = null)
         $TEXT = $text;
     }
 
-    $TEXT = preg_replace('#declare\(\w+=\w+\);#', '', $TEXT); // HACKHACK: We do not support parsing declare directives
+    $TEXT = preg_replace('#declare\(\w+=\w+\);#', '', $TEXT); // FUDGE: We do not support parsing declare directives
 
     // Some compatibility checks...
 

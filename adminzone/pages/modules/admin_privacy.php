@@ -162,7 +162,7 @@ class Module_admin_privacy
         if ($username != '') {
             $member_id_username = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($member_id_username === null) {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
             }
         } else {
             $member_id_username = null;

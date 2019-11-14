@@ -43,7 +43,7 @@ function get_privacy_where_clause($content_type, $table_alias, $viewing_member_i
     }
 
     if (($content_type[0] == '_') && ($content_type != '_photo')) {
-        return $pass_thru; // HACKHACK: No privacy individually set on custom content catalogue entries, and don't want to give default restrictions
+        return $pass_thru; // FUDGE: No privacy individually set on custom content catalogue entries, and don't want to give default restrictions
     }
 
     require_code('content');

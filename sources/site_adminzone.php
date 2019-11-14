@@ -20,13 +20,11 @@
 
 /**
  * Run code for common admin/CMS pages.
- *
- * @param  ID_TEXT $codename The page being loaded
  */
 function adminzone_common_pages_code()
 {
     // Run a Health Check
-	if (has_zone_access(get_member(), 'adminzone')) {
+    if (has_zone_access(get_member(), 'adminzone')) {
         $health_check = array();
         if (addon_installed('health_check')) {
             require_code('health_check');

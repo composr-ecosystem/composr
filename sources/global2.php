@@ -1294,9 +1294,10 @@ function inform_exit($text, $support_match_key_messages = null)
  * @param  mixed $text The error message (string or Tempcode)
  * @param  boolean $support_match_key_messages Whether match key messages / redirects should be supported
  * @param  boolean $log_error Whether to log the error
+ * @param  ?integer $http_status HTTP status to set (null: none)
  * @return mixed Never returns (i.e. exits)
  */
-function warn_exit($text, $support_match_key_messages = false, $log_error = false)
+function warn_exit($text, $support_match_key_messages = false, $log_error = false, $http_status = null)
 {
     require_code('failure');
     suggest_fatalistic();
@@ -1312,12 +1313,13 @@ function warn_exit($text, $support_match_key_messages = false, $log_error = fals
  *
  * @param  mixed $text The error message (string or Tempcode)
  * @param  boolean $log_error Whether to log the error
+ * @param  integer $http_status HTTP status to set
  * @return mixed Never returns (i.e. exits)
  */
-function fatal_exit($text, $log_error = true)
+function fatal_exit($text, $log_error = true, $http_status = 500)
 {
     require_code('failure');
-    _generic_exit($text, 'FATAL_SCREEN', false, $log_error);
+    _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
 }
 
 /**

@@ -892,7 +892,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
 
                             if ($content_type === 'comcode_page') {
                                 // FUDGE
-                                if ($content_id === ':start') {
+                                if ($content_id === ':' . DEFAULT_ZONE_PAGE_NAME) {
                                     $val_raw = get_site_name();
                                 } else {
                                     $val_raw = titleify($val_raw);
@@ -948,8 +948,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
                     $image_url = call_user_func(trim(substr($cma_info['thumb_field'], 5)), array('id' => $content_id), $row);
                 } else {
                     if ($content_type === 'image') {
-                        $image_url = $row['url'];
-                        // FUDGE
+                        $image_url = $row['url']; // FUDGE
                     } else {
                         $image_url = $row[$cma_info['thumb_field']];
                     }

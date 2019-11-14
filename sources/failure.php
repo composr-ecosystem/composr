@@ -305,7 +305,7 @@ function _composr_error_handler($type, $errno, $errstr, $errfile, $errline, $sys
             critical_error('EMERGENCY', escape_html($error_str));
         }
 
-        _generic_exit($error_str, 'FATAL_SCREEN', false, false);
+        _generic_exit($error_str, 'FATAL_SCREEN', false, false, 500);
     } elseif ($handling_method == 'ATTACH') {
         require_code('site');
         attach_message(protect_from_escaping($out), 'warn'/*any level of unexpected coding-level error is a 'warning' in Composr*/);
@@ -341,7 +341,7 @@ function _warn_screen($title, $text, $provide_back = true, $support_match_key_me
     }
 
     if (get_param_integer('keep_fatalistic', 0) != 0) {
-        _generic_exit($text, 'FATAL_SCREEN', false, false);
+        _generic_exit($text, 'FATAL_SCREEN', false, false, 500);
     }
 
     return do_template('WARN_SCREEN', array(
@@ -374,13 +374,14 @@ function _sanitise_error_msg($text)
  * @param  ID_TEXT $template Name of the terminal page template
  * @param  ?boolean $support_match_key_messages Whether match key messages / redirects should be supported (null: detect)
  * @param  boolean $log_error Whether to log the error
+ * @param  ?integer $http_status HTTP status to set (null: none, unless it's a missing resource error in which case 404)
  * @return mixed Never returns (i.e. exits)
  * @ignore
  */
-function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false)
+function _generic_exit($text, $template, $support_match_key_messages = false, $log_error = false, $http_status = null)
 {
     if (($template != 'FATAL_SCREEN') && ((get_param_integer('keep_fatalistic', 0) != 0) || (running_script('commandr')))) {
-        _generic_exit($text, 'FATAL_SCREEN', false, $log_error);
+        _generic_exit($text, 'FATAL_SCREEN', false, $log_error, $http_status);
     }
 
     if (throwing_errors()) {
@@ -389,12 +390,8 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
 
     cms_ob_end_clean(); // Emergency output, potentially, so kill off any active buffer
 
-    global $HTTP_STATUS_CODE;
-
-    if ($template == 'FATAL_SCREEN') {
-        if ($HTTP_STATUS_CODE == 200) {
-            set_http_status_code(500);
-        }
+    if ($http_status !== null) {
+        set_http_status_code($http_status);
     }
 
     if (is_object($text)) {
@@ -406,7 +403,6 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
     }
 
     $see_php_errors = ($GLOBALS['DEV_MODE'] || function_exists('has_privilege') && has_privilege(get_member(), 'see_php_errors'));
-
     if ($see_php_errors) {
         if ($template == 'FATAL_SCREEN') {
             // Supplement error message with some useful info
@@ -474,7 +470,9 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
 
     require_code('global3');
 
-    global $WANT_TEXT_ERRORS, $HTTP_STATUS_CODE;
+    global $HTTP_STATUS_CODE;
+
+    global $WANT_TEXT_ERRORS;
     if ($WANT_TEXT_ERRORS) {
         @header('Content-type: text/plain; charset=' . get_charset());
         if ($HTTP_STATUS_CODE == 200) {
@@ -488,24 +486,10 @@ function _generic_exit($text, $template, $support_match_key_messages = false, $l
     @header('Content-type: text/html; charset=' . get_charset());
     @header('Content-Disposition: inline');
 
-    if (($GLOBALS['HTTP_STATUS_CODE'] == 200) && (function_exists('do_lang'))) {
-        if (($text_eval == do_lang('cns:NO_MARKERS_SELECTED')) || ($text_eval == do_lang('NOTHING_SELECTED'))) { // HACKHACK
-            if (!headers_sent()) {
-                set_http_status_code(400);
-            }
-        } elseif ((strpos($text_eval, do_lang('MISSING_RESOURCE_SUBSTRING')) !== false) || ($text_eval == do_lang('MEMBER_NO_EXIST'))) {
-            if (!headers_sent()) {
-                set_http_status_code(404);
-            }
-            if ($_SERVER['HTTP_REFERER'] != '') {
-                relay_error_notification($text_eval . ' ' . do_lang('REFERRER', $_SERVER['HTTP_REFERER'], substr(get_browser_string(), 0, 255)), false, 'error_occurred_missing_resource');
-            }
-        } elseif ($template == 'WARN_SCREEN') {
-            if (!headers_sent()) {
-                if ($HTTP_STATUS_CODE == 200) {
-                    set_http_status_code(500);
-                }
-            }
+    if ((function_exists('do_lang')) && (strpos($text_eval, do_lang('MISSING_RESOURCE_SUBSTRING')) !== false)) {
+        set_http_status_code(404);
+        if ($_SERVER['HTTP_REFERER'] != '') {
+            relay_error_notification($text_eval . ' ' . do_lang('REFERRER', $_SERVER['HTTP_REFERER'], substr(get_browser_string(), 0, 255)), false, 'error_occurred_missing_resource');
         }
     }
 

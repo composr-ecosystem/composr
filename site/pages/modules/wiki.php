@@ -828,7 +828,7 @@ class Module_wiki
         $merged = '';
         $markers = $this->get_markers();
         if (empty($markers)) {
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
         foreach ($markers as $id) {
             $rows = $GLOBALS['SITE_DB']->query_select('wiki_posts', array('*'), array('id' => $id), '', 1);

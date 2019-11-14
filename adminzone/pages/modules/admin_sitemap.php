@@ -405,7 +405,7 @@ class Module_admin_sitemap
             }
         }
         if ($moved_something === null) {
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
         erase_persistent_cache();

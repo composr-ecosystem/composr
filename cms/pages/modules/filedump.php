@@ -1112,7 +1112,7 @@ class Module_filedump
 
         if ($action != 'edit') {
             if (empty($files)) {
-                warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+                warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
             }
         }
 

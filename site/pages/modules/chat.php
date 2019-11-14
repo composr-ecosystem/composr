@@ -881,7 +881,7 @@ class Module_chat
         if ($username != '') {
             $_member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if ($_member_id === null) {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
             }
             require_code('chat2');
             blocking_add(get_member(), $_member_id);
@@ -1008,7 +1008,7 @@ class Module_chat
             $username = post_param_string('friend_username');
             $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
             if (($member_id === null) || (is_guest($member_id))) {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
             }
         } else {
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, true);

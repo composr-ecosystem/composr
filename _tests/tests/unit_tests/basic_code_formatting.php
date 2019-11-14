@@ -218,7 +218,7 @@ class basic_code_formatting_test_set extends cms_test_case
         }
     }
 
-    public function testNoNonAscii()
+    public function testNoNonAsciiOrControlCharacters()
     {
         if (($this->only !== null) && ($this->only != 'testNoNonAscii')) {
             return;
@@ -244,6 +244,7 @@ class basic_code_formatting_test_set extends cms_test_case
                 'text_custom/(?!EN)\w+',
                 'comcode_custom/(?!EN)\w+',
                 'data_custom/pdf_viewer',
+                'data/ace',
             );
             if (preg_match('#^(' . implode('|', $exceptions) . ')/#', $path) != 0) {
                 continue;
@@ -279,8 +280,13 @@ class basic_code_formatting_test_set extends cms_test_case
                     continue;
                 }
 
-                $ok = (preg_match('#[^\x00-\x7f]#', $c) == 0);
-                $this->assertTrue($ok, 'Has non-ASCII data in ' . $path . '; find in your editor with this regexp [^\x00-\x7F]');
+                $regexp = '[^\x00-\x7f]';
+                $ok = (preg_match('#' . $regexp . '#', $c) == 0);
+                $this->assertTrue($ok, 'Has non-ASCII data in ' . $path . '; find in your editor with this regexp: ' . $regexp);
+
+                $regexp = '[\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0B\x0C\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x7F]';
+                $ok = (preg_match('#' . $regexp . '#', $c) == 0);
+                $this->assertTrue($ok, 'Has unexpected control characters in ' . $path . '; find in your editor with this regexp: ' . $regexp);
             }
         }
     }

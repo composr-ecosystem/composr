@@ -589,7 +589,7 @@ class Module_admin_cns_groups extends Standard_crud_module
         if ($_group_leader != '') {
             $group_leader = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_group_leader);
             if ($group_leader === null) {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_group_leader)));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($_group_leader)), false, false, 404);
             }
         } else {
             $group_leader = null;

@@ -375,7 +375,7 @@ class Module_admin_lang
 
             if (!$file->is_empty()) {
                 $file_result = do_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', array('_GUID' => '925ae4a8dc34fed864c3072734a9abe5', 'COMPLAINTS' => $file, 'FILENAME' => $file_base));
-                $files .= $file_result->evaluate();/*FUDGE*/
+                $files .= $file_result->evaluate();/*Conserve memory*/
             }
         }
 
@@ -385,7 +385,7 @@ class Module_admin_lang
                 $file->attach($crit);
             }
             $file_result = do_template('TRANSLATE_LANGUAGE_CRITICISE_FILE', array('_GUID' => '4ffab9265ea8c5a5e99a7b9fb23d15e1', 'COMPLAINTS' => $file, 'FILENAME' => do_lang_tempcode('NA_EM')));
-            $files .= $file_result->evaluate();/*FUDGE*/
+            $files .= $file_result->evaluate();/*Conserve memory*/
         }
 
         return do_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', array('_GUID' => '62d6f40ca69609a8fd33704a8a38fb6f', 'TITLE' => $this->title, 'FILES' => $files));

@@ -249,7 +249,7 @@ class Forum_driver_base
             } elseif (($options & USERNAME_DEFAULT_BLANK) != 0) {
                 $ret = '';
             } elseif (($options & USERNAME_DEFAULT_ERROR) != 0) {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html(strval($id))));
+                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html(strval($id))), false, false, 404);
             }
         }
 

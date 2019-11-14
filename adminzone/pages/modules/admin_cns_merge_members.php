@@ -169,7 +169,7 @@ class Module_admin_cns_merge_members
         $to_username = post_param_string('to');
         $to_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($to_username);
         if (($to_id === null) || (is_guest($to_id))) {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($to_username)));
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($to_username)), false, false, 404);
         }
         $from_username = post_param_string('from');
         $from_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($from_username);
@@ -179,7 +179,7 @@ class Module_admin_cns_merge_members
         }
 
         if (($from_id === null) || (is_guest($from_id))) {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($from_username)));
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($from_username)), false, false, 404);
         }
 
         if ($to_id == $from_id) {

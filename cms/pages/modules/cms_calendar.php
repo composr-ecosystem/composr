@@ -653,7 +653,7 @@ class Module_cms_calendar extends Standard_crud_module
             $member_calendar = null;
         }
         if ((!has_privilege(get_member(), 'add_public_events')) && ($member_calendar === null)) {
-            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+            warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
         }
 
         $start_monthly_spec_type = post_param_string('start_monthly_spec_type', post_param_string('monthly_spec_type', 'day_of_month')); // We actually don't suppose separate spec-types for the ends and starts in the UI

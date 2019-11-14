@@ -105,24 +105,24 @@ class Module_members
                     if (is_guest()) {
                         access_denied('NOT_AS_GUEST');
                     } else {
-                        warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+                        warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                     }
                 }
                 $username = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_username');
                 if (($username === null) || (is_guest($member_id_of))) {
-                    warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+                    warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                 }
             } else {
                 $member_id_of = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
                 if ($member_id_of === null) {
                     set_http_status_code(404);
-                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+                    warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
                 }
                 if (is_guest($member_id_of)) {
                     if (is_guest()) {
                         access_denied('NOT_AS_GUEST');
                     } else {
-                        warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
+                        warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'), false, false, 404);
                     }
                 }
             }

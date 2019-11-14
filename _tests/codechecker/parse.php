@@ -2066,15 +2066,15 @@ function handle_comment($comment)
     if (substr($comment[1], 0, 17) == 'EXTRA FUNCTIONS: ') {
         $OK_EXTRA_FUNCTIONS = substr($comment[1], 17);
     }
+    if (strpos($comment[1], 'FIXME') !== false) {
+        log_warning('FIXME comment found [should be a TODO] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
+    }
+    if (strpos($comment[1], 'HACKHACK') !== false) {
+        log_warning('HACKHACK comment found [should be a FUDGE] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
+    }
     if (isset($GLOBALS['TODO'])) {
         if (strpos($comment[1], 'TODO') !== false) {
             log_warning('TODO comment found (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
-        }
-        if (strpos($comment[1], 'FIXME') !== false) {
-            log_warning('FIXME comment found [should be a TODO] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
-        }
-        if (strpos($comment[1], 'HACKHACK') !== false) {
-            log_warning('HACKHACK comment found [should be a FUDGE] (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);
         }
         if (strpos($comment[1], 'IDEA') !== false) {
             log_warning('IDEA comment found (' . str_replace("\n", ' ', trim($comment[1])) . ')', $GLOBALS['I']);

@@ -606,7 +606,7 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
 
                         $member_id = is_numeric($preset['member']) ? intval($preset['member']) : remap_portable_as_resource_id('member', array('label' => $preset['member']));
                         if ($member_id === null) {
-                            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($preset['member'])));
+                            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($preset['member'])), false, false, 404);
                         } else {
                             $member_presets[$member_id] = $preset_value;
                         }
@@ -623,7 +623,7 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
                         } else {
                             $group_id = is_numeric($preset['usergroup']) ? intval($preset['usergroup']) : remap_portable_as_resource_id('group', array('label' => $preset['usergroup']));
                             if ($group_id === null) {
-                                warn_exit(do_lang_tempcode('_GROUP_NO_EXIST', escape_html($preset['usergroup'])));
+                                warn_exit(do_lang_tempcode('_GROUP_NO_EXIST', escape_html($preset['usergroup'])), false, false, 404);
                             } else {
                                 $group_presets[$group_id] = $preset_value;
                             }
@@ -646,7 +646,7 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
 
                         $member_id = is_numeric($privilege['member']) ? intval($privilege['member']) : remap_portable_as_resource_id('member', array('label' => $privilege['member']));
                         if ($member_id === null) {
-                            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($privilege['member'])));
+                            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($privilege['member'])), false, false, 404);
                         } else {
                             if (!array_key_exists($member_id, $member_privileges)) {
                                 $member_privileges[$member_id] = array();
@@ -669,7 +669,7 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
                         } else {
                             $group_id = is_numeric($privilege['usergroup']) ? intval($privilege['usergroup']) : remap_portable_as_resource_id('group', array('label' => $privilege['usergroup']));
                             if ($group_id === null) {
-                                warn_exit(do_lang_tempcode('_GROUP_NO_EXIST', escape_html($privilege['usergroup'])));
+                                warn_exit(do_lang_tempcode('_GROUP_NO_EXIST', escape_html($privilege['usergroup'])), false, false, 404);
                             } else {
                                 if (!array_key_exists($group_id, $group_privileges)) {
                                     $group_privileges[$group_id] = array();
@@ -712,7 +712,7 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
 
                         $member_id = is_numeric($access['member']) ? intval($access['member']) : remap_portable_as_resource_id('member', array('label' => $access['member']));
                         if ($member_id === null) {
-                            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($access['member'])));
+                            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($access['member'])), false, false, 404);
                         } else {
                             $member_access[$member_id] = $access['value'];
                         }
@@ -730,7 +730,7 @@ function sync_aggregate_type_instance($id, $aggregate_label = null, $old_aggrega
                             $group_id = is_numeric($access['usergroup']) ? intval($access['usergroup']) : remap_portable_as_resource_id('group', array('label' => $access['usergroup']));
 
                             if ($group_id === null) {
-                                warn_exit(do_lang_tempcode('_GROUP_NO_EXIST', escape_html($access['usergroup'])));
+                                warn_exit(do_lang_tempcode('_GROUP_NO_EXIST', escape_html($access['usergroup'])), false, false, 404);
                             } else {
                                 $group_access[$group_id] = $access['value'];
                             }

@@ -2239,7 +2239,7 @@ class Hook_addon_registry_core_form_interfaces
             $permission_rows->attach(do_lorem_template('FORM_SCREEN_INPUT_PERMISSION', array(
                 'FORCE_PRESETS' => false,
                 'GROUP_NAME' => lorem_phrase(),
-                'OVERRIDES' => $overrides->evaluate() /*FUDGE*/,
+                'OVERRIDES' => $overrides->evaluate()/*Conserve memory*/,
                 'ALL_GLOBAL' => true,
                 'VIEW_ACCESS' => '',
                 'TABINDEX' => placeholder_number(),

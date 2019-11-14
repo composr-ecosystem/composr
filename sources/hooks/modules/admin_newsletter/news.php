@@ -27,7 +27,7 @@ class Hook_whatsnew_news
      * Find selectable (filterable) categories.
      *
      * @param  TIME $updated_since The time that there must be entries found newer than
-     * @return ?array Tuple of result details: HTML list of all types that can be chosen, title for selection list (null: disabled)
+     * @return ?array Tuple of result details: HTML list of all types that can be chosen, title for selection list (null: disabled)
      */
     public function choose_categories($updated_since)
     {

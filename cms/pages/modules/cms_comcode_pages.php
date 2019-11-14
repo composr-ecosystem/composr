@@ -774,7 +774,7 @@ class Module_cms_comcode_pages
 
         if (($zone != '') && (!file_exists(get_file_base() . '/' . $zone . (($zone == '') ? '' : '/') . 'pages'))) {
             set_http_status_code(404);
-            warn_exit(do_lang_tempcode('NO_SUCH_ZONE'));
+            warn_exit(do_lang_tempcode('NO_SUCH_ZONE'), false, false, 404);
         }
 
         if ((stripos(PHP_OS, 'WIN') === 0) && (version_compare(PHP_VERSION, '7.2', '<'))) { // LEGACY

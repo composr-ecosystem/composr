@@ -659,7 +659,7 @@ class Module_admin_quiz
         }
 
         if (empty($to_delete)) {
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
         $quiz_id = null;

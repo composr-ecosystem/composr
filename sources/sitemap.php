@@ -1117,7 +1117,7 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
                 do {
                     $rows = $cma_info['db']->query_select($table, $select, $where, (($explicit_order_by_subcategories === null) ? '' : ('ORDER BY ' . $explicit_order_by_subcategories)), SITEMAP_MAX_ROWS_PER_LOOP, $start, false, $lang_fields);
                     foreach ($rows as $child_row) {
-                        // FUDGE
+                        // FUDGE: We have special support for not showing entry supports. This isn't universal as there's a good reason for empty galleries existing - member or download galleries with nothing in yet
                         if (($table == 'galleries r') && (addon_installed('galleries')) && (get_option('show_empty_galleries') == '0')) {
                             require_code('galleries');
                             if (!gallery_has_content($child_row['name'])) {

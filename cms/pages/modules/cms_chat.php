@@ -776,7 +776,7 @@ class Module_cms_chat
         }
 
         if ($count == 0) {
-            warn_exit(do_lang_tempcode('NOTHING_SELECTED'));
+            warn_exit(do_lang_tempcode('NOTHING_SELECTED'), false, false, 400);
         }
 
         delete_cache_entry('side_shoutbox');

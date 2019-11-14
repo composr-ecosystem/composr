@@ -56,7 +56,7 @@ function calculate_latest_leader_board($retrieve = true)
     $limit = intval(get_option('leader_board_size')); // The number to show on the leader-board
     $show_staff = (get_option('leader_board_show_staff') == '1'); // Whether to include staff
 
-    // FUDGE
+    // FUDGE #2737
     $limit_hack = max(300, $limit); // We'll query more top posters than we'll display, so that we workaround the issue that our initial efficient querying by top post count is not the same as querying by top point count (we'll hope that they align close enough for nobody to notice!)
     $all_members = $GLOBALS['FORUM_DRIVER']->get_top_posters($limit_hack);
     $points = array();

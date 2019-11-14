@@ -136,7 +136,7 @@ function newsletter_get_category_choices($cutoff_time, $lang)
                 $cats = $cats->evaluate($lang);
             }
             $matches = array();
-            $num_matches = preg_match_all('#<option [^>]*value="([^"]*)"[^>]*>([^<]*)</option>#', $cats, $matches); // FUDGE: but it works
+            $num_matches = preg_match_all('#<option [^>]*value="([^"]*)"[^>]*>([^<]*)</option>#', $cats, $matches); // FUDGE: Reparsing HTML. Needs to do this as Composr's APIs are been used and they output HTML.
             if ($num_matches < 1500) { /*reasonable limit on how many categories to consider*/
                 for ($i = 0; $i < $num_matches; $i++) {
                     $hook_result = $object->run($cutoff_time, $lang, $matches[1][$i]);
@@ -209,7 +209,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                             'CONTENT' => $temp[0],
                             'THUMBNAIL' => array_key_exists(2, $temp) ? $temp[2] : '',
                         ), null, false, null, '.txt', 'text');
-                        $automatic[$last_find_id] = $tmp->evaluate($lang); /*FUDGE*/
+                        $automatic[$last_find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                         $i++;
                     }
 
@@ -247,7 +247,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                     'TITLE' => $temp[1],
                     'CONTENT' => $temp[0],
                 ), null, false, null, '.txt', 'text');
-                $automatic[$find_id] = $tmp->evaluate($lang); /*FUDGE*/
+                $automatic[$find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                 $i++;
             }
         } elseif ($filter != '') {
@@ -262,7 +262,7 @@ function generate_whatsnew_comcode($chosen_categories, $in_full, $lang, $cutoff_
                     'TITLE' => $temp[1],
                     'CONTENT' => $temp[0],
                 ), null, false, null, '.txt', 'text');
-                $automatic[$last_find_id] = $tmp->evaluate($lang); /*FUDGE*/
+                $automatic[$last_find_id] = $tmp->evaluate($lang);/*Conserve memory*/
                 $i++;
             }
         }

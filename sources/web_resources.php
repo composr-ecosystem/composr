@@ -116,7 +116,7 @@ function javascript_enforce($j, $theme = null, $allow_defer = false)
             $full_path = get_file_base() . '/themes/' . $theme . $found[1] . $j . $found[2];
         }
 
-        // Caching support for global.js (this is a FUDGE to hard-code this)
+        // Caching support for global.js (this is a FUDGE to hard-code this) #1829
         if ($j == 'global') {
             $js_source_stem = get_file_base() . '/themes/default/javascript/';
             $js_source_stub = '.js';

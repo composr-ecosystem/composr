@@ -69,7 +69,7 @@ class Hook_task_install_geolocation_data
                     fatal_exit(do_lang_tempcode('INTERNAL_ERROR'));
                 }
 
-                $to_insert['begin_num'][] = $_data[0]; // FUDGE. Intentionally passes in as strings, to workaround problem in PHP integer sizes (can't store unsigned data type)
+                $to_insert['begin_num'][] = $_data[0]; // FUDGE. Intentionally passes in as strings, to workaround problem in PHP integer sizes (can't store unsigned data type) #3046
                 $to_insert['end_num'][] = $_data[1];
                 $to_insert['country'][] = substr($_data[2], 0, 2);
 

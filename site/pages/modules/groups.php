@@ -743,7 +743,7 @@ class Module_groups
 
         $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($username);
         if ($member_id === null) {
-            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)));
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($username)), false, false, 404);
         }
 
         $test = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id, false, false);
