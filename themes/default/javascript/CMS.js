@@ -120,8 +120,8 @@
      * @param [forceSession]
      * @return {string}
      */
-    $cms.keep = function keep(starting, forceSession) {
-        var keep = $cms.pageKeepSearchParams(forceSession).toString();
+    $cms.keep = function keep(starting) {
+        var keep = $cms.pageKeepSearchParams().toString();
 
         if (keep === '') {
             return '';
@@ -288,7 +288,7 @@
      * @param forceSession
      * @return { URLSearchParams }
      */
-    $cms.pageKeepSearchParams = function pageKeepSearchParams(forceSession) {
+    $cms.pageKeepSearchParams = function pageKeepSearchParams() {
         var keepSp = new window.URLSearchParams();
 
         $util.iterableToArray($cms.pageUrl().searchParams.entries()).forEach(function (entry) {
@@ -299,10 +299,6 @@
                 keepSp.set(name, value);
             }
         });
-
-        if (forceSession && !keepSp.has('keep_session') && ($cms.getSessionId() !== '')) {
-            keepSp.set('keep_session', $cms.getSessionId());
-        }
 
         return keepSp;
     };
@@ -518,14 +514,6 @@
      */
     $cms.getCsrfToken = function getCsrfToken() {
         return $cms.readCookie($cms.getSessionCookie()); // Session also works as a CSRF-token, as client-side knows it (AJAX)
-    };
-
-    /**
-     * @memberof $cms
-     * @return {string}
-     */
-    $cms.getSessionId = function getSessionId() {
-        return $cms.readCookie($cms.getSessionCookie());
     };
 
     /* Cookies */
@@ -852,7 +840,7 @@
     $cms.addKeepStub = function addKeepStub(url) {
         url = $util.url(url);
 
-        var keepSp = $cms.pageKeepSearchParams(true);
+        var keepSp = $cms.pageKeepSearchParams();
 
         $util.iterableToArray(keepSp.entries()).forEach(function (entry) {
             var name = entry[0],
