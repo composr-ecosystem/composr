@@ -504,21 +504,29 @@ function get_bound_content_entry($content_type, $id)
     if (!$content_type_has_custom_fields_cache[$content_type]) {
         return;
     }
-    $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', array(
-        'content_type' => $content_type,
-        'content_id' => $id,
-    ));
-    if (in_array(get_zone_name(), array('cms', 'adminzone'))) {
-        // Extra testing, possible corruption
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', array('id' => $ret));
-        if ($test === null) {
-            $ret = null;
+    static $get_bound_content_entry_cache = null;
+    if (!isset($get_bound_content_entry_cache[$content_type . ':' . $id])) {
+        $ret = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entry_linkage', 'catalogue_entry_id', array(
+            'content_type' => $content_type,
+            'content_id' => $id,
+        ));
 
-            $GLOBALS['SITE_DB']->query_delete('catalogue_entry_linkage', array(
-                'content_type' => $content_type,
-                'content_id' => $id,
-            ));
+        if ((in_array(get_zone_name(), array('cms', 'adminzone'))) && ($ret !== null)) {
+            // Extra testing, possible corruption
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogue_entries', 'id', array('id' => $ret));
+            if ($test === null) {
+                $ret = null;
+
+                $GLOBALS['SITE_DB']->query_delete('catalogue_entry_linkage', array(
+                    'content_type' => $content_type,
+                    'content_id' => $id,
+                ));
+            }
         }
+
+        $get_bound_content_entry_cache[$content_type . ':' . $id] = $ret;
+    } else {
+        $ret = $get_bound_content_entry_cache[$content_type . ':' . $id];
     }
     return $ret;
 }
@@ -542,7 +550,7 @@ function append_form_custom_fields($content_type, $id, &$fields, &$hidden, $fiel
 
     require_code('catalogues');
 
-    $catalogue_entry_id = get_bound_content_entry($content_type, $id);
+    $catalogue_entry_id = ($id === null) ? null : get_bound_content_entry($content_type, $id);
     if ($catalogue_entry_id !== null) {
         $special_fields = get_catalogue_entry_field_values('_' . $content_type, $catalogue_entry_id);
     } else {

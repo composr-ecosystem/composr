@@ -28,6 +28,7 @@
 	<div>
 		<div class="cns-topic-post-area cns-post-main-column wiki-topic-post-area" id="pe-{ID*}">
 			{POST}
+			{$METADATA_IMAGE_EXTRACT,{POST}}
 
 			{$REVIEW_STATUS,wiki_post,{ID}}
 		</div>

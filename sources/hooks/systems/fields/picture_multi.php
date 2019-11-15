@@ -74,6 +74,38 @@ class Hook_fields_picture_multi
      * @param  array $field The field details
      * @param  mixed $ev The raw value
      * @param  integer $i Position in fieldset
+     */
+    public function preprocess_field(&$field, $ev, $i)
+    {
+        $is_metadata = option_value_from_field_array($field, 'is_metadata', '');
+        if ($is_metadata != '0') {
+            $evs = explode("\n", $ev);
+            foreach ($evs as $j => $ev) {
+                $img_url = preg_replace('#::.*$#', '', $ev);
+                if (url_is_local($img_url)) {
+                    $img_url = get_custom_base_url() . '/' . $img_url;
+                }
+
+                if (($j == 0) && ($is_metadata == '1')) { // Take priority?
+                    global $METADATA;
+                    unset($METADATA['image']);
+                }
+
+                $img_url = find_theme_image($ev);
+
+                set_extra_request_metadata(array(
+                    'image' => $img_url,
+                ));
+            }
+        }
+    }
+
+    /**
+     * Convert a field value to something renderable.
+     *
+     * @param  array $field The field details
+     * @param  mixed $ev The raw value
+     * @param  integer $i Position in fieldset
      * @param  ?array $only_fields List of fields the output is being limited to (null: N/A)
      * @param  ?ID_TEXT $table The table we store in (null: N/A)
      * @param  ?AUTO_LINK $id The ID of the row in the table (null: N/A)
@@ -101,7 +133,7 @@ class Hook_fields_picture_multi
 
         $ret = new Tempcode();
         $evs = explode("\n", $ev);
-        foreach ($evs as $i => $ev) {
+        foreach ($evs as $j => $ev) {
             $img_url = preg_replace('#::.*$#', '', $ev);
             if (url_is_local($img_url)) {
                 $img_url = get_custom_base_url() . '/' . $img_url;
@@ -120,12 +152,6 @@ class Hook_fields_picture_multi
                 $field['c_name'] = 'other';
             }
             $tpl_set = $field['c_name'];
-
-            if ($i == 0) {
-                set_extra_request_metadata(array(
-                    'image' => $img_url,
-                ));
-            }
 
             if (url_is_local($ev)) {
                 $keep = symbol_tempcode('KEEP');
@@ -157,7 +183,7 @@ class Hook_fields_picture_multi
             $height = option_value_from_field_array($field, 'height', '');
 
             $ret->attach(do_template('CATALOGUE_' . $tpl_set . '_FIELD_PICTURE', array(
-                'I' => ($only_fields === null) ? '-1' : strval($i),
+                'I' => ($only_fields === null) ? '-1' : strval($j),
                 'CATALOGUE' => $field['c_name'],
                 'URL' => $download_url,
                 'THUMB_URL' => $img_thumb_url,
@@ -238,7 +264,7 @@ class Hook_fields_picture_multi
             $i = 1;
             do {
                 $tmp_name = 'field_' . strval($id) . '_' . strval($i);
-                $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 0, CMS_UPLOAD_IMAGE);
+                $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 1, CMS_UPLOAD_IMAGE);
                 $_value = $temp[0];
                 if ($_value != '') {
                     if ($value != '') {

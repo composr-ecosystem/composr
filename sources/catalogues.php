@@ -1153,7 +1153,7 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
             continue;
         }
 
-        _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, $fields[$i]);
+        _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, $fields[$i], $i);
     }
 
     return $fields;
@@ -1166,10 +1166,11 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
  * @param  mixed $entry_id The ID of the entry we are getting OR the row
  * @param  ?array $only_field_ids A list of field IDs that we are limiting ourselves to (null: get ALL fields)
  * @param  array $target Save the result into here
+ * @param  integer $i Position in field list (counting from zero)
  *
  * @ignore
  */
-function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target)
+function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target, $i)
 {
     $ob = get_fields_hook($field['cf_type']);
     list($raw_type, , $type) = $ob->get_field_value_row_bits($field);
@@ -1232,6 +1233,9 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
         default:
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
     }
+
+    // Necessary to pick up on metadata very early on and without having to actually render anything
+    $ob->preprocess_field($field, $target['effective_value'], $i);
 }
 
 /**

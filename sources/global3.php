@@ -816,18 +816,40 @@ function attach_to_screen_footer($data)
 
 /**
  * Add some metadata for the request.
+ * It is taken by:
+ * a) Getting directly from the passed $metadata.
+ * b) Looking up the CMA hook for the given $content_type, and using that to dereference properties from $row.
  *
  * @sets_output_state
  *
  * @param  array $metadata Extra metadata
  * @param  ?array $row Content row to automatically grab data from, if we also have $content_type (null: unknown)
  * @param  ?ID_TEXT $content_type Content type (null: unknown)
- * @param  ?ID_TEXT $content_id Content ID (null: unknown)
+ * @param  ?ID_TEXT $content_id Content ID, used for some cases of deeper probing (null: unknown)
  */
 function set_extra_request_metadata($metadata, $row = null, $content_type = null, $content_id = null)
 {
+    // Add in specific data passed...
+
+    // Pre-validation of stuff that may not be acceptable
+    foreach ($metadata as $key => $val) {
+        $val = cms_trim($val);
+        if ($val == '') {
+            unset($metadata[$key]);
+        } else {
+            $metadata[$key] = $val;
+        }
+    }
+    if (isset($metadata['image'])) {
+        if (!is_valid_opengraph_image($metadata['image'])) {
+            unset($metadata['image']); // Cannot use it
+        }
+    }
+
     global $METADATA;
     $METADATA += $metadata; // First-set gets precedence. E.g. picture custom fields will only set 'image' if no valid image was found yet
+
+    // Load up CMA hook...
 
     if ($content_type !== null) {
         require_code('content');
@@ -939,7 +961,7 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
             }
         }
 
-        // Add in image...
+        // Add in image (which is much more fiddly)...
 
         if (!isset($METADATA['image'])) {
             $image_url = '';
@@ -962,13 +984,13 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
                         }
                     }
                 }
-                if (substr($image_url, -4) == '.svg') {
+                if (!is_valid_opengraph_image($image_url)) {
                     $image_url = ''; // Cannot use it
                 }
             }
             if ((empty($image_url)) && ($cma_info['alternate_icon_theme_image'] != '') && ($content_id !== ':' . DEFAULT_ZONE_PAGE_NAME)) {
                 $image_url = find_theme_image($cma_info['alternate_icon_theme_image'], true);
-                if (substr($image_url, -4) == '.svg') {
+                if (!is_valid_opengraph_image($image_url)) {
                     $image_url = ''; // Cannot use it
                 }
             }
@@ -983,6 +1005,8 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
         $METADATA['content_type_label_trans'] = do_lang($cma_info['content_type_label']);
     }
 
+    // And let's throw in some more useful stuff...
+
     if ($content_type !== null) {
         $METADATA['content_type'] = $content_type;
     }
@@ -990,6 +1014,30 @@ function set_extra_request_metadata($metadata, $row = null, $content_type = null
     if ($content_id !== null) {
         $METADATA['content_id'] = $content_id;
     }
+}
+
+/**
+ * Find if an image is an Open Graph image.
+ *
+ * @param  URLPATH $url The URL
+ * @return boolean Whether it is
+ */
+function is_valid_opengraph_image($url)
+{
+    $ext = get_file_extension($url);
+
+    require_code('images');
+    if (is_image($url, IMAGE_CRITERIA_OPENGRAPH)) {
+        $test = cms_getimagesize_url($url, true/*We won't even bother with non-local files, too much computational overhead*/);
+        if ($test !== false) {
+            list($width, $height) = $test;
+            if (($width >= 200) && ($height >= 200)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /**

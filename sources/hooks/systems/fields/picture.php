@@ -74,6 +74,33 @@ class Hook_fields_picture
      * @param  array $field The field details
      * @param  mixed $ev The raw value
      * @param  integer $i Position in fieldset
+     */
+    public function preprocess_field(&$field, $ev, $i)
+    {
+        $is_metadata = option_value_from_field_array($field, 'is_metadata', '');
+        if ($is_metadata != '0') {
+            if ($is_metadata == '1') { // Take priority?
+                global $METADATA;
+                unset($METADATA['image']);
+            }
+
+            $img_url = $ev;
+            if (url_is_local($img_url)) {
+                $img_url = get_custom_base_url() . '/' . $img_url;
+            }
+
+            set_extra_request_metadata(array(
+                'image' => $img_url,
+            ));
+        }
+    }
+
+    /**
+     * Convert a field value to something renderable.
+     *
+     * @param  array $field The field details
+     * @param  mixed $ev The raw value
+     * @param  integer $i Position in fieldset
      * @param  ?array $only_fields List of fields the output is being limited to (null: N/A)
      * @param  ?ID_TEXT $table The table we store in (null: N/A)
      * @param  ?AUTO_LINK $id The ID of the row in the table (null: N/A)
@@ -114,13 +141,9 @@ class Hook_fields_picture
         }
         $tpl_set = $field['c_name'];
 
-        set_extra_request_metadata(array(
-            'image' => $img_url,
-        ));
-
         if (url_is_local($ev)) {
             $keep = symbol_tempcode('KEEP');
-            $download_url = find_script('catalogue_file') . '?file=' . urlencode(basename($img_url)) . '&table=' . urlencode($table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode($id_field) . '&url_field=' . urlencode($url_field);
+            $download_url = find_script('catalogue_file') . '?file=' . urlencode($img_url) . '&table=' . urlencode($table) . '&id=' . urlencode(strval($id)) . '&id_field=' . urlencode($id_field) . '&url_field=' . urlencode($url_field);
             $download_url .= '&inline=1';
             if ($field_id_field !== null) {
                 $download_url .= '&field_id_field=' . urlencode($field_id_field) . '&field_id=' . urlencode(strval($field['id']));
@@ -205,7 +228,7 @@ class Hook_fields_picture
         $tmp_name = 'field_' . strval($id);
         if (!fractional_edit()) {
             require_code('uploads');
-            $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 0, CMS_UPLOAD_IMAGE);
+            $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 1, CMS_UPLOAD_IMAGE);
             $value = $temp[0];
             if (($editing) && ($value == '') && (post_param_integer($tmp_name . '_unlink', 0) != 1)) {
                 return ($old_value === null) ? '' : $old_value['cv_value'];

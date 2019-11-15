@@ -42,6 +42,7 @@
 
 	<div itemprop="articleBody" class="clearfix">
 		{NEWS_FULL}
+		{$METADATA_IMAGE_EXTRACT,{NEWS_FULL}}
 	</div>
 
 	{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,news,{ID}}}

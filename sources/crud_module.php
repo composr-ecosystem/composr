@@ -1026,6 +1026,7 @@ abstract class Standard_crud_module
         if ($this->upload !== null) {
             require_code('uploads');
         }
+
         $temp = $this->add_actualisation();
 
         $description = ($this->do_next_description === null) ? paragraph(do_lang_tempcode($this->success_message_str)) : $this->do_next_description;

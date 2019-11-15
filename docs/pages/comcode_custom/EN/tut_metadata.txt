@@ -6,12 +6,13 @@ This tutorial provides an explanation of how metadata works within Composr.
 
 [title="2"]Introduction[/title]
 
-Composr contains the following primary metadata that you have a moderate chance of wanting to edit:
+By default Composr outputs the following primary metadata that you have a moderate chance of wanting to edit:
  - Title
  - Meta Keywords
  - Meta Description
  - Open Graph Title
  - Open Graph Image
+ - Twitter Card type
  - Favicon
  - Apple Web Clip image
 (there are many other items of published metadata, such as the Site Name, and modification dates, but you're unlikely to want to change the automatic settings for those)
@@ -61,24 +62,49 @@ If you don't like the presence of the metadata options then you can disable the 
 
 [title="2"]Open Graph[/title]
 
-Open Graph is the system devised by Facebook, for automatically supplying details relating to a webpage when a link to it is posted on Facebook. It's an Open Standard that may also be used by others.
+This is covered in the [page="_SEARCH:sup_facebook"]Facebook[/page] tutorial.
 
-The Open Graph Title is taken as the same as the screen title (it's not combined with the site name, which we pass separately to Facebook).
+[title="2"]Twitter Cards[/title]
 
-The Open Graph Image is either contextual (the main image of whatever content is being viewed), or the [tt]logo/standalone_logo[/tt] theme image.
+Twitter Card is built on top of Open Graph. It allows URLs posted on Twitter to be associated with Twitter accounts, and to be presented in a better way.
+We output [tt]twitter:card[/tt], which has a value of [tt]summary_large_image[/tt] for Composr gallery images.
 
-Note that [tt]logo/standalone_logo[/tt] is used for a number of things, including the e-mail header, and in RSS feeds. It is intended to be a simple standalone logo (i.e. not tied into the overall web design).
-
-In your HTML the Open Graph tags come out similar to:
+If you have a Twitter account you want to promote, you may also want to add:
 [code="HTML"]
-<meta property="og:title" content="Example page" />
-<meta property="og:type" content="comcode_page" />
-<meta property="og:url" content="http://yourbaseurl/docs/index.php?page=tut_metadata" /><meta property="og:site_name" content="yourdomain.com" />
-<meta property="og:image" content="http://yourbaseurl/themes/default/images/EN/logo/standalone_logo.png" />
-<meta property="og:locale" content="en_GB" />
+<meta name="twitter:site" content="@example" />
 [/code]
+(Where [tt]@example[/tt] is your Twitter account)
 
-If you want to add validation rules to make sure the chosen metadata image meets Open Graph requirements, there are samples defined in the [tt]fields.xml[/tt] system (see the [page="_SEARCH:tut_fields_filter"]The form field filter system[/page] tutorial).
+Or if you want to allow individual content items to have their own metadata specifying the creator, you can do that. Here's an example for gallery images:[list="1"]
+[*] Make sure the "Output streaming" option has not been enabled (it is not enabled by default). 
+[*] Create a custom field for the gallery images (Admin Zone > Content > Galleries > Choose custom 'Image' fields). It should be of field type Codename.
+[*] Edit the [tt]GALLERY_ENTRY_SCREEN[/tt] template, adding the following to the end:
+[code="HTML"]
+{+START,IF,{$EQ,{MEDIA_TYPE},image}}{$METADATA,twitter_handle,{$CATALOGUE_ENTRY_FIELD_VALUE,{$GET,bound_catalogue_entry},0}}{+END}
+[/code]
+([tt]FIELD_0[/tt] assumes your custom field is the 1st custom field for gallery images, if it is not change accordingly)
+[*] Edit the [tt]HTML_HEAD[/tt] template, changing:
+[code="HTML"]
+{+START,IF,{$EQ,{$METADATA,type},Image}}
+	<meta property="twitter:card" content="summary_large_image" />
+{+END}
+{+START,IF,{$NEQ,{$METADATA,type},Image}}
+	<meta property="twitter:card" content="summary" />
+{+END}
+[/html]
+to:
+[code="HTML"]
+{+START,IF,{$EQ,{$METADATA,type},Image}}
+	<meta property="twitter:card" content="summary_large_image" />
+{+END}
+{+START,IF,{$NEQ,{$METADATA,type},Image}}
+	<meta property="twitter:card" content="summary" />
+{+END}
+{+START,IF_NON_EMPTY,{$METADATA,twitter_handle}}
+	<meta name="twitter:creator" content="@{$METADATA*,twitter_handle}" />
+{+END}
+[/html]
+[/list]
 
 [title="2"]Icons[/title]
 
@@ -96,32 +122,10 @@ In your HTML the icon tags look similar to:
 <link rel="apple-touch-icon" href="http://yourbaseurl/themes/default/images/webclipicon.ico" sizes="120x120 144x144 152x152" />
 [/code]
 
-[title="2"]Worked example - The site-wide Open Graph image[/title]
-
-The default Open Graph image definitely isn't appropriate for live sites -- like any logo, it should be changed. Unfortunately as it is metadata, the need to do it can go unnoticed.
-
-Here are the step by step instructions for selecting an appropriate image:
-1) Log in to Admin Zone, and you should see the dashboard
-2) Next, click or mouse-over on the 'Style' menu which is in the toolbar at the top just below the header
-3) Within the 'Style' selection you should see the 'Themes' icon, click on 'Themes'
-4) After this you will be taken to 'Manage Themes' page, where you would find the Theme of your current website and the default Composr theme
-5) Look under your site theme, and in the options listed for it you should see a link for 'Manage theme images'; click this
-6) In the 'Manage theme images' page you should see a list of different types of images used in the website,  choose 'Logo' from this list which will expand to show all the logo images used in the website currently
-7) Click on [tt]standalone_logo[/tt] and you'll be taken to a 'edit the image' page where you can simply upload a new file and scroll down towards the bottom of the page and hit 'Save'
-
-[title="2"]Twitter[/title]
-
-If you are active on Twitter you may want to edit the [tt]HTML_HEAD[/tt] template and add in some extra code for Twitter, for example:
-
-[code="HTML"]
-<meta name="twitter:card" content="image" />
-<meta name="twitter:site" content="@yourTwitterName" />
-<meta name="twitter:creator" content="@yourTwitterName" />
-[/code]
-
 [concepts
  1_key="Open Graph"                1_value="Facebook's standard for supplying web-page metadata"
- 2_key="Favicon"                   2_value="The standardised small icon used for your webpage (typically the same across across the whole website)"
+ 2_key="Twitter Card"              2_value="Twitter's standard for supplying web-page metadata"
+ 3_key="Favicon"                   3_value="The standardised small icon used for your webpage (typically the same across across the whole website)"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
@@ -132,5 +136,6 @@ If you are active on Twitter you may want to edit the [tt]HTML_HEAD[/tt] templat
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - [page="_SEARCH:tut_browsers"]Browser version requirements[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
+ - [page="_SEARCH:sup_facebook"]Composr Supplementary: Facebook Support[/page]
 
 {$SET,tutorial_tags,core,Advice & Guidance,Introduction,regular}{$SET,tutorial_add_date,Mar 2015}{$SET,tutorial_summary,An explanation of how metadata works within Composr.}[block]main_tutorial_rating[/block]

@@ -35,6 +35,7 @@ function init__images()
         define('IMAGE_CRITERIA_VECTOR', 8); // Opposite of raster
         define('IMAGE_CRITERIA_WEBSAFE', 16); // NB: We will make a basic assumption that we are not going to try to use IMAGE_CRITERIA_GD_READ to make something IMAGE_CRITERIA_WEBSAFE
         define('IMAGE_CRITERIA_LOSSLESS', 32);
+        define('IMAGE_CRITERIA_OPENGRAPH', 64);
     }
 }
 
@@ -465,6 +466,13 @@ function is_image($name, $criteria, $as_admin = false, $mime_too = false)
     // Web-safe check
     if (($criteria & IMAGE_CRITERIA_WEBSAFE) != 0) {
         if (!in_array($ext, array('jpeg', 'jpe', 'jpg', 'gif', 'png', 'bmp', 'svg', 'ico', 'cur'))) {
+            return false;
+        }
+    }
+
+    // Open Graph check
+    if (($criteria & IMAGE_CRITERIA_OPENGRAPH) != 0) {
+        if (!in_array($ext, array('jpeg', 'jpe', 'jpg', 'gif', 'png'))) {
             return false;
         }
     }

@@ -139,7 +139,7 @@ function actual_add_catalogue($name, $title, $description, $display_type, $is_tr
     if (!is_alphanumeric($name)) {
         warn_exit(do_lang_tempcode('BAD_CODENAME'));
     }
-
+@error_log(get_self_url_easy());//TODO
     // Check doesn't already exist
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => $name));
     if ($test !== null) {
@@ -1371,7 +1371,7 @@ function actual_delete_catalogue_entry($id)
     require_code('catalogues');
     $fields = $GLOBALS['SITE_DB']->query_select('catalogue_fields', array('*'), array('c_name' => $catalogue_name));
     $title = null;
-    foreach ($fields as $field) {
+    foreach ($fields as $i => $field) {
         $object = get_fields_hook($field['cf_type']);
         list(, , $storage_type) = $object->get_field_value_row_bits($field);
         $value = _get_catalogue_entry_field($field['id'], $id, $storage_type);
@@ -1380,7 +1380,7 @@ function actual_delete_catalogue_entry($id)
         }
         if ($title === null) {
             $target = array();
-            _resolve_catalogue_entry_field($field, $id, null, $target);
+            _resolve_catalogue_entry_field($field, $id, null, $target, $i);
             $title = $target['effective_value_pure'];
         }
     }

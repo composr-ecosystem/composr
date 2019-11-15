@@ -226,16 +226,6 @@ class Module_topicview
                     set_extra_request_metadata(array(
                         'description' => strip_html($truncated),
                     ));
-
-                    // Also scan for <img> tag, in case it was put in manually
-                    if ((!isset($GLOBALS['METADATA']['image'])) || ($GLOBALS['METADATA']['image'] == find_theme_image('icons/menu/social/forum/forums'))) {
-                        $matches = array();
-                        if (preg_match('#<img\s[^<>]*src="([^"]*)"#', is_object($_postdetails['post']) ? $_postdetails['post']->evaluate() : $_postdetails['post'], $matches) != 0) {
-                            set_extra_request_metadata(array(
-                                'image' => html_entity_decode($matches[1], ENT_QUOTES),
-                            ));
-                        }
-                    }
                 }
             }
         } else {

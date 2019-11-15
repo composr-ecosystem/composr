@@ -73,8 +73,30 @@
 {+START,IF_NON_EMPTY,{$METADATA,meta_description}}<meta property="og:description" name="description" content="{+START,IF,{$NEQ,{$METADATA,meta_description},{!NA},???}}{$TRIM,{$METADATA*,meta_description}}{+END}" />{+END}
 <meta name="description" content="{+START,IF,{$NEQ,{$METADATA,meta_description},{!NA},???}}{$METADATA*,meta_description}{+END}" />
 <meta name="keywords" content="{$METADATA*,keywords}" />
-{+START,IF_NON_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$METADATA*,image}" /><meta property="og:image:width" content="{$IMG_WIDTH*,{$METADATA,image}}" /><meta property="og:image:height" content="{$IMG_HEIGHT*,{$METADATA,image}}" />{$,NB: You may also want to define a image_src link tag for some social sites}{+END}{+START,IF_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$IMG*,logo/standalone_logo}" /><meta property="og:image:width" content="{$IMG_WIDTH*,{$IMG,logo/standalone_logo}}" /><meta property="og:image:height" content="{$IMG_HEIGHT*,{$IMG,logo/standalone_logo}}" />{+END}
-{+START,IF_NON_EMPTY,{$METADATA,video}}<meta property="og:video" content="{$METADATA*,video}" /><meta property="og:video:width" content="{$METADATA*,video:width}" /><meta property="og:video:height" content="{$METADATA*,video:height}" /><meta property="og:video:type" content="{$METADATA*,video:type}" />{+END}
+{+START,IF_NON_EMPTY,{$METADATA,image}}
+	<meta property="og:image" content="{$METADATA*,image}" />
+	<meta property="og:image:width" content="{$IMG_WIDTH*,{$METADATA,image}}" />
+	<meta property="og:image:height" content="{$IMG_HEIGHT*,{$METADATA,image}}" />
+	{$,NB: You may also want to define a image_src link tag for some social sites}
+{+END}
+{+START,IF_EMPTY,{$METADATA,image}}
+	{$SET,fallback_image,{$IMG,logo/standalone_logo}}
+	<meta property="og:image" content="{$GET*,fallback_image}" />
+	<meta property="og:image:width" content="{$IMG_WIDTH*,{$GET,fallback_image}}" />
+	<meta property="og:image:height" content="{$IMG_HEIGHT*,{$GET,fallback_image}}" />
+{+END}
+{+START,IF,{$EQ,{$METADATA,type},Image}}
+	<meta property="twitter:card" content="summary_large_image" />
+{+END}
+{+START,IF,{$NEQ,{$METADATA,type},Image}}
+	<meta property="twitter:card" content="summary" />
+{+END}
+{+START,IF_NON_EMPTY,{$METADATA,video}}
+	<meta property="og:video" content="{$METADATA*,video}" />
+	<meta property="og:video:width" content="{$METADATA*,video:width}" />
+	<meta property="og:video:height" content="{$METADATA*,video:height}" />
+	<meta property="og:video:type" content="{$METADATA*,video:type}" />
+{+END}
 {$SET,og_locale,{$PREG_REPLACE,\..*$,,{$PREG_REPLACE,\,.*$,,{$REPLACE,-,_,{!locale}}}}}{+START,IF,{$NEQ,{$GET,og_locale},en_US}}<meta property="og:locale" content="{$GET,og_locale}" />{+END}
 {+START,IF,{$EQ,{$METADATA,type},News article}}
 	{+START,IF_NON_EMPTY,{$METADATA,created}}<meta name="article:published_time" content="{$METADATA*,created}" />{+END}

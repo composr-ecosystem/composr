@@ -157,9 +157,18 @@ It is important to understand how the Facebook share button works. The button do
 
 [i]This section is relevant even if you are not using the Facebook Support addon.[/i]
 
-[url="Open Graph"]http://ogp.me/[/url] is a Facebook-sponsored standard for web-page metadata.
+[url="Open Graph"]http://ogp.me/[/url] is a Facebook-sponsored standard for web-page metadata. It allows you to provide the details used to render previews when a link is posted on Facebook. It's an Open Standard that may also be used by others.
 
 Composr automatically includes Open Graph data in your pages, so that Facebook can automatically discern information about URLs on your website. This is handled in the [tt]HTML_HEAD.tpl[/tt] template. It is built on top of Composr's standard metadata system. Note that we also can support other metadata formats such as Dublin Core, but that is outside the scope of this tutorial (we're focusing only on Facebook metadata here, even though in some cases Facebook may itself support other metadata standards).
+
+In your HTML the Open Graph tags come out similar to:
+[code="HTML"]
+<meta property="og:title" content="Example page" />
+<meta property="og:type" content="comcode_page" />
+<meta property="og:url" content="http://yourbaseurl/docs/index.php?page=tut_metadata" /><meta property="og:site_name" content="yourdomain.com" />
+<meta property="og:image" content="http://yourbaseurl/themes/default/images/EN/logo/standalone_logo.png" />
+<meta property="og:locale" content="en_GB" />
+[/code]
 
 The following Open Graph data (or extensions to Open Graph) is provided, where possible:
  - [tt]og:title[/tt] -- Content title
@@ -190,62 +199,106 @@ For Open Graph to work, the content must have public access. If you deny Guests 
 
 [title="3"]Images ([tt]og:image[/tt])[/title]
 
-The Composr code hints what image to use for Open Graph. There are 3 possibilities:
-1) Where possible, a natural image is used. For example, when viewing a gallery image, the thumbnail will be the Open Graph image.
-2) For content types with no natural image, often a theme image icon is used.
-3) Otherwise the [tt]logo/standalone_logo[/tt] theme image is used (as it is coded as the fallback in the [tt]HTML_HEAD.tpl[/tt] template). i.e. Composr will fall-back to using your site logo if it can't find some other appropriate image.
-4) (If the Open Graph image code was removed from [tt]HTML_HEAD.tpl[/tt], Facebook would choose its own image)
+The Composr code hints what image to use for Open Graph, in precedence order it tries the following to find a [i]suitable[/i] image:[list="1"]
+[*] Where possible, a natural image is used. For example when viewing a gallery image, the thumbnail will be the Open Graph image.
+[*] When viewing something with custom fields (including catalogue entries), the first picture-style field will be the Open Graph image, unless some other picture field has the [tt]is_metadata=1[/tt] field option set for it, and unless the first picture field has the [tt]is_metadata=0[/tt] field option set for it. Note that this works even for hidden fields, so is the perfect way to set image metadata.
+[*] Otherwise, a content-type icon image will be used. For example, for a chat room the [tt]icons/menu/social/chat/chat[/tt] theme image will be used. However, [b]actually it typically won't[/b] because Composr ships with [tt].svg[/tt] files, which Open Graph can't use.
+[*] Otherwise we are getting desparate because nothing good has been defined, some default templates are programmed to search primary content for embedded images, and use the first one. This applies to the following content types: Comcode pages, news articles, topics, Wiki+. i.e. posts and pages. This will not work if the "Output streaming" option has been enabled.
+[*] If some custom changes to [tt]HTML_HEAD[/tt] change the [tt]fallback_image[/tt] setting (e.g. contextually), the coded fall-back image will be used (see section below).
+[*] Otherwise the [tt]logo/standalone_logo[/tt] theme image is used (as it is coded as the fallback in the [tt]HTML_HEAD.tpl[/tt] template). i.e. Composr will fall-back to using your site logo if it can't find some other appropriate image. Note that [tt]logo/standalone_logo[/tt] is used for a number of things, including the e-mail header, and in RSS feeds. It is intended to be a simple standalone logo (i.e. not tied into the overall web design). You'll likely want to change it.
+[*] (If all the Open Graph image code was removed from [tt]HTML_HEAD.tpl[/tt], Facebook would choose its own image.)
+[/list]
 
-For catalogues you'll need to delete [tt]uploads/catalogues/.htaccess[/tt] for the image sharing to work. Deleting this file is safe so long as you don't have any files in there protected by catalogue permissions that you do not want to be directly accessible.
+Note that any changes to Open Graph images won't reflect on Facebook for existing URLs until Facebook refreshes its caching for those URLs. So initially test Open Graph images by looking at the HTML your site is producing, not how links immediately look on Facebook.
 
-You may want to just simplify everything and make your own theme image for Open Graph and reference that. This will probably also end up looking nicer because Facebook:
+[title="4"]Vastly simplifying the images[/title]
+
+You may want to just simplify everything and make your own theme image for Open Graph and reference that in [tt]HTML_HEAD.tpl[/tt]. This will probably also end up looking nicer because Facebook:
 a) recommends a 1.91:1 aspect ratio on your image (to avoid cropping) which is unlikely to be close to true for automatically chosen images
 b) there is a bare minimum of 200x200 (more information is included on https://developers.facebook.com/docs/sharing/best-practices#images)
 
-If you want to add validation rules to make sure the chosen metadata image meets Open Graph requirements, there are samples defined in the [tt]fields.xml[/tt] system (see the [page="_SEARCH:tut_fields_filter"]The form field filter system[/page] tutorial).
+By doing this you'll remove all the complex logic above and worries about always having appropriate images.
 
-[title="4"]Special case: If you use huge thumbnails[/title]
-
-Note that Facebook does have minimum/maximum sizes and file-sizes for images. If you use enormous thumbnails on your site, your [tt]HTML_HEAD.tpl[/tt] template could need customising to re-thumbnail the files.
-
-[title="4"]Changing default content-type images (advanced)[/title]
-
-This example shows how to change the topic syndication to use a custom theme image, rather than the [tt]icons/menu/social/forum/forums[/tt] theme image.
-
+Instructions:
 [list="1"]
-[*] Theme image...
+[*] Add Theme image...
 
-Add a theme image called [tt]Open Graph_defaults/forums[/tt] to the default theme.
+Add a theme image called [tt]opengraph[/tt] to the default theme:
+1) Go to Admin Zone > Style > Themes
+2) After this you will be taken to "Manage Themes" page, where you would find the Theme of your current website and the default Composr theme
+3) Look under your site theme, and in the options listed for it you should see a link for "Manage theme images"; click this
+4) Scroll down and click "Add a theme image"
+5) Set the codename as [tt]opengraph[/tt]
+6) Attach your a new file ("Browse")
+7) Scroll down towards the bottom of the page and click "Add"
 
-Either do this via Composr's interface, or simpler just create a [tt]themes/default/images_custom/opengraph_defaults/[/tt] directory and upload a [tt]forums.png[/tt] file to it.
-[*] Template...
+Alternative to the steps above you can just upload a [tt]themes/default/images_custom/opengraph.png[/tt] file (or [tt]opengraph.jpg[/tt] or any other valid web image file type).
+[*] Edit Template...
 
 Edit the [tt]HTML_HEAD.tpl[/tt] template...
 
-Change:
-[code="HTML"]
-{+START,IF_NON_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$METADATA*,image}" />{$,NB: You may also want to define a image_src link tag for some social sites}{+END}{+START,IF_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$IMG*,logo/standalone_logo}" />{+END}
-[/code]
-To:
+Replace:
 [code="HTML"]
 {+START,IF_NON_EMPTY,{$METADATA,image}}
-	{$SET,generic_forum_image,{$EQ,{$METADATA,image},{$IMG,icons/menu/social/forum/forums}}}
-
-	{+START,IF,{$GET,generic_forum_image}}
-		<meta property="og:image" content="{$IMG*,opengraph_defaults/forums}" />
-	{+END}
-
-	{+START,IF,{$NOT,{$GET,generic_forum_image}}}
-		<meta property="og:image" content="{$METADATA*,image}" />
-	{+END}
+	<meta property="og:image" content="{$METADATA*,image}" />
+	<meta property="og:image:width" content="{$IMG_WIDTH*,{$METADATA,image}}" />
+	<meta property="og:image:height" content="{$IMG_HEIGHT*,{$METADATA,image}}" />
+	{$,NB: You may also want to define a image_src link tag for some social sites}
 {+END}
-{+START,IF_EMPTY,{$METADATA,image}}<meta property="og:image" content="{$IMG*,logo/standalone_logo}" />{+END}
+{+START,IF_EMPTY,{$METADATA,image}}
+	{$SET,fallback_image,{$IMG,logo/standalone_logo}}
+	<meta property="og:image" content="{$GET*,fallback_image}" />
+	<meta property="og:image:width" content="{$IMG_WIDTH*,{$GET,fallback_image}}" />
+	<meta property="og:image:height" content="{$IMG_HEIGHT*,{$GET,fallback_image}}" />
+{+END}
+[/code]
+With:
+[code="HTML"]
+{$SET,fallback_image,{$IMG,opengraph}}
+<meta property="og:image" content="{$GET*,fallback_image}" />
+<meta property="og:image:width" content="{$IMG_WIDTH*,{$GET,fallback_image}}" />
+<meta property="og:image:height" content="{$IMG_HEIGHT*,{$GET,fallback_image}}" />
 [/code]
 [/list]
 
-Our new code detects if the Open Graph image was set as [tt]icons/menu/social/forum/forums[/tt] and performs a substitution to our custom one.
+[title="4"]Changing individual default content-type images (advanced)[/title]
 
-Our change won't reflect on Facebook for existing syndications until Facebook refreshes its caching. But eventually it will, i.e. it will work retroactively.
+This example shows how to change shared topics to use a custom theme image (for cases where there is no better image):
+[list="1"]
+[*] Add Theme image...
+
+Add a theme image called [tt]opengraph_defaults/forums[/tt] to the default theme:
+1) Go to Admin Zone > Style > Themes
+2) After this you will be taken to "Manage Themes" page, where you would find the Theme of your current website and the default Composr theme
+3) Look under your site theme, and in the options listed for it you should see a link for "Manage theme images"; click this
+4) Scroll down and click "Add a theme image"
+5) Set the codename as [tt]opengraph_defaults/forums[/tt]
+6) Attach your a new file ("Browse")
+7) Scroll down towards the bottom of the page and click "Add"
+
+Alternative to the steps above you can just create a [tt]themes/default/images_custom/opengraph_defaults/[/tt] directory and upload a [tt]forums.png[/tt] file to it (or [tt]forums.jpg[/tt] or any other valid web image file type).
+[*] Edit Template...
+
+Edit the [tt]HTML_HEAD.tpl[/tt] template...
+
+Replace:
+[code="HTML"]
+{$SET,fallback_image,{$IMG,logo/standalone_logo}}
+[/code]
+With:
+[code="HTML"]
+{$SET,fallback_image,{$IMG,logo/standalone_logo}}
+{+START,IF,{$EQ,{$METADATA,type},Forum topic}}
+	{$SET,fallback_image,{$IMG,opengraph_defaults/forums}}
+{+END}
+[/code]
+[/list]
+
+Our new code detects if the page is a forum topic and performs a substitution to our custom image in such cases.
+
+[title="4"]Validation rules (advanced)[/title]
+
+If you want to add validation rules to make sure the chosen metadata image meets Open Graph requirements, there are samples defined in the [tt]fields.xml[/tt] system (see the [page="_SEARCH:tut_fields_filter"]The form field filter system[/page] tutorial).
 
 [title="2"]Logging in using Facebook[/title]
 

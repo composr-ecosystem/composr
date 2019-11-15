@@ -97,6 +97,7 @@
 				{+END}{+END}{+END}
 
 				{POST}
+				{$METADATA_IMAGE_EXTRACT,{POST}}
 			</div>
 
 			{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,post,{ID}}}

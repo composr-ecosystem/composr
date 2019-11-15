@@ -566,6 +566,8 @@ The first image-like field will be injected into screen metadata (i.e. will come
 | [tt]width[/tt] (the width all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
+
+[tt]is_metadata[/tt] (set to '1' if the field should take precedence for metadata over earlier picture fields [and innate images], and '0' if it should never be the metadata field)
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__picture.png[/media]
@@ -590,6 +592,8 @@ The first image-like field will be injected into screen metadata (i.e. will come
 | [tt]width[/tt] (the width all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
+
+[tt]is_metadata[/tt] (set to '1' if the field should take precedence for metadata over earlier picture fields [and innate images], and '0' if it should never be the metadata field)
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__picture_multi.png[/media]
@@ -729,6 +733,8 @@ NB: You can see I uploaded a non-web-safe video as the first video. We do suppor
 | [tt]width[/tt] (the width all the media will be shown at; default is to auto-detect for each individual file)
 
 [tt]height[/tt] (the height all the media will be shown at; default is to auto-detect for each individual file)
+
+[tt]is_metadata[/tt] (set to '1' if the field should take precedence for metadata over earlier picture fields [and innate images], and '0' if it should never be the metadata field)
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__theme_image.png[/media]

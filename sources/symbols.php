@@ -1760,7 +1760,7 @@ function ecv_METADATA($lang, $escaped, $param)
                 if (isset($param[1])) {
                     // Setting a generic...
 
-                    // Special case
+                    // FUDGE Special case
                     $matches = array();
                     if (($param[0] == 'image') && (strpos($param[1], '?') !== false) && (preg_match('#^' . preg_quote(find_script('attachment'), '#') . '\?id=(\d+)#', $param[1], $matches) != 0)) {
                         require_code('attachments');
@@ -7163,6 +7163,44 @@ function ecv_ADD($lang, $escaped, $param)
         }
 
         $value = float_to_raw_string($_value, 20, true);
+    }
+
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv_METADATA_IMAGE_EXTRACT($lang, $escaped, $param)
+{
+    $value = '';
+
+    if (isset($param[0])) {
+        global $METADATA;
+
+        if (!empty($param[1])) { // Take priority?
+            unset($METADATA['image']);
+        }
+
+        // Also scan for <img> tag, in case it was put in manually
+        if ((empty($METADATA['image'])) && (stripos($param[0], '<img') !== false)) {
+            $matches = array();
+            if (preg_match('#<img\s[^<>]*src="([^"]*)"#i', $param[0], $matches) != 0) {
+                set_extra_request_metadata(array(
+                    'image' => html_entity_decode($matches[1], ENT_QUOTES),
+                ));
+            }
+        }
     }
 
     if ($GLOBALS['XSS_DETECT']) {

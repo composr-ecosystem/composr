@@ -9,6 +9,7 @@
 		{WARNING_DETAILS}
 
 		{$TRIM,{CONTENT}}
+		{$METADATA_IMAGE_EXTRACT,{CONTENT}}
 
 		{$SET,bound_catalogue_entry,{$CATALOGUE_ENTRY_FOR,comcode_page,{NATIVE_ZONE}:{NAME}}}
 		{+START,IF_NON_EMPTY,{$GET,bound_catalogue_entry}}{$CATALOGUE_ENTRY_ALL_FIELD_VALUES,{$GET,bound_catalogue_entry}}{+END}

@@ -205,7 +205,7 @@ class Hook_fields_video
         $tmp_name = 'field_' . strval($id);
         if (!fractional_edit()) {
             require_code('uploads');
-            $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 0, CMS_UPLOAD_VIDEO);
+            $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 1, CMS_UPLOAD_VIDEO);
             $ev = $temp[0];
             if (($editing) && ($ev == '') && (post_param_integer($tmp_name . '_unlink', 0) != 1)) {
                 return ($old_value === null) ? '' : $old_value['cv_value'];

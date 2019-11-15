@@ -233,7 +233,7 @@ class Hook_fields_video_multi
             $i = 1;
             do {
                 $tmp_name = 'field_' . strval($id) . '_' . strval($i);
-                $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 0, CMS_UPLOAD_VIDEO);
+                $temp = get_url($tmp_name . '_url', $tmp_name, $upload_dir, 1, CMS_UPLOAD_VIDEO);
                 $ev = $temp[0];
                 if ($ev != '') {
                     if (addon_installed('galleries')) {

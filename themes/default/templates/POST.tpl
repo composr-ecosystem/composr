@@ -82,6 +82,7 @@
 
 				<div itemprop="reviewBody">
 					{POST}
+					{$METADATA_IMAGE_EXTRACT,{POST}}
 				</div>
 
 				{LAST_EDITED}

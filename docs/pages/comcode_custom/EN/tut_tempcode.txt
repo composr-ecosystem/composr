@@ -1129,6 +1129,10 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>{$CDN_FILTER,URL}</td>
 			<td>Take an absolute URL, under the main base URL's domain, and change it to work under the Content Delivery Network. Only use this if you know the particular URL you pass will be available via the CDN.</td>
 		</tr>
+		<tr style="background: #DDFFDD">
+			<td>{$METADATA_IMAGE_EXTRACT,CONTENT}</td>
+			<td>Scan some content and make the first suitable Open Graph image the active metadata image. If a metadata image has already been detected by Composr, this symbol will have no affect, unless a second parameter is passed and set to <kbd>1</kbd>.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]

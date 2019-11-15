@@ -312,7 +312,9 @@ function build_closure_tempcode($type, $name, $parameters, $escaping = array())
             case 'PAGE_LINK':
             case 'LOAD_PAGE':
             case 'LOAD_PANEL':
+            case 'CATALOGUE_ENTRY_FOR':
             case 'METADATA':
+            case 'METADATA_IMAGE_EXTRACT':
                 break;
 
             default:
@@ -1559,6 +1561,27 @@ function handle_symbol_preprocessing($seq_part, &$children)
             require_javascript('fractional_edit');
             return;
 
+        case 'CATALOGUE_ENTRY_FOR':
+            $param = $seq_part[3];
+            if (isset($param[1])) {
+                foreach ($param as $i => $p) {
+                    if (is_object($p)) {
+                        $param[$i] = $p->evaluate();
+                    }
+                }
+
+                if ((!empty($param[0])) && (!@cms_empty_safe($param[1])) && (addon_installed('catalogues'))) {
+                    require_code('fields');
+                    $entry_id = get_bound_content_entry($param[0], $param[1]);
+                    if ($entry_id !== null) {
+                        // This will do necessary pre-processing on all the fields (it also has internal caching deep down, so no serious performance issue)
+                        require_code('catalogues');
+                        get_catalogue_entry_field_values('_' . $param[0], $entry_id);
+                    }
+                }
+            }
+            return;
+
         case 'METADATA':
             // We need to allow setting operations to be preprocessed
             $param = $seq_part[3];
@@ -1570,6 +1593,20 @@ function handle_symbol_preprocessing($seq_part, &$children)
                 }
 
                 ecv_METADATA(user_lang(), array(), $param);
+            }
+            return;
+
+        case 'METADATA_IMAGE_EXTRACT':
+            // We need to allow setting operations to be preprocessed
+            $param = $seq_part[3];
+            if (isset($param[0])) {
+                foreach ($param as $i => $p) {
+                    if (is_object($p)) {
+                        $param[$i] = $p->evaluate();
+                    }
+                }
+
+                ecv_METADATA_IMAGE_EXTRACT(user_lang(), array(), $param);
             }
             return;
     }

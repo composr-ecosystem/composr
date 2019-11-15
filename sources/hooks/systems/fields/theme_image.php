@@ -95,6 +95,30 @@ class Hook_fields_theme_image
      * @param  array $field The field details
      * @param  mixed $ev The raw value
      * @param  integer $i Position in fieldset
+     */
+    public function preprocess_field(&$field, $ev, $i)
+    {
+        $is_metadata = option_value_from_field_array($field, 'is_metadata', '');
+        if ($is_metadata != '0') {
+            if ($is_metadata == '1') { // Take priority?
+                global $METADATA;
+                unset($METADATA['image']);
+            }
+
+            $img_url = find_theme_image($ev);
+
+            set_extra_request_metadata(array(
+                'image' => $img_url,
+            ));
+        }
+    }
+
+    /**
+     * Convert a field value to something renderable.
+     *
+     * @param  array $field The field details
+     * @param  mixed $ev The raw value
+     * @param  integer $i Position in fieldset
      * @param  ?array $only_fields List of fields the output is being limited to (null: N/A)
      * @return mixed Rendered field (Tempcode or string)
      */
@@ -113,10 +137,6 @@ class Hook_fields_theme_image
             $field['c_name'] = 'other';
         }
         $tpl_set = $field['c_name'];
-
-        set_extra_request_metadata(array(
-            'image' => $img_url,
-        ));
 
         $width = option_value_from_field_array($field, 'width', '');
         $height = option_value_from_field_array($field, 'height', '');
