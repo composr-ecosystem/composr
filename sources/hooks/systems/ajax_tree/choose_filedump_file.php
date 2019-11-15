@@ -81,7 +81,7 @@ class Hook_ajax_tree_choose_filedump_file
                     if ((!isset($options['only_images'])) || (!$options['only_images']) || (is_image($f, IMAGE_CRITERIA_WEBSAFE, true))) {
                         if (($description === null) || (get_translated_text($description) == '')) {
                             $_description = '';
-                            if (is_image($f, IMAGE_CRITERIA_WEBSAFE, true)) {
+                            if (is_image($f, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ, true)) {
                                 $url = get_custom_base_url() . '/' . $entry_id;
                                 $_description = trim(static_evaluate_tempcode(do_image_thumb($url, '', true, false, null, null, true)));
                             }
