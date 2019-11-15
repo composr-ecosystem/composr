@@ -1858,7 +1858,7 @@ class Module_cms_catalogues_alt extends Standard_crud_module
         $submit_points = post_param_integer('submit_points', 0);
         $cat_tab = post_param_integer('cat_tab', 0);
         $ecommerce = post_param_integer('ecommerce', 0);
-        $categories_sort_order = post_param_string('categories_sort_order');
+        $categories_sort_order = post_param_string('categories_sort_order', 'title ASC');
         $send_view_reports = post_param_string('send_view_reports');
         $default_review_freq = post_param_integer('default_review_freq', null);
 

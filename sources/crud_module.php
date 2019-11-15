@@ -1073,7 +1073,7 @@ abstract class Standard_crud_module
         $url = get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL);
         if ($url != '') {
             $url = str_replace('__ID__', $id, $url);
-            return redirect_screen($this->title, $url, $description);
+            return redirect_screen($this->title, $url, protect_from_escaping($description));
         }
         //}
 
