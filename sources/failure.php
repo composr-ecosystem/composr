@@ -1045,6 +1045,7 @@ function relay_error_notification($text, $ocproducts = true, $notification_type 
         (get_option('send_error_emails_ocproducts') == '1') &&
         (!$BLOCK_OCPRODUCTS_ERROR_EMAILS) &&
         (!running_script('cron_bridge')) &&
+        ($text != '!') &&
         (strpos($text, '_custom/') === false) &&
         (strpos($text, '_custom\\') === false) &&
         (strpos($text, 'FTP server error') === false) && // LDAP error, misconfiguration

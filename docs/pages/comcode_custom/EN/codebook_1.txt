@@ -1015,9 +1015,62 @@ We love:
  - [url="PhpStorm"]https://www.jetbrains.com/phpstorm/[/url]
  - [url="NetBeans"]https://netbeans.org/[/url]
 
-We have found the best text editors for Composr have been [url="Notepad++"]https://notepad-plus-plus.org/[/url] (Windows), [url="TextMate"]https://macromates.com/[/url] (Mac), and 'Kate' (Linux).
+We have found the best text editors for Composr have been [url="Notepad++"]https://notepad-plus-plus.org/[/url] (Windows), [url="TextMate"]https://macromates.com/[/url] (Mac), and 'Geany' (Linux).
 
 The above are just suggestions. Use whatever you like (within reason -- not Windows Notepad).
+
+[title="4"]Emulating TextMate[/title]
+
+Composr has support for the TextMate [tt]txmt[/tt] URL handler, for opening files from your local server referenced by Composr in a text editor. For example, when a stack trace hits, each trace line would have a link to open it in TextMate.
+
+To enable this support you need to run this command in Commandr:
+[code="Commandr"]
+:set_value('textmate', '1');
+[/code]
+
+While this feature is fairly unique to TextMate, you can configure other text editors to work with it too, on different operating systems. We won't be documenting every text editor and operating system combination, but we have documented Geany on Gnome (Linux) below. For Windows there is a registry editing mechanism to register protocol handlers. Some browsers such as Firefox don't actually need operating system integration.
+
+[title="5"]Geany on Gnome (Linux)[/title]
+
+[list="1"]
+[*] Create [tt]/usr/share/applications/txmt-uri.desktop[/tt] ([tt]sudo nano /usr/share/applications/txmt-uri.desktop[/tt]):
+[code="INI"]
+[Desktop Entry]
+Name=Geany
+GenericName=Geany
+Comment=Open txmt links in Geany
+TryExec=open_geany
+Exec=open_geany %u
+Terminal=false
+Type=Application
+MimeType=x-scheme-handler/txmt
+NoDisplay=true
+[/code]
+
+[*] Run [tt]sudo update-desktop-database[/tt]
+
+[*] Create [tt]/usr/local/bin/open_geany[/tt] ([tt]sudo nano /usr/local/bin/open_geany[/tt]):
+[code="Bash"]
+#!/bin/bash
+FILE=$1
+FILE=${FILE/txmt\:\/\/open\?url\=file\:\/\//}
+LINE=$(echo $FILE | grep -o "\&line=[0-9]\+")
+LINE=$(echo $LINE | grep -o "[0-9]\+")
+FILE=$(echo $FILE | grep -o "\(.\+\)\&")
+FILE=$(echo $FILE | cut -d'&' -f1)
+geany +$LINE $FILE
+[/code]
+
+[*] Run [tt]sudo chmod a+x /usr/local/bin/open_geany[/tt]
+
+[*] Relaunch your web browser
+
+[*] Go to wherever you are seeing [tt]txmt[/tt] links, and click one (if you want to force it, edit the [tt]execute_temp.php[/tt] to have a [tt]fatal_exit('!');[/tt] call in the place you put custom code)
+
+[*] If your browser doesn't integrate with Gnome automatically it should ask you what program to open the link with, manually select [tt]/usr/local/bin/open_geany[/tt]
+[/list]
+
+The [tt].desktop[/tt] file registers the protocol handler with Gnome. Browsers such as Firefox and Chrome should recognise whatever registration scheme your desktop environment is using, otherwise the final step will achieve the same end. The [tt]open_geany[/tt] script remaps TextMate launch syntax to Geany launch syntax.
 
 [title="3"]Javadoc-like commenting[/title]
 

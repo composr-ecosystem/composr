@@ -33,7 +33,6 @@ This section is a short example-driven tutorial on creating a new Composr block 
   - [url="http://en.wikipedia.org/wiki/JEdit" target="_blank"]jEdit[/url] (Linux, Windows, Mac OSX)
   - [url="http://en.wikipedia.org/wiki/Geany" target="_blank"]Geany[/url] (Linux, Windows, Mac OSX)
   - [url="http://en.wikipedia.org/wiki/Kate_%28text_editor%29" target="_blank"]Kate[/url] (Linux, Windows, Mac OSX)
-  - [url="http://en.wikipedia.org/wiki/KWrite" target="_blank"]KWrite[/url] (Linux, Windows, Mac OSX)
   - [url="http://en.wikipedia.org/wiki/Metapad" target="_blank"]MetaPad[/url] (Windows)
   - [url="http://en.wikipedia.org/wiki/Notepad%2B%2B" target="_blank"]Notepad++[/url] (Windows)
   - [url="http://en.wikipedia.org/wiki/Notepad2" target="_blank"]Notepad2[/url] (Windows)
