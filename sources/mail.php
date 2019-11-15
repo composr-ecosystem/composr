@@ -30,9 +30,27 @@ function init__mail()
     require_lang('mail');
     require_code('type_sanitisation');
 
-    global $SENDING_MAIL, $EMAIL_ATTACHMENTS;
+    global $SENDING_MAIL, $EMAIL_ATTACHMENTS, $SMTP_SOCKET;
     $SENDING_MAIL = false;
     $EMAIL_ATTACHMENTS = array();
+    $SMTP_SOCKET = array();
+    register_shutdown_function('_close_smtp_sockets');
+}
+
+/**
+ * Close any SMTP sockets that are still open.
+ *
+ * @ignore
+ */
+function _close_smtp_sockets()
+{
+    global $SMTP_SOCKET;
+    foreach ($SMTP_SOCKET as &$socket) {
+        if (($socket !== null) && ($socket !== false)) {
+            @fclose($socket);
+            $socket = null;
+        }
+    }
 }
 
 /**
@@ -356,13 +374,33 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
         $errno = 0;
         $errstr = '';
         foreach ($to_emails as $i => $to) {
-            static $socket = null;
-            if ($socket === null || $socket === false) {
-                $socket = @fsockopen($this->smtp_sockets_host, $this->smtp_sockets_port, $errno, $errstr, 30.0);
-                $new_connection = true;
-            } else {
-                $new_connection = false;
+            // Open up a connection
+            global $SMTP_SOCKET;
+            $cache_key = $this->smtp_sockets_host . ':' . $this->smtp_sockets_port;
+            $socket = array_key_exists($cache_key, $SMTP_SOCKET) ? $SMTP_SOCKET[$cache_key] : null;
+            $new_connection = false;
+            if ($socket !== false) {
+                if ($socket !== null) {
+                    $socket = $SMTP_SOCKET[$cache_key];
+
+                    // Test connection still works
+                    fwrite($socket, "NOOP\r\n");
+                    $rcv = fread($socket, 1024);
+                    if (strtolower(substr($rcv, 0, 3)) != '250')  {
+                        @fclose($socket);
+                        $socket = null;
+                    }
+                }
+
+                // Connection opening for first time, or previous connection abruptly closed - so new connection
+                if ($socket === null) {
+                    $socket = @fsockopen($this->smtp_sockets_host, $this->smtp_sockets_port, $errno, $errstr, 30.0);
+                    $SMTP_SOCKET[$cache_key] = $socket;
+                    $new_connection = true;
+                }
             }
+
+            // If we have a connection
             if ($socket !== false) {
                 if ($new_connection) {
                     $domain = get_base_url_hostname();
@@ -442,6 +480,7 @@ class Mail_dispatcher_smtp extends Mail_dispatcher_base
                     if (@fwrite($socket, "RSET\r\n") === false) { // Cut out. At least one server does this
                         @fclose($socket);
                         $socket = null;
+                        $SMTP_SOCKET[$cache_key] = null;
                     } else {
                         $rcv = fread($socket, 1024);
                     }
