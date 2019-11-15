@@ -23,7 +23,7 @@ Need to force sitemap regeneration due to some kind of bug? Run these commands v
 
 require_code('sitemap_xml');
 build_sitemap_cache_table();
-sitemap_xml_build(true);
+sitemap_xml_build(null, true);
 */
 
 /**
@@ -101,6 +101,10 @@ function rebuild_sitemap_set($set_number, $last_time, $callback = null)
     $where = array('set_number' => $set_number, 'is_deleted' => 0, 'guest_access' => 1);
     $nodes = $GLOBALS['SITE_DB']->query_select('sitemap_cache', array('*'), $where);
     foreach ($nodes as $node) {
+        if (function_exists('filter_sitemap_node')) { // Define this function is you need to change hard-coded Sitemap defaults, such as priorities
+            filter_sitemap_node($node);
+        }
+
         $page_link = $node['page_link'];
         list($zone, $attributes, $hash) = page_link_decode($page_link);
 
