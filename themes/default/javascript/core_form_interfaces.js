@@ -327,22 +327,29 @@
             if (!_ind) {
                 return;
             }
-            var ind = _ind.querySelector('div');
+            var ind = _ind.querySelector('span');
             var post = 'password=' + encodeURIComponent(input.value);
-            if (input.form && (input.form.elements.username !== undefined)) {
-                post += '&username=' + input.form.elements['username'].value;
-            } else {
-                if (input.form && input.form.elements.edit_username !== undefined) {
-                    post += '&username=' + input.form.elements['edit_username'].value;
+            if (input.form) {
+                if (input.form.elements.username !== undefined) {
+                    post += '&username=' + input.form.elements['username'].value;
+                } else {
+                    if (input.form.elements.edit_username !== undefined) {
+                        post += '&username=' + input.form.elements['edit_username'].value;
+                    }
+                }
+                if (input.form.elements.email_address !== undefined) {
+                    post += '&email_address=' + input.form.elements['email_address'].value;
+                }
+                if (input.form.elements.birthday_year !== undefined) {
+                    post += '&birthday_year=' + input.form.elements['birthday_year'].value;
+                    post += '&birthday_month=' + input.form.elements['birthday_month'].value;
+                    post += '&birthday_day=' + input.form.elements['birthday_day'].value;
                 }
             }
 
             $cms.loadSnippet('password_strength', post, true).then(function (strength) {
                 strength = Number(strength);
-                strength *= 2;
-                if (strength > 10) { // Normally too harsh!
-                    strength = 10;
-                }
+                ind.style.display = 'block';
                 ind.style.width = (strength * 10) + 'px';
                 if (strength >= 6) {
                     ind.style.backgroundColor = 'green';

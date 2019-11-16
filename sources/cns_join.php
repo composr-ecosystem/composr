@@ -165,7 +165,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
     if ($username === null) {
         $username = trim(post_param_string('username'));
     }
-    cns_check_name_valid($username, null, null, true); // Adjusts username if needed; other errors are ignored and will be picked up in cns_make_member's call to cns_check_name_valid
+    cns_check_name_valid($username, null, null, null, null, true); // Adjusts username if needed; other errors are ignored and will be picked up in cns_make_member's call to cns_check_name_valid
 
     if ($password === null) {
         $password = trim(post_param_string('password', false, INPUT_FILTER_NONE));

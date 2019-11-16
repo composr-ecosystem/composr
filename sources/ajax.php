@@ -73,7 +73,9 @@ function username_check_script()
     if ($password !== null) {
         $password = trim($password);
     }
-    $error = cns_check_name_valid($username, null, $password, true);
+    $email_address = post_param_string('email_address', '');
+    $dob = post_param_date('birthday', true, false);
+    $error = cns_check_name_valid($username, null, $password, $email_address, $dob, true);
     if ($error !== null) {
         $error->evaluate_echo();
     }

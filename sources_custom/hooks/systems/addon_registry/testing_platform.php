@@ -624,6 +624,7 @@ We hope other users will appreciate your efforts and give you some gift points t
             '_tests/tests/unit_tests/maintenance_codes.php',
             '_tests/tests/unit_tests/sitemap.php',
             '_tests/tests/unit_tests/cdn_config.php',
+            '_tests/tests/unit_tests/password_strength.php',
             '_tests/tests/unit_tests/_commandr_fs.php',
             '_tests/tests/unit_tests/mail.php',
             '_tests/tests/unit_tests/broken_includes.php',

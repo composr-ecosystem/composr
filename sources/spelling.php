@@ -129,6 +129,27 @@ function run_spellcheck($text, $lang = null, $skip_known_words_in_db = true, $pr
         return array();
     }
 
+    return run_spellcheck__words($words, $lang, $skip_known_words_in_db, $provide_corrections, $unicode_accepted);
+}
+
+/**
+ * Run a spellcheck on some words.
+ *
+ * @param  array $words List of words
+ * @param  ?ID_TEXT $lang Language to check in (null: current language)
+ * @param  boolean $skip_known_words_in_db Whether to avoid spellchecking known keywords etc
+ * @param  boolean $provide_corrections Whether to provide corrections
+ * @param  boolean $unicode_accepted Whether Unicode is accepted
+ * @return array A map of misspellings, lower case bad word => array of corrections
+ */
+function run_spellcheck__words($words, $lang = null, $skip_known_words_in_db = true, $provide_corrections = true, $unicode_accepted = true)
+{
+    $spell_checker = _find_spell_checker();
+
+    if ($spell_checker === null) {
+        return array();
+    }
+
     $errors = array();
 
     // Initialise

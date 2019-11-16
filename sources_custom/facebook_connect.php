@@ -274,7 +274,7 @@ function handle_facebook_connection_login($current_logged_in_member, $quick_only
 
             $username = post_param_string('username', $username); // User may have customised username
             if ((!empty($_custom_fields)) && (get_value('no_finish_profile') !== '1')) { // Was not auto-generated, so needs to be checked
-                cns_check_name_valid($username, null, null);
+                cns_check_name_valid($username);
             }
             $member_id = cns_member_external_linker('facebook', $username, $facebook_uid, false, $email_address, $dob_day, $dob_month, $dob_year, $timezone, $language, $avatar_url, $photo_url, $photo_thumb_url);
 

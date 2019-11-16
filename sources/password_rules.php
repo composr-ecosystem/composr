@@ -18,46 +18,79 @@
  * @package    core_cns
  */
 
-/*
-Examples...
-
-'hello' --> 1
-'t2D' --> 2
-'t2D$' --> 3
-'t2D$f3t4t412%$' --> 9
-*/
-
 /**
  * Test password strength.
  *
  * @param  string $password The password to check
- * @param  string $username The username that will go with the password
+ * @param  string $username The username that will go with the password (blank: unknown)
+ * @param  EMAIL $email_address The e-mail address that will go with the password (blank: unknown)
+ * @param  ?TIME $dob The date of birth that will go with the password (null: unknown)
  * @return integer Password strength (1-10)
  */
-function test_password($password, $username = '')
+function test_password($password, $username = '', $email_address = '', $dob = null)
 {
-    $strength = 1;
+    // Take out completely insecure elements from the password so that they won't contribute to the scoring...
 
-    if (strlen($password) == 0) {
-        return $strength;
+    // Tainted strings based on something a hacker may know
+    $tainted_strings_source = array();
+    if ($username != '') {
+        $tainted_strings_source[cms_mb_strtoupper($username)] = 3;
+    }
+    if ($email_address != '') {
+        $tainted_strings_source[cms_mb_strtoupper($email_address)] = 3;
+    }
+    if ($dob !== null) {
+        $tainted_strings_source[cms_mb_strtoupper(date('Y', $dob))] = 4;
+        $tainted_strings_source[cms_mb_strtoupper(date('y', $dob))] = 2;
+    }
+    $tainted_substrings_pool = array();
+    foreach ($tainted_strings_source as $tainted_string => $minimum_substring_length_to_consider) {
+        $len = cms_mb_strlen($tainted_string);
+        for ($start = 0; $start <= $len; $start++) {
+            for ($end = $start + $minimum_substring_length_to_consider; $end <= $len; $end++) {
+                if ($end - $start >= $minimum_substring_length_to_consider) {
+                    $tainted_substring = cms_mb_substr($tainted_string, $start, $end - $start);
+                    $tainted_substrings_pool[$tainted_substring] = cms_mb_strlen($tainted_substring);
+                }
+            }
+        }
+    }
+    arsort($tainted_substrings_pool);
+    $password_upper = cms_mb_strtoupper($password);
+    foreach (array_keys($tainted_substrings_pool) as $tainted_substring) {
+        do {
+            $pos = strpos($password_upper, $tainted_substring);
+            if ($pos !== false) {
+                $password = substr($password, 0, $pos) . substr($password, $pos + strlen($tainted_substring));
+                $password_upper = cms_mb_strtoupper($password);
+            }
+        }
+        while ($pos !== false);
     }
 
-    if (($username != '') && ($username == $password)) {
-        return $strength;
+    // Simple dictionary pass
+    require_code('spelling');
+    $spell_checker = _find_spell_checker();
+    if ($spell_checker !== null) {
+        $test = run_spellcheck__words(array(cms_mb_strtolower($password)), null, /*$skip_known_words_in_db = */true, /*$provide_corrections = */false);
+        if (count($test) == 0) { // Fully matches dictionary
+            $password = '';
+        }
     }
 
-    // Check if password is not all lower case
-    if (strtolower($password) != $password) {
-        $strength += 5;
-    }
+    // Positive scoring...
 
-    // Check if password is not all upper case
-    if (strtoupper($password) != $password) {
-        $strength += 5;
-    }
+    $strength = 0;
+    $running_maximum = 0;
 
-    // Check string length
-    $length = strlen($password);
+    // Consider if password is not all the same case
+    if ((cms_mb_strtolower($password) != $password) && (cms_mb_strtoupper($password) != $password)) {
+        $strength += 10;
+    }
+    $running_maximum += 10;
+
+    // Consider the string length
+    $length = cms_mb_strlen($password);
     if ($length >= 8 && $length <= 15) {
         $strength += 16;
     } elseif ($length >= 16 && $length <= 35) {
@@ -65,20 +98,34 @@ function test_password($password, $username = '')
     } elseif ($length > 35) {
         $strength += 48;
     }
+    $running_maximum += 48;
 
-    // Get the numbers in the password
-    $strength += preg_match_all('#[0-9]#', $password) * 3;
+    // Consider digits
+    $strength += min(12, preg_match_all('#[0-9]#', $password) * 3);
+    $running_maximum += 12;
 
-    // Check for special chars
-    $strength += preg_match_all('#[^a-zA-Z0-9]#', $password) * 8;
+    // Consider special chars
+    $strength += min(32, preg_match_all('#[^a-zA-Z0-9]#', $password) * 8);
+    $running_maximum += 32;
 
-    // Get the number of unique chars
+    // Consider number of unique chars
     $chars = preg_split('#(.)#', $password, null, PREG_SPLIT_DELIM_CAPTURE);
     $num_unique_chars = count(array_unique($chars)) - 1;
-    $strength += ($num_unique_chars - 1) * 2;
+    $strength += min(25, ($num_unique_chars - 1) * 2);
+    $running_maximum += 25;
 
-    // Strength must be a number 1-10
-    return min(10, intval(round(floatval($strength) / 10.0)));
+    $running_maximum = 70; // Actually we'll reduce it (from 127), as we don't want to rate everything against the very best
+
+    // Clamp the strength to be a number 1-10...
+
+    if ($strength < 0) {
+        $strength = 0;
+    }
+    $strength = 1 + intval(round(9.0 * floatval($strength) / floatval($running_maximum)));
+    if ($strength > 10) {
+        $strength = 10;
+    }
+    return $strength;
 }
 
 /**
@@ -155,12 +202,14 @@ function member_password_too_old($member_id)
 /**
  * Check the complexity of a password.
  *
- * @param  ID_TEXT $username The username this is for
- * @param  string $password New password
+ * @param  string $password The password to check
+ * @param  string $username The username that will go with the password (blank: unknown)
+ * @param  EMAIL $email_address The e-mail address that will go with the password (blank: unknown)
+ * @param  ?TIME $dob The date of birth that will go with the password (null: unknown)
  * @param  boolean $return_errors Whether to return errors instead of dying on them
  * @return ?Tempcode Error (null: none)
  */
-function check_password_complexity($username, $password, $return_errors = false)
+function check_password_complexity($password, $username, $email_address, $dob, $return_errors = false)
 {
     $_maximum_password_length = get_option('maximum_password_length');
     $maximum_password_length = min(255, intval($_maximum_password_length));
@@ -184,7 +233,7 @@ function check_password_complexity($username, $password, $return_errors = false)
     if ($_minimum_password_strength != '1') {
         $minimum_strength = intval($_minimum_password_strength);
         require_code('password_rules');
-        $strength = test_password($password, $username);
+        $strength = test_password($password, $username, $email_address, $dob);
         if ($strength < $minimum_strength) {
             require_lang('password_rules');
             if ($return_errors) {

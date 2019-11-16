@@ -143,7 +143,7 @@ function user_sync__inbound($since = null)
                 }
                 $username .= is_integer($user[$username_field]) ? strval($user[$username_field]) : $user[$username_field];
             }
-            //cns_check_name_valid($username, null, null, true); // Not really needed
+            //cns_check_name_valid($username, null, null, null, null, true); // Not really needed
             if ($username == '') {
                 resource_fs_logging('Blank username cannot be imported.', 'warn');
                 continue;

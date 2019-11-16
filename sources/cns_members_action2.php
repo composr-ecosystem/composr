@@ -951,7 +951,7 @@ function cns_edit_member($member_id, $username = null, $password = null, $email_
 
     if ($username !== null) {
         if ($check_correctness) {
-            cns_check_name_valid($username, $member_id, $password);
+            cns_check_name_valid($username, $member_id, $password, $email_address, ($dob_year === null) ? null : mktime(12, 0, 0, $dob_month, $dob_day, $dob_year));
 
             require_code('urls2');
             suggest_new_idmoniker_for('members', 'view', strval($member_id), '', $username);
@@ -1669,10 +1669,12 @@ function cns_set_custom_field($member_id, $field_id, $value, $type = null, $defe
  * @param  ?SHORT_TEXT $username The username (may get altered) (null: nothing to check)
  * @param  ?MEMBER $member_id The member (null: member not actually added yet; this ID is only given for the duplication check, to make sure it doesn't think we are duplicating with ourself)
  * @param  ?SHORT_TEXT $password The password (null: nothing to check)
+ * @param  ?EMAIL $email_address The e-mail address that will go with the password (null: unknown)
+ * @param  ?TIME $dob The date of birth that will go with the password (null: unknown)
  * @param  boolean $return_errors Whether to return errors instead of dying on them
  * @return ?Tempcode Error (null: none)
  */
-function cns_check_name_valid(&$username, $member_id = null, $password = null, $return_errors = false)
+function cns_check_name_valid(&$username, $member_id = null, $password = null, $email_address = null, $dob = null, $return_errors = false)
 {
     /* This would be an internationalisation mistake
     $striped_username = $username;
@@ -1746,7 +1748,7 @@ function cns_check_name_valid(&$username, $member_id = null, $password = null, $
         }
         if ($password !== null) {
             require_code('password_rules');
-            $test = check_password_complexity($username, $password, $return_errors);
+            $test = check_password_complexity($password, ($username === null) ? '' : $username, ($email_address === null) ? '' : $email_address, $dob, $return_errors);
             if ($test !== null) {
                 return $test;
             }
