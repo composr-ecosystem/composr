@@ -114,6 +114,12 @@ The testing framework is built around SimpleTest (http://www.simpletest.org/), s
 - there is some standard setUp/tearDown code should use for any test, to make sure Composr starts in a good state for testing (currently it just makes sure the site is not closed)
 Read about the SimpleTest API on their website to understand what things like assertTrue mean, and what tools you have at your disposal.
 
+[title="2"]Continuous Integration (CI)[/title]
+
+The CI server tracks every commit to a branch, and runs the test set against it. Any failures are then posted to the commit that triggered the CI run.
+
+This is great as running the full test set on a dev machine with each commit is unreasonable (it takes about 20 minutes). With CI issues can still be picked up quickly and resolved without the branch\'s stability drifting.
+
 [title="2"]Contributing[/title]
 
 We welcome any new tests you might want to write for us. We only have one at the moment and ideally we would have thousands, so there\'s a lot of work to do! The more tests we have, the more stable Composr will be.
