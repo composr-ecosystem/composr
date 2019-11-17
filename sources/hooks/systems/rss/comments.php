@@ -106,7 +106,7 @@ class Hook_rss_comments
                     if ($comment === null) {
                         continue;
                     }
-                    if ($i + $start > $max) {
+                    if ($start + $i > $max) {
                         break 2;
                     }
 

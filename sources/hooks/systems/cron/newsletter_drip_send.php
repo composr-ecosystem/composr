@@ -86,7 +86,13 @@ class Hook_cron_newsletter_drip_send
             require_code('mail');
             foreach ($to_send as $mail) {
                 $message_id = $mail['d_message_id'];
-                list($forename, $surname, $username, $id, $hash) = json_decode($mail['d_message_binding'], true);
+
+                $message_binding = json_decode($mail['d_message_binding'], true);
+                $forename = $message_binding['forename'];
+                $surname = $message_binding['surname'];
+                $name = $message_binding['name'];
+                $send_id = $message_binding['send_id'];
+                $hash = $message_binding['hash'];
 
                 // Load message
                 if (!isset($cached_messages[$message_id])) {
@@ -105,7 +111,7 @@ class Hook_cron_newsletter_drip_send
 
                 // Variable substitution in body
                 if ($needs_substitutions === null || $needs_substitutions) {
-                    $newsletter_message_substituted = (strpos($message, '{') === false) ? $message : newsletter_variable_substitution($message, $subject, $forename, $surname, $username, $mail['d_to_email'], $id, $hash);
+                    $newsletter_message_substituted = (strpos($message, '{') === false) ? $message : newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $mail['d_to_email'], $send_id, $hash);
 
                     if ($needs_substitutions === null) {
                         $needs_substitutions = ($newsletter_message_substituted != $message);

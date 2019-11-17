@@ -30,7 +30,7 @@ class Hook_task_export_ecom_transactions
      * @param  TIME $end_date Date to
      * @param  string $transaction_status Transaction status filter (blank: no filter)
      * @param  string $type_code Product filter (blank: no filter)
-     * @param  ?string $file_type The fle type to export with (null: default)
+     * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
     public function run($start_date, $end_date, $transaction_status, $type_code, $file_type = null)
@@ -66,6 +66,8 @@ class Hook_task_export_ecom_transactions
         }
         $tax_categories = array_keys($tax_categories);
 
+        $max_rows = count($rows);
+
         require_code('files_spreadsheets_write');
         if ($file_type === null) {
             $file_type = spreadsheet_write_default();
@@ -74,7 +76,7 @@ class Hook_task_export_ecom_transactions
         $outfile_path = null;
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
         foreach ($rows as $i => $_transaction) {
-            task_log($this, 'Processing transaction row', $i, count($rows));
+            task_log($this, 'Processing transaction row', $i, $max_rows);
 
             list($details, $product_object) = find_product_details($_transaction['t_type_code']);
             if ($details !== null) {

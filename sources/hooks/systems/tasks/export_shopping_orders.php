@@ -29,7 +29,7 @@ class Hook_task_export_shopping_orders
      * @param  TIME $start_date Date from
      * @param  TIME $end_date Date to
      * @param  string $order_status Order status filter (blank: no filter)
-     * @param  ?string $file_type The fle type to export with (null: default)
+     * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
     public function run($start_date, $end_date, $order_status, $file_type = null)
@@ -62,7 +62,7 @@ class Hook_task_export_shopping_orders
         $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
 
         foreach ($rows as $i => $_order) {
-            task_log($this, 'Processing shopping order row', $i);
+            task_log($this, 'Processing shopping order row', $i, count($rows));
 
             $order = array();
 

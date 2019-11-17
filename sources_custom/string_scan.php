@@ -6006,7 +6006,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         NEWSLETTER_DEFERRED
         NEWSLETTER_DESCRIPTION_TITLE
         NEWSLETTER_DRIP_SEND_QUEUE
-        NEWSLETTER_HASH
         NEWSLETTER_IMPORTED_THIS
         NEWSLETTER_SEND_TO
         DESCRIPTION_NEWSLETTER_SEND_TO

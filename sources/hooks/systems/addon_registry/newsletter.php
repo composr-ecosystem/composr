@@ -171,6 +171,7 @@ class Hook_addon_registry_newsletter
             'themes/default/templates/NEWSLETTER_PREVIEW.tpl',
             'sources/hooks/systems/preview/newsletter_whatsnew.php',
             'sources/hooks/systems/actionlog/newsletter.php',
+            'sources/hooks/systems/tasks/export_newsletter_subscribers.php',
         );
     }
 
@@ -247,28 +248,21 @@ class Hook_addon_registry_newsletter
      */
     public function tpl_preview__administrative__newsletter_subscribers_screen()
     {
-        $out = new Tempcode();
+        $subscribers_table_rows = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
-            $out->attach(do_lorem_template('NEWSLETTER_SUBSCRIBER', array(
-                'EMAIL' => lorem_word(),
+            $subscribers_table_rows->attach(do_lorem_template('NEWSLETTER_SUBSCRIBER', array(
+                'EMAIL_ADDRESS' => lorem_word(),
                 'FORENAME' => lorem_word(),
                 'SURNAME' => lorem_word(),
                 'NAME' => lorem_word(),
-                'NEWSLETTER_SEND_ID' => placeholder_id(),
-                'NEWSLETTER_HASH' => lorem_word(),
             )));
         }
 
-        $outs = array();
-        $outs[] = array(
-            'SUB' => $out,
-        );
-
         return array(
             lorem_globalise(do_lorem_template('NEWSLETTER_SUBSCRIBERS_SCREEN', array(
-                'SUBSCRIBERS' => $outs,
-                'PAGINATION' => '',
                 'TITLE' => lorem_title(),
+                'SUBSCRIBERS_TABLE_ROWS' => $subscribers_table_rows,
+                'PAGINATION' => '',
                 'DOMAINS' => placeholder_array(),
             )), null, '', true)
         );

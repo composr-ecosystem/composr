@@ -528,8 +528,7 @@ class Module_newsletter
         }
         $subscriber = $_subscriber[0];
 
-        require_code('crypt');
-        $needed_hash = ratchet_hash($subscriber['the_password'], 'xunsub');
+        $needed_hash = get_unsubscribe_hash($subscriber['the_password']);
 
         if ($hash != $needed_hash) {
             warn_exit(do_lang_tempcode('COULD_NOT_UNSUBSCRIBE'));

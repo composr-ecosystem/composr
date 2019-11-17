@@ -108,12 +108,12 @@ class Module_admin_newsletter extends Standard_crud_module
             }
         }
 
-        if ($type == 'bounce_filter_a' || $type == 'bounce_filter_v' || $type == 'bounce_filter_c' || $type == 'bounce_filter_d') {
-            $this->title = get_screen_title('BOUNCE_FILTER');
-        }
-
         if ($type == 'subscribers') {
             $this->title = get_screen_title('VIEW_NEWSLETTER_SUBSCRIBERS');
+        }
+
+        if ($type == 'bounce_filter_a' || $type == 'bounce_filter_v' || $type == 'bounce_filter_c' || $type == 'bounce_filter_d') {
+            $this->title = get_screen_title('BOUNCE_FILTER');
         }
 
         if ($type == 'whatsnew' || $type == 'whatsnew_2') {
@@ -183,6 +183,20 @@ class Module_admin_newsletter extends Standard_crud_module
         if ($type == 'subscribers') {
             return $this->view_subscribers();
         }
+        if (!GOOGLE_APPENGINE) {
+            if ($type == 'bounce_filter_a') {
+                return $this->bounce_filter_a();
+            }
+            if ($type == 'bounce_filter_b') {
+                return $this->bounce_filter_b();
+            }
+            if ($type == 'bounce_filter_c') {
+                return $this->bounce_filter_c();
+            }
+            if ($type == 'bounce_filter_d') {
+                return $this->bounce_filter_d();
+            }
+        }
 
         if ($type == 'whatsnew') {
             return $this->whatsnew_1();
@@ -211,21 +225,6 @@ class Module_admin_newsletter extends Standard_crud_module
         }
         if ($type == 'new') {
             return $this->send_gui();
-        }
-
-        if (!GOOGLE_APPENGINE) {
-            if ($type == 'bounce_filter_a') {
-                return $this->bounce_filter_a();
-            }
-            if ($type == 'bounce_filter_b') {
-                return $this->bounce_filter_b();
-            }
-            if ($type == 'bounce_filter_c') {
-                return $this->bounce_filter_c();
-            }
-            if ($type == 'bounce_filter_d') {
-                return $this->bounce_filter_d();
-            }
         }
 
         return new Tempcode();
@@ -285,10 +284,11 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function _count_on_newsletter($key, $lang)
     {
-        $send_details = array();
-        $send_details[$key] = true;
-        $_subscribers = newsletter_who_send_to($send_details, $lang, 0, 0, false, '');
-        return $_subscribers[6][$key];
+        $send_details = array(
+            $key => true,
+        );
+        list(, $total) = newsletter_who_send_to($send_details, $lang, 0, 0);
+        return isset($total[$key]) ? $total[$key] : 0;
     }
 
     /**
@@ -383,6 +383,127 @@ class Module_admin_newsletter extends Standard_crud_module
 
         require_code('tasks');
         return call_user_func_array__long_task($action_title, $this->title, 'import_newsletter_subscribers', array($_language, $newsletter_id, $subscribe, $target_path));
+    }
+
+    /**
+     * The UI to view subscribers on the newsletter.
+     *
+     * @return Tempcode The UI
+     */
+    public function view_subscribers()
+    {
+        $lang = choose_language($this->title);
+        if (is_object($lang)) {
+            return $lang;
+        }
+
+        $key = either_param_string('id', null);
+
+        require_lang('cns');
+
+        // Select newsletter
+        if ($key === null) {
+            $fields = new Tempcode();
+
+            // Selection
+            $newsletters = new Tempcode();
+            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
+            foreach ($rows as $i => $newsletter) {
+                $newsletters->attach(form_input_list_entry(strval($newsletter['id']), $i == 0, get_translated_text($newsletter['title'])));
+            }
+            if (get_forum_type() == 'cns') {
+                $newsletters->attach(form_input_list_entry('-1', false, do_lang_tempcode('NEWSLETTER_CNS')));
+                $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
+                foreach ($groups as $group_id => $group) {
+                    if ($group_id != db_get_first_id()) {
+                        $subscriber_count = $this->_count_on_newsletter('g' . strval($group_id), $lang);
+                        if ($subscriber_count != 0) {
+                            $newsletters->attach(form_input_list_entry('g' . strval($group_id), false, do_lang_tempcode('THIS_WITH', do_lang_tempcode('USERGROUP'), make_string_tempcode(escape_html($group)))));
+                        }
+                    }
+                }
+            }
+            if ($newsletters->is_empty()) {
+                inform_exit(do_lang_tempcode('NO_CATEGORIES'));
+            }
+            $fields->attach(form_input_list(do_lang_tempcode('NEWSLETTER'), '', 'id', $newsletters, null, true));
+
+            // Spreadsheet option
+            $fields->attach(form_input_tick(do_lang_tempcode('EXPORT_AS_SPREADSHEET'), do_lang_tempcode('DESCRIPTION_EXPORT_AS_SPREADSHEET'), 'spreadsheet', false));
+
+            $submit_name = do_lang_tempcode('VIEW_SUBSCRIBERS');
+            $post_url = get_self_url();
+
+            $hidden = new Tempcode();
+            $hidden->attach(form_input_hidden('lang', $lang));
+
+            $prune_url = build_url(array('page' => '_SELF', 'type' => 'bounce_filter_a'), '_SELF');
+            return do_template('FORM_SCREEN', array(
+                '_GUID' => '0100ae6565474bca0669de1654b6efcf',
+                'GET' => true,
+                'SKIP_WEBSTANDARDS' => true,
+                'HIDDEN' => $hidden,
+                'TITLE' => $this->title,
+                'TEXT' => do_lang_tempcode('NEWSLETTER_SUBSCRIBERS_FORM', escape_html($prune_url->evaluate())),
+                'FIELDS' => $fields,
+                'SUBMIT_ICON' => 'admin/export_spreadsheet',
+                'SUBMIT_NAME' => $submit_name,
+                'URL' => $post_url,
+            ));
+        }
+
+        // Show subscribers...
+
+        $max = get_param_integer('max', 100);
+        $start = get_param_integer('start', 0);
+
+        $send_details = array(
+            $key => true,
+        );
+        $max_rows = $this->_count_on_newsletter($key, $lang);
+
+        $send_details = array();
+        $send_details[$key] = true;
+        list($subscribers) = newsletter_who_send_to($send_details, $lang, $start + $start2, $max);
+
+        $subscribers_table_rows = '';
+
+        foreach ($subscribers as $email_address => $subscriber_map) {
+            $tpl = do_template('NEWSLETTER_SUBSCRIBER', array(
+                '_GUID' => 'ca45867a23cbaa7c6788d3cd2ba2793c',
+                'EMAIL_ADDRESS' => $email_address,
+                'FORENAME' => $subscriber_map['forename'],
+                'SURNAME' => $subscriber_map['surname'],
+                'NAME' => $subscriber_map['name'],
+                'SEND_ID' => $subscriber_map['send_id'],
+                'HASH' => $subscriber_map['hash'],
+            ));
+            $subscribers_table_rows .= $tpl->evaluate();
+        }
+
+        require_code('templates_pagination');
+        $pagination = pagination(do_lang_tempcode('VIEW_NEWSLETTER_SUBSCRIBERS'), $start, 'start', $max, 'max', $max_rows);
+
+        $domains = newsletter_domain_subscriber_stats($key);
+        foreach ($domains as $key => $val) { // We don't want when there is only 1 subscriber on a domain, if we have over 100 domains
+            $domains[$key] = strval($val);
+            if (count($domains) > 100) {
+                if ($val == 1) {
+                    unset($domains[$key]);
+                }
+            }
+        }
+
+        $tpl = do_template('NEWSLETTER_SUBSCRIBERS_SCREEN', array(
+            '_GUID' => '52e5d97d451b622d59f87f021a5b8f01',
+            'TITLE' => $this->title,
+            'DOMAINS' => $domains,
+            'SUBSCRIBERS_TABLE_ROWS' => $subscribers_table_rows,
+            'PAGINATION' => $pagination,
+        ));
+
+        require_code('templates_internalise_screen');
+        return internalise_own_screen($tpl);
     }
 
     /**
@@ -499,7 +620,7 @@ class Module_admin_newsletter extends Standard_crud_module
         $out = _find_mail_bounces($host, $port, $type, $folder, $username, $password, false);
         $num = count($out);
 
-        $fields = '';//new Tempcode();
+        $fields = '';
 
         $all_subscribers = array();
         $all_subscribers += collapse_2d_complexity('email', 'id', $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', array('email', 'id')));
@@ -514,7 +635,6 @@ class Module_admin_newsletter extends Standard_crud_module
             if (array_key_exists($email, $all_subscribers)) {
                 $tick = form_input_tick($email, $subject . '.', 'email_' . strval($num), $is_bounce, null, $email);
                 $fields .= $tick->evaluate(); // XHTMLXHTML
-                //$fields->attach($tick);
 
                 $i++;
             }
@@ -570,253 +690,6 @@ class Module_admin_newsletter extends Standard_crud_module
         remove_email_bounces($bounces);
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
-    }
-
-    /**
-     * The UI to view subscribers on the newsletter.
-     *
-     * @return Tempcode The UI
-     */
-    public function view_subscribers()
-    {
-        $lang = choose_language($this->title);
-        if (is_object($lang)) {
-            return $lang;
-        }
-
-        $id = either_param_string('id', null);
-
-        require_lang('cns');
-
-        require_code('crypt');
-
-        // Select newsletter
-        if ($id === null) {
-            $fields = new Tempcode();
-
-            // Selection
-            $newsletters = new Tempcode();
-            $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
-            foreach ($rows as $i => $newsletter) {
-                $newsletters->attach(form_input_list_entry(strval($newsletter['id']), $i == 0, get_translated_text($newsletter['title'])));
-            }
-            if (get_forum_type() == 'cns') {
-                $newsletters->attach(form_input_list_entry('-1', false, do_lang_tempcode('NEWSLETTER_CNS')));
-                $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
-                foreach ($groups as $group_id => $group) {
-                    if ($group_id != db_get_first_id()) {
-                        $subscriber_count = $this->_count_on_newsletter('g' . strval($group_id), $lang);
-                        if ($subscriber_count != 0) {
-                            $newsletters->attach(form_input_list_entry('g' . strval($group_id), false, do_lang_tempcode('THIS_WITH', do_lang_tempcode('USERGROUP'), make_string_tempcode(escape_html($group)))));
-                        }
-                    }
-                }
-            }
-            if ($newsletters->is_empty()) {
-                inform_exit(do_lang_tempcode('NO_CATEGORIES'));
-            }
-            $fields->attach(form_input_list(do_lang_tempcode('NEWSLETTER'), '', 'id', $newsletters, null, true));
-
-            // Spreadsheet option
-            $fields->attach(form_input_tick(do_lang_tempcode('EXPORT_AS_SPREADSHEET'), do_lang_tempcode('DESCRIPTION_EXPORT_AS_SPREADSHEET'), 'spreadsheet', false));
-
-            $submit_name = do_lang_tempcode('VIEW_SUBSCRIBERS');
-            $post_url = get_self_url();
-
-            $hidden = new Tempcode();
-            $hidden->attach(form_input_hidden('lang', $lang));
-
-            $prune_url = build_url(array('page' => '_SELF', 'type' => 'bounce_filter_a'), '_SELF');
-            return do_template('FORM_SCREEN', array(
-                '_GUID' => '0100ae6565474bca0669de1654b6efcf',
-                'GET' => true,
-                'SKIP_WEBSTANDARDS' => true,
-                'HIDDEN' => $hidden,
-                'TITLE' => $this->title,
-                'TEXT' => do_lang_tempcode('NEWSLETTER_SUBSCRIBERS_FORM', escape_html($prune_url->evaluate())),
-                'FIELDS' => $fields,
-                'SUBMIT_ICON' => 'admin/export_spreadsheet',
-                'SUBMIT_NAME' => $submit_name,
-                'URL' => $post_url,
-            ));
-        }
-
-        // Send to spreadsheet file?
-        $spreadsheet = either_param_integer('spreadsheet', 0);
-        if ($spreadsheet == 1) {
-            require_code('files_spreadsheets_write');
-            $filename = 'subscribers_' . $id . '.' . spreadsheet_write_default();
-            $outfile_path = null;
-            $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
-        }
-
-        // Show subscribers...
-
-        $outs = array();
-
-        $max = get_param_integer('max', 100);
-        $start = get_param_integer('start', 0);
-
-        $max_rows = 0;
-
-        $send_details = array();
-        $send_details[strval($id)] = true;
-        $_subscribers = newsletter_who_send_to($send_details, $lang, 0, 0, true, '');
-        if (isset($_subscribers[6][$id])) {
-            $max_rows = $_subscribers[6][$id];
-        }
-
-        $num = 0;
-
-        $start2 = 0;
-
-        do {
-            $send_details = array();
-            $send_details[strval($id)] = true;
-            $_subscribers = newsletter_who_send_to($send_details, $lang, $start + $start2, $max, true, '');
-            $rows = $_subscribers[7];
-
-            if ($spreadsheet == 1) {
-                if ($start2 == 0) {
-                    $sheet_writer->write_row(array(
-                        do_lang('EMAIL_ADDRESS'),
-                        do_lang('FORENAME'),
-                        do_lang('SURNAME'),
-                        do_lang('NAME'),
-                        do_lang('NEWSLETTER_SEND_ID'),
-                        /*Too slow with ratchet hash do_lang('NEWSLETTER_HASH'),*/
-                        do_lang('PASSWORD_HASH'),
-                        do_lang('SALT'),
-                        do_lang('LANGUAGE'),
-                        do_lang('CONFIRM_CODE'),
-                        do_lang('JOIN_DATE'),
-                    ));
-                }
-            } else {
-                $out = '';
-            }
-
-            foreach ($rows as $r) {
-                $email = array_key_exists('email', $r) ? $r['email'] : $r['m_email_address'];
-                $forename = array_key_exists('n_forename', $r) ? $r['n_forename'] : '';
-                $surname = array_key_exists('n_surname', $r) ? $r['n_surname'] : '';
-                $name = array_key_exists('m_username', $r) ? $r['m_username'] : '';
-
-                $salt = array_key_exists('pass_salt', $r) ? $r['pass_salt'] : '';
-                $_language = array_key_exists('language', $r) ? $r['language'] : '';
-                $confirm_code = array_key_exists('confirm_code', $r) ? $r['confirm_code'] : 0;
-                $join_time = array_key_exists('join_time', $r) ? $r['join_time'] : time();
-
-                $send_id = (array_key_exists('m_username', $r) ? 'm' : 'n') . (array_key_exists('id', $r) ? strval($r['id']) : $email);
-                $hash = array_key_exists('the_password', $r) ? $r['the_password'] : '';
-                $unsub = array_key_exists('the_password', $r) ? ratchet_hash($r['the_password'], 'xunsub') : '';
-
-                if ($spreadsheet == 1) {
-                    $sheet_writer->write_row(array(
-                        $email,
-                        $forename,
-                        $surname,
-                        $name,
-                        $send_id,
-                        /*Too slow with ratchet hash $unsub,*/
-                        $hash,
-                        $salt,
-                        $_language,
-                        $confirm_code,
-                        date('Y-m-d h:i:s', $join_time),
-                    ));
-                } else {
-                    $tpl = do_template('NEWSLETTER_SUBSCRIBER', array(
-                    '_GUID' => 'ca45867a23cbaa7c6788d3cd2ba2793c',
-                    'EMAIL' => $email,
-                    'FORENAME' => $forename,
-                    'SURNAME' => $surname,
-                    'NAME' => $name,
-                    'NEWSLETTER_SEND_ID' => $send_id,
-                    'NEWSLETTER_HASH' => $hash,
-                ));
-                    $out .= $tpl->evaluate();
-                }
-            }
-
-            $start2 += $max;
-        } while (($spreadsheet == 1) && (array_key_exists(0, $rows)));
-
-        if ((empty($rows)) && ($start2 == 0)) {
-            if ($spreadsheet == 1) {
-                echo '"(' . do_lang('NONE') . ')"' . "\n";
-            } else {
-            }
-        }
-
-        if ($spreadsheet == 1) {
-        } else {
-            require_code('templates_pagination');
-            $pagination = pagination(do_lang_tempcode('VIEW_NEWSLETTER_SUBSCRIBERS'), $start, 'start', $max, 'max', $max_rows);
-
-            $outs[] = array('PAGINATION' => $pagination, 'SUB' => $out);
-        }
-
-        if ($spreadsheet == 1) {
-            $sheet_writer->output_and_exit($filename, true);
-        }
-
-        // Work out stats of what domains are used
-        $domains = array();
-        $start = 0;
-        do {
-            if (substr($id, 0, 1) == 'g') {
-                if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
-                    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email', 'COUNT(*) as cnt'), array('m_allow_emails' => 1, 'm_primary_group' => intval(substr($id, 1))), 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
-                } else {
-                    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email'), array('m_allow_emails' => 1, 'm_primary_group' => intval(substr($id, 1))), '', 500, $start);
-                }
-            } elseif ($id == '-1') {
-                if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
-                    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email', 'COUNT(*) as cnt'), array('m_allow_emails' => 1), 'GROUP BY SUBSTRING_INDEX(m_email_address,\'@\',-1)'); // Far less PHP processing
-                } else {
-                    $rows = $GLOBALS['FORUM_DB']->query_select('f_members', array('DISTINCT m_email_address AS email'), array('m_allow_emails' => 1), '', 500, $start);
-                }
-            } else {
-                if ($GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()) {
-                    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', array('DISTINCT email', 'COUNT(*) as cnt'), array(), 'GROUP BY SUBSTRING_INDEX(email,\'@\',-1)'); // Far less PHP processing
-                } else {
-                    $where = array('newsletter_id' => $id, 'code_confirm' => 0);
-                    $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe s JOIN ' . get_table_prefix() . 'newsletter_subscribers x ON s.email=x.email', array('DISTINCT s.email'), $where, '', 500, $start);
-                }
-            }
-            foreach ($rows as $row) {
-                $email = $row['email'];
-                if (strpos($email, '@') === false) {
-                    continue;
-                }
-                $domain = substr($email, strpos($email, '@') + 1);
-                if (!is_string($domain)) {
-                    continue;
-                }
-                $cnt = array_key_exists('cnt', $row) ? $row['cnt'] : 1;
-                if (!array_key_exists($domain, $domains)) {
-                    $domains[$domain] = 0;
-                }
-                $domains[$domain] += $cnt;
-            }
-
-            $start += 500;
-        } while ((array_key_exists(0, $rows)) && (!$GLOBALS['DB_STATIC_OBJECT']->has_expression_ordering()));
-        arsort($domains);
-        foreach ($domains as $key => $val) {
-            $domains[$key] = strval($val);
-            if (count($domains) > 100) {
-                if ($val == 1) {
-                    unset($domains[$key]);
-                }
-            }
-        }
-
-        $tpl = do_template('NEWSLETTER_SUBSCRIBERS_SCREEN', array('_GUID' => '52e5d97d451b622d59f87f021a5b8f01', 'DOMAINS' => $domains, 'SUBSCRIBERS' => $outs, 'TITLE' => $this->title));
-
-        require_code('templates_internalise_screen');
-        return internalise_own_screen($tpl);
     }
 
     /**
@@ -1322,11 +1195,11 @@ class Module_admin_newsletter extends Standard_crud_module
         $html_only = post_param_integer('html_only', 0);
         $from_email = post_param_string('from_email', '');
         $from_name = post_param_string('from_name', '');
-        $address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
-        if ($address == '') {
-            $address = get_option('staff_address');
+        $email_address = $GLOBALS['FORUM_DRIVER']->get_member_email_address(get_member());
+        if ($email_address == '') {
+            $email_address = get_option('staff_address');
         }
-        $username = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
+        $name = $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true);
 
         // Read in spreadsheet target
         $extra_post_data = array();
@@ -1350,8 +1223,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         // Periodic save?
         if (post_param_integer('make_periodic', 0) == 1) {
-            // We're making a periodic newsletter. Thus we need to pass this info
-            // through to the next step
+            // We're making a periodic newsletter. Thus we need to pass this info through to the next step
             $extra_post_data['make_periodic'] = '1';
 
             // Re-generate preview from latest chosen_categories
@@ -1376,8 +1248,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $mail_dispatcher = dispatch_mail(
             $full_subject,
             ($html_only == 1) ? $html_version->evaluate() : $message,
-            array($address),
-            $username/*do_lang('NEWSLETTER_SUBSCRIBER',get_site_name())*/,
+            array($email_address),
+            $name/*do_lang('NEWSLETTER_SUBSCRIBER',get_site_name())*/,
             $from_email,
             $from_name,
             array(
@@ -1428,7 +1300,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $message = post_param_string('message');
         $subject = post_param_string('subject');
-        $spreadsheet_data = post_param_string('spreadsheet_data', ''); // JSON
+        $spreadsheet_data = post_param_string('spreadsheet_data', '[]'); // JSON
 
         $template = post_param_string('template', 'MAIL');
         $in_full = post_param_integer('in_full', 0);
@@ -1505,7 +1377,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 foreach ($send_details as $key => $val) {
                     $send_details_string_exp .= '"' . str_replace("\n", '\n', addslashes($key)) . '"=>"' . str_replace("\n", '\n', addslashes($val)) . '",';
                 }
-                $schedule_code = ':require_code(\'newsletter\'); send_newsletter("' . php_addslashes($message) . '","' . php_addslashes($subject) . '","' . php_addslashes($lang) . '",array(' . $send_details_string_exp . '),' . strval($html_only) . ',"' . php_addslashes($from_email) . '","' . php_addslashes($from_name) . '",' . strval($priority) . ',"' . php_addslashes($spreadsheet_data) . '","' . php_addslashes($template) . '");';
+                $schedule_code = ':require_code(\'newsletter\'); send_newsletter("' . php_addslashes($message) . '","' . php_addslashes($subject) . '","' . php_addslashes($lang) . '",array(' . $send_details_string_exp . '),' . strval($html_only) . ',"' . php_addslashes($from_email) . '","' . php_addslashes($from_name) . '",' . strval($priority) . ',json_decode("' . php_addslashes($spreadsheet_data) . '",true),"' . php_addslashes($template) . '");';
                 $start_year = intval(date('Y', $schedule));
                 $start_month = intval(date('m', $schedule));
                 $start_day = intval(date('d', $schedule));
@@ -1520,7 +1392,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         log_it('NEWSLETTER_SEND', $subject);
 
-        return send_newsletter($message, $subject, $lang, $send_details, $html_only, $from_email, $from_name, $priority, $spreadsheet_data, $template);
+        return send_newsletter($message, $subject, $lang, $send_details, $html_only, $from_email, $from_name, $priority, json_decode($spreadsheet_data, true), $template);
     }
 
     /**

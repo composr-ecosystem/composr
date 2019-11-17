@@ -52,145 +52,113 @@ class Hook_task_import_newsletter_subscribers
         require_code('files_spreadsheets_read');
         $sheet_reader = spreadsheet_open_read($path, $filename, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
-        $email_index = 0;
+        $email_address_index = 0;
         $forename_index = null;
         $surname_index = null;
-        $username_index = null;
+        $name_index = null;
         $hash_index = null;
-        $salt_index = null;
         $language_index = null;
+        $salt_index = null;
         $code_confirm_index = null;
         $join_time_index = null;
 
         $count = 0;
         $count2 = 0;
 
-        $j = 0;
-
-        do {
-            $i = 0;
-            $_spreadsheet_data = array();
-            while (($spreadsheet_line = $sheet_reader->read_row()) !== false) {
-                $_spreadsheet_data[] = $spreadsheet_line;
+        // Process data
+        $i = 0;
+        while (($spreadsheet_line = $sheet_reader->read_row()) !== false) {
+            // If this looks like a header row, try and detect columns using it (if we don't have a header row we won't be able to import anything)
+            if (($i == 0) && (count($spreadsheet_line) >= 1) && (($email_address_index === null) || (!isset($spreadsheet_line[$email_address_index])) || (strpos($spreadsheet_line[$email_address_index], '@') === false))) {
+                list($email_address_index, $forename_index, $surname_index, $name_index, , $hash_index, $language_index, $salt_index, $code_confirm_index, $join_time_index) = detect_newsletter_spreadsheet_columns($spreadsheet_line);
                 $i++;
-                if ($i == 500) {
-                    break;
-                }
+                continue;
             }
 
-            // Process data
-            foreach ($_spreadsheet_data as $i => $spreadsheet_line) {
-                if (($j == 0) && (count($spreadsheet_line) >= 1) && ($spreadsheet_line[$email_index] !== null) && (strpos($spreadsheet_line[$email_index], '@') === false)) {
-                    foreach ($spreadsheet_line as $j => $val) {
-                        if (in_array(strtolower($val), array('e-mail', 'email', 'email address', 'e-mail address', strtolower(do_lang('EMAIL_ADDRESS')), 'to'))) {
-                            $email_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('forename', 'forenames', 'first name', strtolower(do_lang('FORENAME'))))) {
-                            $forename_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('surname', 'surnames', 'last name', strtolower(do_lang('SURNAME'))))) {
-                            $surname_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('username', strtolower(do_lang('NAME'))))) {
-                            $username_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('hash', 'password', 'pass', 'pword', 'pw', 'p/w', 'code', 'secret', strtolower(do_lang('PASSWORD_HASH'))))) {
-                            $hash_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('salt', strtolower(do_lang('SALT'))))) {
-                            $salt_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('lang', 'language', strtolower(do_lang('LANGUAGE'))))) {
-                            $hash_index = $j;
-                        }
-                        if (in_array(strtolower($val), array('confirm code', strtolower(do_lang('CONFIRM_CODE'))))) {
-                            $code_confirm_index = $j;
-                        }
-                        if ((stripos($val, 'time') !== false) || (stripos($val, 'date') !== false) || (strtolower($val) == do_lang('JOIN_DATE'))) {
-                            $join_time_index = $j;
-                        }
+            task_log($this, 'Processing record', $i);
+
+            $i++;
+
+            if ((count($spreadsheet_line) >= 1) && ($email_address_index !== null) && (isset($spreadsheet_line[$email_address_index])) && (strpos($spreadsheet_line[$email_address_index], '@') !== false)) {
+                $email_address = $spreadsheet_line[$email_address_index];
+
+                $forename = (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '';
+                if ($forename == $email) {
+                    $forename = ucfirst(strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
+                    if (in_array($forename, array('Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'))) {
+                        $forename = '';
                     }
-                    $j++;
-                    continue;
                 }
 
-                task_log($this, 'Processing record', $j);
+                $surname = (($surname_index !== null) && (array_key_exists($surname_index, $spreadsheet_line))) ? $spreadsheet_line[$surname_index] : '';
 
-                $j++;
+                $name = (($name_index !== null) && (array_key_exists($name_index, $spreadsheet_line))) ? $spreadsheet_line[$name_index] : '';
 
-                if ((count($spreadsheet_line) >= 1) && ($spreadsheet_line[$email_index] !== null) && (strpos($spreadsheet_line[$email_index], '@') !== false)) {
-                    $email = $spreadsheet_line[$email_index];
-                    $forename = (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '';
-                    if ($forename == $email) {
-                        $forename = ucfirst(strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
-                        if (in_array($forename, array('Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'))) {
-                            $forename = '';
-                        }
-                    }
-                    $surname = (($surname_index !== null) && (array_key_exists($surname_index, $spreadsheet_line))) ? $spreadsheet_line[$surname_index] : '';
-                    $username = (($username_index !== null) && (array_key_exists($username_index, $spreadsheet_line))) ? $spreadsheet_line[$username_index] : '';
-                    $hash = (($hash_index !== null) && (array_key_exists($hash_index, $spreadsheet_line))) ? $spreadsheet_line[$hash_index] : '';
-                    $salt = (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line))) ? $spreadsheet_line[$salt_index] : '';
-                    $language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line)) && ((file_exists(get_custom_file_base() . '/lang/' . $spreadsheet_line[$language_index])) || (file_exists(get_custom_file_base() . '/lang_custom/' . $spreadsheet_line[$language_index])))) ? $spreadsheet_line[$language_index] : $_language;
-                    if ($language == '') {
-                        $language = $_language;
-                    }
-                    $code_confirm = (($code_confirm_index !== null) && (array_key_exists($code_confirm_index, $spreadsheet_line))) ? intval($spreadsheet_line[$code_confirm_index]) : 0;
-                    $join_time = (($join_time_index !== null) && (!empty($spreadsheet_line[$join_time_index]))) ? strtotime($spreadsheet_line[$join_time_index]) : time();
-                    if ($join_time === false) {
-                        $join_time = time();
-                    }
+                $hash = (($hash_index !== null) && (array_key_exists($hash_index, $spreadsheet_line))) ? $spreadsheet_line[$hash_index] : '';
 
-                    if ($newsletter_id == -1) {
-                        $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_email_address' => $email));
-                        if ($test === null) {
-                            if ($subscribe) {
-                                if (!$done_special_notice) {
-                                    attach_message(do_lang_tempcode('NEWSLETTER_WONT_IMPORT_MEMBERS'), 'notice');
-                                    $done_special_notice = true;
-                                }
-                            }
-                        } else {
-                            if ($subscribe) {
-                                $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 1), array('m_email_address' => $email), '', 1);
-                            } else {
-                                $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 0), array('m_email_address' => $email), '', 1);
-                                $count++;
+                $salt = (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line))) ? $spreadsheet_line[$salt_index] : '';
+
+                $language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line)) && ((file_exists(get_custom_file_base() . '/lang/' . $spreadsheet_line[$language_index])) || (file_exists(get_custom_file_base() . '/lang_custom/' . $spreadsheet_line[$language_index])))) ? $spreadsheet_line[$language_index] : $_language;
+                if ($language == '') {
+                    $language = $_language;
+                }
+
+                $code_confirm = (($code_confirm_index !== null) && (array_key_exists($code_confirm_index, $spreadsheet_line))) ? intval($spreadsheet_line[$code_confirm_index]) : 0;
+
+                $join_time = (($join_time_index !== null) && (!empty($spreadsheet_line[$join_time_index]))) ? strtotime($spreadsheet_line[$join_time_index]) : time();
+                if ($join_time === false) {
+                    $join_time = time();
+                }
+
+                if ($newsletter_id == -1) {
+                    $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', array('m_email_address' => $email_address));
+                    if ($test === null) {
+                        if ($subscribe) {
+                            if (!$done_special_notice) {
+                                attach_message(do_lang_tempcode('NEWSLETTER_WONT_IMPORT_MEMBERS'), 'notice');
+                                $done_special_notice = true;
                             }
                         }
                     } else {
-                        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', array('email' => $email));
-                        if ($test === null) {
-                            add_newsletter_subscriber($email, $join_time, $code_confirm, $hash, $salt, $language, $forename, $surname);
-
-                            if ($subscribe) {
-                                $count++;
-                            }
+                        if ($subscribe) {
+                            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 1), array('m_email_address' => $email_address), '', 1);
                         } else {
-                            if (($forename != '') || ($surname != '')) {
-                                edit_newsletter_subscriber($test, null, null, null, null, null, null, $forename, $surname);
-                            }
+                            $GLOBALS['FORUM_DB']->query_update('f_members', array('m_allow_emails_from_staff' => 0), array('m_email_address' => $email_address), '', 1);
+                            $count++;
+                        }
+                    }
+                } else {
+                    $test = $GLOBALS['SITE_DB']->query_select_value_if_there('newsletter_subscribers', 'id', array('email' => $email_address));
+                    if ($test === null) {
+                        add_newsletter_subscriber($email_address, $join_time, $code_confirm, $hash, $salt, $language, $forename, $surname);
 
-                            if (!$subscribe) {
-                                $count++;
-                            }
+                        if ($subscribe) {
+                            $count++;
+                        }
+                    } else {
+                        if (($forename != '') || ($surname != '')) {
+                            edit_newsletter_subscriber($test, null, null, null, null, null, null, $forename, $surname);
                         }
 
-                        // In case $email is already a subscriber, we delete first
-                        $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array(
-                            'newsletter_id' => $newsletter_id,
-                            'email' => $email,
-                        ), '', 1);
-                        if ($subscribe) {
-                            $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', array(
-                                'newsletter_id' => $newsletter_id,
-                                'email' => $email,
-                            ), false, true/*in case already exists*/);
+                        if (!$subscribe) {
+                            $count++;
                         }
                     }
 
-                    $count2++;
+                    // In case $email is already a subscriber, we delete first
+                    $GLOBALS['SITE_DB']->query_delete('newsletter_subscribe', array(
+                        'newsletter_id' => $newsletter_id,
+                        'email' => $email_address,
+                    ), '', 1);
+                    if ($subscribe) {
+                        $GLOBALS['SITE_DB']->query_insert('newsletter_subscribe', array(
+                            'newsletter_id' => $newsletter_id,
+                            'email' => $email_address,
+                        ), false, true/*in case already exists*/);
+                    }
                 }
+
+                $count2++;
             }
         } while (!empty($_spreadsheet_data));
 

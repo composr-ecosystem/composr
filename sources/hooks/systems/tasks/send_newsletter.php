@@ -36,7 +36,7 @@ class Hook_task_send_newsletter
      * @param  string $from_name Override the name the mail is sent from (blank: site name)
      * @param  integer $priority The message priority (1=urgent, 3=normal, 5=low)
      * @range  1 5
-     * @param  string $spreadsheet_data Spreadsheet data of extra subscribers (blank: none). This is in the same Composr newsletter spreadsheet format that we export elsewhere.
+     * @param  array $spreadsheet_data Spreadsheet data of extra subscribers (blank: none). This is in the same Composr newsletter spreadsheet format that we export elsewhere.
      * @param  ID_TEXT $mail_template The template used to show the e-mail
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
@@ -63,8 +63,6 @@ class Hook_task_send_newsletter
 
         disable_php_memory_limit();
 
-        $count = 0;
-
         $using_drip_queue = ($last_cron !== null) || (get_option('newsletter_paused') == '1');
 
         $in_html = false;
@@ -76,13 +74,19 @@ class Hook_task_send_newsletter
             }
         }
 
-        $max = 300;
-
         $already_queued = collapse_2d_complexity('d_to_email', 'tmp', $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', array('d_to_email', '1 AS tmp'), array('d_message_id' => $message_id)));
 
+        $max = 300;
+        $max_rows = null;
         $start = 0;
+        $count = 0;
         do {
-            list($addresses, $hashes, $usernames, $forenames, $surnames, $ids,) = newsletter_who_send_to($send_details, $lang, $start, $max, false, $spreadsheet_data);
+            $_subscribers = newsletter_who_send_to($send_details, $lang, $start, $max, $spreadsheet_data);
+            if ($start == 0) {
+                list($subscribers, $max_rows) = $_subscribers;
+            } else {
+                list($subscribers) = $_subscribers;
+            }
 
             $insert_maps = array( // We will do very efficient mass-inserts (making index maintenance and disk access much more efficient)
                 'd_inject_time' => array(),
@@ -93,8 +97,8 @@ class Hook_task_send_newsletter
             );
 
             // Send to all
-            foreach ($addresses as $i => $email_address) {
-                task_log($this, 'Processing recipient newsletter into queue', $i + $start);
+            foreach ($subscribers as $email_address => $subscriber_map) {
+                task_log($this, 'Processing recipient newsletter into queue', $count, $max_rows);
 
                 if (isset($blocked[$email_address])) {
                     continue;
@@ -105,9 +109,9 @@ class Hook_task_send_newsletter
                         $insert_map = array(
                             'd_inject_time' => time(),
                             'd_message_id' => $message_id,
-                            'd_message_binding' => json_encode(array($forenames[$i], $surnames[$i], $usernames[$i], $ids[$i], $hashes[$i])), // Assortment of message binding details, could grow as Composr evolves, so we'll use JSON - and more efficient anyway, in terms of SQL performance (they don't need querying)
+                            'd_message_binding' => json_encode($subscriber_map),
                             'd_to_email' => $email_address,
-                            'd_to_name' => $usernames[$i],
+                            'd_to_name' => $subscriber_map['name'],
                         );
                         foreach ($insert_map as $key => $val) {
                             $insert_maps[$key][] = $val;
@@ -116,7 +120,7 @@ class Hook_task_send_newsletter
                         $already_queued[$email_address] = 1;
                     }
                 } else { // Unlikely to use this code path, but we should support operation without the system scheduler in those rare cases. Code path not optimised
-                    $newsletter_message_substituted = newsletter_variable_substitution($message, $subject, $forenames[$i], $surnames[$i], $usernames[$i], $email_address, $ids[$i], $hashes[$i]);
+                    $newsletter_message_substituted = newsletter_variable_substitution($message, $subject, $subscriber_map['forename'], $subscriber_map['surname'], $subscriber_map['name'], $email_address, $subscriber_map['send_id'], $subscriber_map['hash']);
                     if (stripos(trim($message), '<') === 0) { // HTML
                         require_code('tempcode_compiler');
                         $_m = template_to_tempcode($newsletter_message_substituted);
@@ -132,7 +136,7 @@ class Hook_task_send_newsletter
                         $subject,
                         $newsletter_message_substituted,
                         array($email_address),
-                        array($usernames[$i]),
+                        array($subscriber_map['name']),
                         $from_email,
                         $from_name,
                         array(

@@ -169,16 +169,16 @@ class Hook_cron_cns_welcome_emails
 
                 if (addon_installed('newsletter')) {
                     if ($newsletter_style) {
-                        $sendid = 'n' . strval($member['id']);
+                        $send_id = 'n' . strval($member['id']);
                         require_code('crypt');
                         $hash = ratchet_hash($member['the_password'], 'xunsub');
                     } else {
-                        $sendid = 'w' . strval($member['id']);
+                        $send_id = 'w' . strval($member['id']);
                         $hash = '';
                     }
 
                     require_code('newsletter');
-                    $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $member['m_email_address'], $sendid, $hash);
+                    $message = newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $member['m_email_address'], $send_id, $hash);
                 }
 
                 if ($is_html) {

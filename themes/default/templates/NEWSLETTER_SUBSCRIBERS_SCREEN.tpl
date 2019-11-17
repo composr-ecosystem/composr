@@ -1,36 +1,30 @@
 {TITLE}
 
-{+START,LOOP,SUBSCRIBERS}
-	{+START,IF_NON_EMPTY,{SUB}}
-		<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table responsive-table">
-			<thead>
-				<tr>
-					<th>{!EMAIL_ADDRESS}</th>
-					<th>{!FORENAME}</th>
-					<th>{!SURNAME}</th>
-					<th>{!NAME}</th>
-					<!--
-					<th>{!NEWSLETTER_SEND_ID}</th>
-					<th>{!NEWSLETTER_HASH}</th>
-					-->
-				</tr>
-			</thead>
-			<tbody>
-				{SUB}
-			</tbody>
-		</table></div>
+{+START,IF_NON_EMPTY,{SUBSCRIBERS_TABLE}}
+	<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table responsive-table">
+		<thead>
+			<tr>
+				<th>{!EMAIL_ADDRESS}</th>
+				<th>{!FORENAME}</th>
+				<th>{!SURNAME}</th>
+				<th>{!NAME}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{SUBSCRIBERS_TABLE}
+		</tbody>
+	</table></div>
 
-		{+START,IF_NON_EMPTY,{PAGINATION}}
-			<div class="clearfix pagination-spacing">
-				{PAGINATION}
-			</div>
-		{+END}
+	{+START,IF_NON_EMPTY,{PAGINATION}}
+		<div class="clearfix pagination-spacing">
+			{PAGINATION}
+		</div>
 	{+END}
-	{+START,IF_EMPTY,{SUB}}
-		<p class="nothing-here">
-			{!NONE}
-		</p>
-	{+END}
+{+END}
+{+START,IF_EMPTY,{SUBSCRIBERS_TABLE}}
+	<p class="nothing-here">
+		{!NONE}
+	</p>
 {+END}
 
 {+START,IF_NON_EMPTY,{DOMAINS}}

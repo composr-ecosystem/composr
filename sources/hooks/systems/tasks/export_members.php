@@ -30,7 +30,7 @@ class Hook_task_export_members
      * @param  array $fields_to_use List of fields to use (empty: none)
      * @param  array $usergroups List of usergroups to use (empty: all)
      * @param  string $order_by Field to order by
-     * @param  ?string $file_type The fle type to export with (null: default)
+     * @param  ?string $file_type The file type to export with (null: default)
      * @return ?array A tuple of at least 2: Return mime-type, content (either Tempcode, or a string, or a filename and file-path pair to a temporary file), map of HTTP headers if transferring immediately, map of ini_set commands if transferring immediately (null: show standard success message)
      */
     public function run($filter_by_allow, $fields_to_use, $usergroups, $order_by, $file_type = null)
@@ -138,7 +138,7 @@ class Hook_task_export_members
             }
 
             foreach ($members as $i => $m) {
-                task_log($this, 'Exporting member row', $i + $start, $member_count);
+                task_log($this, 'Exporting member row', $start + $i, $member_count);
 
                 if (is_guest($m['id'])) {
                     continue;
