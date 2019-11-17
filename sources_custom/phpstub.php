@@ -5213,7 +5213,6 @@ php_strip_whitespace
 ini_get_all
 get_include_path
 set_include_path
-restore_include_path
 setrawcookie
 umask
 get_browser
@@ -5252,7 +5251,6 @@ getrusage
 getmyinode
 getmygid
 get_current_user
-money_format
 ftok
 mime_content_type
 
@@ -5349,6 +5347,10 @@ eregi_replace
 sql_regcase
 define_syslog_variables
 create_function
+money_format
+convert_cyr_string
+hebrevc
+restore_include_path
 
 Disabled simply as we don't feel a need to use them (can enable if we find a use)...
 
@@ -5459,14 +5461,12 @@ filetype
 is_executable
 is_subclass_of
 metaphone
-convert_cyr_string
 count_chars
 get_meta_tags
 get_parent_class
 get_included_files
 get_resource_type
 hebrev
-hebrevc
 array_diff_uassoc
 array_udiff
 array_udiff_assoc
