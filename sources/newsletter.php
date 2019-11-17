@@ -640,6 +640,8 @@ function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, 
  */
 function detect_newsletter_spreadsheet_columns($header_row)
 {
+    require_lang('cns');
+
     $email_address_index = null;
     $forename_index = null;
     $surname_index = null;
@@ -674,7 +676,7 @@ function detect_newsletter_spreadsheet_columns($header_row)
             $salt_index = $j;
         }
         if (in_array(strtolower($val), array('lang', 'language', strtolower(do_lang('LANGUAGE'))))) {
-            $hash_index = $j;
+            $language_index = $j;
         }
         if (in_array(strtolower($val), array('confirm', 'confirm code', strtolower(do_lang('CONFIRM_CODE'))))) {
             $code_confirm_index = $j;
@@ -770,7 +772,7 @@ function newsletter_domain_subscriber_stats($key)
 function newsletter_variable_substitution($message, $subject, $forename, $surname, $name, $email_address, $send_id, $hash)
 {
     $unsub_url = new Tempcode();
-    if ($hash == '') {
+    if (($hash == '') || ($send_id == '')) {
         $unsub_url = build_url(array('page' => 'members', 'type' => 'view'), get_module_zone('members'), array(), false, false, true, 'tab--edit');
     } else {
         $unsub_hash = get_unsubscribe_hash($hash);

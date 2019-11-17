@@ -44,9 +44,9 @@ class Mail_dispatcher_override extends Mail_dispatcher_base
     {
         $smtp_sockets_use = isset($advanced_parameters['smtp_sockets_use']) ? $advanced_parameters['smtp_sockets_use'] : null; // Whether to use SMTP sockets (null: default configured)
         if ($smtp_sockets_use === null) {
-            $smtp_sockets_use = intval(get_option('smtp_sockets_use'));
+            $smtp_sockets_use = (intval(get_option('smtp_sockets_use')) == 1);
         }
-        return ($smtp_sockets_use == 1);
+        return $smtp_sockets_use;
     }
 
     /**

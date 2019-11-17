@@ -415,7 +415,7 @@ class Module_recommend
                     $possible_email_fields = array('E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email');
                     $possible_name_fields = array('Name', 'Forename', 'First Name', 'Display Name', 'First');
 
-                    $sheet_reader = spreadsheet_open_read($_FILES['upload']['tmp_name'], null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+                    $sheet_reader = spreadsheet_open_read($_FILES['upload']['tmp_name'], $_FILES['upload']['name'], CMS_Spreadsheet_Reader::ALGORITHM_RAW);
 
                     $spreadsheet_header_line_fields = $sheet_reader->read_row();
 

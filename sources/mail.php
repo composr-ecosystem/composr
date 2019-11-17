@@ -126,8 +126,8 @@ function dispatch_mail($subject_line, $message_raw, $to_emails = null, $to_names
     }
 
     if ($dispatcher === null) {
-        $smtp_sockets_use = isset($advanced_parameters['smtp_sockets_use']) ? $advanced_parameters['smtp_sockets_use'] : intval(get_option('smtp_sockets_use')); // Whether to use SMTP sockets (null: default configured)
-        if ($smtp_sockets_use == 1) {
+        $smtp_sockets_use = isset($advanced_parameters['smtp_sockets_use']) ? $advanced_parameters['smtp_sockets_use'] : (intval(get_option('smtp_sockets_use')) == 1); // Whether to use SMTP sockets (null: default configured)
+        if ($smtp_sockets_use) {
             $dispatcher = new Mail_dispatcher_smtp($advanced_parameters);
             if (!$dispatcher->is_dispatcher_available($advanced_parameters)) {
                 $dispatcher = null;
@@ -854,6 +854,7 @@ abstract class Mail_dispatcher_base
             $this->attachments = array_merge($this->attachments, $EMAIL_ATTACHMENTS);
         } else {
             $html_evaluated = $message_raw;
+            $message_plain = null;
         }
 
         // Headers
