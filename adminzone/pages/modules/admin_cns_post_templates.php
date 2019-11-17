@@ -216,6 +216,10 @@ class Module_admin_cns_post_templates extends Standard_crud_module
         require_code('uploads');
         is_plupload(true);
 
+        if ((!is_plupload(true)) && ((!array_key_exists('file_1', $_FILES)) || (!is_uploaded_file($_FILES['file_1']['tmp_name'])))) {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+        }
+
         set_mass_import_mode();
 
         $target_forum = read_multi_code('forum_multi_code');
@@ -227,8 +231,19 @@ class Module_admin_cns_post_templates extends Standard_crud_module
         }
 
         foreach ($_FILES as $attach_name => $__file) {
-            $tmp_name = $__file['tmp_name'];
             $file = $__file['name'];
+            if ($file == '') {
+                continue; // Not filled in this one
+            }
+
+            $tmp_name = $__file['tmp_name'];
+
+            if ((!is_plupload()) && (!is_uploaded_file($tmp_name))) {
+                $upload_error_message = get_upload_error_message($__file);
+                attach_message($upload_error_message, 'warn');
+                continue;
+            }
+
             switch (get_file_extension($file)) {
                 case 'zip':
                     if ((!function_exists('zip_open')) && (get_option('unzip_cmd') == '')) {

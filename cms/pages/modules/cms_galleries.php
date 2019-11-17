@@ -496,17 +496,25 @@ class Module_cms_galleries extends Standard_crud_module
 
         make_member_gallery_if_needed($cat);
 
-        if ((!is_plupload(true)) && ((!array_key_exists('file_1', $_FILES)) || (!is_uploaded_file($_FILES['file_1']['tmp_name'])))) {
-            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'file_1'));
+        is_plupload(true);
+        if (((!array_key_exists('file_1', $_FILES)) || ((!is_plupload()) && (!is_uploaded_file($_FILES['file_1']['tmp_name']))))) {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
         }
 
         $media_imported = array();
 
         foreach ($_FILES as $attach_name => $__file) {
-            $tmp_name = $__file['tmp_name'];
             $file = $__file['name'];
             if ($file == '') {
                 continue; // Not filled in this one
+            }
+
+            $tmp_name = $__file['tmp_name'];
+
+            if ((!is_plupload()) && (!is_uploaded_file($tmp_name))) {
+                $upload_error_message = get_upload_error_message($__file);
+                attach_message($upload_error_message, 'warn');
+                continue;
             }
 
             if ((is_image($file, IMAGE_CRITERIA_WEBSAFE, has_privilege(get_member(), 'comcode_dangerous'))) || (is_video($file, has_privilege(get_member(), 'comcode_dangerous')))) {
@@ -1405,7 +1413,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $video_width = post_param_integer('video_width', 0);
         $video_height = post_param_integer('video_height', 0);
         if (($video_width == 0) || ($video_height == 0) || ($video_length == 0)) {
-            if (((is_plupload(true)) && (array_key_exists('video__upload', $_FILES))) || ((array_key_exists('video__upload', $_FILES)) && (is_uploaded_file($_FILES['video__upload']['tmp_name'])))) {
+            is_plupload(true);
+            if (((array_key_exists('video__upload', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['video__upload']['tmp_name']))))) {
                 $filename = $_FILES['video__upload']['name'];
                 list($_video_width, $_video_height, $_video_length) = get_video_details($_FILES['video__upload']['tmp_name'], $filename);
             } else {

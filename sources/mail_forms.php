@@ -229,6 +229,16 @@ function _form_to_email($extra_boring_fields = array(), $subject = null, $subjec
     require_code('uploads');
     is_plupload(true);
     foreach ($_FILES as $file) {
+        if ($file['name'] == '') {
+            continue; // Not filled in this one
+        }
+
+        if ((!is_plupload()) && (!is_uploaded_file($file['tmp_name']))) {
+            $upload_error_message = get_upload_error_message($file);
+            attach_message($upload_error_message, 'warn');
+            continue;
+        }
+
         $attachments[$file['tmp_name']] = $file['name'];
     }
 

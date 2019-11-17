@@ -1098,18 +1098,19 @@ class Module_cms_catalogues extends Standard_crud_module
 
         // Grab the spreadsheet file
         require_code('uploads');
-        $spreadsheet_path = null;
-        if (((is_plupload(true)) && (array_key_exists('file_anytype', $_FILES))) || ((array_key_exists('file_anytype', $_FILES)) && (is_uploaded_file($_FILES['file_anytype']['tmp_name'])))) {
-            $spreadsheet_path = $_FILES['file_anytype']['tmp_name'];
-        }
-        if ($spreadsheet_path === null) {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+        $target_path = get_temporary_upload_path('file_anytype');
+
+        require_code('files_spreadsheets_read');
+        if (!is_spreadsheet_readable($_FILES['file_anytype']['name'])) {
+            unlink($target_path);
+            sync_file($target_path);
+            warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html(get_file_extension($_FILES['file_anytype']['name']))));
         }
 
         log_it('IMPORT_CATALOGUE_ENTRIES', $catalogue_name);
 
         require_code('tasks');
-        return call_user_func_array__long_task(do_lang('CATALOGUE_IMPORT'), $this->title, 'import_catalogue', array($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $spreadsheet_path));
+        return call_user_func_array__long_task(do_lang('CATALOGUE_IMPORT'), $this->title, 'import_catalogue', array($catalogue_name, $key_field, $new_handling, $delete_handling, $update_handling, $meta_keywords_field, $meta_description_field, $notes_field, $allow_rating, $allow_comments, $allow_trackbacks, $target_path));
     }
 
     /**

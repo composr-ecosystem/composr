@@ -202,17 +202,17 @@ function comcode_to_tempcode($comcode, $source_member = null, $as_admin = false,
     }
 
     // Optimised code path (still has to support emoticons though, as those are arbitrary)
-    $attachments = (!empty($_FILES));
+    $possible_attachments = (!empty($_FILES));
     foreach ($_POST as $key => $value) {
         if (is_integer($key)) {
             $key = strval($key);
         }
 
         if (preg_match('#^hid_file_id_#i', $key) != 0) {
-            $attachments = true;
+            $possible_attachments = true;
         }
     }
-    if ((!$attachments || ($GLOBALS['IN_MINIKERNEL_VERSION'])) && (preg_match('#^[\w\-\(\) \.,:;/"\!\?]*$#'/*NB: No apostrophes allowed in here, as they get changed by escape_html and can interfere then with apply_emoticons*/, $comcode) != 0) && (strpos($comcode, '  ') === false) && (strpos($comcode, '://') === false) && (strpos($comcode, '--') === false) && (get_page_name() != 'search')) {
+    if ((!$possible_attachments || ($GLOBALS['IN_MINIKERNEL_VERSION'])) && (preg_match('#^[\w\-\(\) \.,:;/"\!\?]*$#'/*NB: No apostrophes allowed in here, as they get changed by escape_html and can interfere then with apply_emoticons*/, $comcode) != 0) && (strpos($comcode, '  ') === false) && (strpos($comcode, '://') === false) && (strpos($comcode, '--') === false) && (get_page_name() != 'search')) {
         if (running_script('stress_test_loader')) {
             return make_string_tempcode(escape_html($comcode));
         }

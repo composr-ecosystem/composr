@@ -99,7 +99,7 @@ PHP;
         }
         $content_id = isset($map['id']) ? $map['id'] : null;
         if ($content_id === '') {
-            return do_template('RED_ALERT', array('_GUID' => 'rt44x3hfhc4frhbenjk01ka042716x6g', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', escape_html('id')))); // Might have happened due to some bad chaining in a template
+            return do_template('RED_ALERT', array('_GUID' => 'rt44x3hfhc4frhbenjk01ka042716x6g', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'id'))); // Might have happened due to some bad chaining in a template
         }
         if (($content_type == 'member') && (!is_numeric($content_id))) { // FUDGE: For member URL preview boxes to work
             $content_id = @strval($GLOBALS['FORUM_DRIVER']->get_member_from_username($content_id));

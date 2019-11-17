@@ -224,7 +224,7 @@ function cns_join_actual($captcha_if_enabled = true, $intro_message_if_enabled =
     list($dob_year, $dob_month, $dob_day) = post_param_date_components('birthday');
     if (($dob_year === null) || ($dob_month === null) || ($dob_day === null)) {
         if (member_field_is_required(null, 'dob', null, null, $adjusted_config_options)) {
-            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', escape_html('birthday')));
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'birthday'));
         }
 
         $dob_day = null;

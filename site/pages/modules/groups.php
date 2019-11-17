@@ -734,7 +734,7 @@ class Module_groups
         }
 
         if ($username == '') {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'username'));
         }
 
         if ((!$special_permission) && (!cns_may_control_group($id, get_member()))) {

@@ -1247,13 +1247,13 @@ class Module_chat
                     }
                 }
                 $block = do_template('CHAT_SET_EFFECTS_SETTING_BLOCK', array(
-                            '_GUID' => '28916255c41e5cad386cbd0a045a3373',
-                            'HAS_SOME' => $has_some,
-                            'MEMBER_ID' => strval($friend['member_liked']),
-                            'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($friend['member_liked']),
-                            'EFFECTS' => $effect_settings,
-                            'LIBRARY' => $library,
-                        ));
+                    '_GUID' => '28916255c41e5cad386cbd0a045a3373',
+                    'HAS_SOME' => $has_some,
+                    'MEMBER_ID' => strval($friend['member_liked']),
+                    'USERNAME' => $GLOBALS['FORUM_DRIVER']->get_username($friend['member_liked']),
+                    'EFFECTS' => $effect_settings,
+                    'LIBRARY' => $library,
+                ));
                 $setting_blocks->attach($block);
             }
         }

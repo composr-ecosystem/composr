@@ -1972,7 +1972,7 @@ function cns_member_choose_photo($param_name, $upload_name, $thumb_name, $thumb_
 
     require_code('uploads');
 
-    if (((!array_key_exists($upload_name, $_FILES)) || (!is_plupload()) && (!is_uploaded_file($_FILES[$upload_name]['tmp_name'])))) {
+    if (((!array_key_exists($upload_name, $_FILES)) || ((!is_plupload()) && (!is_uploaded_file($_FILES[$upload_name]['tmp_name']))))) {
         $old = $GLOBALS['FORUM_DB']->query_select_value('f_members', 'm_photo_url', array('id' => $member_id));
         $x = post_param_string($param_name, '');
         if (($x != '') && (url_is_local($x))) {
@@ -2002,7 +2002,7 @@ function cns_member_choose_photo($param_name, $upload_name, $thumb_name, $thumb_
     // At this point in the code, we know a photo was uploaded or changed to blank.
     //  If we don't have GD, we need them to have uploaded a thumbnail too.
     if (!function_exists('imagetypes')) {
-        if (((!array_key_exists($thumb_upload_name, $_FILES)) || (!is_plupload()) && (!is_uploaded_file($_FILES[$thumb_upload_name]['tmp_name'])))) {
+        if (((!array_key_exists($thumb_upload_name, $_FILES)) || ((!is_plupload()) && (!is_uploaded_file($_FILES[$thumb_upload_name]['tmp_name']))))) {
             $field = post_param_string($thumb_name, '');
             if (($field == '') && ($urls[0] != '')) {
                 warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));

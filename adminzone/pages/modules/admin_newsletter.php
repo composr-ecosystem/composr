@@ -360,17 +360,13 @@ class Module_admin_newsletter extends Standard_crud_module
 
         // Read data
         require_code('uploads');
-        if (((is_plupload(true)) && (array_key_exists('file', $_FILES))) || ((array_key_exists('file', $_FILES)) && (is_uploaded_file($_FILES['file']['tmp_name'])))) {
-            $target_path = get_custom_file_base() . '/temp/' . basename($_FILES['file']['tmp_name']);
-            require_code('files2');
-            if (!file_exists(dirname($target_path))) {
-                make_missing_directory(dirname($target_path));
-            }
-            move_uploaded_file($_FILES['file']['tmp_name'], $target_path);
-            fix_permissions($target_path);
+        $target_path = get_temporary_upload_path('file');
+
+        require_code('files_spreadsheets_read');
+        if (!is_spreadsheet_readable($_FILES['file']['name'])) {
+            unlink($target_path);
             sync_file($target_path);
-        } else {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+            warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html(get_file_extension($_FILES['file']['name']))));
         }
 
         if (either_param_integer('subscribe', null) === 0) {
@@ -1225,10 +1221,17 @@ class Module_admin_newsletter extends Standard_crud_module
         if ($_spreadsheet_data !== null) {
             $extra_post_data['spreadsheet_data'] = $_spreadsheet_data;
         } else {
-            if (((is_plupload(true)) && (array_key_exists('file', $_FILES))) || ((array_key_exists('file', $_FILES)) && (is_uploaded_file($_FILES['file']['tmp_name'])))) {
+            if (((is_plupload(true)) && (array_key_exists('file', $_FILES))) || ((array_key_exists('file', $_FILES)) && ($_FILES['file']['name'] != ''))) {
+                $tmp_name = $_FILES['file']['tmp_name'];
+
+                if ((!is_plupload()) && (!is_uploaded_file($tmp_name))) {
+                    $upload_error_message = get_upload_error_message($_FILES['file']);
+                    warn_exit($upload_error_message, 'warn');
+                }
+
                 $__spreadsheet_data = array();
                 require_code('files_spreadsheets_read');
-                $sheet_reader = spreadsheet_open_read($_FILES['file']['tmp_name'], null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
+                $sheet_reader = spreadsheet_open_read($tmp_name, null, CMS_Spreadsheet_Reader::ALGORITHM_RAW);
                 while (($spreadsheet_line = $sheet_reader->read_row()) !== false) {
                     $__spreadsheet_data[] = $spreadsheet_line;
                 }

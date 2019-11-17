@@ -497,7 +497,8 @@ function post_param_image($name = 'image', $upload_to = null, $theme_image_type 
 
     $field_file = $name . '__upload';
     $thumb_attach_name = $name . '__thumb__upload';
-    if ((is_plupload()) || (((array_key_exists($field_file, $_FILES)) && (is_uploaded_file($_FILES[$field_file]['tmp_name']))))) {
+    is_plupload(true);
+    if (((array_key_exists($field_file, $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES[$field_file]['tmp_name']))))) {
         $urls = get_url('', $field_file, $upload_to, 0, CMS_UPLOAD_IMAGE, $thumb_url !== null, $thumb_specify_name, $thumb_attach_name);
 
         if (substr($urls[0], 0, 8) != 'uploads/') {

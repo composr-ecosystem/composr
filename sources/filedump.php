@@ -237,14 +237,7 @@ function check_filedump_uploaded($file)
 
     // Error?
     if ((!is_plupload()) && (!is_uploaded_file($file['tmp_name']))) {
-        $max_size = get_max_file_size();
-        if (($file['error'] == 1) || ($file['error'] == 2)) {
-            return do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)));
-        } elseif ((isset($file)) && (($file['error'] == 3) || ($file['error'] == 6) || ($file['error'] == 7))) {
-            return do_lang_tempcode('ERROR_UPLOADING_' . strval($file['error']));
-        } else {
-            return do_lang_tempcode('ERROR_UPLOADING');
-        }
+        return get_upload_error_message($file);
     }
 
     // Too big?

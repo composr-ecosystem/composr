@@ -841,17 +841,13 @@ class Module_admin_cns_members
         $use_temporary_passwords = (post_param_integer('temporary_password', 0) == 1);
 
         require_code('uploads');
-        if ((is_plupload(true)) || ((array_key_exists('file', $_FILES)) && (is_uploaded_file($_FILES['file']['tmp_name'])))) {
-            $target_path = get_custom_file_base() . '/temp/' . basename($_FILES['file']['tmp_name']);
-            require_code('files2');
-            if (!file_exists(dirname($target_path))) {
-                make_missing_directory(dirname($target_path));
-            }
-            move_uploaded_file($_FILES['file']['tmp_name'], $target_path);
-            fix_permissions($target_path);
+        $target_path = get_temporary_upload_path('file');
+
+        require_code('files_spreadsheets_read');
+        if (!is_spreadsheet_readable($_FILES['file']['name'])) {
+            unlink($target_path);
             sync_file($target_path);
-        } else {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+            warn_exit(do_lang_tempcode('UNKNOWN_FORMAT', escape_html(get_file_extension($_FILES['file']['name']))));
         }
 
         log_it('IMPORT_MEMBERS');

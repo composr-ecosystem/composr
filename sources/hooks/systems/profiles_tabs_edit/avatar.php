@@ -57,7 +57,14 @@ class Hook_profiles_tabs_edit_avatar
         if (post_param_integer('submitting_avatar_tab', 0) == 1) {
             require_code('uploads');
             if (has_privilege($member_id_viewing, 'own_avatars')) {
-                if (!(((is_plupload(true)) && (array_key_exists('avatar_file', $_FILES))) || ((array_key_exists('avatar_file', $_FILES)) && (is_uploaded_file($_FILES['avatar_file']['tmp_name']))))) { // No upload -> URL or stock or none
+                is_plupload(true);
+                if (((array_key_exists('avatar_file', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['avatar_file']['tmp_name']))))) { // Upload
+                    // We have chosen an upload. Note that we will not be looking at alt_url at this point, even though it is specified below for canonical reasons
+                    $urls = get_url('avatar_alt_url', 'avatar_file', file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', 0, CMS_UPLOAD_IMAGE, false, '', '', false, true);
+                    if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
+                        $urls[0] = get_custom_base_url() . '/' . $urls[0];
+                    }
+                } else { // No upload -> URL or stock or none
                     $urls = array();
                     $stock = post_param_string('avatar_alt_url', '', INPUT_FILTER_URL_GENERAL);
                     if ($stock == '') { // No URL -> Stock or none
@@ -75,12 +82,6 @@ class Hook_profiles_tabs_edit_avatar
                             }
                         }
                         $urls[0] = $stock; // URL
-                    }
-                } else { // Upload
-                    // We have chosen an upload. Note that we will not be looking at alt_url at this point, even though it is specified below for canonical reasons
-                    $urls = get_url('avatar_alt_url', 'avatar_file', file_exists(get_custom_file_base() . '/uploads/avatars') ? 'uploads/avatars' : 'uploads/cns_avatars', 0, CMS_UPLOAD_IMAGE, false, '', '', false, true);
-                    if (((get_base_url() != get_forum_base_url()) || (!empty($GLOBALS['SITE_INFO']['on_msn']))) && ($urls[0] != '') && (url_is_local($urls[0]))) {
-                        $urls[0] = get_custom_base_url() . '/' . $urls[0];
                     }
                 }
 

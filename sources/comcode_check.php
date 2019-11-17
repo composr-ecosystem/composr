@@ -36,20 +36,20 @@ function check_comcode($comcode, $source_member = null, $as_admin = false, $db =
     $lax = false;
 
     if ($attachment_possibility) {
-        $has_one = false;
+        $may_have_attachment = false;
         foreach ($_POST as $key => $value) {
             if (is_string($key) && preg_match('#^hid_file_id_#i', $key) != 0) {
                 require_code('uploads');
-                $has_one = is_plupload();
+                $may_have_attachment = is_plupload();
             }
         }
         foreach ($_FILES as $key => $file) {
             $matches = array();
             if ((is_uploaded_file($file['tmp_name'])) && (preg_match('#file(\d)#', $key, $matches) != 0)) {
-                $has_one = true;
+                $may_have_attachment = true;
             }
         }
-        if ($has_one) {
+        if ($may_have_attachment) {
             $lax = true; // We don't want a simple syntax error to cause us to lose our attachments
         }
     }

@@ -756,8 +756,9 @@ class Module_cms_blogs extends Standard_crud_module
             $import_to_blog = post_param_integer('import_to_blog', 0);
 
             require_code('uploads');
-            if (((is_plupload(true)) && (array_key_exists('file_anytype', $_FILES))) || ((array_key_exists('file_anytype', $_FILES)) && (is_uploaded_file($_FILES['file_anytype']['tmp_name'])))) {
-                $rss_feed = $_FILES['file_anytype']['tmp_name'];
+            is_plupload(true);
+            if (((array_key_exists('file_anytype', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['file_anytype']['tmp_name']))))) {
+                $rss_feed = get_temporary_upload_path('file_anytype');
                 $is_filesystem_path = true;
             } else {
                 $rss_feed = post_param_string('rss_feed_url', null, INPUT_FILTER_URL_GENERAL);

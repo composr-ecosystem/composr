@@ -128,7 +128,7 @@ class Module_recommend
         }
 
         $type = get_param_string('type', 'browse');
-        if (array_key_exists('upload', $_FILES) && isset($_FILES['upload']['tmp_name']) && strlen($_FILES['upload']['tmp_name']) > 0) {
+        if ((array_key_exists('upload', $_FILES)) && (isset($_FILES['upload']['tmp_name'])) && ($_FILES['upload']['name'] != '')) {
             $type = 'gui2';
         }
 
@@ -402,8 +402,16 @@ class Module_recommend
         // Start processing spreadsheet file
         if ((get_option('enable_spreadsheet_recommend') == '1') && (!is_guest())) {
             require_code('files_spreadsheets_read');
-            if (array_key_exists('upload', $_FILES)) { // NB: We disabled plupload for this form so don't need to consider it
-                if ((is_uploaded_file($_FILES['upload']['tmp_name'])) && (is_spreadsheet_readable($_FILES['upload']['tmp_name']))) {
+            if ((array_key_exists('upload', $_FILES)) && ($_FILES['upload']['name'] != '')) { // NB: We disabled plupload for this form so don't need to consider it
+                $tmp_name = $_FILES['upload']['tmp_name'];
+
+                if ((!is_plupload()) && (!is_uploaded_file($tmp_name))) {
+                    require_code('uploads');
+                    $upload_error_message = get_upload_error_message($_FILES['upload']);
+                    warn_exit($upload_error_message);
+                }
+
+                if (is_spreadsheet_readable($_FILES['upload']['tmp_name'])) {
                     $possible_email_fields = array('E-mail', 'Email', 'E-mail address', 'Email address', 'Primary Email');
                     $possible_name_fields = array('Name', 'Forename', 'First Name', 'Display Name', 'First');
 

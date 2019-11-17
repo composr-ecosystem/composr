@@ -1237,7 +1237,8 @@ class Module_cms_calendar extends Standard_crud_module
         $ical_url = post_param_string('ical_feed_url', null, INPUT_FILTER_URL_GENERAL);
 
         require_code('uploads');
-        if (((is_plupload(true)) && (array_key_exists('file_anytype', $_FILES))) || ((array_key_exists('file_anytype', $_FILES)) && (is_uploaded_file($_FILES['file_anytype']['tmp_name'])))) {
+        is_plupload(true);
+        if (((array_key_exists('file_anytype', $_FILES)) && ((is_plupload()) || (is_uploaded_file($_FILES['file_anytype']['tmp_name']))))) {
             $ical_url = $_FILES['file_anytype']['tmp_name'];
         }
 

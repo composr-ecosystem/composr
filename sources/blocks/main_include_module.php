@@ -65,7 +65,7 @@ class Block_main_include_module
         // Find out what we're virtualising
         $param = array_key_exists('param', $map) ? $map['param'] : '';
         if ($param == '') {
-            return do_template('RED_ALERT', array('_GUID' => 'o3plvsqh2931w7kjt0u04c4zn2f93xs6', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', escape_html('param'))));
+            return do_template('RED_ALERT', array('_GUID' => 'o3plvsqh2931w7kjt0u04c4zn2f93xs6', 'TEXT' => do_lang_tempcode('NO_PARAMETER_SENT', 'param')));
         }
         list($zone, $attributes,) = page_link_decode($param);
         if (!array_key_exists('page', $attributes)) {

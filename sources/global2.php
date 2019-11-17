@@ -1841,7 +1841,7 @@ function get_param_string($name, $default = false, $filters = INPUT_FILTER_DEFAU
     if (($ret === '') && (isset($_GET['require__' . $name])) && ($default !== $ret) && ($_GET['require__' . $name] !== '0')) {
         // We didn't give some required input
         set_http_status_code(400);
-        warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+        warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', $name));
     }
 
     if ($ret === $default) {

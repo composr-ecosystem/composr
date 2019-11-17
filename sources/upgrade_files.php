@@ -115,7 +115,7 @@ function _upgrader_file_upgrade_screen()
         $retrieval_method = FILE_RETRIEVAL_UPLOAD;
     } else {
         if (post_param_string('url', '', INPUT_FILTER_URL_GENERAL) == '') {
-            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN'));
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'url'));
         }
 
         $url = post_param_string('url', false, INPUT_FILTER_URL_GENERAL);

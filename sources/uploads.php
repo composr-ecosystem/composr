@@ -260,6 +260,82 @@ function is_plupload($fake_prepopulation = false)
 }
 
 /**
+ * Take an uploaded file and move it into Composr's temporary directory, for future processing outside this web request.
+ *
+ * @param  string $attach_name Field name
+ * @return PATH Upload path
+ */
+function get_temporary_upload_path($attach_name)
+{
+    require_code('files2');
+
+    if (((is_plupload(true)) && (array_key_exists($attach_name, $_FILES))) || ((array_key_exists($attach_name, $_FILES)) && (is_uploaded_file($_FILES[$attach_name]['tmp_name'])))) {
+        $ext = get_file_extension($_FILES[$attach_name]['name']);
+
+        check_extension($_FILES[$attach_name]['name'], false, $_FILES[$attach_name]['tmp_name']);
+
+        $temp_path = get_custom_file_base() . '/temp';
+        if (!file_exists($temp_path)) {
+            make_missing_directory($temp_path);
+        }
+
+        $target_path = $temp_path . '/' . basename($_FILES[$attach_name]['tmp_name'], '.' . get_file_extension($_FILES[$attach_name]['tmp_name'])) . '.' . $ext;
+        if ($_FILES[$attach_name]['type'] != 'plupload') {
+            $test = @move_uploaded_file($_FILES[$attach_name]['tmp_name'], $target_path);
+        } else {
+            $test = @rename($_FILES[$attach_name]['tmp_name'], $target_path);
+        }
+        if ($test === false) {
+            warn_exit(do_lang_tempcode('FILE_MOVE_ERROR', escape_html($_FILES[$attach_name]['name']), escape_html($target_path)));
+        }
+        fix_permissions($target_path);
+        sync_file($target_path);
+    } else {
+        $upload_error_message = get_upload_error_message($_FILES[$attach_name]);
+        warn_exit($upload_error_message);
+    }
+
+    return $target_path;
+}
+
+/**
+ * Get error message for an upload.
+ *
+ * @param  array $file_upload The $_FILES array entry
+ * @param  boolean $should_get_something Whether to give a (deferred?) error if no file was given at all
+ * @param  ?integer $max_size Maximum file size in bytes (null: default from get_max_file_size function)
+ * @return ?Tempcode Error message (null: none;
+ */
+function get_upload_error_message($file_upload, $should_get_something = true, $max_size = null)
+{
+    if (($file_upload['error'] != 4)/*no upload attempted*/ || ($should_get_something)) {
+        if ($file_upload['error'] == 1) {
+            if ($max_size === null) {
+                require_code('files2');
+                $max_size = get_max_file_size();
+            }
+            return do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size)));
+        }
+
+        if ($file_upload['error'] == 2) {
+            return do_lang_tempcode('FILE_TOO_BIG_QUOTA', escape_html(integer_format($max_size)));
+        }
+
+        if (($file_upload['error'] == 3) || ($file_upload['error'] == 6) || ($file_upload['error'] == 7)) {
+            return do_lang_tempcode('ERROR_UPLOADING_' . strval($file_upload['error']));
+        }
+
+        if ($file_upload['error'] == 4) {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+        }
+
+        return do_lang_tempcode('ERROR_UPLOADING');
+    }
+
+    return null;
+}
+
+/**
  * Get URLs generated according to the specified information. It can also generate a thumbnail if required. It first tries attached upload, then URL, then fails.
  *
  * @param  ID_TEXT $specify_name The name of the POST parameter storing the URL (if '', then no POST parameter). Parameter value may be blank.
@@ -493,26 +569,15 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
             }
         }
     } else { // Uh oh
-        if ((array_key_exists($attach_name, $filearrays)) && (array_key_exists('error', $filearrays[$attach_name])) && (($filearrays[$attach_name]['error'] != 4) || ($should_get_something)) && ($filearrays[$attach_name]['error'] != 0)) { // If we uploaded
-            if ($filearrays[$attach_name]['error'] == 1) {
+        if (array_key_exists($attach_name, $filearrays)) {
+            $upload_error_message = get_upload_error_message($filearrays[$attach_name], $should_get_something, $max_size);
+            if ($upload_error_message !== null) {
                 if ($accept_errors) {
-                    attach_message(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size))), 'warn');
+                    attach_message($upload_error_message, 'warn');
                     return array('', '', '', '');
                 } else {
-                    warn_exit(do_lang_tempcode('FILE_TOO_BIG', escape_html(integer_format($max_size))));
+                    warn_exit($upload_error_message);
                 }
-            } elseif ($filearrays[$attach_name]['error'] == 2) {
-                if ($accept_errors) {
-                    attach_message(do_lang_tempcode('FILE_TOO_BIG_QUOTA', escape_html(integer_format($max_size))), 'warn');
-                    return array('', '', '', '');
-                } else {
-                    warn_exit(do_lang_tempcode('FILE_TOO_BIG_QUOTA', escape_html(integer_format($max_size))));
-                }
-            } elseif (($filearrays[$attach_name]['error'] == 3) || ($filearrays[$attach_name]['error'] == 4) || ($filearrays[$attach_name]['error'] == 6) || ($filearrays[$attach_name]['error'] == 7)) {
-                attach_message(do_lang_tempcode('ERROR_UPLOADING_' . strval($filearrays[$attach_name]['error'])), 'warn');
-                return array('', '', '', '');
-            } else {
-                warn_exit(do_lang_tempcode('ERROR_UPLOADING_' . strval($filearrays[$attach_name]['error'])));
             }
         }
 

@@ -53,7 +53,9 @@ function incoming_uploads_script()
             }*/
 
             header('Content-type: text/plain; charset=' . get_charset());
-            exit(do_lang('ERROR_UPLOADING_' . strval($_FILES['file']['error'])));
+            require_code('uploads');
+            $upload_error_message = get_upload_error_message($_FILES['file']);
+            exit($upload_error_message->evaluate());
         }
 
         $name = $_FILES['file']['name'];
