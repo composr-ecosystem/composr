@@ -1,6 +1,6 @@
 {TITLE}
 
-{+START,IF_NON_EMPTY,{SUBSCRIBERS_TABLE}}
+{+START,IF_NON_EMPTY,{SUBSCRIBERS_TABLE_ROWS}}
 	<div class="wide-table-wrap"><table class="columned-table results-table wide-table autosized-table responsive-table">
 		<thead>
 			<tr>
@@ -11,7 +11,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{SUBSCRIBERS_TABLE}
+			{SUBSCRIBERS_TABLE_ROWS}
 		</tbody>
 	</table></div>
 
@@ -21,7 +21,7 @@
 		</div>
 	{+END}
 {+END}
-{+START,IF_EMPTY,{SUBSCRIBERS_TABLE}}
+{+START,IF_EMPTY,{SUBSCRIBERS_TABLE_ROWS}}
 	<p class="nothing-here">
 		{!NONE}
 	</p>

@@ -416,24 +416,25 @@ function send_newsletter($message, $subject, $language, $send_details, $html_onl
 /**
  * Find a group of people the newsletter will go to.
  *
- * @param  array $send_details A map describing what newsletters the newsletter is being sent to (if $spreadsheet_data is not empty we will always process that regardless)
- * @param  LANGUAGE_NAME $lang Language subscribers should be using (if we're running a multi-language site)
+ * @param  ?array $send_details A map describing what newsletters the newsletter is being sent to (if $spreadsheet_data is not empty we will always process that regardless) (null: no limitation)
+ * @param  ?LANGUAGE_NAME $lang Language subscribers should be using (if we're running a multi-language site) (null: no filter)
  * @param  integer $start Start position in result set (results are returned in parallel for each category of result)
  * @param  integer $max Maximum records to return from each category
  * @param  array $spreadsheet_data Spreadsheet data to also consider
  * @param  boolean $filter_confirms Filter non-confirmed addresses out
  * @return array A pair: List of subscriber detail maps, and a map of newsletter identifier to record count (null if $start is not zero, for performance reasons]
  */
-function newsletter_who_send_to($send_details, $language, $start, $max, $spreadsheet_data = array(), $filter_confirms = true)
+function newsletter_who_send_to($send_details = null, $lang = null, $start = 0, $max = 0, $spreadsheet_data = array(), $filter_confirms = true)
 {
     $subscribers = array();
-    $count = ($start == 0) ? array() : null;
+    $totals = ($start == 0) ? array() : null;
 
     // Standard newsletter subscribers
     $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'));
-    $where_lang = multi_lang() ? (' AND ' . db_string_equal_to('language', $language)) : '';
+    $where_lang = ((multi_lang()) && ($lang !== null)) ? (' AND ' . db_string_equal_to('language', $lang)) : '';
     foreach ($newsletters as $newsletter) {
-        if (!empty($send_details[strval($newsletter['id'])])) {
+        $key = strval($newsletter['id']);
+        if (($send_details === null) || (!empty($send_details[$key]))) {
             $fields = 'n.id,n.email,the_password,n_forename,n_surname,language,pass_salt,code_confirm,join_time';
             $table = get_table_prefix() . 'newsletter_subscribe s LEFT JOIN ' . get_table_prefix() . 'newsletter_subscribers n ON n.email=s.email';
             $where = 's.newsletter_id=' . strval($newsletter['id']) . $where_lang;
@@ -445,7 +446,7 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
 
             if ($start == 0) {
                 $sql_count = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $where;
-                $total[strval($newsletter['id'])] = $GLOBALS['SITE_DB']->query_value_if_there($sql);
+                $totals[$key] = $GLOBALS['SITE_DB']->query_value_if_there($sql);
             }
 
             foreach ($_rows as $_temp) {
@@ -479,64 +480,67 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
 
         $table = $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members m';
 
-        $where_lang = multi_lang() ? (' AND (' . db_string_equal_to('m_language', $language) . ' OR ' . db_string_equal_to('m_language', '') . ')') : '';
+        $where_lang = ((multi_lang()) && ($lang !== null)) ? (' AND (' . db_string_equal_to('m_language', $lang) . ' OR ' . db_string_equal_to('m_language', '') . ')') : '';
         $where = db_string_not_equal_to('m_email_address', '') . $where_lang . ' AND m_validated=1 AND m_is_perm_banned=0';
         if ($filter_confirms) {
-            $where .= db_string_not_equal_to('m_validated_email_confirm_code', '');
+            $where .= ' AND ' . db_string_not_equal_to('m_validated_email_confirm_code', '');
         }
         if (get_option('staff_email_receipt_configurability') != '0') {
             $where .= ' AND m_allow_emails=1';
         }
 
         // Usergroups
-        foreach ($send_details as $_id => $is_on) {
-            if ((is_string($_id)) && (substr($_id, 0, 1) == 'g') && (!empty($is_on))) {
-                $usergroup_id = intval(substr($_id, 1));
+        $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
+        foreach (array_keys($groups) as $group_id) {
+            $key = 'g' . strval($group_id);
+            if (($send_details === null) || (!empty($send_details[$key]))) {
+                if ($group_id != db_get_first_id()) {
+                    $table_a = $table . ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON m.id=g.gm_member_id AND g.gm_validated=1';
+                    $where_a = 'gm_group_id=' . strval($group_id) . ' AND ' . $where;
+                    $sql_a = 'SELECT ' . $fields . ' FROM ' . $table_a . ' WHERE ' . $where_a;
 
-                $table_a = $table . ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_group_members g ON m.id=g.gm_member_id AND g.gm_validated=1';
-                $where_a = 'gm_group_id=' . strval($usergroup_id) . ' AND ' . $where;
-                $sql_a = 'SELECT ' . $fields . ' FROM ' . $table_a . ' WHERE ' . $where_a;
+                    $table_b = $table;
+                    $where_b = 'm_primary_group=' . strval($group_id) . ' AND ' . $where;
+                    $sql_b = 'SELECT ' . $fields . ' FROM ' . $table_b . ' WHERE ' . $where_b;
 
-                $table_b = $table;
-                $where_b = 'm_primary_group=' . strval($usergroup_id) . ' AND ' . $where;
-                $sql_b = 'SELECT ' . $fields . ' FROM ' . $table_b . ' WHERE ' . $where_b;
+                    $_rows = ($max == 0) ? array() : $GLOBALS['FORUM_DB']->query($sql_a . ' UNION ' . $sql_b . ' ORDER BY id', $max, $start, false, true);
 
-                $_rows = ($max == 0) ? array() : $GLOBALS['FORUM_DB']->query($sql_a . ' UNION ' . $sql_b . ' ORDER BY id', $max, $start, false, true);
+                    if ($start == 0) {
+                        $sql_count_a = 'SELECT COUNT(*) FROM ' . $table_a . ' WHERE ' . $where_a;
+                        $sql_count_b = 'SELECT COUNT(*) FROM ' . $table_b . ' WHERE ' . $where_b;
+                        $totals[$key] = $GLOBALS['FORUM_DB']->query_value_if_there('SELECT (' . $sql_count_a . ') + (' . $sql_count_b . ')', false, true);
+                    }
 
-                if ($start == 0) {
-                    $sql_count_a = 'SELECT COUNT(*) FROM ' . $table_a . ' WHERE ' . $where_a;
-                    $sql_count_b = 'SELECT COUNT(*) FROM ' . $table_b . ' WHERE ' . $where_b;
-                    $total[$_id] = $GLOBALS['FORUM_DB']->query_value_if_there($sql_count_a . ' + ' . $sql_count_b, false, true);
-                }
+                    foreach ($_rows as $_temp) { // For each member
+                        $email_address = $_temp['m_email_address'];
 
-                foreach ($_rows as $_temp) { // For each member
-                    $email_address = $_temp['m_email_address'];
-
-                    if (!isset($subscribers[$email_address])) {
-                        $subscribers[$email_address] = array(
-                            'forename' => '',
-                            'surname' => '',
-                            'name' => $_temp['m_username'],
-                            'id' => 'm' . strval($_temp['id']),
-                            'hash' => $_temp['m_pass_hash_salted'],
-                            'language' => $_temp['m_language'],
-                            'salt' => $_temp['m_pass_salt'],
-                            'code_confirm' => $_temp['m_validated_email_confirm_code'],
-                            'join_time' => $_temp['m_join_time'],
-                        );
+                        if (!isset($subscribers[$email_address])) {
+                            $subscribers[$email_address] = array(
+                                'forename' => '',
+                                'surname' => '',
+                                'name' => $_temp['m_username'],
+                                'id' => 'm' . strval($_temp['id']),
+                                'hash' => $_temp['m_pass_hash_salted'],
+                                'language' => $_temp['m_language'],
+                                'salt' => $_temp['m_pass_salt'],
+                                'code_confirm' => $_temp['m_validated_email_confirm_code'],
+                                'join_time' => $_temp['m_join_time'],
+                            );
+                        }
                     }
                 }
             }
         }
 
         // *All* Conversr members
-        if (!empty($send_details['-1'])) {
+        $key = '-1';
+        if (($send_details === null) || (!empty($send_details[$key]))) {
             $sql = 'SELECT ' . $fields . ' FROM ' . $table . ' WHERE ' . $where;
             $_rows = ($max == 0) ? array() : $GLOBALS['FORUM_DB']->query($sql . ' ORDER BY id', $max, $start, false, true);
 
             if ($start == 0) {
                 $sql_count = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $where;
-                $total['-1'] = $GLOBALS['FORUM_DB']->query_value_if_there($sql_count);
+                $totals[$key] = $GLOBALS['FORUM_DB']->query_value_if_there($sql_count);
             }
 
             foreach ($_rows as $_temp) {
@@ -561,6 +565,8 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
 
     // From spreadsheet
     if (!empty($spreadsheet_data)) {
+        $key = 'spreadsheet';
+
         $email_address_index = 0;
         $forename_index = 1;
         $surname_index = 2;
@@ -573,7 +579,7 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
         $join_time_index = 9;
 
         if ($start == 0) {
-            $total['spreadsheet'] = 0;
+            $totals['spreadsheet'] = 0;
         }
 
         $pos = 0;
@@ -587,10 +593,10 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
             if ((count($spreadsheet_line) >= 1) && (isset($spreadsheet_line[$email_address_index])) && (strpos($spreadsheet_line[$email_address_index], '@') !== false)) {
                 $email_address = $spreadsheet_line[$email_address_index];
 
-                $_language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line)) ? $spreadsheet_line[$language_index] : '';
-                $code_confirm = (($code_confirm_index !== null) && (array_key_exists($code_confirm_index, $spreadsheet_line)) ? $spreadsheet_line[$code_confirm_index] : '';
+                $language = (($language_index !== null) && (array_key_exists($language_index, $spreadsheet_line))) ? $spreadsheet_line[$language_index] : '';
+                $code_confirm = (($code_confirm_index !== null) && (array_key_exists($code_confirm_index, $spreadsheet_line))) ? $spreadsheet_line[$code_confirm_index] : '';
 
-                if ((multi_lang()) && ($_language != '') && ($_language != $language)) {
+                if ((multi_lang()) && ($lang !== null) && ($language != '') && ($lang != $language)) {
                     continue;
                 }
 
@@ -599,23 +605,23 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
                 }
 
                 if (($pos >= $start) && ($pos - $start < $max)) {
-                    if (!isset($subscribers[$email])) {
+                    if (!isset($subscribers[$email_address])) {
                         $subscribers[$email_address] = array(
-                            'forename' => (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line)) ? $spreadsheet_line[$forename_index] : '',
-                            'surname' => (($surname_index !== null) && (array_key_exists($surname_index, $spreadsheet_line)) ? $spreadsheet_line[$surname_index] : '',
-                            'name' => (($name_index !== null) && (array_key_exists($name_index, $spreadsheet_line)) ? $spreadsheet_line[$name_index] : '',
-                            'send_id' => (($send_id_index !== null) && (array_key_exists($send_id_index, $spreadsheet_line)) ? $spreadsheet_line[$send_id_index] : '',
-                            'hash' => (($hash_index !== null) && (array_key_exists($hash_index, $spreadsheet_line)) ? $spreadsheet_line[$hash_index] : '',
-                            'language' => $_language,
-                            'salt' => (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line)) ? $spreadsheet_line[$salt_index] : '',
+                            'forename' => (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '',
+                            'surname' => (($surname_index !== null) && (array_key_exists($surname_index, $spreadsheet_line))) ? $spreadsheet_line[$surname_index] : '',
+                            'name' => (($name_index !== null) && (array_key_exists($name_index, $spreadsheet_line))) ? $spreadsheet_line[$name_index] : '',
+                            'send_id' => (($send_id_index !== null) && (array_key_exists($send_id_index, $spreadsheet_line))) ? $spreadsheet_line[$send_id_index] : '',
+                            'hash' => (($hash_index !== null) && (array_key_exists($hash_index, $spreadsheet_line))) ? $spreadsheet_line[$hash_index] : '',
+                            'language' => $language,
+                            'salt' => (($salt_index !== null) && (array_key_exists($salt_index, $spreadsheet_line))) ? $spreadsheet_line[$salt_index] : '',
                             'code_confirm' => $code_confirm,
-                            'join_time' => (($join_time_index !== null) && (array_key_exists($join_time_index, $spreadsheet_line)) ? $spreadsheet_line[$join_time_index] : '',
+                            'join_time' => (($join_time_index !== null) && (array_key_exists($join_time_index, $spreadsheet_line))) ? $spreadsheet_line[$join_time_index] : '',
                         );
                     }
                 }
 
                 if ($start == 0) {
-                    $total['spreadsheet']++;
+                    $totals[$key]++;
                 }
 
                 $pos++;
@@ -623,7 +629,7 @@ function newsletter_who_send_to($send_details, $language, $start, $max, $spreads
         }
     }
 
-    return array($subscribers, $total);
+    return array($subscribers, $totals);
 }
 
 /**

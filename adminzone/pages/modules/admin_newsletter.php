@@ -287,8 +287,8 @@ class Module_admin_newsletter extends Standard_crud_module
         $send_details = array(
             $key => true,
         );
-        list(, $total) = newsletter_who_send_to($send_details, $lang, 0, 0);
-        return isset($total[$key]) ? $total[$key] : 0;
+        list(, $totals) = newsletter_who_send_to($send_details, $lang);
+        return isset($totals[$key]) ? $totals[$key] : 0;
     }
 
     /**
@@ -409,16 +409,22 @@ class Module_admin_newsletter extends Standard_crud_module
             $newsletters = new Tempcode();
             $rows = $GLOBALS['SITE_DB']->query_select('newsletters', array('id', 'title'));
             foreach ($rows as $i => $newsletter) {
-                $newsletters->attach(form_input_list_entry(strval($newsletter['id']), $i == 0, get_translated_text($newsletter['title'])));
+                $_key = strval($newsletter['id']);
+                $subscriber_count = $this->_count_on_newsletter($_key, $lang);
+                $newsletters->attach(form_input_list_entry($_key, $i == 0, get_translated_text($newsletter['title']) . ' (' . integer_format($subscriber_count) . ')'));
             }
             if (get_forum_type() == 'cns') {
-                $newsletters->attach(form_input_list_entry('-1', false, do_lang_tempcode('NEWSLETTER_CNS')));
+                $_key = '-1';
+                $subscriber_count = $this->_count_on_newsletter($_key, $lang);
+                $newsletters->attach(form_input_list_entry($_key, false, protect_from_escaping(do_lang('NEWSLETTER_CNS') . ' (' . integer_format($subscriber_count) . ')')));
+
                 $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
                 foreach ($groups as $group_id => $group) {
                     if ($group_id != db_get_first_id()) {
-                        $subscriber_count = $this->_count_on_newsletter('g' . strval($group_id), $lang);
+                        $_key = 'g' . strval($group_id);
+                        $subscriber_count = $this->_count_on_newsletter($_key, $lang);
                         if ($subscriber_count != 0) {
-                            $newsletters->attach(form_input_list_entry('g' . strval($group_id), false, do_lang_tempcode('THIS_WITH', do_lang_tempcode('USERGROUP'), make_string_tempcode(escape_html($group)))));
+                            $newsletters->attach(form_input_list_entry($_key, false, protect_from_escaping(do_lang('THIS_WITH', do_lang('USERGROUP'), escape_html($group)) . ' (' . integer_format($subscriber_count) . ')')));
                         }
                     }
                 }
@@ -454,6 +460,11 @@ class Module_admin_newsletter extends Standard_crud_module
 
         // Show subscribers...
 
+        if (get_param_integer('spreadsheet', 0) == 1) {
+            require_code('tasks');
+            return call_user_func_array__long_task(do_lang('VIEW_SUBSCRIBERS'), $this->title, 'export_newsletter_subscribers', array($lang, $key));
+        }
+
         $max = get_param_integer('max', 100);
         $start = get_param_integer('start', 0);
 
@@ -464,7 +475,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $send_details = array();
         $send_details[$key] = true;
-        list($subscribers) = newsletter_who_send_to($send_details, $lang, $start + $start2, $max);
+        list($subscribers) = newsletter_who_send_to($send_details, $lang, $start, $max);
 
         $subscribers_table_rows = '';
 
@@ -1033,27 +1044,33 @@ class Module_admin_newsletter extends Standard_crud_module
         $send_details = ($defaults === null) ? array() : unserialize($defaults['np_send_details']);
         $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('*'));
         foreach ($newsletters as $newsletter) {
-            $send_to = (post_param_integer(strval($newsletter['id']), empty($send_details[strval($newsletter['id'])]) ? 0 : 1) == 1);
-            $subscriber_count = $this->_count_on_newsletter(strval($newsletter['id']), $lang);
+            $key = strval($newsletter['id']);
+
+            $send_to = (post_param_integer($key, empty($send_details[$key]) ? 0 : 1) == 1);
+            $subscriber_count = $this->_count_on_newsletter($key, $lang);
 
             $newsletter_title = get_translated_text($newsletter['title']);
             $newsletter_description = get_translated_text($newsletter['the_description']);
-            $fields->attach(form_input_tick(do_lang_tempcode('NEWSLETTER_SEND_TO', escape_html($newsletter_title)), do_lang_tempcode('DESCRIPTION_NEWSLETTER_SEND_TO', escape_html(integer_format($subscriber_count)), escape_html($newsletter_description)), strval($newsletter['id']), $send_to));
+            $fields->attach(form_input_tick(do_lang_tempcode('NEWSLETTER_SEND_TO', escape_html($newsletter_title)), do_lang_tempcode('DESCRIPTION_NEWSLETTER_SEND_TO', escape_html(integer_format($subscriber_count)), escape_html($newsletter_description)), $key, $send_to));
         }
         if (get_forum_type() == 'cns') {
-            $send_to = (post_param_integer('-1', empty($send_details['-1']) ? 0 : 1) == 1);
-            $newsletter_subscriber_count = $this->_count_on_newsletter('-1', $lang);
+            $key = '-1';
 
-            $fields->attach(form_input_tick(do_lang_tempcode('NEWSLETTER_CNS'), do_lang_tempcode('NUM_READERS', escape_html(integer_format($newsletter_subscriber_count))), '-1', $subscriber_count));
+            $send_to = (post_param_integer($key, empty($send_details[$key]) ? 0 : 1) == 1);
+            $newsletter_subscriber_count = $this->_count_on_newsletter($key, $lang);
+
+            $fields->attach(form_input_tick(do_lang_tempcode('NEWSLETTER_CNS'), do_lang_tempcode('NUM_READERS', escape_html(integer_format($newsletter_subscriber_count))), $key, $subscriber_count));
 
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             foreach ($groups as $group_id => $group) {
                 if ($group_id != db_get_first_id()) {
-                    $send_to = (post_param_integer('g' . strval($group_id), empty($send_details['g' . strval($group_id)]) ? 0 : 1) == 1);
-                    $subscriber_count = $this->_count_on_newsletter('g' . strval($group_id), $lang);
+                    $key = 'g' . strval($group_id);
+
+                    $send_to = (post_param_integer($key, empty($send_details[$key]) ? 0 : 1) == 1);
+                    $subscriber_count = $this->_count_on_newsletter($key, $lang);
 
                     if ($subscriber_count != 0) {
-                        $fields->attach(form_input_tick(do_lang_tempcode('THIS_WITH', do_lang_tempcode('USERGROUP'), make_string_tempcode(escape_html($group))), do_lang_tempcode('NUM_READERS', escape_html(integer_format($subscriber_count))), 'g' . strval($group_id), $send_to));
+                        $fields->attach(form_input_tick(do_lang_tempcode('THIS_WITH', do_lang_tempcode('USERGROUP'), make_string_tempcode(escape_html($group))), do_lang_tempcode('NUM_READERS', escape_html(integer_format($subscriber_count))), $key, $send_to));
                     }
                 }
             }
@@ -1313,14 +1330,18 @@ class Module_admin_newsletter extends Standard_crud_module
         $newsletters = $GLOBALS['SITE_DB']->query_select('newsletters', array('id'));
         $send_details = array();
         foreach ($newsletters as $newsletter) {
-            $send_details[strval($newsletter['id'])] = (post_param_integer(strval($newsletter['id']), 0) == 1);
+            $key = strval($newsletter['id']);
+            $send_details[$key] = (post_param_integer($key, 0) == 1);
         }
         if (get_forum_type() == 'cns') {
             $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list();
             foreach (array_keys($groups) as $id) {
-                $send_details['g' . strval($id)] = (post_param_integer('g' . strval($id), 0) == 1);
+                $key = 'g' . strval($id);
+                $send_details[$key] = (post_param_integer($key, 0) == 1);
             }
-            $send_details['-1'] = (post_param_integer('-1', 0) == 1);
+
+            $key = '-1';
+            $send_details[$key] = (post_param_integer($key, 0) == 1);
         }
 
         if (post_param_integer('make_periodic', 0) == 1) {

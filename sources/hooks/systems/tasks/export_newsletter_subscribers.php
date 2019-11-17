@@ -51,7 +51,7 @@ class Hook_task_export_newsletter_subscribers
         }
         $filename = 'newsletter_subscribers_' . $key . '.' . $file_type;
         $outfile_path = null;
-        $sheet_writer = spreadsheet_open_write($outfile_path, $filename);
+        $sheet_writer = spreadsheet_open_write($outfile_path, $filename, CMS_Spreadsheet_Writer::ALGORITHM_RAW);
 
         $sheet_writer->write_row(array(
             do_lang('EMAIL_ADDRESS'),
@@ -73,7 +73,8 @@ class Hook_task_export_newsletter_subscribers
         do {
             $_subscribers = newsletter_who_send_to($send_details, $lang, $start, $max, array(), false);
             if ($count == 0) {
-                list($subscribers, $max_rows) = $_subscribers;
+                list($subscribers, $totals) = $_subscribers;
+                $max_rows = array_sum($totals);
             } else {
                 list($subscribers) = $_subscribers;
             }
@@ -98,7 +99,7 @@ class Hook_task_export_newsletter_subscribers
             }
 
             $start += $max;
-        } while (array_key_exists(0, $rows));
+        } while (array_key_exists(0, $subscribers));
 
         $sheet_writer->close();
 

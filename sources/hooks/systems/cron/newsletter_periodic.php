@@ -162,7 +162,7 @@ class Hook_cron_newsletter_periodic
                 $periodic_row['np_from_name'],
                 $periodic_row['np_priority'],
                 json_decode($periodic_row['np_spreadsheet_data'], true),
-                $periodic_row['np_template'],
+                $periodic_row['np_template']
             );
         }
 

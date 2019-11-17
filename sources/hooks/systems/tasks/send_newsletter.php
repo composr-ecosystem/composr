@@ -83,7 +83,8 @@ class Hook_task_send_newsletter
         do {
             $_subscribers = newsletter_who_send_to($send_details, $lang, $start, $max, $spreadsheet_data);
             if ($start == 0) {
-                list($subscribers, $max_rows) = $_subscribers;
+                list($subscribers, $totals) = $_subscribers;
+                $max_rows = array_sum($totals);
             } else {
                 list($subscribers) = $_subscribers;
             }
@@ -171,7 +172,7 @@ class Hook_task_send_newsletter
             if (($using_drip_queue) && (!empty($insert_maps['d_to_email']))) {
                 $GLOBALS['SITE_DB']->query_insert('newsletter_drip_send', $insert_maps);
             }
-        } while (array_key_exists(0, $addresses));
+        } while (array_key_exists(0, $subscribers));
 
         if ($count == 0) {
             return array('text/html', do_lang_tempcode('NEWSLETTER_NO_TARGET'));

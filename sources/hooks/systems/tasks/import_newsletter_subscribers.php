@@ -77,13 +77,11 @@ class Hook_task_import_newsletter_subscribers
 
             task_log($this, 'Processing record', $i);
 
-            $i++;
-
             if ((count($spreadsheet_line) >= 1) && ($email_address_index !== null) && (isset($spreadsheet_line[$email_address_index])) && (strpos($spreadsheet_line[$email_address_index], '@') !== false)) {
                 $email_address = $spreadsheet_line[$email_address_index];
 
                 $forename = (($forename_index !== null) && (array_key_exists($forename_index, $spreadsheet_line))) ? $spreadsheet_line[$forename_index] : '';
-                if ($forename == $email) {
+                if ($forename == $email_address) {
                     $forename = ucfirst(strtolower(preg_replace('#^(\w+)([^\w].*)?$#', '\\1', $forename)));
                     if (in_array($forename, array('Sales', 'Info', 'Business', 'Enquiries', 'Admin', 'Webmaster'))) {
                         $forename = '';
@@ -160,7 +158,9 @@ class Hook_task_import_newsletter_subscribers
 
                 $count2++;
             }
-        } while (!empty($_spreadsheet_data));
+
+            $i++;
+        }
 
         $sheet_reader->close();
 
