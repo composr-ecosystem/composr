@@ -54,6 +54,10 @@ class CMS_Spout_Reader extends CMS_Spreadsheet_Reader
 
         $this->reader->open($path);
 
+        if (function_exists('libxml_disable_entity_loader')) {
+            libxml_disable_entity_loader(false);
+        }
+
         $sheet_iterator = $this->reader->getSheetIterator(); // We will only look at the first sheet
         $sheet_iterator->rewind();
         $this->row_iterator = $sheet_iterator->current()->getRowIterator();

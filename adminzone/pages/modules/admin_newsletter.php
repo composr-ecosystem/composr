@@ -305,8 +305,8 @@ class Module_admin_newsletter extends Standard_crud_module
 
         require_lang('cns');
 
-        $newsletter_id = post_param_string('id', null);
-        $subscribe = (post_param_integer('subscribe', 0) == 1);
+        $newsletter_id = post_param_integer('id', null);
+        $subscribe = (post_param_integer('subscribe', 1) == 1);
 
         // Select newsletter and attach spreadsheet
         if ($newsletter_id === null) {

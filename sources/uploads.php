@@ -283,7 +283,7 @@ function get_temporary_upload_path($attach_name)
         if ($_FILES[$attach_name]['type'] != 'plupload') {
             $test = @move_uploaded_file($_FILES[$attach_name]['tmp_name'], $target_path);
         } else {
-            $test = @rename($_FILES[$attach_name]['tmp_name'], $target_path);
+            $test = @copy($_FILES[$attach_name]['tmp_name'], $target_path); // PHP/incoming_uploads.php will clean up for us, and using @copy makes debugging a lot easier
         }
         if ($test === false) {
             warn_exit(do_lang_tempcode('FILE_MOVE_ERROR', escape_html($_FILES[$attach_name]['name']), escape_html($target_path)));
@@ -291,6 +291,10 @@ function get_temporary_upload_path($attach_name)
         fix_permissions($target_path);
         sync_file($target_path);
     } else {
+        if (!array_key_exists($attach_name, $_FILES)) {
+            warn_exit(do_lang_tempcode('IMPROPERLY_FILLED_IN_UPLOAD'));
+        }
+
         $upload_error_message = get_upload_error_message($_FILES[$attach_name]);
         warn_exit($upload_error_message);
     }

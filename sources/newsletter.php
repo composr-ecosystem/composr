@@ -653,7 +653,7 @@ function detect_newsletter_spreadsheet_columns($header_row)
 
     foreach ($header_row as $j => $val) {
         if (in_array(strtolower($val), array('e-mail', 'email', 'email address', 'e-mail address', strtolower(do_lang('EMAIL_ADDRESS')), 'to'))) {
-            $email_index = $j;
+            $email_address_index = $j;
         }
         if (in_array(strtolower($val), array('forename', 'forenames', 'first name', strtolower(do_lang('FORENAME'))))) {
             $forename_index = $j;
