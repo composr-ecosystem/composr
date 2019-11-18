@@ -65,6 +65,15 @@ Also, if your main site is based on [tt]recommended.htaccess[/tt] then [tt].htac
 
 	e) delete CLONE_SITE_DIR_OLD directory
 
+STEP 7: Disable outgoing e-mails.
+
+You probably don't want the clone site to be able to send e-mails when you do things. For example, imagine if it's someone's birthday, so they get an e-mail from the clone site. Or, you create a new topic and people get notifications.
+
+Add this to the end of your [tt]_config.php[/tt] file:
+[code="PHP"]
+$SITE_INFO['no_email_output'] = '1';
+[/code]
+
 [b][i]Congratulations!!![/i][/b], you should now have a working clone of your main site!
 
 A few things to note about the cloned site:
