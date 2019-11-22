@@ -183,7 +183,7 @@ Template Tips:
 
 Block tips:
  - You can mark out parts of a complex Comcode layout as having [b][tt]quick_cache[/tt][/b] by moving the content into individual Comcode pages then using the [tt]main_include_module[/tt] block to insert it back, with the [tt]quick_cache[/tt] parameter turned on for that block.
- - The [b]defer-loading option block parameter[/b] is also useful, although it puts a requirement on JavaScript (so crawlers may not get the content for example).
+ - The [b]defer-loading option block parameter[/b] is also useful (as it decouples block generation from initial load, and allows blocks to generate in parallel), although it puts a requirement on JavaScript (so crawlers may not get the content for example).
  - If you are using a particularly visually complex block (e.g. deep pop-out menus) then use the [tt]quick_cache[/tt] block parameter on it if possible.
  - The [tt]main_news[/tt] and [tt]main_forum_news[/tt] blocks have an [tt]optimise[/tt] parameter which will simplify down the Comcode of anything displayed such as it will be stored statically. This usually will have no impact, but may increase performance if a lot of Comcode tags were used. It does have an impact if dynamic elements are used within posts, such as Comcode that check's a user's usergroup or displays the current date/time.
 
@@ -320,6 +320,8 @@ You may also want to switch tables to InnoDB instead of MyISAM. If you do this t
 :set_value('innodb', '1'); set_value('slow_counts', '1');
 [/code]
 This works around that InnoDB can't do quick row counts in tables, so implements an approximation for certain table counts.
+
+If using InnoDB you may want to customise the [tt]innodb_flush_log_at_trx_commit[/tt] and [tt]innodb_flush_log_at_timeout[/tt] settings. They provide a trade-off between performance and data integrity of recent transactions in the case of critical failure.
 
 [title="4"]Sharding[/title]
 
@@ -779,9 +781,9 @@ There are are various commands on Linux that are useful during diagnosis...
 | Show CPU and disk load
 | This is useful to find disk I/O load.
 |-
-| [tt]iotop -n1 -b[/tt]
+| [tt]iotop -a -P[/tt]
 | Show active processes by I/O load
-| This command usually is not installed by default. It is very useful to find what processes are doing a lot of I/O.
+| This command usually is not installed by default. It is very useful to find what processes are doing a lot of I/O. The given parameters will open it up in cumulative mode, which is most helpful as otherwise you can only see spikes in I/O. Use the left/right arrows to change the column sorting.
 |-
 | [tt]vmstat 1[/tt]
 | Watch virtual memory
@@ -789,7 +791,15 @@ There are are various commands on Linux that are useful during diagnosis...
 |-
 | [tt]fatrace[/tt]
 | Watch disk reads
-| This will give you much more insight than just looking at live load numbers. If you have a problem with I/O queue buildup (different whatever your I/O throughput is, due to latency) then this will help you find what the I/O is being spent on. Note that writes to a swap partition will not show up here. On my testing I also found some other minor file accesses not showing up, and I don't know why.
+| This command usually is not installed by default. This will give you much more insight than just looking at live load numbers. If you have a problem with I/O queue buildup (different whatever your I/O throughput is, due to latency) then this will help you find what the I/O is being spent on. Note that writes to a swap partition will not show up here. On my testing I also found some other minor file accesses not showing up, and I don't know why.
+|-
+| [tt]lsof[/tt]
+| List open files
+| Gives an idea what files are being regularly read and/or written to.
+|-
+| [tt]strace -e write -f -y -p <process ID>[/tt]
+| List open files
+| Gives an idea what files are being regularly read and/or written to.
 |}
 
 Additionally, the Apache web server has [tt]mod_status[/tt] which can be configured to show what web requests are coming in, and how long they last for. This tells you a lot more than the Apache access log will, although looks at the Apache access log is still important to find actual timestamps of requests (i.e. to gauge throughput) and to make sure you're not overlooking request volume from individual hosts (which may use [tt]KeepAlive[/tt] and therefore keep on the same Apache slots).
@@ -938,7 +948,8 @@ Slow-downs may be a result of something inherent in your architecture that you d
 
 Here are a few useful Linux benchmarking tools:
  - [tt]sysbench[/tt] -- examine your CPU performance
- - [tt]dd[/tt] -- while not actually a benchmarking tool, it can help you find your disk read and write performance (you can find examples online)
+ - [tt]hdparm -Tt /dev/<device>[/tt] -- quick benchmarking for read speeds on the given disk
+ - [tt]dd[/tt] -- while not actually a benchmarking tool, it can help you find your disk write performance (you can find examples online)
  - [tt]bonnie++[/tt] -- examine detailed disk I/O characteristics
  - [tt]siege[/tt] -- gauge your web throughput
 
@@ -1028,7 +1039,49 @@ Composr's built-in profiler is enabled via a hidden option (described in the Cod
 
 [title="4"]MySQL[/title]
 
-MySQL has a "slow query log" feature which is useful for debugging database performance issues. Additionally the MySQL query [tt]SHOW FULL PROCESSLIST[/tt] is very useful for showing current activity when you notice the database being slow.
+MySQL has a number of great features for diagnosing performance issues.
+
+[title="5"]Slow query log[/title]
+
+MySQL has a "slow query log" feature, which logs slow-running queries to a file.
+
+You enable it through the MySQL configuration (including at run-time). Documenting how is simple but beyond the scope of this tutorial.
+
+[title="5"]General log[/title]
+
+To get an idea what kind of queries are running, you can enable the general log. Maybe queries aren't slow per-se, but you may (for example) have too many queries and need to see where the workload is.
+
+You enable it through the MySQL configuration (including at run-time). Documenting how is simple but beyond the scope of this tutorial.
+
+[title="5"]Process list[/title]
+
+The MySQL query [tt]SHOW FULL PROCESSLIST[/tt] is very useful for showing current activity when you notice the database being slow.
+
+[title="5"]Performance schema[/title]
+
+MySQL has the capability to do detailed query performance logging, recording problematic queries across a number of metrics.
+
+Data is stored in the [tt]performance_schema[/tt] database, which can be queried directly.
+
+It's a little tricky to get performance schema running:[list="1"]
+[*] It needs to be enabled in the main MySQL configuration (i.e. cannot be done at run-time).
+[*] Actual instruments and consumers need enabling. To enable all of them:
+[code="SQL"]
+UPDATE performance_schema.setup_instruments SET enabled='YES';
+UPDATE performance_schema.setup_consumers SET enabled='YES';
+[/code]
+[*] You can then query the data. For example, to find out what queries are creating on-disk temporary tables:
+[code="SQL"]
+SELECT DISTINCT SQL_TEXT FROM performance_schema.events_statements_history_long WHERE CURRENT_SCHEMA LIKE '<database name>' AND CREATED_TMP_DISK_TABLES>0;
+[/code]
+[/list]
+
+MySQL also maintains some simple global counts of problematic queries as statuses. For example, to find use of temporary structures:
+[code="SQL"]
+SHOW GLOBAL STATUS LIKE 'Created_tmp%';
+[/code]
+
+Documenting all the things you can query is beyond the scope of this tutorial. Check the MySQL documentation and/or look at what tables and fields there are.
 
 [title="4"]Composr's page stats[/title]
 
