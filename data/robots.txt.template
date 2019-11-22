@@ -21,6 +21,9 @@ Disallow: /themes/*/xml
 Disallow: /adminzone/
 #Disallow: /cms/
 
+# Bots don't need to index these special scripts (performance)
+Disallow: /data/external_url_proxy.php
+
 # Set Sitemap
 Sitemap: http://yourbaseurl/data_custom/sitemaps/index.xml
 Sitemap: http://yourbaseurl/data_custom/sitemaps/news_sitemap.xml
@@ -36,6 +39,24 @@ User-agent: BLEXBot
 Disallow: /
 User-agent: AhrefsBot
 Disallow: /
+User-agent: ZoominfoBot
+Disallow: /
+User-agent: Buck
+Disallow: /
+User-agent: trendictionbot
+Disallow: /
+User-agent: omgili
+Disallow: /
+User-agent: bbot
+Disallow: /
+User-agent: brands-bot-logo
+Disallow: /
+User-agent: brands-bot
+Disallow: /
+
+# Busy bots not blocked by default as some sites may want them
+#User-agent: MJ12bot
+#Disallow: /
 
 # Set reasonable Crawl Delay to stop over-enthusiastic bots
 Crawl-Delay: 10
