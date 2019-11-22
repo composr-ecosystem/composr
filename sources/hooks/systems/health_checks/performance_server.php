@@ -116,7 +116,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
             $free_space = disk_free_space(get_custom_file_base());
             $this->assertTrue($free_space > $disk_space_threshold, 'Disk space very low @ ' . clean_file_size($free_space));
         } else {
-            $this->stateCheckSkipped('PHP disk_free_space function not available');
+            $this->stateCheckSkipped('PHP [tt]disk_free_space[/tt] function not available');
         }
     }
 
@@ -259,7 +259,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 
@@ -309,7 +309,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 $this->stateCheckSkipped('Failed to detect server load');
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 
@@ -340,7 +340,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
 
         // Write file
         if (!php_function_allowed('tempnam')) {
-            $this->stateCheckSkipped('PHP tempnam function disabled');
+            $this->stateCheckSkipped('PHP [tt]tempnam[/tt] function disabled');
             return;
         }
         $temp = @tempnam(sys_get_temp_dir(), 'hc_');
@@ -435,7 +435,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 
@@ -517,7 +517,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 $this->stateCheckSkipped('Failed to list running processes');
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 
@@ -578,7 +578,7 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 $this->stateCheckSkipped('Failed to detect free RAM');
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 }

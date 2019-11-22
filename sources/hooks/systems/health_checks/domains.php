@@ -75,7 +75,7 @@ class Hook_health_check_domains extends Hook_Health_Check
                 $this->assertTrue(@checkdnsrr($domain, 'A'), 'DNS does not seem to be set up properly for [tt]' . $domain . '[/tt]');
             }
         } else {
-            $this->stateCheckSkipped('PHP checkdnsrr function not available');
+            $this->stateCheckSkipped('PHP [tt]checkdnsrr[/tt] function not available');
         }
     }
 
@@ -131,7 +131,7 @@ class Hook_health_check_domains extends Hook_Health_Check
                 }
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec/escapeshellarg function(s) not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt]/[tt]escapeshellarg[/tt] function(s) not available');
         }
     }
 }

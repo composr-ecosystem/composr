@@ -116,7 +116,7 @@ class Hook_health_check_network extends Hook_Health_Check
                 $this->stateCheckSkipped('Could not get a recognised ping response');
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 

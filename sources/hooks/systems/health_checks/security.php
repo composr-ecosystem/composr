@@ -243,7 +243,7 @@ class Hook_health_check_security extends Hook_Health_Check
                     }
                 }
             } else {
-                $this->stateCheckSkipped('PHP shell_exec function not available');
+                $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
             }
         }
     }

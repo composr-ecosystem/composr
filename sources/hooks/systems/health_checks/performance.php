@@ -46,6 +46,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         $this->process_checks_section('testHTTPOptimisation', 'HTTP optimisation', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testPageSpeed', 'Page speed (slow)', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testSetup', 'Setup', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testBotFlood', 'Heavy bot activity', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return array($this->category_label, $this->results);
     }
@@ -212,7 +213,7 @@ class Hook_health_check_performance extends Hook_Health_Check
         //set_option('gzip_output', '1');   To test
 
         if (!php_function_allowed('stream_context_set_default')) {
-            $this->stateCheckSkipped('PHP stream_context_set_default function not available');
+            $this->stateCheckSkipped('PHP [tt]stream_context_set_default[/tt] function not available');
             return;
         }
 
@@ -402,6 +403,59 @@ class Hook_health_check_performance extends Hook_Health_Check
             if (support_smart_decaching()) {
                 $this->stateCheckManual('Consider disabling smart decaching');
             }
+        }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testBotFlood($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    {
+        if (!addon_installed('stats')) {
+            $this->stateCheckSkipped('Composr [tt]stats[/tt] addon not installed');
+            return;
+        }
+
+        require_code('files');
+        $bots = cms_parse_ini_file_fast(is_file(get_file_base() . '/text_custom/bots.txt') ? (get_file_base() . '/text_custom/bots.txt') : (get_file_base() . '/text/bots.txt'));
+        $bots[] = 'UptimeRobot';
+        $bots_where = '';
+        foreach ($bots as $bot) {
+            if (trim($bot) != '') {
+                $bots_where .= ' AND browser NOT LIKE \'' . db_encode_like('%' . $bot . '%') . '\'';
+            }
+        }
+
+        $threshold = 200; // Number of hits over 24 hour period. This is every 7 minutes or so, which a human would not sustain over that time.
+
+        $where = 'member_id=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time>' . strval(time() - 60 * 60 * 24) . $bots_where;
+
+        // By IP
+        $query = 'SELECT COUNT(*) AS cnt,ip FROM ' . get_table_prefix() . 'stats WHERE ';
+        $query .= $where;
+        $query .= ' GROUP BY ip HAVING COUNT(*)>=' . strval($threshold) . ' ORDER BY cnt DESC';
+        $rows = $GLOBALS['SITE_DB']->query($query);
+        foreach ($rows as $row) {
+            $browsers = collapse_1d_complexity('browser', $GLOBALS['SITE_DB']->query_select('stats', array('DISTINCT browser'), array('ip' => $row['ip']), 'ORDER BY browser'));
+            $this->assertTrue(false, 'Likely bot at ' . $row['ip'] . ' did ' . integer_format($row['cnt']) . ' requests within the last 24 hours. User agents: &ldquo;' . implode('&rdquo;, &ldquo;', $browsers) . '&rdquo;');
+        }
+
+        // By User Agent
+        $query = 'SELECT COUNT(*) AS cnt,browser FROM ' . get_table_prefix() . 'stats WHERE ';
+        $query .= $where;
+        $query .= ' AND browser NOT LIKE \'' . db_encode_like('%Mozilla%') . '\''; // This is common to all real web browser user agents; unfortunately some bots also put it in. Realistically we cannot find bots as we cannot maintain a whitelist of all web browser user agent patterns
+        $query .= ' GROUP BY browser HAVING COUNT(*)>=' . strval($threshold) . ' ORDER BY cnt DESC';
+        $rows = $GLOBALS['SITE_DB']->query($query);
+        foreach ($rows as $row) {
+            $ip_addresses = collapse_1d_complexity('ip', $GLOBALS['SITE_DB']->query_select('stats', array('DISTINCT ip'), array('browser' => $row['browser']), 'ORDER BY ip'));
+            $this->assertTrue(false, 'Likely bot &quot;' . $row['browser'] . '&quot; did ' . integer_format($row['cnt']) . ' requests within the last 24 hours. IP addresses: ' . implode(', ', $ip_addresses));
         }
     }
 }

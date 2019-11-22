@@ -42,7 +42,7 @@ class Hook_health_check_email extends Hook_Health_Check
     public function run($sections_to_run, $check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
         $this->process_checks_section('testEmailQueue', 'E-mail queue', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
-        $this->process_checks_section('testEmailConfiguration', 'E-mail configuration', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testEmailServerConfiguration', 'E-mail configuration', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testEmailPHPConfiguration', 'E-mail configuration in PHP', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDKIMConfiguration', 'DKIM configuration', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testDMARCConfiguration', 'DMARC configuration', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
@@ -81,9 +81,10 @@ class Hook_health_check_email extends Hook_Health_Check
             return;
         }
 
+        $this->assertTrue((get_option('mail_queue') == '1') || (get_option('smtp_sockets_use') == '0') || (strpos(get_option('smtp_sockets_host'), '.') === false) || (is_local_machine(get_option('smtp_sockets_host'))), 'If you using a remote SMTP server you should enable the Mail Queue');
+
         $sql = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'logged_mail_messages WHERE m_queued=1 AND m_date_and_time<' . strval(time() - 60 * 60 * 1);
         $count = $GLOBALS['SITE_DB']->query_value_if_there($sql);
-
         $this->assertTrue($count == 0, 'The e-mail queue has e-mails still not sent within the last hour');
     }
 
@@ -143,7 +144,7 @@ class Hook_health_check_email extends Hook_Health_Check
                     }
                     $this->assertTrue($found_record, 'Could not find a DKIM DNS record even though DKIM is configured');
                 } else {
-                    $this->stateCheckSkipped('PHP dns_get_record function not available');
+                    $this->stateCheckSkipped('PHP [tt]dns_get_record[/tt] function not available');
                 }
             }
         }
@@ -180,7 +181,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 }
                 $this->assertTrue($found_record, 'Could not find a DMARC DNS record');
             } else {
-                $this->stateCheckSkipped('PHP dns_get_record function not available');
+                $this->stateCheckSkipped('PHP [tt]dns_get_record[/tt] function not available');
             }
         }
     }
@@ -195,7 +196,7 @@ class Hook_health_check_email extends Hook_Health_Check
      * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
      * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
      */
-    public function testEmailConfiguration($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
+    public function testEmailServerConfiguration($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
         if ($check_context == CHECK_CONTEXT__INSTALL) {
             return;
@@ -255,7 +256,7 @@ class Hook_health_check_email extends Hook_Health_Check
                             }
                         }
                     } else {
-                        $this->stateCheckSkipped('PHP fsockopen function not available');
+                        $this->stateCheckSkipped('PHP [tt]fsockopen[/tt] function not available');
                     }
                 }
 
@@ -267,7 +268,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 }
             }
         } else {
-            $this->stateCheckSkipped('PHP getmxrr/checkdnsrr function(s) not available');
+            $this->stateCheckSkipped('PHP [tt]getmxrr[/tt]/[tt]checkdnsrr[/tt] function(s) not available');
         }
     }
 
@@ -314,7 +315,7 @@ class Hook_health_check_email extends Hook_Health_Check
                     }
                 }
             } else {
-                $this->stateCheckSkipped('PHP dns_get_record function not available');
+                $this->stateCheckSkipped('PHP [tt]dns_get_record[/tt] function not available');
             }
         }
     }
@@ -682,7 +683,7 @@ class Hook_health_check_email extends Hook_Health_Check
 
             $this->assertTrue($good, 'Did not receive test e-mail within ' . display_time_period($wait_time));
         } else {
-            $this->stateCheckSkipped('PHP imap_open function not available');
+            $this->stateCheckSkipped('PHP [tt]imap_open[/tt] function not available');
         }
     }
 
@@ -733,7 +734,7 @@ class Hook_health_check_email extends Hook_Health_Check
                 }
             }
         } else {
-            $this->stateCheckSkipped('PHP getmxrr function not available');
+            $this->stateCheckSkipped('PHP [tt]getmxrr[/tt] function not available');
         }
     }
 

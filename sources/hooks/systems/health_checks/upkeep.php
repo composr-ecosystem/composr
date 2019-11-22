@@ -130,7 +130,7 @@ class Hook_health_check_upkeep extends Hook_Health_Check
             $v = strval(PHP_MAJOR_VERSION) . '.' . strval(PHP_MINOR_VERSION);
             $this->assertTrue((@trim(shell_exec('which php')) == '/usr/bin/php') || (is_php_version_supported($v) !== false), 'Unsupported PHP version ' . $v);
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 

@@ -434,7 +434,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             $low_disk_space = ((is_integer($disk_space)) && ($disk_space < $min_disk_space));
             $this->assertTrue(!$low_disk_space, do_lang('WARNING_DISK_SPACE', clean_file_size($min_disk_space)));
         } else {
-            $this->stateCheckSkipped('PHP disk_free_space function not available');
+            $this->stateCheckSkipped('PHP [tt]disk_free_space[/tt] function not available');
         }
     }
 
@@ -515,7 +515,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
                 $this->stateCheckSkipped('SELinux probably not enabled');
             }
         } else {
-            $this->stateCheckSkipped('PHP shell_exec function not available');
+            $this->stateCheckSkipped('PHP [tt]shell_exec[/tt] function not available');
         }
     }
 

@@ -179,7 +179,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
                     '[html]' . do_lang('WARNING_NON_MAINTAINED', escape_html('Suhosin'), escape_html(get_brand_base_url()), escape_html('platform_suhosin')) . '[/html]'
                 );
             } else {
-                $this->stateCheckSkipped('PHP extension_loaded function not available');
+                $this->stateCheckSkipped('PHP [tt]extension_loaded[/tt] function not available');
             }
         }
     }
