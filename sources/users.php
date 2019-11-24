@@ -53,6 +53,8 @@ function init__users()
     $IS_VIA_BACKDOOR = false;
     global $DID_CHANGE_SESSION_ID;
     $DID_CHANGE_SESSION_ID = false;
+    global $SESSION_IS_NEW;
+    $SESSION_IS_NEW = false;
 
     // Load all sessions into memory, if possible
     if (get_option('session_prudence') == '0' && function_exists('persistent_cache_get')) {
@@ -63,21 +65,21 @@ function init__users()
     global $IN_MINIKERNEL_VERSION;
     if ((!is_array($SESSION_CACHE)) && (!$IN_MINIKERNEL_VERSION)) {
         if (get_option('session_prudence') == '0') {
-            $where = '';
+            $where = 'last_activity>=' . strval(time() - 60 * 60 * max(1, intval(get_option('session_expiry_time'))));
         } else {
-            $where = ' WHERE ' . db_string_equal_to('the_session', get_session_id()) . ' OR ' . db_string_equal_to('ip', get_ip_address(3));
+            $where = db_string_equal_to('the_session', get_session_id()) . ' OR ' . db_string_equal_to('ip', get_ip_address(3));
         }
         $SESSION_CACHE = array();
         if ((get_forum_type() == 'cns') && (!is_on_multi_site_network())) {
             push_db_scope_check(false);
-            $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id' . $where . ' ORDER BY the_session', null, 0, true, true); // Suppress errors in case table does not exist yet
+            $_s = $GLOBALS['SITE_DB']->query('SELECT s.*,m.m_primary_group FROM ' . get_table_prefix() . 'sessions s LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'f_members m ON m.id=s.member_id WHERE ' . $where . ' ORDER BY the_session', null, 0, true, true); // Suppress errors in case table does not exist yet
             if ($_s === null) {
                 $_s = array();
             }
             $SESSION_CACHE = list_to_map('the_session', $_s);
             pop_db_scope_check();
         } else {
-            $SESSION_CACHE = list_to_map('the_session', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions' . $where . ' ORDER BY the_session'));
+            $SESSION_CACHE = list_to_map('the_session', $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'sessions WHERE ' . $where . ' ORDER BY the_session'));
         }
         if (get_option('session_prudence') == '0' && function_exists('persistent_cache_set')) {
             persistent_cache_set('SESSION_CACHE', $SESSION_CACHE);
@@ -457,9 +459,11 @@ function delete_expired_sessions_or_recover($member_id = null)
 
     // Delete expired sessions; it's important we do this reasonably routinely, as the session table is loaded up and can get large -- unless we aren't tracking online users, in which case the table is never loaded up
     if (mt_rand(0, 100) == 1) {
-        if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE last_activity<' . strval(time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))), 500/*to reduce lock times*/);
-        }
+        cms_register_shutdown_function_safe(function() {
+            if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'sessions WHERE last_activity<' . strval(time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))), 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+            }
+        });
     }
 
     // Look through sessions

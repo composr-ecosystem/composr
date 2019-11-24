@@ -1118,4 +1118,11 @@ function install_cns($upgrade_from = null)
         add_privilege('FORUMS_AND_MEMBERS', 'bypass_dob');
         add_privilege('FORUMS_AND_MEMBERS', 'bypass_dob_if_already_empty');
     }
+
+    if (($upgrade_from === null) || ($upgrade_from < 11.0)) {
+        $GLOBALS['FORUM_DB']->create_index('f_forums', 'club_search', array('f_description'));
+
+        $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_member', array('s_member_id'));
+        $GLOBALS['FORUM_DB']->create_index('f_special_pt_access', 'sp_topic', array('s_topic_id'));
+    }
 }

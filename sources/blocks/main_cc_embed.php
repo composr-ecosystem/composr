@@ -68,7 +68,7 @@ class Block_main_cc_embed
             array_key_exists('template_set', $map) ? $map['template_set'] : '',
             array_key_exists('filter', $map) ? $map['filter'] : '',
             array_key_exists('param', $map) ? $map['param'] : db_get_first_id(),
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

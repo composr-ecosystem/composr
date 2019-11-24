@@ -67,38 +67,6 @@ class Module_tickets
     {
         require_lang('tickets');
 
-        if (($upgrade_from === null) || ($upgrade_from < 6)) {
-            $GLOBALS['SITE_DB']->create_table('ticket_known_emailers', array(
-                'email_address' => '*SHORT_TEXT',
-                'member_id' => 'MEMBER',
-            ), false, false, true);
-
-            $GLOBALS['SITE_DB']->create_table('ticket_extra_access', array(
-                'ticket_id' => '*SHORT_TEXT',
-                'member_id' => '*MEMBER',
-            ), false, false, true);
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
-            $GLOBALS['SITE_DB']->delete_index_if_exists('ticket_types', '#ticket_type');
-            $GLOBALS['SITE_DB']->alter_table_field('ticket_types', 'ticket_type', '*AUTO', 'id');
-            $GLOBALS['SITE_DB']->add_table_field('ticket_types', 'ticket_type_name', 'SHORT_TRANS', 0);
-            $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ticket_types SET ticket_type_name=id');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
-            $GLOBALS['SITE_DB']->delete_table_field('ticket_types', 'send_sms_to');
-        }
-
-        if (($upgrade_from === null) || ($upgrade_from < 7)) {
-            $GLOBALS['SITE_DB']->create_index('ticket_known_emailers', 'member_id', array('member_id'));
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 7)) {
-            rename_config_option('ticket_email_from', 'ticket_mail_email_address');
-            rename_config_option('ticket_mail_server', 'ticket_mail_server_host');
-        }
-
         if ($upgrade_from === null) {
             $GLOBALS['SITE_DB']->create_table('tickets', array(
                 'ticket_id' => '*SHORT_TEXT',
@@ -134,6 +102,50 @@ class Module_tickets
 
             add_privilege('SUPPORT_TICKETS', 'view_others_tickets', false);
             add_privilege('SUPPORT_TICKETS', 'support_operator', false);
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 6)) {
+            $GLOBALS['SITE_DB']->create_table('ticket_known_emailers', array(
+                'email_address' => '*SHORT_TEXT',
+                'member_id' => 'MEMBER',
+            ), false, false, true);
+
+            $GLOBALS['SITE_DB']->create_table('ticket_extra_access', array(
+                'ticket_id' => '*SHORT_TEXT',
+                'member_id' => '*MEMBER',
+            ), false, false, true);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 6)) { // LEGACY
+            $GLOBALS['SITE_DB']->delete_index_if_exists('ticket_types', '#ticket_type');
+            $GLOBALS['SITE_DB']->alter_table_field('ticket_types', 'ticket_type', '*AUTO', 'id');
+            $GLOBALS['SITE_DB']->add_table_field('ticket_types', 'ticket_type_name', 'SHORT_TRANS', 0);
+            $GLOBALS['SITE_DB']->query('UPDATE ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'ticket_types SET ticket_type_name=id');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
+            $GLOBALS['SITE_DB']->delete_table_field('ticket_types', 'send_sms_to');
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 7)) {
+            $GLOBALS['SITE_DB']->create_index('ticket_known_emailers', 'member_id', array('member_id'));
+
+            // Add ticket type for report_content
+            require_lang('tickets');
+            $map = array(
+                'guest_emails_mandatory' => 0,
+                'search_faq' => 0,
+                'cache_lead_time' => null,
+            );
+            $map += insert_lang('ticket_type_name', do_lang('TT_REPORTED_CONTENT'), 1);
+            $ticket_type_id = $GLOBALS['SITE_DB']->query_insert('ticket_types', $map, true);
+            require_code('permissions2');
+            set_global_category_access('tickets', $ticket_type_id);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 7)) {
+            rename_config_option('ticket_email_from', 'ticket_mail_email_address');
+            rename_config_option('ticket_mail_server', 'ticket_mail_server_host');
         }
     }
 

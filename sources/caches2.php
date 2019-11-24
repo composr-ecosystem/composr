@@ -177,12 +177,8 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
             'cached_for' => $codename,
             'identifier' => md5($cache_identifier),
         ), '', 1);
-        $GLOBALS['SITE_DB']->query_insert('cache', array(
-            'cached_for' => $codename,
+        $GLOBALS['SITE_DB']->query_insert_or_replace('cache', array(
             'dependencies' => $dependencies,
-            'lang' => $lang,
-            'identifier' => md5($cache_identifier),
-            'the_theme' => $theme,
             'staff_status' => $staff_status,
             'the_member' => $member_id,
             'the_groups' => $groups,
@@ -191,6 +187,11 @@ function set_cache_entry($codename, $ttl, $cache_identifier, $cache, $special_ca
             'is_ssl' => $is_ssl,
             'the_value' => $tempcode ? $cache->to_assembly($lang) : serialize($cache),
             'date_and_time' => time(),
+        ), array(
+            'lang' => $lang,
+            'the_theme' => $theme,
+            'cached_for' => $codename,
+            'identifier' => md5($cache_identifier),
         ), false, true);
     }
 

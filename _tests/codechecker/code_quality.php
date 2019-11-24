@@ -774,9 +774,12 @@ function check($structure)
 function check_function($function, $is_closure = false, $inside_class = false)
 {
     global $GLOBAL_VARIABLES, $LOCAL_VARIABLES, $CURRENT_CLASS;
-    if (!$is_closure) {
-        $LOCAL_VARIABLES = reinitialise_local_variables($inside_class); // Map (by name) of maps : is_global, types. Note there is boolean-false and null types: boolean_false is when we KNOW a boolean is false, so it might map to ~
+
+    if ($is_closure) {
+        $bak = $LOCAL_VARIABLES;
     }
+
+    $LOCAL_VARIABLES = reinitialise_local_variables($inside_class); // Map (by name) of maps : is_global, types. Note there is boolean-false and null types: boolean_false is when we KNOW a boolean is false, so it might map to ~
 
     //if (isset($GLOBALS['PEDANTIC'])) if (strlen(serialize($function)) > 30000) log_warning('Function ' . $function['name'] . ' is too big', $function['offset']);
 
@@ -800,6 +803,18 @@ function check_function($function, $is_closure = false, $inside_class = false)
             }
         } else {
             set_composr_type($p[1], 'mixed');
+        }
+    }
+
+    // Initialise any local variables that come from the closure
+    if ($is_closure) {
+        foreach ($function['using'] as $p) {
+            add_variable_reference($p[1], $function['offset'], false);
+            if (isset($bak[$p[1]])) {
+                $LOCAL_VARIABLES[$p[1]] = $bak[$p[1]];
+            } else {
+                log_warning('Variable \'' . $p[1] . '\' is referenced in closure but not defined.', $function['offset']);
+            }
         }
     }
 
@@ -838,6 +853,16 @@ function check_function($function, $is_closure = false, $inside_class = false)
                 ensure_type(array($func['return']['type']), $ret_type, $LOCAL_VARIABLES['__return']['mentions'][$i], 'Bad return type (should be ' . $func['return']['type'] . ' not ' . $ret_type . ')');
             }
         }
+    }
+
+    if ($is_closure) {
+        foreach ($function['using'] as $p) {
+            add_variable_reference($p[1], $function['offset'], false);
+            if (isset($bak[$p[1]])) {
+                $bak[$p[1]] = $LOCAL_VARIABLES[$p[1]];
+            }
+        }
+        $LOCAL_VARIABLES = $bak;
     }
 }
 

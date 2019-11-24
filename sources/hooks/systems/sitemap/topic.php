@@ -31,6 +31,22 @@ class Hook_sitemap_topic extends Hook_sitemap_content
     protected $entry_sitetree_hook = null;
 
     /**
+     * Find if a page-link will be covered by this node.
+     *
+     * @param  ID_TEXT $page_link The page-link
+     * @param  integer $options A bitmask of SITEMAP_GEN_* options
+     * @return integer A SITEMAP_NODE_* constant
+     */
+    public function handles_page_link($page_link, $options)
+    {
+        $matches = array();
+        if (preg_match('#^([^:]*):topicview(:browse|:id=|$)#', $page_link, $matches) != 0) {
+            return SITEMAP_NODE_HANDLED;
+        }
+        return SITEMAP_NODE_NOT_HANDLED;
+    }
+
+    /**
      * Get the permission page that nodes matching $page_link in this hook are tied to.
      * The permission page is where privileges may be overridden against.
      *
@@ -73,6 +89,8 @@ class Hook_sitemap_topic extends Hook_sitemap_content
         if (!addon_installed('cns_forum')) {
             return null;
         }
+
+        $page_link = str_replace(':topicview:id=', ':topicview:browse:id=', $page_link);
 
         $_ = $this->_create_partial_node_structure($page_link, $callback, $valid_node_types, $child_cutoff, $max_recurse_depth, $recurse_level, $options, $zone, $meta_gather, $row);
         if ($_ === null) {

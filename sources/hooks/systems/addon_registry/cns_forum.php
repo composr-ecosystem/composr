@@ -1163,7 +1163,7 @@ class Hook_addon_registry_cns_forum
         $topic_wrapper = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', array(
             'TYPE' => 'browse',
             'MAX' => lorem_phrase(),
-            'ORDER' => lorem_phrase(),
+            'SORT' => lorem_phrase(),
             'MAY_CHANGE_MAX' => lorem_phrase(),
             'TREE' => lorem_phrase(),
             'BUTTONS' => $buttons,
@@ -1414,7 +1414,7 @@ class Hook_addon_registry_cns_forum
         $topic_wrapper = do_lorem_template('CNS_FORUM_TOPIC_WRAPPER', array(
             'TYPE' => '',
             'MAX' => lorem_phrase(),
-            'ORDER' => lorem_phrase(),
+            'SORT' => lorem_phrase(),
             'MAY_CHANGE_MAX' => lorem_phrase(),
             'TREE' => lorem_phrase(),
             'BUTTONS' => $buttons,

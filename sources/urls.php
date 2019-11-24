@@ -1541,10 +1541,11 @@ function check_url_exists($url, $test_freq_secs)
             ));
         }
 
-        $GLOBALS['SITE_DB']->query_insert('urls_checked', array(
-            'url' => $url,
+        $GLOBALS['SITE_DB']->query_insert_or_replace('urls_checked', array(
             'url_exists' => $exists,
             'url_check_time' => time(),
+        ), array(
+            'url' => $url,
         ));
     } else {
         $exists = $test1[0]['url_exists'];

@@ -111,13 +111,13 @@
 					</form>
 
 					<form title="{!PER_PAGE}" action="{$URL_FOR_GET_FORM*,{$SELF_URL,0,1}}{+START,IF,{$EQ,{TYPE},pt}}#tab--pts{+END}" method="get">
-						{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},max}
+						{$HIDDENS_FOR_GET_FORM,{$SELF_URL,0,1},max,forum_sort}
 
 						<label for="order">{!SORT}:</label>
-						<select class="form-control form-control-sm js-order-change-submit-form" name="order" id="order">
-							<option value="last_post"{$?,{$EQ,{ORDER},last_post}, selected="selected",}>{!FORUM_ORDER_BY_LAST_POST}</option>
-							<option value="first_post"{$?,{$EQ,{ORDER},first_post}, selected="selected",}>{!FORUM_ORDER_BY_FIRST_POST}</option>
-							<option value="title"{$?,{$EQ,{ORDER},title}, selected="selected",}>{!FORUM_ORDER_BY_TITLE}</option>
+						<select class="form-control form-control-sm js-order-change-submit-form" name="forum_sort" id="forum_sort">
+							<option value="last_post"{$?,{$EQ,{SORT},last_post}, selected="selected",}>{!FORUM_ORDER_BY_LAST_POST}</option>
+							<option value="first_post"{$?,{$EQ,{SORT},first_post}, selected="selected",}>{!FORUM_ORDER_BY_FIRST_POST}</option>
+							<option value="title"{$?,{$EQ,{SORT},title}, selected="selected",}>{!FORUM_ORDER_BY_TITLE}</option>
 						</select>
 					</form>
 				{+END}

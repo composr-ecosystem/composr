@@ -37,7 +37,8 @@ class CMSPtRead
 
         $table_prefix = $GLOBALS['FORUM_DB']->get_table_prefix();
 
-        $sql = ' FROM ' . $table_prefix . 'f_topics t JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id';
+        $sql = ' FROM ' . $table_prefix . 'f_topics t' . $GLOBALS['FORUM_DB']->prefer_index('f_topics', 'in_forum', false);
+        $sql .= 'JOIN ' . $table_prefix . 'f_posts p ON t.t_cache_first_post_id=p.id';
         $sql .= ' WHERE (t_pt_from=' . strval(get_member()) . ' OR t_pt_to=' . strval(get_member()) . ' OR EXISTS(SELECT * FROM ' . $table_prefix . 'f_special_pt_access WHERE s_topic_id=t.id AND s_member_id=' . strval(get_member()) . '))';
         $sql .= ' AND (t_pt_from<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_from_category', do_lang('TRASH')) . ')';
         $sql .= ' AND (t_pt_to<>' . strval(get_member()) . ' OR ' . db_string_not_equal_to('t_pt_to_category', do_lang('TRASH')) . ')';

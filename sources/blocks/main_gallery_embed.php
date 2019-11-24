@@ -37,7 +37,7 @@ class Block_main_gallery_embed
         $info['hack_version'] = null;
         $info['version'] = 2;
         $info['locked'] = false;
-        $info['parameters'] = array('param', 'filter', 'video_filter', 'select', 'video_select', 'zone', 'title', 'sort', 'days', 'render_if_empty', 'max', 'start', 'pagination', 'root', 'as_guest', 'check');
+        $info['parameters'] = array('param', 'filter', 'video_filter', 'select', 'video_select', 'zone', 'title', 'sort', 'days', 'render_if_empty', 'max', 'start', 'pagination', 'root', 'as_guest', 'check', 'show_sorting');
         return $info;
     }
 

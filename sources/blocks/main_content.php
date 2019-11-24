@@ -63,7 +63,7 @@ class Block_main_content
             array_key_exists('select', $map) ? $map['select'] : '',
             array_key_exists('select_b', $map) ? $map['select_b'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

@@ -102,6 +102,7 @@ function set_member_group_timeout($member_id, $group_id, $timestamp, $prefer_for
 
 /**
  * Handle auto-removal of timed-out members.
+ * Runs from Cron.
  */
 function cleanup_member_timeouts()
 {
@@ -116,9 +117,12 @@ function cleanup_member_timeouts()
     $db = get_db_for('f_group_member_timeouts');
     $start = 0;
     $time_now = time();
+    $has_timeout = false;
     do {
         $timeouts = $db->query('SELECT member_id,group_id FROM ' . $db->get_table_prefix() . 'f_group_member_timeouts WHERE timeout<' . strval($time_now), 100, $start);
         foreach ($timeouts as $timeout) {
+            $has_timeout = true;
+
             $member_id = $timeout['member_id'];
             $group_id = $timeout['group_id'];
 
@@ -142,7 +146,9 @@ function cleanup_member_timeouts()
         $start += 100;
     } while (count($timeouts) == 100);
 
-    if (!$db->table_is_locked('f_group_member_timeouts')) {
-        $timeouts = $db->query('DELETE FROM ' . $db->get_table_prefix() . 'f_group_member_timeouts WHERE timeout<' . strval($time_now));
+    if ($has_timeout) {
+        if (!$db->table_is_locked('f_group_member_timeouts')) {
+            $timeouts = $db->query('DELETE FROM ' . $db->get_table_prefix() . 'f_group_member_timeouts WHERE timeout<' . strval($time_now));
+        }
     }
 }

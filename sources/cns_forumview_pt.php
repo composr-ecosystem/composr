@@ -47,7 +47,7 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
     $where = '(t_pt_from=' . strval($member_id) . ' OR t_pt_to=' . strval($member_id) . ') AND t_forum_id IS NULL';
     $filter = get_param_string('category', '');
     $where .= ' AND (' . db_string_equal_to('t_pt_from_category', $filter) . ' AND t_pt_from=' . strval($member_id) . ' OR ' . db_string_equal_to('t_pt_to_category', $filter) . ' AND t_pt_to=' . strval($member_id) . ')';
-    $query = 'FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t';
+    $query = 'FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t' . $GLOBALS['FORUM_DB']->prefer_index('f_topics', 'in_forum', false);
     if (!multi_lang_content()) {
         $query .= ' LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts p ON p.id=t.t_cache_first_post_id';
     }
@@ -87,6 +87,7 @@ function cns_get_private_topics($start = 0, $true_start = 0, $max = null, $sql_s
     $hot_topic_definition = intval(get_option('hot_topic_definition'));
     foreach ($topic_rows as $topic_row) {
         $topic = array();
+        $topic['raw_row'] = $topic_row;
         $topic['id'] = $topic_row['id'];
         $topic['num_views'] = $topic_row['t_num_views'];
         $topic['num_posts'] = $topic_row['t_cache_num_posts'];

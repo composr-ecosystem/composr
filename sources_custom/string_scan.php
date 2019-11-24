@@ -685,6 +685,16 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         ADDON_WARNING_PRESENT_DEPENDENCIES
         _ERROR_CHECKING_FOR_SPAMMERS
         ERROR_CHECKING_FOR_SPAMMERS
+        BLOCK_TRANS_NAME_top_login
+        BLOCK_TRANS_NAME_main_staff_links
+        BLOCK_TRANS_NAME_main_privacy_policy_auto
+        BLOCK_main_privacy_policy_auto_DESCRIPTION
+        BLOCK_main_privacy_policy_auto_USE
+        BLOCK_TRANS_NAME_top_search
+        BLOCK_TRANS_NAME_main_staff_website_monitoring
+        BLOCK_top_language_DESCRIPTION
+        BLOCK_top_language_USE
+        BLOCK_TRANS_NAME_top_personal_stats
         ADD_AGGREGATE_TYPE_INSTANCE
         ADD_AWARD_TYPE
         ADD_BANNER
@@ -3245,7 +3255,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_jpeg_quality
         CONFIG_OPTION_js_captcha
         CONFIG_OPTION_js_overlays
-        CONFIG_OPTION_keyset_pagination
         CONFIG_OPTION_keywords
         CONFIG_OPTION_lax_comcode
         CONFIG_OPTION_ldap_allow_joining
@@ -5571,7 +5580,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         KEEP_PERSONAL_GALLERIES
         KEEP_SUBFOLDERS
         KEEP_WORDFILTER
-        KEYSET_PAGINATION
         KEYWORDS
         LAME_SPAM_HACK
         LANGUAGE_CACHE

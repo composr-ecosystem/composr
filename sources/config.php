@@ -559,27 +559,24 @@ function get_value_newer_than($name, $cutoff, $elective_or_lengthy = false)
  * @param  ID_TEXT $name The name of the value
  * @param  ?SHORT_TEXT $value The value (null: delete)
  * @param  boolean $elective_or_lengthy Whether this value is an elective/lengthy one. Use this for getting & setting if you don't want it to be loaded up in advance for every page view (in bulk alongside other values), or if the value may be more than 255 characters. Performance trade-off: frequently used values should not be elective, infrequently used values should be elective.
+ * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
  * @return SHORT_TEXT The value just set, same as $value (just as a nicety so that Commandr users can see something "happen")
  */
-function set_value($name, $value, $elective_or_lengthy = false)
+function set_value($name, $value, $elective_or_lengthy = false, $fail_ok = false)
 {
     if ($elective_or_lengthy) {
-        $GLOBALS['SITE_DB']->query_delete('values_elective', array('the_name' => $name), '', 1);
-        if ($value !== null) {
-            $GLOBALS['SITE_DB']->query_insert('values_elective', array('date_and_time' => time(), 'the_value' => $value, 'the_name' => $name), false, true); // Allow failure, if there is a race condition
+        if ($value === null) {
+            $GLOBALS['SITE_DB']->query_delete('values_elective', array('the_name' => $name), '', 1);
+        } else {
+            $GLOBALS['SITE_DB']->query_insert_or_replace('values_elective', array('date_and_time' => time(), 'the_value' => $value), array('the_name' => $name));
         }
         return $value;
     }
 
     global $VALUE_OPTIONS_CACHE;
-    $existed_before = isset($VALUE_OPTIONS_CACHE[$name]);
     $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
     $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
-    if ($existed_before) {
-        $GLOBALS['SITE_DB']->query_update('values', array('date_and_time' => time(), 'the_value' => $value), array('the_name' => $name), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
-    } else {
-        $GLOBALS['SITE_DB']->query_insert('values', array('date_and_time' => time(), 'the_value' => $value, 'the_name' => $name), false, true); // Allow failure, if there is a race condition
-    }
+    $GLOBALS['SITE_DB']->query_insert_or_replace('values', array('date_and_time' => time(), 'the_value' => $value), array('the_name' => $name), true); // Errors suppressed in case DB write access broken
     if (function_exists('persistent_cache_set')) {
         persistent_cache_set('VALUES', $VALUE_OPTIONS_CACHE);
     }

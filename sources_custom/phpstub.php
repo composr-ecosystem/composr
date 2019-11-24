@@ -2493,27 +2493,23 @@ function realpath($path)
 
 /**
  * Register a function for execution on shutdown.
+ * Do not rely on this function working. Use it for development/debug/cleanup-niceties only.
  *
  * @param  mixed $callback Callback
- * @param  ?mixed $parama Parameter (null: not used)
- * @param  ?mixed $paramb Parameter (null: not used)
- * @param  ?mixed $paramc Parameter (null: not used)
- * @param  ?mixed $paramd Parameter (null: not used)
- * @param  ?mixed $parame Parameter (null: not used)
- * @param  ?mixed $paramf Parameter (null: not used)
- * @param  ?mixed $paramg Parameter (null: not used)
- * @param  ?mixed $paramh Parameter (null: not used)
- * @param  ?mixed $parami Parameter (null: not used)
- * @param  ?mixed $paramj Parameter (null: not used)
- * @param  ?mixed $paramk Parameter (null: not used)
- * @param  ?mixed $paraml Parameter (null: not used)
- * @param  ?mixed $paramm Parameter (null: not used)
- * @param  ?mixed $paramn Parameter (null: not used)
- * @param  ?mixed $paramo Parameter (null: not used)
- * @param  ?mixed $paramp Parameter (null: not used)
- * @param  ?mixed $paramq Parameter (null: not used)
+ * @param  ?mixed $param_a Parameter (null: not used)
+ * @param  ?mixed $param_b Parameter (null: not used)
+ * @param  ?mixed $param_c Parameter (null: not used)
+ * @param  ?mixed $param_d Parameter (null: not used)
+ * @param  ?mixed $param_e Parameter (null: not used)
+ * @param  ?mixed $param_f Parameter (null: not used)
+ * @param  ?mixed $param_g Parameter (null: not used)
+ * @param  ?mixed $param_h Parameter (null: not used)
+ * @param  ?mixed $param_i Parameter (null: not used)
+ * @param  ?mixed $param_j Parameter (null: not used)
+ * @param  ?mixed $param_k Parameter (null: not used)
+ * @param  ?mixed $param_l Parameter (null: not used)
  */
-function register_shutdown_function($callback, $parama = null, $paramb = null, $paramc = null, $paramd = null, $parame = null, $paramf = null, $paramg = null, $paramh = null, $parami = null, $paramj = null, $paramk = null, $paraml = null, $paramm = null, $paramn = null, $paramo = null, $paramp = null, $paramq = null)
+function register_shutdown_function($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null)
 {
 }
 

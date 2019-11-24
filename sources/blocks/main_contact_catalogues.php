@@ -63,7 +63,7 @@ class Block_main_contact_catalogues
             array_key_exists('body_prefix', $map) ? $map['body_prefix'] : '',
             array_key_exists('body_suffix', $map) ? $map['body_suffix'] : '',
             array_key_exists('subject_prefix', $map) ? $map['subject_prefix'] : '',
-            array_key_exists('subject_suffix', $map) ? $map['subject_suffix'] : ''
+            array_key_exists('subject_suffix', $map) ? $map['subject_suffix'] : '',
         )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24 * 7);

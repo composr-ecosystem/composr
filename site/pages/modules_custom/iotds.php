@@ -244,12 +244,12 @@ class Module_iotds
         $edit_date_raw = ($myrow['edit_date'] === null) ? '' : strval($myrow['edit_date']);
 
         // Views
-        if ((get_db_type() != 'xml') && (get_value('disable_view_counts') !== '1') && (get_bot_type() === null)) {
-            $myrow['iotd_views']++;
-            if (!$GLOBALS['SITE_DB']->table_is_locked('iotd')) {
-                $GLOBALS['SITE_DB']->query_update('iotd', array('iotd_views' => $myrow['iotd_views']), array('id' => $id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+            $increment = statistical_update_model('iotd', $myrow['iotd_views']);
+            if ($increment != 0) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'iotd SET iotd_views=iotd_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
             }
-        }
+        });
 
         // Management links
         if ((has_actual_page_access(null, 'cms_iotds', null, null)) && (has_edit_permission('high', get_member(), $myrow['submitter'], 'cms_iotds'))) {

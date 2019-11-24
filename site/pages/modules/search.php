@@ -679,13 +679,15 @@ class Module_search
         $pagination = pagination(do_lang_tempcode('RESULTS'), $start, 'search_start', $max, 'search_max', $GLOBALS['TOTAL_SEARCH_RESULTS'], true);
 
         if ($start == 0) {
-            $GLOBALS['SITE_DB']->query_insert('searches_logged', array(
-                's_member_id' => get_member(),
-                's_time' => time(),
-                's_primary' => cms_mb_substr($content, 0, 255),
-                's_auxillary' => serialize(array_merge($_POST, $_GET)),
-                's_num_results' => count($results),
-            ));
+            cms_register_shutdown_function_safe(function() use ($content, $results) {
+                $GLOBALS['SITE_DB']->query_insert('searches_logged', array(
+                    's_member_id' => get_member(),
+                    's_time' => time(),
+                    's_primary' => cms_mb_substr($content, 0, 255),
+                    's_auxillary' => serialize(array_merge($_POST, $_GET)),
+                    's_num_results' => count($results),
+                ));
+            });
         }
 
         spellchecker_shutdown();

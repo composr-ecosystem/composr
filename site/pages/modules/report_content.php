@@ -75,20 +75,6 @@ class Module_report_content
 
         if (($upgrade_from === null) || ($upgrade_from < 4)) {
             add_privilege('GENERAL_SETTINGS', 'may_report_content', true);
-
-            register_shutdown_function(function () { // Tickets module not installed yet, so we need to delay
-                // Add ticket type
-                require_lang('tickets');
-                $map = array(
-                    'guest_emails_mandatory' => 0,
-                    'search_faq' => 0,
-                    'cache_lead_time' => null,
-                );
-                $map += insert_lang('ticket_type_name', do_lang('TT_REPORTED_CONTENT'), 1);
-                $ticket_type_id = $GLOBALS['SITE_DB']->query_insert('ticket_types', $map, true);
-                require_code('permissions2');
-                set_global_category_access('tickets', $ticket_type_id);
-            });
         }
     }
 

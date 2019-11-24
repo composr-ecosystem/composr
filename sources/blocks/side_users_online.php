@@ -53,7 +53,7 @@ class Block_side_users_online
         array(
         )
 PHP;
-        $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_MEMBER; // Showing friends birthdays, possibly
+        $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = 3;
         return $info;
     }

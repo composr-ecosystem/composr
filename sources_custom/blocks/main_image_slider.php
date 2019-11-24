@@ -45,7 +45,16 @@ class Block_main_image_slider
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        $map
+        array(
+            empty($map['param']) ? 'root' : $map['param'],
+            array_key_exists('time', $map) ? intval($map['time']) : 8000,
+            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('galleries'),
+            array_key_exists('order', $map) ? $map['order'] : '',
+            empty($map['width']) ? '750px' : $map['width'],
+            empty($map['height']) ? '300px' : $map['height'],
+            array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
+            array_key_exists('transitions', $map) ? $map['transitions'] : 'cube|cubeRandom|block|cubeStop|cubeHide|cubeSize|horizontal|showBars|showBarsRandom|tube|fade|fadeFour|paralell|blind|blindHeight|blindWidth|directionTop|directionBottom|directionRight|directionLeft|cubeStopRandom|cubeSpread|cubeJelly|glassCube|glassBlock|circles|circlesInside|circlesRotate|cubeShow|upBars|downBars|hideBars|swapBars|swapBarsBack|swapBlocks|cut|random|randomSmart',
+        )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
@@ -94,6 +103,8 @@ PHP;
             $height .= 'px';
         }
 
+        $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
+
         $_transitions = array_key_exists('transitions', $map) ? $map['transitions'] : 'cube|cubeRandom|block|cubeStop|cubeHide|cubeSize|horizontal|showBars|showBarsRandom|tube|fade|fadeFour|paralell|blind|blindHeight|blindWidth|directionTop|directionBottom|directionRight|directionLeft|cubeStopRandom|cubeSpread|cubeJelly|glassCube|glassBlock|circles|circlesInside|circlesRotate|cubeShow|upBars|downBars|hideBars|swapBars|swapBarsBack|swapBlocks|cut|random|randomSmart';
         $transitions = ($_transitions == '') ? array() : explode('|', $_transitions);
 
@@ -111,7 +122,6 @@ PHP;
 
         if (addon_installed('content_privacy')) {
             require_code('content_privacy');
-            $as_guest = array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false;
             $viewing_member_id = $as_guest ? $GLOBALS['FORUM_DRIVER']->get_guest_id() : null;
             list($privacy_join_video, $privacy_where_video) = get_privacy_where_clause('video', 'r', $viewing_member_id);
             list($privacy_join_image, $privacy_where_image) = get_privacy_where_clause('image', 'r', $viewing_member_id);

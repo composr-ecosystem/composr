@@ -494,9 +494,11 @@ class Module_chat
             delete_chatroom($old['id']);
         }
         // Prune chat events
-        if (!$GLOBALS['SITE_DB']->table_is_locked('chat_events')) {
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'chat_events WHERE e_date_and_time<' . strval(time() - CHAT_EVENT_PRUNE));
-        }
+        cms_register_shutdown_function_safe(function() {
+            if (!$GLOBALS['SITE_DB']->table_is_locked('chat_events')) {
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'chat_events WHERE e_date_and_time<' . strval(time() - CHAT_EVENT_PRUNE));
+            }
+        });
 
         enter_chat_lobby();
 

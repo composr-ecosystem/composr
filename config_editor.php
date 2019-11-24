@@ -170,7 +170,7 @@ function do_access($given_password)
         'db_forums_host' => '<em>Database:</em> The database hosting computer name for the forum driver to tie in to. See <kbd>db_site_host</kbd>.',
         'db_forums_user' => '<em>Database:</em> The database username for the forum driver to connect to the forum database with.',
         'db_forums_password' => '<em>Database:</em> The password for the forum database username.',
-        'use_persistent' => '<em>Database:</em> Whether to use persistent database connections (most shared webhosts do not like these to be used).',
+        'use_persistent' => '<em>Database:</em> Whether to use persistent database connections (most shared webhosts do not like these to be used, and some PHP configurations cannot support them).',
         'database_charset' => '<em>Database:</em> The MySQL character set for the connection. Usually you can just leave this blank, but if MySQL\'s character set for your database has been overridden away from the server-default then you will need to set this to be equal to that same character set.',
 
         'user_cookie' => '<em>Cookies:</em> The name of the cookie used to hold usernames/ids for each user. Dependant on the forum system involved, and may use a special serialisation notation involving a colon (there is no special notation for Conversr).',

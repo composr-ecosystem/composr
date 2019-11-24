@@ -338,7 +338,6 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/root_zone_login_theme.php',
             'sources/hooks/systems/config/session_expiry_time.php',
             'sources/hooks/systems/config/show_docs.php',
-            'sources/hooks/systems/config/keyset_pagination.php',
             'sources/hooks/systems/config/show_inline_stats.php',
             'sources/hooks/systems/config/show_post_validation.php',
             'sources/hooks/systems/config/simplified_donext.php',

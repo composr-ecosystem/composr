@@ -159,7 +159,7 @@ class Block_main_cns_involved_topics
                 $pagination = pagination(do_lang_tempcode('FORUM_TOPICS'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, null);
                 $topics = do_template('CNS_FORUM_TOPIC_WRAPPER', array(
                     '_GUID' => '8723270b128b4eea47ab3c756b342e14',
-                    'ORDER' => '',
+                    'SORT' => '',
                     'MAX' => '15',
                     'MAY_CHANGE_MAX' => false,
                     'BREADCRUMBS' => $breadcrumbs,

@@ -56,7 +56,7 @@ class Block_main_staff_actions
             (get_param_integer('include_user_activities', isset($_GET['filter_by_member']) ? 0 : (array_key_exists('include_user_activities', $map) ? intval($map['include_user_activities']) : 0)) == 1) ? get_member() : null,
             get_param_integer('sa_start', 0),
             get_param_integer('sa_max', array_key_exists('max', $map) ? intval($map['max']) : 10),
-            get_param_string('sa_sort', array_key_exists('sort', $map) ? $map['sort'] : 'date_and_time DESC')
+            get_param_string('sa_sort', array_key_exists('sort', $map) ? $map['sort'] : 'date_and_time DESC'),
         )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 5);

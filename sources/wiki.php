@@ -260,7 +260,7 @@ function wiki_edit_post($post_id, $message, $validated, $member_id = null, $page
         send_content_validated_notification('wiki_post', strval($post_id));
     }
 
-    $log_id = log_it('WIKI_EDIT_POST', strval($post_id), strval($page_id));
+    $log_id = log_it('WIKI_EDIT_POST', strval($post_id), strval($page_id), true);
     if (addon_installed('actionlog')) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();
@@ -333,7 +333,7 @@ function wiki_delete_post($post_id, $member_id = null)
     $page_id = $myrow['page_id'];
     $_message = $myrow['the_message'];
 
-    $log_id = log_it('WIKI_DELETE_POST', strval($post_id), strval($page_id));
+    $log_id = log_it('WIKI_DELETE_POST', strval($post_id), strval($page_id), true);
     if (addon_installed('actionlog')) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();
@@ -489,7 +489,7 @@ function wiki_edit_page($page_id, $title, $description, $notes, $show_posts, $me
     $_description = $page['the_description'];
     $_title = $page['title'];
 
-    $log_id = log_it('WIKI_EDIT_PAGE', strval($page_id), get_translated_text($_title));
+    $log_id = log_it('WIKI_EDIT_PAGE', strval($page_id), get_translated_text($_title), true);
     if (addon_installed('actionlog')) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();
@@ -580,7 +580,7 @@ function wiki_delete_page($page_id)
     cms_set_time_limit($old_limit);
 
     // Log revision
-    $log_id = log_it('WIKI_DELETE_PAGE', strval($page_id), $_title);
+    $log_id = log_it('WIKI_DELETE_PAGE', strval($page_id), $_title, true);
     if (addon_installed('actionlog')) {
         require_code('revisions_engine_database');
         $revision_engine = new RevisionEngineDatabase();

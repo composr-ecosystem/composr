@@ -850,10 +850,10 @@ function enable_notifications($notification_code, $notification_category, $membe
         }
     }
 
-    $db->query_delete('notifications_enabled', $map);
-    if ($setting != A_NA) {
-        $map['l_setting'] = $setting;
-        $db->query_insert('notifications_enabled', $map);
+    if ($setting == A_NA) {
+        $db->query_delete('notifications_enabled', $map);
+    } else {
+        $db->query_insert_or_replace('notifications_enabled', array('l_setting' => $setting), $map);
     }
 
     if (($notification_code == 'comment_posted') && (get_forum_type() == 'cns') && ($notification_category !== null)) { // Sync comment_posted ones to also monitor the forum ones; no need for opposite way as comment ones already trigger forum ones

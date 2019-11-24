@@ -51,7 +51,7 @@ class Block_main_facebook_page
             empty($map['height']) ? '500' : $map['height'],
             array_key_exists('show_cover_photo', $map) ? $map['show_cover_photo'] : '0',
             array_key_exists('show_fans', $map) ? $map['show_fans'] : '0',
-            array_key_exists('show_posts', $map) ? $map['show_posts'] : '0'
+            array_key_exists('show_posts', $map) ? $map['show_posts'] : '0',
         )
 PHP;
         $info['ttl'] = 60 * 5;

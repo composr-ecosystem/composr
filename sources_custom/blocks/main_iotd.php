@@ -47,7 +47,7 @@ class Block_main_iotd
         $info['cache_on'] = <<<'PHP'
         array(
             array_key_exists('param', $map) ? $map['param'] : 'current',
-            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('iotds')
+            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('iotds'),
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

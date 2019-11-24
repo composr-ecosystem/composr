@@ -20,7 +20,8 @@ class _lang_spelling_epic_test_set extends cms_test_case
 {
     public function testSpelling()
     {
-        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_crawl);
+        disable_php_memory_limit();
 
         require_code('files2');
         require_code('spelling');
@@ -35,6 +36,9 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
         // Many of these aren't real words, but they appear for good reasons so we whitelist them
         $okay_words = array(
+            'unionised',
+            'blobby',
+            'reparsing',
             'centres',
             'munafo',
             'utomatically',
@@ -3348,7 +3352,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
         );
         foreach ($paths as $_path => $_ext) {
             $recurse = ($_path != '');
-            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, array($_ext));
+            $files = get_directory_contents(get_file_base() . '/' . $_path, $_path, IGNORE_SHIPPED_VOLATILE | IGNORE_CUSTOM_DIRS | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, $recurse, true, array($_ext));
 
             foreach ($files as $path) {
                 $ext = get_file_extension($path);
@@ -3362,6 +3366,10 @@ class _lang_spelling_epic_test_set extends cms_test_case
 
                 if ($path == 'data_custom/errorlog.php') {
                     continue;
+                }
+
+                if ($this->debug) {
+                    var_dump($path);
                 }
 
                 // Load and pre-process into plain text
@@ -3454,7 +3462,7 @@ class _lang_spelling_epic_test_set extends cms_test_case
                             }
                         }
 
-                        $num_matches = preg_match_all('#/\*(.*)\*/#U' . ($this->debug ? 's' : '') . 'm', $c, $matches);
+                        $num_matches = preg_match_all('#/\*(.*)\*/#Um', $c, $matches);
                         for ($i = 0; $i < $num_matches; $i++) {
                             $_c .= ' ' . $matches[1][$i];
                         }

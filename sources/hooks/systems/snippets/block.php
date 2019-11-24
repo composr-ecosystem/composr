@@ -67,11 +67,13 @@ class Hook_snippet_block
 
         // Cleanup
         if (mt_rand(0, 100) == 1) {
-            if (!$GLOBALS['SITE_DB']->table_is_locked('temp_block_permissions')) {
-                $sql = 'DELETE FROM ' . get_table_prefix() . 'temp_block_permissions WHERE p_time<' . strval(time() - intval(60.0 * 60.0 * floatval(get_option('session_expiry_time'))));
-                $sql .= ' AND NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'sessions WHERE the_session=p_session_id)';
-                $GLOBALS['SITE_DB']->query($sql, 500/*to reduce lock times*/);
-            }
+            cms_register_shutdown_function_safe(function() {
+                if (!$GLOBALS['SITE_DB']->table_is_locked('temp_block_permissions')) {
+                    $sql = 'DELETE FROM ' . get_table_prefix() . 'temp_block_permissions WHERE p_time<' . strval(time() - intval(60.0 * 60.0 * floatval(get_option('session_expiry_time'))));
+                    $sql .= ' AND NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'sessions WHERE the_session=p_session_id)';
+                    $GLOBALS['SITE_DB']->query($sql, 500/*to reduce lock times*/, 0, true); // Errors suppressed in case DB write access broken
+                }
+            });
         }
 
         // We need to minimise the dependency stuff that comes out, we don't need any default values

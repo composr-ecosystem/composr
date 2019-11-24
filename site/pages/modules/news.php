@@ -681,12 +681,12 @@ class Module_news
         }
 
         // Views
-        if ((get_db_type() != 'xml') && (get_value('disable_view_counts') !== '1') && (get_bot_type() === null)) {
-            $myrow['news_views']++;
-            if (!$GLOBALS['SITE_DB']->table_is_locked('news')) {
-                $GLOBALS['SITE_DB']->query_update('news', array('news_views' => $myrow['news_views']), array('id' => $id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+            $increment = statistical_update_model('news', $myrow['news_views']);
+            if ($increment != 0) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'news SET news_views=news_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
             }
-        }
+        });
 
         // Management links
         if ((has_actual_page_access(null, ($blog === 1) ? 'cms_blogs' : 'cms_news', null, null)) && (has_edit_permission(($blog === 1) ? 'mid' : 'high', get_member(), $myrow['submitter'], ($blog === 1) ? 'cms_blogs' : 'cms_news', array('news', $myrow['news_category'])))) {

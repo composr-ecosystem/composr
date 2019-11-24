@@ -46,6 +46,10 @@ class _tutorial_quality_test_set extends cms_test_case
             }
 
             if (substr($file, -4) == '.txt') {
+                if ($this->debug) {
+                    var_dump($file);
+                }
+
                 $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
                 check_comcode($c); // This is quite slow
             }

@@ -481,7 +481,6 @@ class Module_admin_version
                 'l_code_category' => 'SHORT_TEXT',
                 'l_setting' => 'INTEGER',
             ));
-            $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', array('l_member_id', 'l_notification_code'));
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_code_category', array('l_code_category'));
             $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_notification_code', array('l_notification_code'));
 
@@ -1119,6 +1118,18 @@ class Module_admin_version
                 set_option('timezone', get_value('timezone'));
                 delete_value('timezone');
             }
+
+            $GLOBALS['SITE_DB']->create_index('attachment_refs', 'attachmentreferences2', array('a_id'));
+            $GLOBALS['SITE_DB']->create_index('member_privileges', 'active_until', array('active_until'));
+            $GLOBALS['SITE_DB']->create_index('member_zone_access', 'active_until', array('active_until'));
+            $GLOBALS['SITE_DB']->create_index('member_page_access', 'active_until', array('active_until'));
+            $GLOBALS['SITE_DB']->create_index('member_category_access', 'active_until', array('active_until'));
+            $GLOBALS['SITE_DB']->create_index('messages_to_render', 'delete_old', array('r_time'));
+            $GLOBALS['SITE_DB']->create_index('f_group_member_timeouts', 'expiring_timeouts', array('timeout'));
+            $GLOBALS['SITE_DB']->create_index('group_privileges', 'by_privilege', array('privilege'));
+
+            $GLOBALS['SITE_DB']->delete_index_if_exists('notifications_enabled', 'l_member_id');
+            $GLOBALS['SITE_DB']->create_index('notifications_enabled', 'l_member_id', array('l_member_id', 'l_notification_code', 'l_code_category'));
         }
     }
 

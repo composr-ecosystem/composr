@@ -53,7 +53,7 @@ class Block_side_news_archive
         array(
             array_key_exists('title', $map) ? $map['title'] : do_lang('ARCHIVES'),
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
-            array_key_exists('select', $map) ? $map['select'] : '*'
+            array_key_exists('select', $map) ? $map['select'] : '*',
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;

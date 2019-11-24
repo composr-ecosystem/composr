@@ -58,7 +58,7 @@ class Block_main_image_fader_news
             array_key_exists('time', $map) ? intval($map['time']) : 8000,
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
             array_key_exists('param', $map) ? $map['param'] : '',
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

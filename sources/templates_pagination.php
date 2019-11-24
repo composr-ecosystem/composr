@@ -77,10 +77,10 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
     }
 
     if ($sort_filter_func !== null) {
-        list($sort, $keyset_field, $keyset_field_stripped) = call_user_func($sort_filter_func, $sort);
+        list($sort, $keyset_clause, $keyset_field) = call_user_func($sort_filter_func, $sort);
     } else {
+        $keyset_clause = null;
         $keyset_field = null;
-        $keyset_field_stripped = null;
     }
 
     // Support overriding from the compound parameter...
@@ -106,14 +106,10 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
     $sql_sup = '';
     $sql_sup_order_by = '';
 
-    if ($keyset_field !== null) {
+    if ($keyset_clause !== null) {
         if ($keyset_param !== null) {
-            $altered_start = 0;
-            $keyset_clause = str_replace(array('\'XXX\'', 'XXX'), array('\'' . db_escape_string($keyset_param) . '\'', strval(intval($keyset_param))), $keyset_field);
-            $keyset_clause = preg_replace('#MAX\(([^\(\)]*)\)#', '$1', $keyset_clause);
-            $sql_sup .= ' AND ' . $keyset_clause;
-        } elseif ($start > 0) {
-            $altered_start = 0; // We want to discourage this anyway! Hurts performance
+            $_keyset_clause = str_replace(array('\'XXX\'', 'XXX'), array('\'' . db_escape_string($keyset_param) . '\'', @strval(intval($keyset_param))), $keyset_clause);
+            $sql_sup .= ' AND ' . $_keyset_clause;
         }
     }
 
@@ -125,7 +121,7 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
 
     $compound = json_encode(array($max, $start, $sort, $keyset_param));
 
-    return array($max, $altered_start, $sort, $sql_sup, $sql_sup_order_by, $start, $compound, $keyset_field_stripped);
+    return array($max, $altered_start, $sort, $sql_sup, $sql_sup_order_by, $start, $compound, $keyset_clause, $keyset_field);
 }
 
 /**
@@ -169,6 +165,8 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
 
     $get_url = get_self_url(true);
 
+    $has_full_pagination = true;
+
     // How many to show per page
     if ($_selectors === null) {
         $_selectors = array(10, 25, 50, 80);
@@ -211,7 +209,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
 
         // Link to first
         if ($start > 0) {
-            $url_array = array('page' => '_SELF', $start_name => running_script('index') ? null : 0, $start_name . '__keyed' => '');
+            $url_array = array('page' => '_SELF', $start_name => running_script('index') ? null : 0, $start_name . '__keyed' => null);
             $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
             $first = do_template('PAGINATION_CONTINUE_FIRST', array('_GUID' => 'f5e510da318af9b37c3a4b23face5ae3', 'TITLE' => $title, 'P' => strval(1), 'FIRST_URL' => $cat_url));
         } else {
@@ -219,9 +217,9 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
         }
 
         // Link to previous
-        if ($keyset_value === null) {
+        if ($has_full_pagination) {
             if ($start > 0) {
-                $url_array = array('page' => '_SELF', $start_name => strval(max($start - $max, 0)));
+                $url_array = array('page' => '_SELF', $start_name => strval(max($start - $max, 0)), $start_name . '__keyed' => null);
                 $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
                 $previous = do_template('PAGINATION_PREVIOUS_LINK', array('_GUID' => 'ec4d4da9677b5b9c8cea08676337c6eb', 'TITLE' => $title, 'P' => integer_format(($max == 0) ? 1 : intval($start / $max)), 'URL' => $cat_url));
             } else {
@@ -248,7 +246,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
         }
 
         // Indicate that the sequence is incomplete with an ellipsis
-        if ($from > 0 && $keyset_value === null) {
+        if ($from > 0 && $has_full_pagination) {
             $continues_left = do_template('PAGINATION_CONTINUE');
         } else {
             $continues_left = new Tempcode();
@@ -257,9 +255,18 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
         $bot = ((is_guest()) && (get_bot_type() !== null));
 
         // Show the page number jump links
-        if ($keyset_value === null) {
+        if ($has_full_pagination) {
             for ($x = $from; $x < $to; $x++) {
-                $url_array = array('page' => '_SELF', $start_name => ($x == 0 && running_script('index')) ? null : strval($x * $max));
+                $url_array = array('page' => '_SELF', $start_name => ($x == 0 && running_script('index')) ? null : strval($x * $max), $start_name . '__keyed' => null);
+                if ($x * $max == $start + $max) {
+                    if ($keyset_value === null) {
+                        $url_array[$start_name . '__keyed'] = null;
+                    } else {
+                        $url_array[$start_name . '__keyed'] = $keyset_value;
+                    }
+                } else {
+                    $url_array[$start_name . '__keyed'] = null;
+                }
                 $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
                 if ($x * $max == $start) {
                     $parts->attach(do_template('PAGINATION_PAGE_NUMBER', array('_GUID' => '13cdaf548d5486fb8d8ae0d23b6a08ec', 'P' => strval($x + 1))));
@@ -276,7 +283,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
         }
 
         // Indicate that the sequence is incomplete with an ellipsis
-        if ($to < $num_pages && $keyset_value === null) {
+        if ($to < $num_pages && $has_full_pagination) {
             $continues_right = do_template('PAGINATION_CONTINUE');
         } else {
             $continues_right = new Tempcode();
@@ -308,8 +315,8 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
         }
 
         // Link to last
-        if ($start + $max < $max_rows && $keyset_value === null) {
-            $url_array = array('page' => '_SELF', ($num_pages - 1 == 0) ? null : $start_name => strval(($num_pages - 1) * $max));
+        if ($start + $max < $max_rows && $has_full_pagination) {
+            $url_array = array('page' => '_SELF', ($num_pages - 1 == 0) ? null : $start_name => strval(($num_pages - 1) * $max), $start_name . '__keyed' => null);
             $cat_url = _build_pagination_cat_url($url_array, $post_array, $hash);
             $last = do_template('PAGINATION_CONTINUE_LAST', array('_GUID' => '2934936df4ba90989e949a8ebe905522', 'TITLE' => $title, 'P' => strval($num_pages), 'LAST_URL' => $cat_url));
         } else {
@@ -317,7 +324,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
         }
 
         // Page jump dropdown, if we had to crop
-        if ($num_pages > $max_page_links && $keyset_value === null) {
+        if ($num_pages > $max_page_links && $has_full_pagination) {
             $list = new Tempcode();
             $pg_start = 0;
             $pg_to = $num_pages;
@@ -335,7 +342,7 @@ function pagination($title, $start, $start_name, $max, $max_name, $max_rows, $ke
             if ($pg_to != $num_pages) {
                 $list->attach(form_input_list_entry('', false, '...', false, true));
             }
-            $dont_auto_keep = array();
+            $dont_auto_keep = array($start_name . '__keyed');
             $hidden = build_keep_form_fields('_SELF', true, $dont_auto_keep);
             $pages_list = do_template('PAGINATION_LIST_PAGES', array('_GUID' => '9e1b394763619433f23b8ed95f5ac134', 'URL' => $get_url, 'HIDDEN' => $hidden, 'START_NAME' => $start_name, 'LIST' => $list));
         } else {

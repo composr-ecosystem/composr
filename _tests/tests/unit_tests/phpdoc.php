@@ -23,6 +23,7 @@ class phpdoc_test_set extends cms_test_case
         $phpdoc_to_functions = array();
 
         $exceptions = array(
+            'Convert a field value to something renderable.',
             'Get details of action log entry types handled by this hook.',
             'Find the e-mail address for system e-mails (Reply-To header).',
             'Process an e-mail found.',

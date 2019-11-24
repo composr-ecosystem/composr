@@ -91,7 +91,7 @@ Or if you want to allow individual content items to have their own metadata spec
 {+START,IF,{$NEQ,{$METADATA,type},Image}}
 	<meta property="twitter:card" content="summary" />
 {+END}
-[/html]
+[/code]
 to:
 [code="HTML"]
 {+START,IF,{$EQ,{$METADATA,type},Image}}
@@ -103,7 +103,7 @@ to:
 {+START,IF_NON_EMPTY,{$METADATA,twitter_handle}}
 	<meta name="twitter:creator" content="@{$METADATA*,twitter_handle}" />
 {+END}
-[/html]
+[/code]
 [/list]
 
 [title="2"]Icons[/title]
@@ -136,6 +136,6 @@ In your HTML the icon tags look similar to:
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - [page="_SEARCH:tut_browsers"]Browser version requirements[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
- - [page="_SEARCH:sup_facebook"]Composr Supplementary: Facebook Support[/page]
+ - [page="_SEARCH:sup_facebook"]Facebook Support[/page]
 
 {$SET,tutorial_tags,core,Advice & Guidance,Introduction,regular}{$SET,tutorial_add_date,Mar 2015}{$SET,tutorial_summary,An explanation of how metadata works within Composr.}[block]main_tutorial_rating[/block]

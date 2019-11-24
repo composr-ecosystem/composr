@@ -2348,8 +2348,7 @@ function _do_tags_comcode($tag, $attributes, $embed, $comcode_dangerous, $pass_i
 
             // Lock it if we are doing a 'safe' attachment
             if ($tag == 'attachment_safe') {
-                $db->query_delete('attachment_refs', array('r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']), '', 1);
-                $db->query_insert('attachment_refs', array('r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']));
+                $db->query_insert_or_replace('attachment_refs', array(), array('r_referer_type' => 'null', 'r_referer_id' => '', 'a_id' => $attachment_row['id']));
             }
 
             // Now, render it
@@ -2542,7 +2541,6 @@ function set_tutorial_link($name, $value)
     }
 
     if (get_tutorial_link($name) !== $value) {
-        $GLOBALS['SITE_DB']->query_delete('tutorial_links', array('the_name' => cms_mb_strtolower($name)), '', 1);
-        $GLOBALS['SITE_DB']->query_insert('tutorial_links', array('the_value' => $value, 'the_name' => cms_mb_strtolower($name)), false, true); // Allow failure, if there is a race condition
+        $GLOBALS['SITE_DB']->query_insert_or_replace('tutorial_links', array('the_value' => $value), array('the_name' => cms_mb_strtolower($name)));
     }
 }

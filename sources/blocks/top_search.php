@@ -67,7 +67,7 @@ class Block_top_search
             array_key_exists('conjunctive_operator', $map) ? $map['conjunctive_operator'] : 'AND',
             array_key_exists('limit_to', $map) ? $map['limit_to'] : '',
             array_key_exists('search_under', $map) ? $map['search_under'] : '',
-            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search')
+            array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search'),
         )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 2);

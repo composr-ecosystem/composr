@@ -58,6 +58,10 @@ function test_password($password, $username = '', $email_address = '', $dob = nu
     arsort($tainted_substrings_pool);
     $password_upper = cms_mb_strtoupper($password);
     foreach (array_keys($tainted_substrings_pool) as $tainted_substring) {
+        if (!is_string($tainted_substring)) {
+            $tainted_substring = strval($tainted_substring);
+        }
+
         do {
             $pos = strpos($password_upper, $tainted_substring);
             if ($pos !== false) {

@@ -560,7 +560,7 @@ function check_captcha($code_entered = null, $regenerate_on_error = true, &$erro
     if ($regenerate_on_error) {
         if (get_option('captcha_single_guess') == '1') {
             if ($passes) {
-                register_shutdown_function('_cleanout_captcha');
+                cms_register_shutdown_function_safe('_cleanout_captcha');
             } else {
                 generate_captcha();
             }

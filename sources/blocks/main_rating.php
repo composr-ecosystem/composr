@@ -55,7 +55,7 @@ class Block_main_rating
             array_key_exists('param', $map) ? $map['param'] : 'main',
             array_key_exists('page', $map) ? $map['page'] : get_page_name(),
             array_key_exists('title', $map) ? $map['title'] : '',
-            empty($map['display_tpl']) ? 'RATING_BOX' : $map['display_tpl']
+            empty($map['display_tpl']) ? 'RATING_BOX' : $map['display_tpl'],
         )
 PHP;
         $info['ttl'] = 60 * 5;

@@ -139,7 +139,7 @@ function actual_add_catalogue($name, $title, $description, $display_type, $is_tr
     if (!is_alphanumeric($name)) {
         warn_exit(do_lang_tempcode('BAD_CODENAME'));
     }
-@error_log(get_self_url_easy());//TODO
+
     // Check doesn't already exist
     $test = $GLOBALS['SITE_DB']->query_select_value_if_there('catalogues', 'c_name', array('c_name' => $name));
     if ($test !== null) {

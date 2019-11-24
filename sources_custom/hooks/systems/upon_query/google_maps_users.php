@@ -10,21 +10,17 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  ocProducts Ltd
- * @package    data_mappr
+ * @package    user_mappr
  */
 
 /**
  * Hook class.
  */
-class Hook_upon_query_google_maps
+class Hook_upon_query_google_maps_users
 {
     public function run_post($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('data_mappr')) {
-            return;
-        }
-
-        if (!addon_installed('catalogues')) {
+        if (!addon_installed('user_mappr')) {
             return;
         }
 
@@ -32,9 +28,9 @@ class Hook_upon_query_google_maps
             return;
         }
 
-        if ((strpos($query, 'main_cc_embed') !== false) && (preg_match('#^DELETE FROM ' . get_table_prefix() . 'cache WHERE .*main_cc_embed#', $query) != 0)) { // If main_cc_embed being decached
+        if ((strpos($query, 'f_member_custom_fields') !== false) && ((strpos($query, 'INSERT INTO ') !== false) || (strpos($query, 'UPDATE ') !== false))) {
             if (function_exists('delete_cache_entry')) {
-                delete_cache_entry('main_google_map'); // decache map block too
+                delete_cache_entry('main_google_map_users');
             }
         }
     }

@@ -363,9 +363,11 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
         $old_limit = cms_disable_time_limit();
 
         // Send out on RSS cloud
-        if (!$GLOBALS['SITE_DB']->table_is_locked('news_rss_cloud')) {
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'news_rss_cloud WHERE register_time<' . strval(time() - 25 * 60 * 60));
-        }
+        cms_register_shutdown_function_safe(function() {
+            if (!$GLOBALS['SITE_DB']->table_is_locked('news_rss_cloud')) {
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'news_rss_cloud WHERE register_time<' . strval(time() - 25 * 60 * 60), null, 0, true); // Errors suppressed in case DB write access broken
+            }
+        });
         $start = 0;
         do {
             send_http_output_ping();
@@ -413,18 +415,10 @@ function add_news($title, $news, $author = null, $validated = 1, $allow_rating =
     }
 
     if ((!get_mass_import_mode()) && ($validated == 1) && (get_option('site_closed') == '0') && (!$GLOBALS['DEV_MODE']) && (has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'news', strval($main_news_category_id)))) {
-        if (get_value('avoid_register_shutdown_function') === '1') {
-            send_rss_ping();
-        } else {
-            register_shutdown_function('send_rss_ping');
-        }
+        cms_register_shutdown_function_safe('send_rss_ping');
 
         require_code('news_sitemap');
-        if (get_value('avoid_register_shutdown_function') === '1') {
-            build_news_sitemap();
-        } else {
-            register_shutdown_function('build_news_sitemap');
-        }
+        cms_register_shutdown_function_safe('build_news_sitemap');
     }
 
     require_code('member_mentions');
@@ -601,11 +595,7 @@ function edit_news($id, $title, $news, $author, $validated, $allow_rating, $allo
     delete_cache_entry('side_news_categories');
 
     if (($validated == 1) && (has_category_access($GLOBALS['FORUM_DRIVER']->get_guest_id(), 'news', strval($main_news_category)))) {
-        if (get_value('avoid_register_shutdown_function') === '1') {
-            send_rss_ping();
-        } else {
-            register_shutdown_function('send_rss_ping');
-        }
+        cms_register_shutdown_function_safe('send_rss_ping');
     }
 
     require_code('feedback');

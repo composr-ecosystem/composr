@@ -595,6 +595,58 @@ class Database_super_mysql extends DatabaseDriver
     }
 
     /**
+     * Insert a update a row (depending on whether a row with the key exists already).
+     *
+     * @param  string $table The table name
+     * @param  array $map The INSERT/UPDATE map, minus anything in the key
+     * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
+     * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @return string SQL query
+     */
+    public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
+    {
+        $keys = '';
+        $values = '';
+
+        $v = mixed();
+
+        $eis = $this->empty_is_null();
+
+        foreach ($map + $key_map as $key => $v) {
+            if ($keys != '') {
+                $keys .= ', ';
+            }
+            $keys .= $key;
+
+            if ($values != '') {
+                $values .= ', ';
+            }
+
+            if ($v === null) {
+                if (($eis) && (is_string($v)) && ($v == '')) {
+                    $values .= '\' \'';
+                } else {
+                    $values .= 'NULL';
+                }
+            } else {
+                if (($eis) && (is_string($v)) && ($v == '')) {
+                    $v = ' ';
+                }
+                if (is_integer($v)) {
+                    $values .= strval($v);
+                } elseif (is_float($v)) {
+                    $values .= float_to_raw_string($v, 10);
+                } else {
+                    $values .= '\'' . $this->escape_string($v) . '\'';
+                }
+            }
+        }
+
+        return 'REPLACE INTO ' . $table . ' (' . $keys . ') VALUES (' . $values . ')';
+    }
+
+    /**
      * Find whether full-text-search is present.
      *
      * @param  mixed $connection The DB connection

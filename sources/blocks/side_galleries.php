@@ -55,7 +55,7 @@ class Block_side_galleries
             array_key_exists('param', $map) ? $map['param'] : 'root',
             array_key_exists('zone', $map) ? $map['zone'] : '',
             array_key_exists('show_empty', $map) ? ($map['show_empty'] == '1') : false,
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

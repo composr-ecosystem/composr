@@ -50,7 +50,7 @@ class Block_main_awards
     {
         $info = array();
         $info['cache_on'] = <<<'PHP'
-        ((count($_POST) != 0) || (get_param_integer('keep_non_rated', 0) == 1))
+        ((count($_POST) != 0) || (get_param_integer('keep_rating_test', 0) == 1))
         ?
         null
         :
@@ -59,7 +59,7 @@ class Block_main_awards
             (array_key_exists('give_context', $map) ? $map['give_context'] : '0') == '1',
             (array_key_exists('include_breadcrumbs', $map) ? $map['include_breadcrumbs'] : '0') == '1',
             array_key_exists('param', $map) ? $map['param'] : strval(db_get_first_id()),
-            array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH'
+            array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to submit link

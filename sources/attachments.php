@@ -218,7 +218,10 @@ function attachments_script()
         if (get_param_integer('no_count', 0) == 0) {
             // Update download count
             if ($_SERVER['HTTP_RANGE'] == '') {
-                $db->query_update('attachments', array('a_num_downloads' => $myrow['a_num_downloads'] + 1, 'a_last_downloaded_time' => time()), array('id' => $id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+                $increment = statistical_update_model('attachments', $myrow['a_num_downloads']);
+                if ($increment != 0) {
+                    $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'attachments SET a_num_downloads=a_num_downloads+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
+                }
             }
         }
     }

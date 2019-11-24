@@ -108,7 +108,7 @@ class Block_main_activities
             array_key_exists('refresh_time', $map) ? intval($map['refresh_time']) : 30,
             array_key_exists('param', $map) ? $map['param'] : do_lang('ACTIVITY'),
             array_key_exists('mode', $map) ? $map['mode'] : 'all',
-            get_member()
+            get_member(),
         )
 PHP;
         $info['ttl'] = 3;
@@ -167,12 +167,16 @@ PHP;
         $start = get_param_integer($block_id . '_start', array_key_exists('start', $map) ? intval($map['start']) : 0);
 
         if ($proceed_selection) {
-            $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'activities WHERE ' . $whereville, false, true);
+            $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ' . $whereville . ' ORDER BY a_time DESC', $max, $start, false, true);
+
+            if (get_bot_type() === null) {
+                $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'activities WHERE ' . $whereville, false, true);
+            } else {
+                $max_rows = count($activities); // We don't want bots hogging resources on somewhere they don't need to dig into
+            }
 
             require_code('templates_pagination');
             $pagination = pagination(do_lang('ACTIVITY'), $start, $block_id . '_start', $max, $block_id . '_max', $max_rows, false, 5, null, 'tab--activities');
-
-            $activities = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'activities WHERE ' . $whereville . ' ORDER BY a_time DESC', $max, $start, false, true);
 
             foreach ($activities as $row) {
                 list($message, $member_avatar, $timestamp, $member_url, $lang_string, $is_public) = render_activity($row);

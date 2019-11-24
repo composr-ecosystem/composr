@@ -304,10 +304,10 @@ class Module_topicview
 
         // Mark as read
         if (($id !== null) && ($GLOBALS['FORUM_DRIVER']->get_member_row_field(get_member(), 'm_auto_mark_read') == 1)) {
-            if (($topic_info['forum_id'] === null) || (get_value('avoid_register_shutdown_function') === '1')) {
+            if ($topic_info['forum_id'] === null) {
                 $this->_update_read_status(); // Done early because we need to have updated read status set when the pt_notifications show up
             } else {
-                register_shutdown_function(array($this, '_update_read_status')); // done at end after output in case of locking (don't make the user wait)
+                cms_register_shutdown_function_safe(array($this, '_update_read_status')); // done at end after output in case of locking (don't make the user wait)
             }
         }
 
@@ -1033,10 +1033,9 @@ class Module_topicview
                 }
             }
         }
-        if ((get_db_type() != 'xml') && (get_bot_type() === null)) {
-            if (!$GLOBALS['FORUM_DB']->table_is_locked('f_topics')) {
-                $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_num_views=(t_num_views+1) WHERE id=' . strval($this->id), 1, 0, true); // Suppress errors in case DB write access lost
-            }
+        $increment = statistical_update_model('f_topics', $this->topic_info['num_views']);
+        if ($increment != 0) {
+            $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_num_views=(t_num_views+1) WHERE id=' . strval($this->id), 1, 0, true); // Errors suppressed in case DB write access broken
         }
     }
 }

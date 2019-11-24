@@ -1146,6 +1146,12 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
         }
     }
 
+    $tables_to_scan = array();
+    foreach ($fields as $i => $field) {
+        $ob = get_fields_hook($field['cf_type']);
+        list(, , $storage_type) = $ob->get_field_value_row_bits($field);
+        $tables_to_scan['catalogue_efv_' . $storage_type] = true;
+    }
     foreach ($fields as $i => $field) {
         $field_id = $field['id'];
 
@@ -1153,7 +1159,7 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
             continue;
         }
 
-        _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, $fields[$i], $i);
+        _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, $fields[$i], $i, array_keys($tables_to_scan));
     }
 
     return $fields;
@@ -1167,10 +1173,11 @@ function get_catalogue_entry_field_values($catalogue_name, $entry_id, $only_fiel
  * @param  ?array $only_field_ids A list of field IDs that we are limiting ourselves to (null: get ALL fields)
  * @param  array $target Save the result into here
  * @param  integer $i Position in field list (counting from zero)
+ * @param  ?array $tables_to_scan Which value tables to look in (null: all)
  *
  * @ignore
  */
-function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target, $i)
+function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$target, $i, $tables_to_scan = null)
 {
     $ob = get_fields_hook($field['cf_type']);
     list($raw_type, , $type) = $ob->get_field_value_row_bits($field);
@@ -1181,7 +1188,7 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
     switch ($raw_type) {
         case 'long_trans':
         case 'short_trans':
-            $temp = _get_catalogue_entry_field($field['id'], $entry_id, 'short_trans', $only_field_ids);
+            $temp = _get_catalogue_entry_field($field['id'], $entry_id, 'short_trans', $only_field_ids, $tables_to_scan);
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = '';
                 $target['effective_value_pure'] = '';
@@ -1198,7 +1205,7 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
         case 'short_text':
         case 'long_unescaped':
         case 'short_unescaped':
-            $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids);
+            $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids, $tables_to_scan);
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = '';
                 $target['effective_value_pure'] = '';
@@ -1209,7 +1216,7 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
             }
             break;
         case 'float_unescaped':
-            $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids);
+            $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids, $tables_to_scan);
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = do_lang_tempcode('NA_EM');
                 $target['effective_value_pure'] = do_lang('NA');
@@ -1220,7 +1227,7 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
             }
             break;
         case 'integer_unescaped':
-            $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids);
+            $temp = _get_catalogue_entry_field($field['id'], $entry_id, $type, $only_field_ids, $tables_to_scan);
             if ($temp['cv_value'] === null) {
                 $target['effective_value'] = do_lang_tempcode('NA_EM');
                 $target['effective_value_pure'] = do_lang('NA');
@@ -1235,7 +1242,9 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
     }
 
     // Necessary to pick up on metadata very early on and without having to actually render anything
-    $ob->preprocess_field($field, $target['effective_value'], $i);
+    if (method_exists($ob, 'preprocess_field')) {
+        $ob->preprocess_field($field, $target['effective_value'], $i);
+    }
 }
 
 /**
@@ -1246,10 +1255,11 @@ function _resolve_catalogue_entry_field($field, $entry_id, $only_field_ids, &$ta
  * @param  ID_TEXT $type The type of field
  * @set short long
  * @param  ?array $only_field_ids A list of field IDs that we are limiting ourselves to (null: get ALL fields)
+ * @param  ?array $tables_to_scan Which value tables to look in (null: all)
  * @return ?array The row (null: not found)
  * @ignore
  */
-function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only_field_ids = null)
+function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only_field_ids = null, $tables_to_scan = null)
 {
     if (is_array($entry_id)) {
         $entry_id = $entry_id['id'];
@@ -1276,10 +1286,35 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
             $only_fields_sql .= ')';
         }
 
-        $tables = array('catalogue_efv_float', 'catalogue_efv_integer', 'catalogue_efv_long', 'catalogue_efv_long_trans', 'catalogue_efv_short', 'catalogue_efv_short_trans',);
+        $all_tables_to_scan = array(
+            'catalogue_efv_float' => false,
+            'catalogue_efv_integer' => false,
+            'catalogue_efv_short' => false,
+            'catalogue_efv_short_trans' => multi_lang_content(),
+            'catalogue_efv_long' => true,
+            'catalogue_efv_long_trans' => true,
+        );
+        if ($tables_to_scan === null) {
+            $tables_to_scan = array_keys($all_tables_to_scan);
+        }
+
         if (strpos(get_db_type(), 'mysql') !== false) { // Optimised for MySQL
             $query = '';
-            foreach ($tables as $table) {
+            foreach ($all_tables_to_scan as $table => $must_be_standalone) {
+                if (!in_array($table, $tables_to_scan)) {
+                    continue;
+                }
+
+                // Involves TEXT columns, which if UNIONised end up as on-disk temporary tables - terrible performance
+                //  So we force them to be queried separately
+                if ($must_be_standalone) {
+                    $rows = $GLOBALS['SITE_DB']->query($query, null, 0, false, true);
+                    foreach ($rows as $row) {
+                        $catalogue_entry_cache[$entry_id][$row['f_id']] = $row;
+                    }
+                    $query = '';
+                }
+
                 if ($query != '') {
                     $query .= ' UNION ';
                 }
@@ -1300,7 +1335,7 @@ function _get_catalogue_entry_field($field_id, $entry_id, $type = 'short', $only
                 $catalogue_entry_cache[$entry_id][$row['f_id']] = $row;
             }
         } else { // Other databases may not support unions with different data types, even if we do casting (PostgreSQL definitely doesn't)
-            foreach ($tables as $table) {
+            foreach ($tables_to_scan as $table) {
                 $query = 'SELECT f.id AS f_id,v.cv_value';
                 if (!multi_lang_content()) {
                     if (strpos($table, '_trans') !== false) {
@@ -1852,20 +1887,16 @@ function render_catalogue_entry_screen($id)
         $tpl_set = $catalogue_name;
     }
 
-    $count_views = (get_db_type() != 'xml') && (get_value('disable_view_counts') !== '1') && (get_bot_type() === null);
-    if ($count_views) {
-        $entry['ce_views']++;
-    }
-
     $root = get_param_integer('keep_catalogue_' . $catalogue_name . '_root', null);
     $breadcrumbs = array();
     $map = get_catalogue_entry_map($entry, $catalogue, 'PAGE', $tpl_set, $root, null, null, true, true, null, $breadcrumbs);
 
-    if ($count_views) {
-        if (!$GLOBALS['SITE_DB']->table_is_locked('catalogue_entries')) {
-            $GLOBALS['SITE_DB']->query_update('catalogue_entries', array('ce_views' => $entry['ce_views']), array('id' => $id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+    cms_register_shutdown_function_safe(function() use ($entry, $id) {
+        $increment = statistical_update_model('catalogue_entries', $entry['ce_views']);
+        if ($increment != 0) {
+            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'catalogue_entries SET ce_views=ce_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
         }
-    }
+    });
 
     // Validation
     if (($entry['ce_validated'] == 0) && (addon_installed('unvalidated'))) {

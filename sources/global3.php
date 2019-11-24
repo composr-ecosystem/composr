@@ -3076,12 +3076,20 @@ function ip_banned($ip, $force_db = false, $handle_uncertainties = false)
  * @param  ID_TEXT $type The type of activity just carried out (a language string codename)
  * @param  ?SHORT_TEXT $a The most important parameter of the activity (e.g. D) (null: none)
  * @param  ?SHORT_TEXT $b A secondary (perhaps, human readable) parameter of the activity (e.g. caption) (null: none)
+ * @param  boolean $return_id Whether to return an ID to the log entry (forces immediate logging, rather than at script end)
  * @return ?AUTO_LINK Log ID (null: did not save a log)
  */
-function log_it($type, $a = null, $b = null)
+function log_it($type, $a = null, $b = null, $return_id = false)
 {
-    require_code('global4');
-    return _log_it($type, $a, $b);
+    if ($return_id) {
+        require_code('global4');
+        return _log_it($type, $a, $b);
+    }
+
+    cms_register_shutdown_function_safe(function() use ($type, $a, $b) {
+        require_code('global4');
+        return _log_it($type, $a, $b);
+    });
 }
 
 /**
@@ -3109,18 +3117,25 @@ function member_tracking_update($page, $type, $id)
         return;
     }
 
-    if (!$GLOBALS['SITE_DB']->table_is_locked('member_tracking')) {
-        $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'member_tracking WHERE mt_time<' . strval(time() - 60 * intval(get_option('users_online_time'))) . ' OR (mt_member_id=' . strval(get_member()) . ' AND ' . db_string_equal_to('mt_type', $type) . ' AND ' . db_string_equal_to('mt_id', $id) . ' AND ' . db_string_equal_to('mt_page', $page) . ')');
+    if (mt_rand(0, 100) == 1) {
+        cms_register_shutdown_function_safe(function() {
+            if (!$GLOBALS['SITE_DB']->table_is_locked('member_tracking')) {
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'member_tracking WHERE mt_time<' . strval(time() - 60 * intval(get_option('users_online_time'))));
+            }
+        });
     }
 
-    $GLOBALS['SITE_DB']->query_insert('member_tracking', array(
-        'mt_member_id' => get_member(),
-        'mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true),
-        'mt_time' => time(),
-        'mt_page' => $page,
-        'mt_type' => $type,
-        'mt_id' => $id,
-    ), false, true); // Ignore errors for race conditions
+    cms_register_shutdown_function_safe(function() use ($page, $type, $id) {
+        $GLOBALS['SITE_DB']->query_insert_or_replace('member_tracking', array(
+            'mt_cache_username' => $GLOBALS['FORUM_DRIVER']->get_username(get_member(), true),
+            'mt_time' => time(),
+        ), array(
+            'mt_member_id' => get_member(),
+            'mt_page' => $page,
+            'mt_type' => $type,
+            'mt_id' => $id,
+        ));
+    });
 }
 
 /**
@@ -3176,7 +3191,7 @@ function get_num_users_site()
         }
         if (intval($NUM_USERS_SITE_CACHE) > intval($PEAK_USERS_EVER_CACHE)) {
             // New record
-            $GLOBALS['SITE_DB']->query_insert('usersonline_track', array('date_and_time' => time(), 'peak' => intval($NUM_USERS_SITE_CACHE)), false, true); // errors suppressed in case of race condition
+            $GLOBALS['SITE_DB']->query_insert_or_replace('usersonline_track', array('peak' => intval($NUM_USERS_SITE_CACHE)), array('date_and_time' => time()));
             if (!$GLOBALS['SITE_DB']->table_is_locked('values')) {
                 set_value('user_peak', $NUM_USERS_SITE_CACHE);
             }
@@ -4888,4 +4903,85 @@ function cms_extend_time_limit($secs)
     }
 
     return cms_set_time_limit($previous + $secs);
+}
+
+/**
+ * Register a function for execution on shutdown.
+ * Calls it immediately if shutdown functions are not reliable on this server.
+ *
+ * @param  mixed $callback Callback
+ * @param  ?mixed $param_a Parameter (null: not used)
+ * @param  ?mixed $param_b Parameter (null: not used)
+ * @param  ?mixed $param_c Parameter (null: not used)
+ * @param  ?mixed $param_d Parameter (null: not used)
+ * @param  ?mixed $param_e Parameter (null: not used)
+ * @param  ?mixed $param_f Parameter (null: not used)
+ * @param  ?mixed $param_g Parameter (null: not used)
+ * @param  ?mixed $param_h Parameter (null: not used)
+ * @param  ?mixed $param_i Parameter (null: not used)
+ * @param  ?mixed $param_j Parameter (null: not used)
+ * @param  ?mixed $param_k Parameter (null: not used)
+ * @param  ?mixed $param_l Parameter (null: not used)
+ * @return boolean Whether it scheduled for later (as normally expected)
+ */
+function cms_register_shutdown_function_safe($callback, $param_a = null, $param_b = null, $param_c = null, $param_d = null, $param_e = null, $param_f = null, $param_g = null, $param_h = null, $param_i = null, $param_j = null, $param_k = null, $param_l = null)
+{
+    if (get_value('avoid_register_shutdown_function') === '1') {
+        $args = array($param_a, $param_b, $param_c, $param_d);
+        while ((!empty($args)) && (end($args) === null)) {
+            array_pop($args);
+        }
+        call_user_func_array($callback, $args);
+
+        return false;
+    }
+
+    $args = array($callback, $param_a, $param_b, $param_c, $param_d);
+    while ((!empty($args)) && (end($args) === null)) {
+        array_pop($args);
+    }
+    call_user_func_array('register_shutdown_function', $args);
+    return true;
+}
+
+/**
+ * See how much to implement a view count, based on smart metrics.
+ *
+ * @param  string $table Table to update in
+ * @param  integer $view_count Current view count
+ * @return integer How much to increment the view count by
+ */
+function statistical_update_model($table, $view_count)
+{
+    if (get_db_type() == 'xml') {
+        return 0;
+    }
+
+    if (get_bot_type() !== null) {
+        return 0;
+    }
+
+    if (get_value('disable_view_counts') === '1') {
+        return 0;
+    }
+
+    if (get_value('statistical_update_model') == '1') {
+        $st_increment = max(1, intval(round(floatval($view_count) / 20.0)));
+    } else {
+        $st_increment = 1;
+    }
+
+    if ($st_increment == 0) {
+        return 0;
+    }
+
+    if (mt_rand(1, $st_increment) != 1) {
+        return 0;
+    }
+
+    if ($GLOBALS['SITE_DB']->table_is_locked($table)) {
+        return 0;
+    }
+
+    return $st_increment;
 }

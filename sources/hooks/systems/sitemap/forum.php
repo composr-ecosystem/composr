@@ -276,7 +276,11 @@ class Hook_sitemap_forum extends Hook_sitemap_content
                     $num_posts = $child_row['t_cache_num_posts'];
                     $children2[] = $child;
                     for ($i = $per_page; $i < $num_posts; $i += $per_page) {
-                        $children2[] = array('page_link' => $child['page_link'] . ':start=' . strval($i)) + $child;
+                        $paginated_page_link = $child['page_link'];
+                        if ($i != 0) {
+                            $paginated_page_link .= ':forum_start=' . strval($i);
+                        }
+                        $children2[] = array('page_link' => $paginated_page_link) + $child;
                     }
                 } else {
                     $children2[] = $child;

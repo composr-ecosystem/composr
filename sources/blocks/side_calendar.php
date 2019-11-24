@@ -60,7 +60,7 @@ class Block_side_calendar
             array_key_exists('days', $map) ? $map['days'] : '30',
             array_key_exists('param', $map) ? $map['param'] : 'year',
             date('Y-m', utctime_to_usertime()),
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

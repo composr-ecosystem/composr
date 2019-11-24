@@ -158,6 +158,7 @@ Parameters:
             'sources_custom/hooks/systems/cns_cpf_filter/latitude.php',
             'data_custom/get_member_tooltip.php',
             'themes/default/javascript_custom/user_mappr.js',
+            'sources_custom/hooks/systems/upon_query/google_maps_users.php',
         );
     }
 }

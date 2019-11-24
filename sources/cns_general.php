@@ -72,10 +72,8 @@ function cns_get_forums_stats()
             $forums_stats['newest_member_username'] = do_lang('GUEST');
         }
         if (get_db_type() != 'xml') {
-            if (!$GLOBALS['SITE_DB']->table_is_locked('values')) {
-                set_value('cns_newest_member_id', strval($forums_stats['newest_member_id']));
-                set_value('cns_newest_member_username', $forums_stats['newest_member_username']);
-            }
+            set_value('cns_newest_member_id', strval($forums_stats['newest_member_id']));
+            set_value('cns_newest_member_username', $forums_stats['newest_member_username']);
         }
     }
 

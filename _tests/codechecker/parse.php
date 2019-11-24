@@ -1155,6 +1155,7 @@ function _parse_function_def($function_modifiers = array(), $is_closure = false)
     pparse__parser_expect('PARENTHESIS_OPEN');
     $function['parameters'] = _parse_comma_parameters(true);
     pparse__parser_expect('PARENTHESIS_CLOSE');
+    $function['using'] = array();
     if ($is_closure) {
         if (pparse__parser_peek() == 'USE') {
             pparse__parser_next();

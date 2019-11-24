@@ -308,7 +308,7 @@ class Self_learning_cache
         if (!$do_immediately) {
             if (!$this->pending_save) {
                 // Mark to save later
-                register_shutdown_function(array($this, '_page_cache_resave'));
+                cms_register_shutdown_function_safe(array($this, '_page_cache_resave'));
             }
             $this->pending_save = true;
             return;

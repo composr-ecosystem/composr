@@ -285,7 +285,7 @@ class Module_vforums
     public function _vforum($title, $condition, $order, $separate_pins = true, $extra_tpl_map = array(), $initial_table = null, $extra_select = '')
     {
         require_code('templates_pagination');
-        list($max, $start, , $sql_sup, $sql_sup_order_by, $true_start, , $keyset_field_stripped) = get_keyset_pagination_settings('forum_max', intval(get_option('forum_topics_per_page')), 'forum_start', null, null, $order, 'get_forum_sort_order_simplified');
+        list($max, $start, , $sql_sup, $sql_sup_order_by, $true_start, , $keyset_clause, $keyset_field) = get_keyset_pagination_settings('forum_max', intval(get_option('forum_topics_per_page')), 'forum_start', null, 'forum_sort', $order, 'get_forum_sort_order_vforums');
 
         $_breadcrumbs = cns_forum_breadcrumbs(db_get_first_id(), null, get_param_integer('keep_forum_root', db_get_first_id()), false);
         $_breadcrumbs[] = array('', $title);
@@ -381,8 +381,8 @@ class Module_vforums
             $_forum_name = array_key_exists($forum_id, $forum_name_map) ? make_string_tempcode(escape_html($forum_name_map[$forum_id])) : do_lang_tempcode('PRIVATE_TOPICS');
             $topics->attach(cns_render_topic($topic, true, false, $_forum_name));
 
-            if ($keyset_field_stripped !== null) {
-                $keyset_value = $topic[$keyset_field_stripped]; // We keep overwriting this value until the last loop iteration
+            if ($keyset_field !== null) {
+                $keyset_value = $topic['raw_row'][$keyset_field]; // We keep overwriting this value until the last loop iteration
             }
         }
         if (!$topics->is_empty()) {
@@ -401,7 +401,7 @@ class Module_vforums
             $topic_wrapper = do_template('CNS_FORUM_TOPIC_WRAPPER', array(
                 '_GUID' => '67356b4daacbed3e3d960d89a57d0a4a',
                 'MAX' => strval($max),
-                'ORDER' => '',
+                'SORT' => '',
                 'MAY_CHANGE_MAX' => false,
                 'BREADCRUMBS' => $breadcrumbs,
                 'BUTTONS' => '',

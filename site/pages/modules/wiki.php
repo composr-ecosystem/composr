@@ -486,12 +486,12 @@ class Module_wiki
         }
 
         // Views
-        if ((get_db_type() != 'xml') && (get_value('disable_view_counts') !== '1') && (get_bot_type() === null)) {
-            $page['wiki_views']++;
-            if (!$GLOBALS['SITE_DB']->table_is_locked('wiki_pages')) {
-                $GLOBALS['SITE_DB']->query_update('wiki_pages', array('wiki_views' => $page['wiki_views']), array('id' => $id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+        cms_register_shutdown_function_safe(function() use ($page, $id) {
+            $increment = statistical_update_model('wiki_pages', $page['wiki_views']);
+            if ($increment != 0) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'wiki_pages SET wiki_views=wiki_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
             }
-        }
+        });
 
         // Description
         $description = get_translated_tempcode('wiki_pages', $page, 'the_description');

@@ -1901,6 +1901,30 @@ class DatabaseConnector
     }
 
     /**
+     * Insert a update a row (depending on whether a row with the key exists already).
+     *
+     * @param  string $table The table name
+     * @param  array $map The INSERT/UPDATE map, minus anything in the key
+     * @param  array $key_map The WHERE map representing the key [will all be ANDed together]
+     * @param  boolean $fail_ok Whether to allow failure (outputting a message instead of exiting completely)
+     * @param  boolean $save_as_volatile Whether we are saving as a 'volatile' file extension (used in the XML DB driver, to mark things as being non-syndicated to git)
+     * @return boolean Whether a smart operation was performed by the DB backend (rather than just delete-then-add)
+     */
+    public function query_insert_or_replace($table, $map, $key_map, $fail_ok = false, $save_as_volatile = false)
+    {
+        if (method_exists($this->static_ob, 'query_insert_or_replace')) {
+            $query = $this->static_ob->query_insert_or_replace($this->get_table_prefix() . $table, $map, $key_map, $fail_ok, $save_as_volatile);
+            $this->_query($query, null, 0, $fail_ok, false, null, '', $save_as_volatile);
+            return true;
+        }
+
+        // Not supported on other DB backends
+        $GLOBALS['SITE_DB']->query_delete($table, $key_map, '', 1);
+        $GLOBALS['SITE_DB']->query_insert($table, $map + $key_map, false, true); // To stop weird race-like conditions
+        return false;
+    }
+
+    /**
      * Insert a row.
      *
      * @param  string $table The table name

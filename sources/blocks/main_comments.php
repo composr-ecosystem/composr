@@ -60,7 +60,7 @@ class Block_main_comments
             ((array_key_exists('invisible_if_no_comments', $map)) && ($map['invisible_if_no_comments'] == '1')),
             ((array_key_exists('reverse', $map)) && ($map['reverse'] == '1')),
             array_key_exists('title', $map) ? $map['title'] : '',
-            (array_key_exists('explicit_allow', $map)) ? ($map['explicit_allow'] == '1') : false
+            (array_key_exists('explicit_allow', $map)) ? ($map['explicit_allow'] == '1') : false,
         )
 PHP;
         $info['ttl'] = 60 * 5;

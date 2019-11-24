@@ -122,7 +122,7 @@ function get_screen_title($title, $dereference_lang = true, $params = array(), $
         $_title = is_object($title) ? $title : make_string_tempcode(escape_html($title));
     }
 
-    if (function_exists('get_session_id')) {
+    if ((function_exists('get_session_id')) && (get_bot_type() === null) && ((!$GLOBALS['SESSION_IS_NEW']) || (!is_guest()))/*We don't bother tracking 'the_title' for new guest users, due to bot overhead*/) {
         if (get_value('disable_member_tracking') !== '1') {
             if (!$GLOBALS['SITE_DB']->table_is_locked('sessions')) {
                 $change_map = array(

@@ -418,6 +418,13 @@ class Hook_health_check_performance extends Hook_Health_Check
      */
     public function testBotFlood($check_context, $manual_checks = false, $automatic_repair = false, $use_test_data_for_pass = null, $urls_or_page_links = null, $comcode_segments = null)
     {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            return;
+        }
+
         if (!addon_installed('stats')) {
             $this->stateCheckSkipped('Composr [tt]stats[/tt] addon not installed');
             return;

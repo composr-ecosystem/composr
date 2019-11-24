@@ -296,13 +296,13 @@ class Module_polls
         $edit_date = get_timezoned_date_time($myrow['edit_date']);
 
         // Views
-        if ((get_db_type() != 'xml') && (get_value('disable_view_counts') !== '1') && (get_bot_type() === null)) {
-            $myrow['poll_views']++;
-            if (!$GLOBALS['SITE_DB']->table_is_locked('poll')) {
-                $GLOBALS['SITE_DB']->query_update('poll', array('poll_views' => $myrow['poll_views']), array('id' => $id), '', 1, 0, false, true); // Errors suppressed in case DB write access broken
+        cms_register_shutdown_function_safe(function() use ($myrow, $id) {
+            $increment = statistical_update_model('poll', $myrow['poll_views']);
+            if ($increment != 0) {
+                $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'poll SET poll_views=poll_views+' . strval($increment) . ' WHERE id=' . strval($id), 1, 0, true); // Errors suppressed in case DB write access broken
                 persistent_cache_delete('POLL');
             }
-        }
+        });
 
         // Feedback
         list($rating_details, $comment_details, $trackback_details) = embed_feedback_systems(

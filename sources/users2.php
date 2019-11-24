@@ -267,7 +267,7 @@ function get_members_viewing($page = null, $type = null, $id = null, $forum_laye
     }
     $map['session_invisible'] = 0;
     $db = ($forum_layer ? $GLOBALS['FORUM_DB'] : $GLOBALS['SITE_DB']);
-    $results = $db->query_select('member_tracking t LEFT JOIN ' . $db->get_table_prefix() . 'sessions s ON t.mt_member_id=s.member_id', array('*'), $map, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' ORDER BY mt_member_id', 200);
+    $results = $db->query_select('member_tracking t LEFT JOIN ' . $db->get_table_prefix() . 'sessions s ON t.mt_member_id=s.member_id', array('*'), $map, ' AND mt_member_id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND mt_time>' . strval(time() - 60 * intval(get_option('users_online_time'))) . ' ORDER BY mt_member_id', 200);
     if (count($results) == 200) {
         return null;
     }

@@ -1116,6 +1116,9 @@ function get_db_keywords()
         'PATH;', 'PRECEDING;', 'PROCESS;', 'REFERENCE;', 'RESOURCE;', 'RESPECT;', 'RESTART;', 'RETAIN;', 'REUSE;',
         'SECONDARY;', 'SECONDARY_ENGINE;', 'SECONDARY_LOAD;', 'SECONDARY_UNLOAD;', 'SKIP;', 'SRID;', 'THREAD_PRIORITY;',
         'TIES;', 'UNBOUNDED;', 'VCPU;',
+
+        // Added in MariaDB 10.0
+        'RETURNING',
     );
     return $words;
 }

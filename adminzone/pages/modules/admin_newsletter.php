@@ -1226,7 +1226,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
                 if ((!is_plupload()) && (!is_uploaded_file($tmp_name))) {
                     $upload_error_message = get_upload_error_message($_FILES['file']);
-                    warn_exit($upload_error_message, 'warn');
+                    warn_exit($upload_error_message);
                 }
 
                 $__spreadsheet_data = array();

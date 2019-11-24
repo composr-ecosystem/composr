@@ -668,6 +668,7 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]slow_counts[/tt] -- set this to '1' if you have switched to InnoDB, as table row counts are slow and this switch enables an approximation instead in certain places. Do not use with other databases than MySQL or PostgreSQL or SQL Server.
   - [tt]innodb[/tt] -- set this to '1' if you have switched to MySQL's InnoDB
   - [tt]disable_post_rating[/tt] -- set this to '1' if you don't want to allow post ratings, which saves one query per displayed post
+  - [tt]statistical_update_model[/tt] -- update view counts irregularly in bulk, using a statistical algorithm
  - Performance tuning (negative):
   - [tt]flush_cache_on_action[/tt] -- set this to '1' to automatically flush the static cache when actions are performed
   - [tt]allow_admin_in_other_zones[/tt] -- set this to '1' if you want to allow admin and CMS modules to run in other zones (small performance cost)

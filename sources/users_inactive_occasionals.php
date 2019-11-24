@@ -125,11 +125,18 @@ function create_session($member_id, $session_confirmed = 0, $invisible = false, 
             'the_id' => cms_mb_substr(get_param_string('id', ''), 0, 80),
         );
         $GLOBALS['SITE_DB']->query_insert('sessions', $new_session_row);
-        if ((get_forum_type() == 'cns') && (!$GLOBALS['FORUM_DB']->table_is_locked('f_members'))) {
-            $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_total_sessions=m_total_sessions+1 WHERE id=' . strval($member_id), 1, 0, true); // Suppress errors in case DB write access lost
+        if (get_forum_type() == 'cns') {
+            cms_register_shutdown_function_safe(function() use ($member_id) {
+                if (!$GLOBALS['FORUM_DB']->table_is_locked('f_members')) {
+                    $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_total_sessions=m_total_sessions+1 WHERE id=' . strval($member_id), 1, 0, true); // Suppress errors in case DB write access lost
+                }
+            });
         }
 
         $SESSION_CACHE[$new_session] = $new_session_row;
+
+        global $SESSION_IS_NEW;
+        $SESSION_IS_NEW = true;
 
         $big_change = true;
     } else {

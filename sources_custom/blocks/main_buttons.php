@@ -48,7 +48,7 @@ class Block_main_buttons
         array(
             array_key_exists('param', $map) ? $map['param'] : '',
             array_key_exists('extra', $map) ? $map['extra'] : '',
-            array_key_exists('max', $map) ? intval($map['max']) : 100
+            array_key_exists('max', $map) ? intval($map['max']) : 100,
         )
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24 * 7);

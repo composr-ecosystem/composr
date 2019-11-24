@@ -57,7 +57,7 @@ class Block_main_forum_news
             array_key_exists('forum', $map) ? $map['forum'] : 'Announcements',
             array_key_exists('param', $map) ? intval($map['param']) : 14,
             array_key_exists('date_key', $map) ? $map['date_key'] : 'firsttime',
-            array_key_exists('check', $map) ? ($map['check'] == '1') : true
+            array_key_exists('check', $map) ? ($map['check'] == '1') : true,
         )
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
