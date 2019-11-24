@@ -1489,7 +1489,7 @@ function ensure_protocol_suitability($url)
         return $url;
     }
 
-    $https_url = 'https://' . $url;
+    $https_url = 'https://' . substr($url, 7);
 
     $https_exists = check_url_exists($https_url, 60 * 60 * 24 * 31);
 
