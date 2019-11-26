@@ -779,6 +779,7 @@ cms_ini_set('html_errors', '1');
 cms_ini_set('docref_root', 'http://php.net/manual/en/');
 cms_ini_set('docref_ext', '.php');
 cms_ini_set('pcre.jit', '0'); // Compatibility issue in PHP 7.3, "JIT compilation failed: no more memory"
+@header_remove('x-powered-by'); // Security
 
 fixup_bad_php_env_vars_pre();
 

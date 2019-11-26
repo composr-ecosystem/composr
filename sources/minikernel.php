@@ -114,7 +114,7 @@ function set_http_caching($last_modified, $public = false, $expiry_seconds = 604
     if ($last_modified === null) {
         @header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
         @header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
-        @header('Cache-Control: no-cache, max-age=0');
+        @header('Cache-Control: no-cache');
         @header('Pragma: no-cache');
     } else {
         @header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expiry_seconds) . ' GMT');

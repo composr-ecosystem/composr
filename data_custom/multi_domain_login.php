@@ -26,10 +26,11 @@ $timeout = $guest_session ? (time() + intval(60.0 * 60.0 * max(0.017, $session_e
 $test = setcookie(get_session_cookie(), $session_id, $timeout, get_cookie_path());
 
 header('X-Robots-Tag: noindex');
+@header_remove('x-powered-by'); // Security
 
 header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-header('Cache-Control: no-cache, max-age=0');
+header('Cache-Control: no-cache');
 header('Pragma: no-cache');
 
 header('Content-type: image/png');

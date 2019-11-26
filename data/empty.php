@@ -19,3 +19,4 @@
  */
 
 header('X-Robots-Tag: noindex');
+@header_remove('x-powered-by'); // Security

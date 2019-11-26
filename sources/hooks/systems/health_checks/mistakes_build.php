@@ -93,6 +93,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
 
         $this->stateCheckManual('Do a [url="general check"]https://www.woorank.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
         $this->stateCheckManual('Do a [url="general check"]https://website.grader.com/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
+        $this->stateCheckManual('Do a [url="general check"]https://webhint.io/[/url] (take warnings with a pinch of salt, not every suggestion is appropriate)');
 
         $this->stateCheckManual('Test in Mozilla Firefox');
         $this->stateCheckManual('Test in Google Chrome');

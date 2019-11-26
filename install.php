@@ -3229,7 +3229,7 @@ END;
             cms_file_put_contents_safe(get_file_base() . '/exports/addons/index.php', "<" . "?php
             header('Expires: Mon, 20 Dec 1998 01:00:00 GMT');
             header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-            header('Cache-Control: no-cache, max-age=0');
+            header('Cache-Control: no-cache');
             header('Pragma: no-cache');
             ");
 

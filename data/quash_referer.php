@@ -34,6 +34,9 @@ function qr_get_domain()
     return gethostname();
 }
 
+header('X-Robots-Tag: noindex');
+@header_remove('x-powered-by'); // Security
+
 $target = $_GET['url'];
 $target = str_replace(array("\r", "\n"), array('', ''), $target);
 
