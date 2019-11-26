@@ -635,6 +635,13 @@ Allow initialisation functions to run twice
 | Do not assume Composr is running on Linux, or Microsoft Windows, or Apache, or IIS, or Mac OS, or a case-sensitive filesystem, or a case-insensitive filesystem, or anything else unless it is defined in our minimum requirements. This is an important lesson for new programmers who may be used to just making something work for the computer they are in-front of. You need to use universally accepted techniques rather than platform-specific APIs.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use [tt]cms_ini_set[/tt][/color]
+| Portability
+| Product development only
+| Manually
+| Use [tt]cms_ini_set[/tt] rather than [tt]ini_set[/tt], as it allows us to control for factors such as [tt]ini_set[/tt] being disabled on the hosting platform (some hosts do this for security reasons).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 Block access when closed
 | Stability
 | All development
@@ -1092,6 +1099,20 @@ Don't use [tt]LIMIT[/tt] manually, use the API
 | Product development only
 | Manually
 | Some webhosts will restrict SQL write permission if a database size limit is exceeded, so any routine write queries should have the [tt]$fail_ok[/tt] option set so that it doesn't take the whole site down.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do maintenance using [tt]cms_register_shutdown_function_safe[/tt][/color]
+| Performance
+| Product development only
+| Manually
+| Non-critical maintenance such as logging, updating view counts, or deleting expired records, should be done at script end and using the [tt]cms_register_shutdown_function_safe[/tt] function. This is to decrease the time before rendering the page output. Note that we use the [tt]cms_register_shutdown_function_safe[/tt] instead of the [tt]register_shutdown_function[/tt] function, as a minority of servers do not support [tt]register_shutdown_function[/tt].
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Use [tt]statistical_update_model[/tt] function for controlling view count maintenance, and increment directly[/color]
+| Performance
+| Product development only
+| Manually
+| The [tt]statistical_update_model[/tt] function does a number of checks to see if and how view counts should change. Use this function in the same pattern as it is used elsewhere in the code. Do not increment by explicitly passing in a new view count, as that would assume the view count hasn't changed since it came out of the database -- run a query to directly increment from the in-database field.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Stay within common denominator of limits
