@@ -291,7 +291,7 @@ function clean_file_size($bytes)
     if (is_null($bytes)) {
         return do_lang('UNKNOWN') . ' bytes';
     }
-    if ($bytes == 2147483647) {
+    if ($bytes == 2147483647) { // TODO: #3046 in tracker
         return do_lang('UNKNOWN') . ' bytes';
     }
     if (floatval($bytes) > 2.0 * 1024.0 * 1024.0 * 1024.0) {
