@@ -329,7 +329,7 @@ function get_fields_hook($type)
     }
 
     $path = 'hooks/systems/fields/' . filter_naughty($type);
-    if ((!/*common ones we know have hooks*/in_array($type, array('author', 'codename', 'color', 'content_link', 'date', 'email', 'float', 'guid', 'integer', 'just_date', 'just_time', 'list', 'long_text', 'long_trans', 'page_link', 'password', 'picture', 'video', 'posting_field', 'reference', 'short_text', 'short_trans', 'theme_image', 'tick', 'upload', 'url', 'member'))) && (!is_file(get_file_base() . '/sources/' . $path . '.php')) && (!is_file(get_file_base() . '/sources_custom/' . $path . '.php'))) {
+    if ((!/*common ones we know have hooks*/in_array($type, array('author', 'codename', 'color', 'content_link', 'date_time', 'email', 'float', 'guid', 'integer', 'date', 'time', 'list', 'long_text', 'long_trans', 'page_link', 'password', 'picture', 'video', 'posting_field', 'reference', 'short_text', 'short_trans', 'theme_image', 'tick', 'upload', 'url', 'member'))) && (!is_file(get_file_base() . '/sources/' . $path . '.php')) && (!is_file(get_file_base() . '/sources_custom/' . $path . '.php'))) {
         $hooks = find_all_hook_obs('systems', 'fields', 'Hook_fields_');
         foreach ($hooks as $ob) {
             if (method_exists($ob, 'get_field_types')) {
@@ -777,7 +777,7 @@ function create_selection_list_field_type($type = '', $limit_to_storage_set = fa
         do_lang_tempcode('FIELD_TYPES__UPLOADSANDURLS'), 'upload', 'upload_multi', 'picture', 'picture_multi', 'video', 'video_multi', 'url', 'url_multi', 'page_link', 'theme_image',
         do_lang_tempcode('FIELD_TYPES__MAGIC'), 'guid',
         do_lang_tempcode('FIELD_TYPES__REFERENCES'), 'isbn', 'reference', 'reference_multi', 'content_link', 'content_link_multi', 'member', 'member_multi', 'author',
-        //do_lang_tempcode('FIELD_TYPES__OTHER'), 'color', 'date', 'just_date', 'just_time', 'tel',       Will go under OTHER automatically
+        //do_lang_tempcode('FIELD_TYPES__OTHER'), 'color', 'date_time', 'date', 'time', 'tel',       Will go under OTHER automatically
     );
     $_types = array();
     $done_one_in_section = true;

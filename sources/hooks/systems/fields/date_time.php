@@ -165,6 +165,36 @@ class Hook_fields_date_time
     // ======================
 
     /**
+     * Find a year range limiter part based on field options.
+     *
+     * @param  array $field The field details
+     * @param  string $type The limit type
+     * @set min_year max_year
+     * @return integer Year range part
+     */
+    protected function find_year_range_limiter($field, $type)
+    {
+        $fo = option_value_from_field_array($field, $type, '');
+
+        $matches = array();
+        if (preg_match('#^Y([\-+]\d+)$#i', $fo, $matches) != 0) {
+            return intval(date('Y')) + intval($matches[1]);
+        }
+
+        if ($fo == '') {
+            switch ($type) {
+                case 'min_year':
+                    return 0;
+
+                case 'max_year':
+                    return 3000;
+            }
+        }
+
+        return intval($fo);
+    }
+
+    /**
      * Get form inputter.
      *
      * @param  string $_cf_name The field name
@@ -205,16 +235,14 @@ class Hook_fields_date_time
 
             $time = array(intval($time_bits[1]), intval($time_bits[0]), intval($date_bits[1]), intval($date_bits[2]), intval($date_bits[0]));
         }
-        /*
-        $min_year = 1902; // 1902 is based on signed integer limit
-        $max_year = 2037; // 2037 is based on signed integer limit
+
+        $min_year = $this->find_year_range_limiter($field, 'min_year');
+        $max_year = $this->find_year_range_limiter($field, 'max_year');
         $years_to_show = $max_year - $min_year;
-        ^^^ NONSENSE: Integers not used to save!
-        */
-        $min_year = intval(option_value_from_field_array($field, 'min_year', strval(intval(date('Y')) - 10)));
-        $years_to_show = intval(option_value_from_field_array($field, 'max_year', strval(intval(date('Y')) + 10))) - $min_year;
+
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
         $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
+
         return form_input_date($_cf_name, $_cf_description, $input_name, $field['cf_required'] == 1, ($field['cf_required'] == 0) && ($actual_value == ''), false, $time, $years_to_show, $min_year, null, true, null, true, $autocomplete);
     }
 
@@ -244,9 +272,9 @@ class Hook_fields_date_time
             return $editing ? STRING_MAGIC_NULL : '';
         }
 
-        $_min_year = option_value_from_field_array($field, 'min_year', '');
-        $_max_year = option_value_from_field_array($field, 'max_year', '');
-        if ((($_min_year != '') && ($year < intval($_min_year))) || (($_max_year != '') && ($year > intval($_max_year)))) {
+        $min_year = $this->find_year_range_limiter($field, 'min_year');
+        $max_year = $this->find_year_range_limiter($field, 'max_year');
+        if ((($min_year !== null) && ($year < $min_year)) || (($max_year !== null) && ($year > $max_year))) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 

@@ -5017,8 +5017,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         FIELD_TYPE_guid
         FIELD_TYPE_integer
         FIELD_TYPE_isbn
-        FIELD_TYPE_just_date
-        FIELD_TYPE_just_time
+        FIELD_TYPE_time
         FIELD_TYPE_list
         FIELD_TYPE_list_multi
         FIELD_TYPE_long_text

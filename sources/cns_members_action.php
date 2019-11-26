@@ -915,9 +915,9 @@ function get_cpf_storage_for($type, $encrypted = 0, $__default = '')
         case 'float':
         case 'color':
         case 'content_link':
+        case 'date_time':
         case 'date':
-        case 'just_date':
-        case 'just_time':
+        case 'time':
         case 'picture':
         case 'password':
         case 'page_link':

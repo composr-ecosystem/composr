@@ -983,7 +983,7 @@ NB: Where we support Composr tree-list inputters (like shown for 'reference') fo
 NB: There is no special styling by default: this field exists so as to provide a colour-picker field input for those who will then take the data and use it in a useful way.
 |}
 
-[title="3"]date[/title]
+[title="3"]date_time[/title]
 
 {| 15em wide
 ! Type label
@@ -993,12 +993,40 @@ NB: There is no special styling by default: this field exists so as to provide a
 | yyyy-mm-dd hh:mm, or blank
 |-
 ! Special default values
-| [i]None[/i]
+| [i]Y-X[/i], where X is a number (whatever year the current year would be if X was subtracted)
+[i]Y+X[/i], where X is a number (whatever year the current year would be if X was added)
 |-
 ! Supported field options
-| [tt]min_year=YYYY[/tt]
+| [tt]min_year=YYYY[/tt] (defaults to 0ad)
 
-[tt]max_year=YYYY[/tt] (defaults place selection around current year)
+[tt]max_year=YYYY[/tt] (defaults to 3000ad)
+
+[tt]range_search=on|off[/tt]: search forms will allow a range-based search
+|-
+! Back-end UI
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__date_time.png[/media]
+|-
+! Front-end UI
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__date_time.png[/media]
+|}
+
+[title="3"]date[/title]
+
+{| 15em wide
+! Type label
+| A date
+|-
+! Storage format (for programmer reference)
+| yyyy-mm-dd, or blank (due to fixed alignment, string inequality comparisons work effectively)
+|-
+! Special default values
+| [i]Y-X[/i], where X is a number (whatever year the current year would be if X was subtracted)
+[i]Y+X[/i], where X is a number (whatever year the current year would be if X was added)
+|-
+! Supported field options
+| [tt]min_year=YYYY[/tt] (defaults to 0ad)
+
+[tt]max_year=YYYY[/tt] (defaults to 3000ad)
 
 [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 |-
@@ -1009,33 +1037,7 @@ NB: There is no special styling by default: this field exists so as to provide a
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__date.png[/media]
 |}
 
-[title="3"]just_date[/title]
-
-{| 15em wide
-! Type label
-| A date
-|-
-! Storage format (for programmer reference)
-| yyyy-mm-dd, or blank (due to fixed alignment, string inequality comparisons work effectively)
-|-
-! Special default values
-| [i]None[/i]
-|-
-! Supported field options
-| [tt]min_year=YYYY[/tt]
-
-[tt]max_year=YYYY[/tt] (defaults place selection around current year)
-
-[tt]range_search=on|off[/tt]: search forms will allow a range-based search
-|-
-! Back-end UI
-| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__just_date.png[/media]
-|-
-! Front-end UI
-| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__just_date.png[/media]
-|}
-
-[title="3"]just_time[/title]
+[title="3"]time[/title]
 
 {| 15em wide
 ! Type label
@@ -1051,10 +1053,10 @@ NB: There is no special styling by default: this field exists so as to provide a
 | [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 |-
 ! Back-end UI
-| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__just_time.png[/media]
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__time.png[/media]
 |-
 ! Front-end UI
-| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__just_time.png[/media]
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__time.png[/media]
 |}
 
 [title="3"]tel[/title]
