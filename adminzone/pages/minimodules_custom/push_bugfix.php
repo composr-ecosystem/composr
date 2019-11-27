@@ -144,9 +144,9 @@ if (cms_srv('REQUEST_METHOD') == 'POST') {
     $git_commit_command_data = '';
     if ($git_commit_id == '') {
         if ($tracker_severity == 95) {
-            $git_commit_message = 'Security fix for MANTIS-' . strval($tracker_id);
+            $git_commit_message = 'Security fix for MANTIS-' . strval($tracker_id) . ' (' . $title . ')';
         } else {
-            $git_commit_message = 'Fixed MANTIS-' . strval($tracker_id);
+            $git_commit_message = 'Fixed MANTIS-' . strval($tracker_id) . ' (' . $title . ')';
         }
         if ($submit_to == 'live') {
             $git_commit_id = do_git_commit($git_commit_message, $fixed_files, $git_commit_command_data);
