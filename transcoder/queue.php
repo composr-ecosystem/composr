@@ -23,7 +23,7 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 // This may want hard-coding if it does not detect correctly
-$transcoder_server = 'http://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (function_exists('gethostname') ? gethostname() : 'localhost')) . dirname($_SERVER['SCRIPT_NAME']);
+$transcoder_server = 'http://' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (function_exists('gethostname') ? gethostname() : 'localhost')) . str_replace(DIRECTORY_SEPARATOR, '/', dirname($_SERVER['SCRIPT_NAME']));
 $liveserver = str_replace('/transcoder', '', $transcoder_server);
 
 //mencoder path

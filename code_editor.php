@@ -182,13 +182,7 @@ function code_editor_do_login()
         }
         $webdir_stub = $dr_parts[count($dr_parts) - 1];
         $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : (isset($_ENV['SCRIPT_NAME']) ? $_ENV['SCRIPT_NAME'] : '');
-        $pos = strpos($script_name, 'code_editor.php');
-        if ($pos === false) {
-            $pos = strlen($script_name);
-        } else {
-            $pos--;
-        }
-        $ftp_folder = '/' . $webdir_stub . substr($script_name, 0, $pos);
+        $ftp_folder = '/' . $webdir_stub . str_replace(DIRECTORY_SEPARATOR, '/', dirname($script_name));
     } else {
         $ftp_folder = $SITE_INFO['ftp_folder'];
     }
