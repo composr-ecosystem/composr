@@ -498,7 +498,11 @@ class CMS_RSS
                                 }
                                 break;
                             case 'LINK':
-                                $current_item['full_url'] = $data;
+                                if ((array_key_exists('REL', $attributes)) && ($attributes['REL'] == 'enclosure')) {
+                                    $current_item['rep_image'] = array_key_exists('HREF', $attributes) ? $attributes['HREF'] : $data;
+                                } else {
+                                    $current_item['full_url'] = $data;
+                                }
                                 break;
                             case 'AUTHOR':
                                 $bracket = strpos($data, '(');
@@ -581,6 +585,9 @@ class CMS_RSS
 
                     case $prefix . 'AUTHOR':
                         $preprelast_tag = array_peek($this->tag_stack, 3);
+                        if ($preprelast_tag !== null) {
+                            $preprelast_tag = str_replace('HTTP://WWW.W3.ORG/2005/ATOM:', $prefix, $preprelast_tag);
+                        }
                         switch ($preprelast_tag) {
                             case $prefix . 'FEED':
                                 switch ($last_tag) {
@@ -674,6 +681,8 @@ class CMS_RSS
                             case $prefix . 'LINK':
                                 if ((!array_key_exists('REL', $attributes)) || ($attributes['REL'] == 'alternate')) {
                                     $current_item['full_url'] = array_key_exists('HREF', $attributes) ? $attributes['HREF'] : $data;
+                                } elseif ((array_key_exists('REL', $attributes)) && ($attributes['REL'] == 'enclosure')) {
+                                    $current_item['rep_image'] = array_key_exists('HREF', $attributes) ? $attributes['HREF'] : $data;
                                 }
                                 break;
                             case $prefix . 'MODIFIED':
