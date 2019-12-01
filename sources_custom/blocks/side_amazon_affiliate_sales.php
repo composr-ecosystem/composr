@@ -45,13 +45,13 @@ class Block_side_amazon_affiliate_sales
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             isset($map['associates_id']) ? $map['associates_id'] : '',
             isset($map['product_line']) ? $map['product_line'] : '',
             isset($map['subject_keywords']) ? $map['subject_keywords'] : '',
             (isset($map['items_number']) && intval($map['items_number']) >= 2) ? intval($map['items_number']) : 2,
             isset($map['region']) ? $map['region'] : 'US',
-        )
+        ]
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 5);
         return $info;

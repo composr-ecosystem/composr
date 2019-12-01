@@ -732,7 +732,7 @@ class Module_admin_import
         // Cleanup
         post_import_cleanup();
 
-        //$back_url = build_url(array('page' => '_SELF', 'type' => 'hook', 'importer' => get_param_string('importer'), 'just' => $import_last, 'session' => $session), '_SELF'); Actually we won't do this, as we want to be able to see any PHP errors that had been spit out
+        //$back_url = build_url(['page' => '_SELF', 'type' => 'hook', 'importer' => get_param_string('importer'), 'just' => $import_last, 'session' => $session], '_SELF'); Actually we won't do this, as we want to be able to see any PHP errors that had been spit out
         // Instead we will just go back to choose_actions
         $_GET['just'] = $import_last;
         return $this->choose_actions($out);

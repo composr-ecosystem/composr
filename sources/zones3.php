@@ -96,22 +96,22 @@ function define_comcode_page_structure($structure, $zone = '', $parent = '', $ov
     /*
         CALLING SAMPLE:
 
-        $structure = array(
-            'product' => array(
+        $structure = [
+            'product' => [
                 'trial',
-                'pricing' => array(
+                'pricing' => [
                     'tier1',
                     'tier2',
                     'tier3',
-                ),
-            ),
+                ],
+            ],
 
-            'about' => array(
+            'about' => [
                 'contact_us',
                 'team',
                 'partners',
-            ),
-        );
+            ],
+        ];
         define_comcode_page_structure($structure);
     */
 
@@ -177,9 +177,9 @@ function define_redirects($redirects, $zone = '', $overwrite_all = false)
     /*
         CALLING SAMPLE:
 
-        $redirects = array(
+        $redirects = [
             'old_name' => 'new_name',
-        );
+        ];
         define_redirects($redirects);
     }
     */
@@ -780,7 +780,7 @@ function save_comcode_page($zone, $new_file, $lang, $text, $validated = null, $p
 
     // Empty caching
     erase_persistent_cache();
-    //persistent_cache_delete(array('PAGE_INFO')); Already erases above
+    //persistent_cache_delete(['PAGE_INFO']); Already erases above
     delete_cache_entry('main_comcode_page_children');
     delete_cache_entry('menu');
     $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['string_index'], ['the_zone' => $zone, 'the_page' => $file]);

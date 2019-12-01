@@ -510,9 +510,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             $name = 'TERNARY';
                         }
                         if (function_exists('ecv_' . $name)) {
-                            $new_line = 'ecv_' . $name . '($cl,array(' . implode(',', array_map('strval', $escaped)) . '),array(' . $_opener_params . '))';
+                            $new_line = 'ecv_' . $name . '($cl,[' . implode(',', array_map('strval', $escaped]) . '),[' . $_opener_params . '])';
                         } else {
-                            $new_line = 'ecv($cl,array(' . implode(',', array_map('strval', $escaped)) . '),' . strval(TC_SYMBOL) . ',' . $first_param . ',array(' . $_opener_params . '))';
+                            $new_line = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_SYMBOL) . ',' . $first_param . ',[' . $_opener_params . '])';
                         }
                         if ((may_optimise_out_symbol(trim($first_param, '"'))) && (tc_is_all_static($_opener_params))) { // Can optimise out?
                             $tpl_funcs = [];
@@ -533,7 +533,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 $new_line = '"' . php_addslashes($eval) . '"';
                                 $_GET = $tmp;
                                 $current_level_data[] = $new_line;
-                                $current_level_data[] = 'ecv_KEEP($cl,array(' . implode(',', array_map('strval', $escaped)) . '),array("' . ((strpos($new_line, '?') === false) ? '1' : '0') . '"))';
+                                $current_level_data[] = 'ecv_KEEP($cl,[' . implode(',', array_map('strval', $escaped]) . '),["' . ((strpos($new_line, '?'] === false) ? '1' : '0') . '"))';
                                 $GLOBALS['HAS_KEEP_IN_URL_CACHE'] = null; // The temporary $_GET change can cause this to go wrong
                                 break;
                             }
@@ -542,7 +542,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         break;
 
                     case PARSE_LANGUAGE_REFERENCE:
-                        $new_line = 'ecv($cl,array(' . implode(',', array_map('strval', $escaped)) . '),' . strval(TC_LANGUAGE_REFERENCE) . ',' . $first_param . ',array(' . $_opener_params . '))';
+                        $new_line = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_LANGUAGE_REFERENCE) . ',' . $first_param . ',[' . $_opener_params . '])';
                         if (tc_is_all_static($_opener_params)) { // Optimise out for simple case?
                             $tpl_funcs = [];
                             $looked_up = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
@@ -592,9 +592,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                     $current_level_data[] = '(empty($bound_' . $parameter . '->pure_lang)?@htmlspecialchars(' . $temp . ',ENT_QUOTES | ENT_SUBSTITUTE,get_charset()):' . $temp . ')';
                                 } else {
                                     if ($s_escaped === strval(ENTITY_ESCAPED)) {
-                                        $current_level_data[] = '(empty($bound_' . $parameter . '->pure_lang)?apply_tempcode_escaping_inline(array(' . $s_escaped . '),' . $temp . '):' . $temp . ')';
+                                        $current_level_data[] = '(empty($bound_' . $parameter . '->pure_lang)?apply_tempcode_escaping_inline([' . $s_escaped . '],' . $temp . '):' . $temp . ')';
                                     } else {
-                                        $current_level_data[] = 'apply_tempcode_escaping_inline(array(' . $s_escaped . '),' . $temp . ')';
+                                        $current_level_data[] = 'apply_tempcode_escaping_inline([' . $s_escaped . '],' . $temp . ')';
                                     }
                                 }
                             }
@@ -721,19 +721,19 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 $reset_code = '';
                             }
                             $funcdef = /*if (!isset(\$tpl_funcs['$myfunc']))\n\t*/"\$tpl_funcs['$myfunc']=\"{$reset_code}echo " . php_addslashes($_past_level_data) . ";\";\n";
-                            $past_level_data = ['new Tempcode(array(array(\'' . $myfunc . '\'=>"' . php_addslashes($funcdef) . '"),array(array(array("' . $myfunc . '",array(),' . strval(TC_KNOWN) . ',\'\',\'\')))))'];
+                            $past_level_data = ['new Tempcode([[\'' . $myfunc . '\'=>"' . php_addslashes($funcdef] . '"],[[["' . $myfunc . '",[],' . strval(TC_KNOWN) . ',\'\',\'\']]]])'];
                         }
 
                         // Generate standard PHP code for directive
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $regular_code = 'ecv($cl,array(),' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',array(' . $directive_params_with_internal . ',\'vars\'=>$parameters))';
+                            $regular_code = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal . ',\'vars\'=>$parameters])';
                         } else {
-                            $regular_code = 'ecv($cl,array(),' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',array(' . $directive_params_with_internal . '))';
+                            $regular_code = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal . '])';
                         }
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $regular_code_with_faux = 'ecv($cl,array(),' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',array(' . $directive_params_with_internal_with_faux . ',\'vars\'=>$parameters))';
+                            $regular_code_with_faux = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal_with_faux . ',\'vars\'=>$parameters])';
                         } else {
-                            $regular_code_with_faux = 'ecv($cl,array(),' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',array(' . $directive_params_with_internal_with_faux . '))';
+                            $regular_code_with_faux = 'ecv($cl,[],' . strval(TC_DIRECTIVE) . ',' . implode('.', $directive_opener_params[1]) . ',[' . $directive_params_with_internal_with_faux . '])';
                         }
 
                         // See if we can completely optimise out a directive
@@ -825,11 +825,11 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 break;
 
                             case 'WHILE':
-                                $current_level_data[] = 'closure_while_loop(array($parameters,$cl),' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return (' . php_addslashes($first_directive_param) . ')==\"1\";"),' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+                                $current_level_data[] = 'closure_while_loop([$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return (' . php_addslashes($first_directive_param) . ')==\"1\";"),' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
                                 break;
 
                             case 'LOOP':
-                                $current_level_data[] = 'closure_loop(array(' . $directive_params . ',\'vars\'=>$parameters),array($parameters,$cl),' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+                                $current_level_data[] = 'closure_loop([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
 
                                 $parameter = tempcode_compiler_eval('return ' . $first_directive_param . ';', $tpl_funcs, [], $cl);
                                 if (!is_string($parameter)) {
@@ -846,7 +846,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 break;
 
                             case 'PARAMS_JSON':
-                                $current_level_data[] = 'closure_params_json(array(' . $directive_params . ',\'vars\'=>$parameters),array($parameters,$cl),' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
+                                $current_level_data[] = 'closure_params_json([' . $directive_params . ',\'vars\'=>$parameters],[$parameters,$cl],' . "\n" . 'recall_named_function(\'' . uniqid('', true) . '\',\'$parameters,$cl\',"extract(\$parameters,EXTR_PREFIX_ALL,\'bound\'); return ' . php_addslashes($directive_internal) . ';"))';
                                 break;
 
                             case 'INCLUDE':
@@ -925,9 +925,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         }
                         $directive_name = $eval;
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $current_level_data[] = 'ecv($cl,array(' . implode(',', array_map('strval', $escaped)) . '),' . strval(TC_DIRECTIVE) . ',' . $first_param . ',array(' . $_opener_params . ',\'vars\'=>$parameters))';
+                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . ',\'vars\'=>$parameters])';
                         } else {
-                            $current_level_data[] = 'ecv($cl,array(' . implode(',', array_map('strval', $escaped)) . '),' . strval(TC_DIRECTIVE) . ',' . $first_param . ',array(' . $_opener_params . '))';
+                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . '])';
                         }
                     }
                 }
@@ -1009,7 +1009,7 @@ function tc_eval_opener_params($_opener_params)
     $cl = fallback_lang();
 
     $tpl_funcs = [];
-    return tempcode_compiler_eval('return array(' . $_opener_params . ');', $tpl_funcs, [], $cl);
+    return tempcode_compiler_eval('return [' . $_opener_params . '];', $tpl_funcs, [], $cl);
 }
 
 /**

@@ -2092,7 +2092,7 @@ function check_variable($variable, $reference = false, $function_guard = '')
     while ($next != []) { // Complex: we must perform checks to make sure the base is of the correct type for the complexity to be valid. We must also note any deep variable references used in array index / string extract expressions
         /*if ($next[0] == 'CHAR_OF_STRING') {    Deprecated syntax
             check_expression($next[1]);
-            $passes = ensure_type(array('string'), check_variable(array('VARIABLE', $identifier, array())), $variable[3], 'Variable \'' . $identifier . '\' must be a string due to dereferencing');
+            $passes = ensure_type(['string'], check_variable(['VARIABLE', $identifier, []]), $variable[3], 'Variable \'' . $identifier . '\' must be a string due to dereferencing');
             if ($passes) {
                 infer_expression_type_to_variable_type('string', $next[1]);
             }

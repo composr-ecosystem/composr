@@ -665,7 +665,7 @@ function cns_get_group_members_raw_ldap(&$members, $group_id, $include_primaries
  * (LDAP helper for cns_get_members_groups) Get a list of the usergroups a member is in (keys say the usergroups, values are irrelevant).
  *
  * @param  ?MEMBER $member_id The member to find the usergroups of (null: current member)
- * @return array Flipped list (e.g. array(1=>true,2=>true,3=>true) for someone in (1,2,3)).
+ * @return array Flipped list (e.g. [1=>true,2=>true,3=>true] for someone in (1,2,3)).
  */
 function cns_get_members_groups_ldap($member_id)
 {

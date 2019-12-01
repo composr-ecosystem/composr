@@ -50,10 +50,10 @@ class Block_main_comcode_page_children
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             ((array_key_exists('param', $map)) && ($map['param'] != '')) ? $map['param'] : get_page_name(),
             array_key_exists('zone', $map) ? $map['zone'] : post_param_string('zone', get_comcode_zone(((array_key_exists('param', $map)) && ($map['param'] != '')) ? $map['param'] : get_page_name(), false)),
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to see_unvalidated privilege
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24 * 7);

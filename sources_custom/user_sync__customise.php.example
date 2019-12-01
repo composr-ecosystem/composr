@@ -29,63 +29,63 @@ function get_user_sync_env()
     $db_table = 'users';
     $db_field_delim = '`';
 
-    //$username_fields=array('Forename','Surname'); // Fields that forms the username
-    $username_fields = array('user_idn'); // Probably better: will be unique
-    $username_fields_types = array('VARCHAR');
+    //$username_fields=['Forename','Surname']; // Fields that forms the username
+    $username_fields = ['user_idn']; // Probably better: will be unique
+    $username_fields_types = ['VARCHAR'];
 
     $time_field = null; // Set to a field name, to reduce the complexity of re-syncs
 
-    $field_remap = array(
+    $field_remap = [
         /*'
         e.g.
 
-        CMS FIELD NAME (without prefix)'=>array(
+        CMS FIELD NAME (without prefix)' => [
             'LOOKUP TYPE (default, field, or callback)',
             'SOURCE FIELD NAME or VALUE or CALLBACK',
-            array(REMAPS [optional]),
-            array(REVERSE REMAPS [optional]),
+            [REMAPS [optional]],
+            [REVERSE REMAPS [optional]],
             'DESTINATION TYPE [optional - defaults to something based upon PHP type; expects a standard SQL type name]',
-        ),
+        ],
         */
 
-        'pass_hash_salted' => array(),
-        'email_address' => array(),
-        'groups' => array(),
-        'dob_day' => array(),
-        'dob_month' => array(),
-        'dob_year' => array(),
-        'timezone_offset' => array(),
-        'primary_group' => array(),
-        'validated' => array(),
-        'is_perm_banned' => array(),
-        'reveal_age' => array(),
-        'photo_url' => array(),
-        'language' => array(),
-        'allow_emails' => array(),
-        'allow_emails_from_staff' => array(),
+        'pass_hash_salted' => [],
+        'email_address' => [],
+        'groups' => [],
+        'dob_day' => [],
+        'dob_month' => [],
+        'dob_year' => [],
+        'timezone_offset' => [],
+        'primary_group' => [],
+        'validated' => [],
+        'is_perm_banned' => [],
+        'reveal_age' => [],
+        'photo_url' => [],
+        'language' => [],
+        'allow_emails' => [],
+        'allow_emails_from_staff' => [],
 
         // CPFs...
-        'fullname' => array(),
-        'firstname' => array(),
-        'lastname' => array(),
-        'country' => array(),
-        'state' => array(),
-        'city' => array(),
-        'building_name_or_number' => array(),
-        'post_code' => array(),
-        'mobile_phone_number' => array(),
-        'payment_type' => array(),
-        'payment_cardholder_name' => array(),
-        'payment_card_number' => array(),
-        'payment_card_start_date' => array(),
-        'payment_card_expiry_date' => array(),
-        'payment_card_issue_number' => array(),
-    );
+        'fullname' => [],
+        'firstname' => [],
+        'lastname' => [],
+        'country' => [],
+        'state' => [],
+        'city' => [],
+        'building_name_or_number' => [],
+        'post_code' => [],
+        'mobile_phone_number' => [],
+        'payment_type' => [],
+        'payment_cardholder_name' => [],
+        'payment_card_number' => [],
+        'payment_card_start_date' => [],
+        'payment_card_expiry_date' => [],
+        'payment_card_issue_number' => [],
+    ];
 
     $default_password = null; // NULL means random password
     $temporary_password = true;
 
-    return array(
+    return [
         $db_type,
         $db_host,
         $db_name,
@@ -103,7 +103,7 @@ function get_user_sync_env()
 
         $default_password,
         $temporary_password,
-    );
+    ];
 }
 
 function get_user_sync__begin($dbh, $since)

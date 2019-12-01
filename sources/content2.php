@@ -46,12 +46,12 @@ function define_page_metadata($page_metadata, $zone = '')
     /*
         CALLING SAMPLE:
 
-        $page_metadata = array(
-            'start' => array(
+        $page_metadata = [
+            'start' => [
                 'Title' => 'Page title goes here',
                 'description' => 'Page description goes here.',
                 'keywords' => 'page, keywords, go here',
-            ),
+            ],
         );
         define_page_metadata($page_metadata);
     }

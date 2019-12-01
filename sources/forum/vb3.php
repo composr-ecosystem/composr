@@ -1142,8 +1142,8 @@ class Forum_driver_vb3 extends Forum_driver_base
     protected function _get_super_admin_groups()
     {
         return [6];
-        //$admin_group = $this->db->query_select_value('usergroup', 'usergroupid', array('title' => 'Administrators'));      Wrong
-        //return array($admin_group);
+        //$admin_group = $this->db->query_select_value('usergroup', 'usergroupid', ['title' => 'Administrators']);      Wrong
+        //return [$admin_group];
     }
 
     /**
@@ -1155,8 +1155,8 @@ class Forum_driver_vb3 extends Forum_driver_base
     protected function _get_moderator_groups()
     {
         return [5];
-        //$moderator_group = $this->db->query_select_value('usergroup', 'usergroupid', array('title' => 'Super Moderators'));   Wrong
-        //return array($moderator_group);
+        //$moderator_group = $this->db->query_select_value('usergroup', 'usergroupid', ['title' => 'Super Moderators']);   Wrong
+        //return [$moderator_group];
     }
 
     /**

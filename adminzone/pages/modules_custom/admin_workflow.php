@@ -506,7 +506,7 @@ class Module_admin_workflow extends Standard_crud_module
      * Read in data posted by an add/edit form.
      *
      * @param  boolean $insert_if_needed Whether to insert unknown workflows into the database. For adding this should be true, otherwise false (the default)
-     * @return array (workflow_id, workflow_name, array(approval point IDs=>names), default)
+     * @return array (workflow_id, workflow_name, [approval point IDs=>names], default)
      */
     public function read_in_data($insert_if_needed = false)
     {

@@ -2130,7 +2130,7 @@ function __comcode_to_tempcode($comcode, $source_member, $as_admin, $pass_id, $d
         }
     }
 
-    /*if ($html_element_stack !== array()) {    Not actually needed
+    /*if ($html_element_stack !== []) {    Not actually needed
         $html_errors = true;
     }*/
 

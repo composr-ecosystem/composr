@@ -267,7 +267,7 @@ class Module_cms_downloads extends Standard_crud_module
     {
         $destination = post_param_integer('destination');
 
-        check_privilege('mass_import'/*Not currently scoped to categories, array('downloads', $destination)*/);
+        check_privilege('mass_import'/*Not currently scoped to categories, ['downloads', $destination]*/);
 
         $server_url = post_param_string('server_url', false, INPUT_FILTER_URL_GENERAL);
         $subfolders = post_param_integer('subfolders', 0);
@@ -315,7 +315,7 @@ class Module_cms_downloads extends Standard_crud_module
     {
         $destination = post_param_integer('destination');
 
-        check_privilege('mass_import'/*Not currently scoped to categories, array('downloads', $destination)*/);
+        check_privilege('mass_import'/*Not currently scoped to categories, ['downloads', $destination]*/);
 
         $server_path = post_param_string('server_path');
 

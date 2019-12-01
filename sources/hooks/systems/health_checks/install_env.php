@@ -80,7 +80,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        /*$unsupported_server_software = array('lighttpd', 'Tengine', 'nginx', 'IdeaWebServer');
+        /*$unsupported_server_software = ['lighttpd', 'Tengine', 'nginx', 'IdeaWebServer'];
         foreach ($unsupported_server_software as $_server_software) {
             $this->assertTrue((stripos($server_software, $_server_software) === false), do_lang('WARNING_SERVER_SOFTWARE', $_server_software));
         }*/

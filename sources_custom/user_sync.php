@@ -652,8 +652,8 @@ UTILITY FUNCTIONS
 function user_sync_find_native_fields()
 {
     /* Actually we don't support importing them all, as our code has to choose defaults
-    $native_fields = array();
-    $db_meta = $GLOBALS['SITE_DB']->query_select('db_meta', array('m_name'), array('m_table' => 'f_members'));
+    $native_fields = [];
+    $db_meta = $GLOBALS['SITE_DB']->query_select('db_meta', ['m_name'], ['m_table' => 'f_members']);
     foreach ($db_meta as $_db_meta) {
         if (substr($_db_meta['m_name'], 0, 2) == 'm_') {
             $native_fields[] = substr($_db_meta['m_name'], 2);

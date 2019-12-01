@@ -517,7 +517,7 @@ function init__webstandards()
         'colgroup' => ['col'],
         'select' => ['option', 'optgroup'],
         'legend' => ['ins', 'del'],
-        //'map' => array('area'), Apparently no such rule (see w3.org)
+        //'map' => ['area'], Apparently no such rule (see w3.org)
         'html' => ['head', 'body'],
         'embed' => ['noembed'],
         'applet' => ['param'],
@@ -539,7 +539,7 @@ function init__webstandards()
         'pre' => [],
         'script' => [],
         'param' => [],
-        /*'option' => array(),*/
+        /*'option' => [],*/
         'area' => [],
         'link' => ['link'],
         'basefont' => [],
@@ -563,8 +563,8 @@ function init__webstandards()
         'body' => ['html'],
         'head' => ['html'],
         'param' => ['script', 'object'],
-        //'link' => array('head', 'link'),  Composr will dynamically optimise things to tend towards correctness, so can't enable this rule
-        //'style' => array('head'), "
+        //'link' => ['head', 'link'],  Composr will dynamically optimise things to tend towards correctness, so can't enable this rule
+        //'style' => ['head'], "
         'li' => ['ul', 'ol', 'dd', 'menu', 'dt', 'dl', 'dir'],
         'tbody' => ['table'],
         'tfoot' => ['table'],
@@ -1204,7 +1204,7 @@ function init__webstandards()
         'script' => [/*'type'*/],
         'bdo' => ['dir'],
         'basefont' => ['size'],
-        //'param' => array('name'), Not needed in XHTML strict
+        //'param' => ['name'], Not needed in XHTML strict
         'iframe' => ['src', 'title'],
         'img' => ['src', 'alt'],
         'label' => ['for'],
@@ -1212,7 +1212,7 @@ function init__webstandards()
         'area' => ['alt'],
         'form' => ['action', 'title'],
         'textarea' => ['cols', 'rows'],
-        //'input' => array('value'), // accessibility, checked somewhere else
+        //'input' => ['value'], // accessibility, checked somewhere else
         'optgroup' => ['label'],
     ];
 
@@ -1925,7 +1925,7 @@ function _get_next_tag()
                     $status = IN_TAG_BETWEEN_ATTRIBUTE_NAME_VALUE_RIGHT;
                 } elseif ($next == '<') {
                     $errors[] = ['XML_TAG_OPEN_ANOMALY', '5'];
-                    //return array(null, $errors);
+                    //return [null, $errors];
                     // We have to assume we shouldn't REALLY have found a tag
                     $POS--;
                     $current_tag = '';
@@ -1943,7 +1943,7 @@ function _get_next_tag()
                         $errors[] = ['XML_TAG_CLOSE_ANOMALY'];
                     }
                     // Things like nowrap, checked, etc
-                    //return array(null, $errors);
+                    //return [null, $errors];
 
                     if (isset($attribute_map[$current_attribute_name])) {
                         $errors[] = ['XML_TAG_DUPLICATED_ATTRIBUTES', $current_tag];
@@ -1973,7 +1973,7 @@ function _get_next_tag()
                     if ($GLOBALS['XML_CONSTRAIN']) {
                         $errors[] = ['XML_ATTRIBUTE_ERROR'];
                     }
-                    //return array(null, $errors);  Actually  <blah nowrap ... /> could cause this
+                    //return [null, $errors];  Actually  <blah nowrap ... /> could cause this
 
                     $status = IN_TAG_BETWEEN_ATTRIBUTES;
                     if (isset($attribute_map[$current_attribute_name])) {

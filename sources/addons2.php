@@ -194,7 +194,7 @@ function create_addon($file, $files, $addon_name, $incompatibilities, $dependenc
             $data = '<' . '?php' . "\n";
             foreach ($images as $image) {
                 if (($image['url'] != '') && ($image['url'] != find_theme_image($image['id'], true, true, 'default'))) {
-                    $data .= '$GLOBALS[\'SITE_DB\']->query_insert(\'theme_images\', array(\'id\' => \'' . db_escape_string($image['id']) . '\', \'theme\' => \'' . db_escape_string($image['theme']) . '\', \'url\' => \'' . db_escape_string($image['url']) . '\', \'lang\' => \'' . db_escape_string($image['lang']) . '\'), false, true);' . "\n";
+                    $data .= '$GLOBALS[\'SITE_DB\']->query_insert(\'theme_images\', [\'id\' => \'' . db_escape_string($image['id']] . '\', \'theme\' => \'' . db_escape_string($image['theme']) . '\', \'url\' => \'' . db_escape_string($image['url']) . '\', \'lang\' => \'' . db_escape_string($image['lang']) . '\'), false, true);' . "\n";
                 }
             }
             tar_add_file($tar, 'addon_install_code.php', $data, 0444, time());
@@ -663,13 +663,13 @@ function inform_about_addon_install($file, $also_uninstalling = [], $also_instal
         }
     }
 
-    //if (!$overwrite->is_empty()) $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => 'fe40ed8192a452a835be4c0fde64406b', 'WARNING' => do_lang_tempcode('ADDON_WARNING_OVERWRITE', escape_html($overwrite), escape_html($file)))));
+    //if (!$overwrite->is_empty()) $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => 'fe40ed8192a452a835be4c0fde64406b', 'WARNING' => do_lang_tempcode('ADDON_WARNING_OVERWRITE', escape_html($overwrite], escape_html($file)))));
     if ($info['author'] != 'Core Team') {
         if ($php) {
             $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => '8cf249a119d10b2e97fc94cb9981dcea', 'WARNING' => do_lang_tempcode('ADDON_WARNING_PHP', escape_html($file))]));
         }
     }
-    //if ($chmod != '') $warnings->attach(do_template('ADDON_INSTALL_WARNING', array('_GUID' => '78121e40b9a26c2f33d09f7eee7b74be', 'WARNING' => do_lan g_tempcode('ADDON_WARNING_CHMOD', escape_html($chmod))))); // Now uses AFM
+    //if ($chmod != '') $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => '78121e40b9a26c2f33d09f7eee7b74be', 'WARNING' => do_lan g_tempcode('ADDON_WARNING_CHMOD', escape_html($chmod])))); // Now uses AFM
 
     $files_combined = new Tempcode();
     $files_combined->attach($files_warnings);

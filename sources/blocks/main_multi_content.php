@@ -77,7 +77,7 @@ class Block_main_multi_content
         ?
         null
         :
-        array(
+        [
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
             array_key_exists('guid', $map) ? $map['guid'] : '',
             array_key_exists('render_if_empty', $map) ? $map['render_if_empty'] : '0',
@@ -92,7 +92,7 @@ class Block_main_multi_content
             array_key_exists('no_links', $map) ? $map['no_links'] : 0,
             ((array_key_exists('days', $map)) && ($map['days'] != '')) ? intval($map['days']) : null,
             ((array_key_exists('lifetime', $map)) && ($map['lifetime'] != '')) ? intval($map['lifetime']) : null,
-            ((array_key_exists('pinned', $map)) && ($map['pinned'] != '')) ? explode(',', $map['pinned']) : array(),
+            ((array_key_exists('pinned', $map)) && ($map['pinned'] != '')) ? explode(',', $map['pinned']) : [],
             array_key_exists('title', $map) ? $map['title'] : '',
             array_key_exists('param', $map) ? $map['param'] : 'download',
             array_key_exists('select', $map) ? $map['select'] : '',
@@ -100,7 +100,7 @@ class Block_main_multi_content
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
             array_key_exists('sort', $map) ? $map['sort'] : 'recent',
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {

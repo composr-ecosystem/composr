@@ -57,7 +57,7 @@ class Hook_symbol_CATALOGUE_ENTRY_FIELD_VALUE_PLAIN
                     $catalogue = load_catalogue_row($catalogue_name, true);
                     if ($catalogue !== null) {
                         $tpl_set = $catalogue_name;
-                        $map = get_catalogue_entry_map($entry[0], ['c_display_type' => C_DT_FIELDMAPS] + $catalogue, 'PAGE', $tpl_set, null, null/*Actually we'll load all so we can cache all,array($field_id)*/);
+                        $map = get_catalogue_entry_map($entry[0], ['c_display_type' => C_DT_FIELDMAPS] + $catalogue, 'PAGE', $tpl_set, null, null/*Actually we'll load all so we can cache all,[$field_id]*/);
 
                         $CATALOGUE_MAPPER_SYMBOL_CACHE[$entry_id] = $map;
                     }

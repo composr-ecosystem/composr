@@ -38,7 +38,7 @@ class Hook_cns_cpf_filter_ecommerce
 
         // General payment details
         // Not configurable per-member yet
-        //    $cpf = array_merge($cpf, array('currency' => true,));
+        //    $cpf = array_merge($cpf, ['currency' => true,]);
 
         // Local payment (we only store these locally if doing local payment, if we've gone through PCI checks)
         if ((get_option('use_local_payment') == '1') && (get_option('store_credit_card_numbers') == '1')) {

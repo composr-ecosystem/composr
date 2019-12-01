@@ -223,7 +223,7 @@ function cns_get_all_subordinate_forums($forum_id, $create_or_list = null, $tree
 /* Interesting function, not currently needed
 function cns_is_up_to_date_on_forum($forum_id, $member_id = null)
 {
-    $_last_topic = $GLOBALS['FORUM_DB']->query_select('f_forums', array('f_cache_last_time', 'f_cache_last_topic_id'), array('id' => $forum_id));
+    $_last_topic = $GLOBALS['FORUM_DB']->query_select('f_forums', ['f_cache_last_time', 'f_cache_last_topic_id'], ['id' => $forum_id]);
     if (!array_key_exists(0, $_last_topic)) {
         return false; // Data error, but let's just trip past
     }

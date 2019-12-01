@@ -45,7 +45,7 @@ class Block_main_image_slider
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             empty($map['param']) ? 'root' : $map['param'],
             array_key_exists('time', $map) ? intval($map['time']) : 8000,
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('galleries'),
@@ -54,7 +54,7 @@ class Block_main_image_slider
             empty($map['height']) ? '300px' : $map['height'],
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
             array_key_exists('transitions', $map) ? $map['transitions'] : 'cube|cubeRandom|block|cubeStop|cubeHide|cubeSize|horizontal|showBars|showBarsRandom|tube|fade|fadeFour|paralell|blind|blindHeight|blindWidth|directionTop|directionBottom|directionRight|directionLeft|cubeStopRandom|cubeSpread|cubeJelly|glassCube|glassBlock|circles|circlesInside|circlesRotate|cubeShow|upBars|downBars|hideBars|swapBars|swapBarsBack|swapBlocks|cut|random|randomSmart',
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;

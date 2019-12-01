@@ -201,7 +201,7 @@ class Hook_health_check_mistakes_build extends Hook_Health_Check
         foreach ($_urls as $url) {
             // Check
             /*
-            $data = http_get_contents($url, array('byte_limit' => 0, 'trigger_error' => false));
+            $data = http_get_contents($url, ['byte_limit' => 0, 'trigger_error' => false]);
             $ok = ($data !== null);
             */
             for ($i = 0; $i < 3; $i++) { // Try a few times in case of some temporary network issue

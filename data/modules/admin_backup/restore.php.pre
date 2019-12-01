@@ -32,10 +32,10 @@ assert_options(ASSERT_ACTIVE, 0);
 cms_ini_set('assert.active', '0');
 
 global $REQUIRED_BEFORE;
-$REQUIRED_BEFORE = array();
+$REQUIRED_BEFORE = [];
 
 global $SITE_INFO;
-$SITE_INFO = array();
+$SITE_INFO = [];
 
 global $CURRENT_SHARE_USER;
 $CURRENT_SHARE_USER = null;
@@ -101,7 +101,7 @@ require_lang('backups');
 
 // Start button if not post
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-    $proceed_icon = do_template('ICON', array('NAME' => 'buttons/proceed'));
+    $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
     $msg = '';
     $msg .= '<form action="restore.php" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('START')) . '</button></form>';
     finish_restorer_output($msg);
@@ -147,13 +147,13 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
 
     // Find if it is a new command
     $is_new_command = false;
-    $valid_cmd_starts = array(
+    $valid_cmd_starts = [
         '$GLOBALS[\'SITE_DB\']->query_insert(\'',
         '$GLOBALS[\'SITE_DB\']->drop_table_if_exists(\'',
         '$GLOBALS[\'SITE_DB\']->create_table(\'',
         '$GLOBALS[\'SITE_DB\']->delete_index_if_exists(\'',
         '$GLOBALS[\'SITE_DB\']->create_index(\'',
-    );
+    ];
     foreach ($valid_cmd_starts as $valid_cmd_start) {
         if (substr(ltrim($line), 0, strlen($valid_cmd_start)) == $valid_cmd_start) {
             $is_new_command = true;
@@ -173,7 +173,7 @@ while (($line = cms_fgets($data_file, $data_file_charset)) !== false) {
         // Need to go to a new iteration?
         if (time() >= $time_max) {
             $refresh_url = 'restore.php?start_offset=' . strval($offset);
-            $proceed_icon = do_template('ICON', array('NAME' => 'buttons/proceed'));
+            $proceed_icon = do_template('ICON', ['NAME' => 'buttons/proceed']);
             $msg = '';
             $msg .= '<form action="' . escape_html($refresh_url) . '" method="post"><button id="proceed-button" class="btn btn-primary btn-scr buttons--proceed" type="submit" onclick="this.disabled=true; this.form.submit();">' . $proceed_icon->evaluate() . ' ' . escape_html(do_lang('CONTINUE_RESTORATION')) . '</button></form>';
             $msg .= '<script>var button=document.getElementById(\'proceed-button\'); button.disabled=true; button.form.submit();</script>';
@@ -217,7 +217,7 @@ function finish_restorer_output($msg)
 {
     require_code('tempcode_compiler');
     $css_nocache = _do_template('default', '/css/', 'no_cache', 'no_cache', 'EN', '.css');
-    $tpl = do_template('RESTORE_HTML_WRAP', array('_GUID' => '8e3b9d894d8ef06b5057fb654f7db59b', 'CSS_NOCACHE' => $css_nocache, 'MESSAGE' => $msg));
+    $tpl = do_template('RESTORE_HTML_WRAP', ['_GUID' => '8e3b9d894d8ef06b5057fb654f7db59b', 'CSS_NOCACHE' => $css_nocache, 'MESSAGE' => $msg]);
     echo $tpl->evaluate();
     exit();
 }

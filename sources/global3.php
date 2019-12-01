@@ -3583,7 +3583,7 @@ function has_cookies() // Will fail on users first visit, but then will catch on
 
     /*if (($GLOBALS['DEV_MODE']) && (get_param_integer('keep_debug_has_cookies', 0) == 0) && (!running_script('commandr')))   We know this works by now, was tested for years. Causes annoyance when developing
     {
-        $_COOKIE = array();
+        $_COOKIE = [];
         return false;
     }*/
 
@@ -3781,7 +3781,7 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
         $zone_name = get_zone_name();
     }
 
-    /*$p_test = function_exists('persistent_cache_get') ? persistent_cache_get(array('ZONE', $zone_name)) : null;       Better to get from ALL_ZONES_TITLED, less cache volume
+    /*$p_test = function_exists('persistent_cache_get') ? persistent_cache_get(['ZONE', $zone_name]) : null;       Better to get from ALL_ZONES_TITLED, less cache volume
     if ($p_test !== null) {
         return $p_test['zone_default_page'];
     }*/
@@ -3804,7 +3804,7 @@ function get_zone_default_page($zone_name, &$zone_missing = false)
                 }
             }
             if ($_zone_default_page === null) {
-                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page'], []/*Load multiple so we can cache for performance array('zone_name' => $zone_name)*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
+                $_zone_default_page = $GLOBALS['SITE_DB']->query_select('zones', ['zone_name', 'zone_default_page'], []/*Load multiple so we can cache for performance ['zone_name' => $zone_name]*/, 'ORDER BY zone_title', 50/*reasonable limit; zone_title is sequential for default zones*/);
             }
             foreach ($_zone_default_page as $zone_row) {
                 $ZONE_DEFAULT_PAGES_CACHE[$zone_row['zone_name']] = $zone_row['zone_default_page'];

@@ -144,9 +144,9 @@ function make_installers($skip_file_grab = false)
             /* QUICK INSTALLER CODE starts */
 
             global \$FILE_ARRAY,\$SIZE_ARRAY,\$OFFSET_ARRAY,\$DIR_ARRAY,\$DATADOTCMS_FILE;
-            \$OFFSET_ARRAY = array({$offset_list});
-            \$SIZE_ARRAY = array({$size_list});
-            \$FILE_ARRAY = array({$file_list});
+            \$OFFSET_ARRAY = [{$offset_list}];
+            \$SIZE_ARRAY = [{$size_list}];
+            \$FILE_ARRAY = [{$file_list}];
             \$DATADOTCMS_FILE = @fopen('data.cms','rb');
             if (\$DATADOTCMS_FILE === false) exit('data.cms missing / inaccessible -- make sure you upload it');
             if (filesize('data.cms') != " . strval($archive_size) . ") warn_exit('data.cms not fully uploaded, or wrong version for this installer');
@@ -165,7 +165,7 @@ function make_installers($skip_file_grab = false)
                 if (\$size == 0) return '';
                 fseek(\$DATADOTCMS_FILE,\$offset,SEEK_SET);
                 if (\$size>1024*1024) {
-                    return array(\$size,\$DATADOTCMS_FILE,\$offset);
+                    return [\$size,\$DATADOTCMS_FILE,\$offset];
                 }
                 \$data = fread(\$DATADOTCMS_FILE,\$size);
                 return \$data;
@@ -181,7 +181,7 @@ function make_installers($skip_file_grab = false)
             {
                 global \$FILE_ARRAY;
                 \$name = \$FILE_ARRAY[\$i];
-                return array(\$name,file_array_get(\$name));
+                return [\$name,file_array_get(\$name]);
             }
 
             function file_array_count()

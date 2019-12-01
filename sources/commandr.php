@@ -1148,7 +1148,7 @@ class Virtual_shell
     protected function _array_to_text($array, $indentation = 0)
     {
         // Convert an array to a text format
-        $output = $this->_do_indentation($indentation) . 'array(';
+        $output = $this->_do_indentation($indentation) . '[';
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $output .= "\n" . $this->_array_to_text($value, $indentation + 1);
@@ -1156,7 +1156,7 @@ class Virtual_shell
                 $output .= "\n" . $this->_do_indentation($indentation + 1) . $key . ' -> ' . $value;
             }
         }
-        $output .= "\n" . $this->_do_indentation($indentation) . ')';
+        $output .= "\n" . $this->_do_indentation($indentation) . ']';
         return $output;
     }
 

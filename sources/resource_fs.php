@@ -363,7 +363,7 @@ function find_label_via_id($resource_type, $resource_id)
  */
 function find_id_via_moniker($resource_type, $resource_moniker)
 {
-    /*static $cache = array(); Things may have been deleted
+    /*static $cache = []; Things may have been deleted
     if (isset($cache[$resource_type][$resource_moniker])) {
         return $cache[$resource_type][$resource_moniker];
     }*/
@@ -390,7 +390,7 @@ function find_id_via_label($resource_type, $_resource_label, $subpath = null)
 {
     $resource_label = cms_mb_substr($_resource_label, 0, 255);
 
-    /*static $cache = array(); Things may have been deleted
+    /*static $cache = []; Things may have been deleted
     if (isset($cache[$resource_type][$resource_label][$subpath])) {
         return $cache[$resource_type][$resource_label][$subpath];
     }*/
@@ -463,7 +463,7 @@ function _check_id_match($commandr_fs_ob, $resource_type, $resource_id, $subpath
  */
 function find_id_via_guid($resource_guid)
 {
-    /*static $cache = array(); Things may have been deleted
+    /*static $cache = []; Things may have been deleted
     if (isset($cache[$resource_guid])) {
         return $cache[$resource_guid];
     }*/

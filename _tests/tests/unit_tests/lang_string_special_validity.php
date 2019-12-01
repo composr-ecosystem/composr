@@ -56,7 +56,7 @@ class lang_string_special_validity_test_set extends cms_test_case
         $substring_pairs = [
             ['BLOCK_IND_EITHER', ['BLOCK_PARAM_cache', null, null, null]],
             ['BLOCK_IND_HOOKTYPE', ['BLOCK_main_custom_gfx_PARAM_param', null, null, null]],
-            //array('BLOCK_IND_DEFAULT', 'default: test'),
+            //['BLOCK_IND_DEFAULT', 'default: test'],
             ['BLOCK_IND_SUPPORTS_COMCODE', 'COMCODE_TAG_indent_EMBED'],
             ['BLOCK_IND_ADVANCED', 'COMCODE_TAG_box_PARAM_options'],
             ['BLOCK_IND_WHETHER', 'COMCODE_TAG_codebox_PARAM_numbers'],

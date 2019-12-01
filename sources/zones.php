@@ -396,7 +396,7 @@ function load_redirect_cache()
     if ((addon_installed('redirects_editor')) && (!$GLOBALS['IN_MINIKERNEL_VERSION'])) {
         $redirect = persistent_cache_get('REDIRECT');
         if ($redirect === null) {
-            $redirect = $GLOBALS['SITE_DB']->query_select('redirects', ['*']/*Actually for performance we will load all and cache them , array('r_from_zone' => get_zone_name())*/);
+            $redirect = $GLOBALS['SITE_DB']->query_select('redirects', ['*']/*Actually for performance we will load all and cache them , ['r_from_zone' => get_zone_name(])*/);
             persistent_cache_set('REDIRECT', $redirect);
         }
         foreach ($redirect as $r) {
@@ -1284,11 +1284,11 @@ function apply_quick_caching($_cache)
     $has_keep_parameters = has_keep_parameters();
 
 //    if ($has_keep_parameters) {
-//        $keep_first_has_escaping = symbol_tempcode('KEEP', array('0'), array(ENTITY_ESCAPED));
-//        $keep_non_first_has_escaping = symbol_tempcode('KEEP', array('1'), array(ENTITY_ESCAPED));
+//        $keep_first_has_escaping = symbol_tempcode('KEEP', ['0'], [ENTITY_ESCAPED]);
+//        $keep_non_first_has_escaping = symbol_tempcode('KEEP', ['1'], [ENTITY_ESCAPED]);
 //
-//        $keep_first_has_no_escaping = symbol_tempcode('KEEP', array('0'), array(NULL_ESCAPED));
-//        $keep_non_first_has_no_escaping = symbol_tempcode('KEEP', array('1'), array(NULL_ESCAPED));
+//        $keep_first_has_no_escaping = symbol_tempcode('KEEP', ['0'], [NULL_ESCAPED]);
+//        $keep_non_first_has_no_escaping = symbol_tempcode('KEEP', ['1'], [NULL_ESCAPED]);
 //    }
 
     $has_escaping = (preg_match('#<a|&\w+;#', $cache) !== 0);
@@ -1520,7 +1520,7 @@ function get_block_info_row($codename, $map)
         }
     }
     if (($row === null) && (isset($map['quick_cache'])) && ($map['quick_cache'] === '1')) {
-        $row = ['cached_for' => $codename, 'cache_on' => 'array($map,$GLOBALS[\'FORUM_DRIVER\']->get_members_groups(get_member()))', 'cache_ttl' => 60];
+        $row = ['cached_for' => $codename, 'cache_on' => '[$map,$GLOBALS[\'FORUM_DRIVER\']->get_members_groups(get_member(]))', 'cache_ttl' => 60];
     }
 
     $cache[$sz] = $row;

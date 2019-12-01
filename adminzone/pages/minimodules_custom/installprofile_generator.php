@@ -86,9 +86,9 @@ class Hook_admin_setupwizard_installprofiles_mycustomprofile
             return null;
         }
 
-        return array(
+        return [
             'title' => 'My Custom installprofile',
-        );
+        ];
     }
 
     /**
@@ -98,8 +98,8 @@ class Hook_admin_setupwizard_installprofiles_mycustomprofile
      */
     public function get_addon_list()
     {
-        return array(
-            array(
+        return [
+            [
 
 END;
 $addons = find_installed_addons();
@@ -108,10 +108,10 @@ foreach ($addons as $addon_info) {
     $profile .= "\t\t\t\t\"" . php_addslashes($addon_info['name']) . "\",\n";
 }
 $profile .= <<<END
-            ),
-            array(
-            ),
-            array(
+            ],
+            [
+            ],
+            [
 
 END;
 $non_installed_addons = find_available_addons(false);
@@ -120,8 +120,8 @@ foreach ($non_installed_addons as $addon_info) {
     $profile .= "\t\t\t\t\"" . php_addslashes($addon_info['name']) . "\",\n";
 }
 $profile .= <<<END
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -131,7 +131,7 @@ $profile .= <<<END
      */
     public function field_defaults()
     {
-        return array(
+        return [
 
 END;
 $hooks = find_all_hooks('modules', 'admin_setupwizard');
@@ -153,7 +153,7 @@ foreach (array_keys($hooks) as $hook) {
     }
 }
 $profile .= <<<END
-        );
+        ];
     }
 
     /**
@@ -163,8 +163,8 @@ $profile .= <<<END
      */
     public function default_blocks()
     {
-        return array(
-            'YES' => array(
+        return [
+            'YES' => [
 
 END;
 $blocks = find_blocks_in_page(DEFAULT_ZONE_PAGE_NAME);
@@ -172,10 +172,10 @@ foreach (array_keys($blocks) as $block) {
     $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\",\n";
 }
 $profile .= <<<END
-            ),
-            'YES_CELL' => array(
-            ),
-            'PANEL_LEFT' => array(
+            ],
+            'YES_CELL' => [
+            ],
+            'PANEL_LEFT' => [
 
 END;
 $blocks = find_blocks_in_page('panel_left');
@@ -183,8 +183,8 @@ foreach (array_keys($blocks) as $block) {
     $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\",\n";
 }
 $profile .= <<<END
-            ),
-            'PANEL_RIGHT' => array(
+            ],
+            'PANEL_RIGHT' => [
 
 END;
 $blocks = find_blocks_in_page('panel_right');
@@ -192,8 +192,8 @@ foreach (array_keys($blocks) as $block) {
     $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\",\n";
 }
 $profile .= <<<END
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -203,7 +203,7 @@ $profile .= <<<END
      */
     public function block_options()
     {
-        return array(
+        return [
 
 END;
 require_code('zones2');
@@ -211,7 +211,7 @@ $blocks = array_merge(find_blocks_in_page(DEFAULT_ZONE_PAGE_NAME), find_blocks_i
 foreach ($blocks as $block => $full_tag) {
     require_code('comcode_compiler');
     $parameters = parse_single_comcode_tag($full_tag, 'block');
-    $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\"=>array(\n";
+    $profile .= "\t\t\t\t\"" . php_addslashes($block) . "\" => [\n";
     foreach ($parameters as $key => $val) {
         if ($key != '') {
             $profile .= "\t\t\t\t\t\"" . php_addslashes($key) . "\"=>\"" . php_addslashes($val) . "\",\n";
@@ -220,7 +220,7 @@ foreach ($blocks as $block => $full_tag) {
     $profile .= "\t\t\t\t),\n";
 }
 $profile .= <<<END
-        );
+        ];
     }
 
     /**

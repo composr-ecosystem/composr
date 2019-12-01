@@ -72,7 +72,7 @@ class Block_main_members
         ?
         null
         :
-        array(
+        [
             array_key_exists('display_mode', $map) ? $map['display_mode'] : 'avatars',
             array_key_exists('must_have_avatar', $map) ? ($map['must_have_avatar'] == '1') : false,
             array_key_exists('must_have_photo', $map) ? ($map['must_have_photo'] == '1') : false,
@@ -90,7 +90,7 @@ class Block_main_members
             array_key_exists('per_row', $map) ? intval($map['per_row']) : 0,
             array_key_exists('include_non_confirmed', $map) ? $map['include_non_confirmed'] : 'exclude',
             array_key_exists('guid', $map) ? $map['guid'] : '',
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to CPF permissions
         $info['ttl'] = 60;
@@ -345,7 +345,7 @@ PHP;
 
         /*if (count($rows)==0)   We let our template control no-result output
         {
-            return do_template('BLOCK_NO_ENTRIES', array(
+            return do_template('BLOCK_NO_ENTRIES', [
                 '_GUID' => '8e2691c84c5ff6e4ca16305fa409f7b8',
                 'BLOCK_ID' => $block_id,
                 'HIGH' => false,
@@ -353,7 +353,7 @@ PHP;
                 'MESSAGE' => do_lang_tempcode('NO_ENTRIES', 'member'),
                 'ADD_NAME' => '',
                 'SUBMIT_URL' => '',
-            ));
+            ]);
         }*/
 
         $cnt = 0;

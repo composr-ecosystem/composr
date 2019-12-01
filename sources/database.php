@@ -1448,7 +1448,7 @@ class DatabaseConnector
     }
 
     /**
-     * Do a named-parameter query, like "SELECT * FROM foo WHERE a='{value}';" with array('value' => 'b').
+     * Do a named-parameter query, like "SELECT * FROM foo WHERE a='{value}';" with ['value' => 'b'].
      * Assumes nothing looking like {example} is in the query already.
      * Also supports {prefix} for encoding the table prefix.
      * Lots of programmers like to do queries like this as it reduces the chance of accidentally forgetting to escape a parameter inserted directly/manually within a longer query.

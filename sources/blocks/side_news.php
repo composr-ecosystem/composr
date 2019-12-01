@@ -50,7 +50,7 @@ class Block_side_news
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('title', $map) ? $map['title'] : '',
             array_key_exists('blogs', $map) ? $map['blogs'] : '-1',
             array_key_exists('historic', $map) ? $map['historic'] : '',
@@ -60,7 +60,7 @@ class Block_side_news
             array_key_exists('param', $map) ? intval($map['param']) : 5,
             array_key_exists('select_and', $map) ? $map['select_and'] : '',
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {

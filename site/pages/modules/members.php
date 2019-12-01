@@ -156,7 +156,7 @@ class Module_members
                 $awards = [];
             }
 
-            //$this->title = get_screen_title('MEMBER_ACCOUNT', true, array(make_fractionable_editable('member', $member_id_of, $username)), null, $awards);
+            //$this->title = get_screen_title('MEMBER_ACCOUNT', true, [make_fractionable_editable('member', $member_id_of, $username]), null, $awards);
             $displayname = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of, true);
             $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id_of);
             $this->title = get_screen_title('MEMBER_ACCOUNT', true, [escape_html($displayname), escape_html($username)], null, $awards);

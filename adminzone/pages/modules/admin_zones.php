@@ -75,7 +75,7 @@ class Module_admin_zones
         $zones = find_all_zones(true);
         require_code('files');
         foreach ($zones as $zone) {
-            //if (!in_array($zone, array('', 'docs', 'adminzone', 'forum', 'cms', 'site'))) {
+            //if (!in_array($zone, ['', 'docs', 'adminzone', 'forum', 'cms', 'site'])) {
             //    deldir_contents(get_file_base() . '/' . $zone, true);
             //}
             $langs = find_all_langs(true);

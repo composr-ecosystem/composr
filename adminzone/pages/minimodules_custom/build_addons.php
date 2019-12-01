@@ -242,6 +242,6 @@ function update_addon_descriptions($file, $name, $description)
 {
     $_description = addslashes($description);
 return <<<END
-    :\$GLOBALS['SITE_DB']->query_update('download_downloads', array('the_description' => '{$_description}'), array('url' => 'uploads/downloads/' . rawurlencode('{$file}')));
+    :\$GLOBALS['SITE_DB']->query_update('download_downloads', ['the_description' => '{$_description}'], ['url' => 'uploads/downloads/' . rawurlencode('{$file}']));
 END;
 }

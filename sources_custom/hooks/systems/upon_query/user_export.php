@@ -114,7 +114,7 @@ class Hook_upon_query_user_export
             return;
         }
 
-        /*$matches = array();   Can cause loop, use the below code
+        /*$matches = [];   Can cause loop, use the below code
         if (
         (preg_match('#^INSERT INTO ' . $prefix . 'f_members #', $query, $matches) != 0)
         ) {

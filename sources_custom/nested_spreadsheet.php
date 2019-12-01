@@ -63,7 +63,7 @@ function get_nested_spreadsheet_structure()
                     // Initialise data for this forthcoming $spreadsheet_files entry
                     $spreadsheet_file = [];
                     $spreadsheet_file['headings'] = [];    // Unordered headings                               ?=>heading
-                    $spreadsheet_file['data'] = [];        // Array of rows                                    ?=>array(cols,col2,col3,...)
+                    $spreadsheet_file['data'] = [];        // Array of rows                                    ?=>[cols,col2,col3,...]
 
                     // Fill out 'headings'
                     $spreadsheet_file['headings'] = $header_row;

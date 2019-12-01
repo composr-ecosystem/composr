@@ -172,10 +172,10 @@ function version_specific()
                 $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'menu_items SET i_url=REPLACE(i_url,\'' . $from . '\',\'' . $to . '\')');
             }
             /*
-            $deleted_modules = array(
-            );
+            $deleted_modules = [
+            ];
             foreach ($deleted_modules as $module_name) {
-                $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $module_name));
+                $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $module_name]);
             }
             */
             persistent_cache_delete('MODULES');

@@ -309,7 +309,7 @@ abstract class HttpDownloader
     protected $trigger_error = true; // boolean. Whether to throw a Composr error, on error
     protected $no_redirect = false; // boolean. Whether to block redirects (returns null when found)
     protected $ua = 'Composr'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
-    protected $post_params = null; // ?array. An optional array of POST parameters to send; if this is null, a GET request is used (null: none). If $raw_post is set, it should be array($data)
+    protected $post_params = null; // ?array. An optional array of POST parameters to send; if this is null, a GET request is used (null: none). If $raw_post is set, it should be [$data]
     protected $cookies = []; // array. An optional array of cookies to send
     protected $accept = null; // ?string. 'accept' header value (null: don't pass one)
     protected $accept_charset = null; // ?string. 'accept-charset' header value (null: don't pass one)
@@ -1104,7 +1104,7 @@ class HttpDownloaderCurl extends HttpDownloader
 
         // Response
         $curl_result = curl_exec($ch);
-        /*if ((count($curl_headers)!=0) && (($this->files != array()))) { // Useful for debugging
+        /*if ((count($curl_headers)!=0) && (($this->files != []))) { // Useful for debugging
             var_dump(curl_getinfo($ch,CURLINFO_HEADER_OUT));exit();
         }*/
         if ($curl_result === false) {

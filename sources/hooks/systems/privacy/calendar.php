@@ -36,9 +36,9 @@ class Hook_privacy_calendar extends Hook_privacy_base
 
         return [
             'cookies' => [
-                /*'feed_*' => array( TODO #3846
+                /*'feed_*' => [ TODO #3846
                     'reason' => 'Feeds you have overlaid over your calendar',
-                ),*/
+                ],*/
             ],
 
             'positive' => [

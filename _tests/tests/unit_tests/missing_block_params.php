@@ -59,7 +59,7 @@ class missing_block_params_test_set extends cms_test_case
                 // Check for caching
                 if (
                     (strpos($c, '$info[\'cache_on\']') !== false) && /* Has caching */
-                    (strpos($c, '$info[\'cache_on\'] = array(') === false) && /* Has expression-based caching (not function-based caching) */
+                    (strpos($c, '$info[\'cache_on\'] = ['] === false) && /* Has expression-based caching (not function-based caching) */
                     (strpos($c, '$info[\'cache_on\'] = \'$map\';') === false) && /* Doesn't just cache all parameters together */
                     (strpos($c, '$info[\'cache_on\'] = \'(count($_POST)==0) ? $map : null\';') === false) /* " */
                 ) {

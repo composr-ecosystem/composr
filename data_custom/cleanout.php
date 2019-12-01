@@ -219,12 +219,12 @@ function cleanup()
             ['root'],
         ],
 
-        /*array( Probably unwanted
+        /*[ Probably unwanted
             'delete_menu_item',
             'menus2',
             'menu_items',
             'id',
-        ),*/
+        ],*/
 
         [
             'delete_news_category',
@@ -283,13 +283,13 @@ function cleanup()
             [],
         ],
 
-        /*array(  Probably not wanted
+        /*[  Probably not wanted
             'cns_delete_emoticon',
             'cns_general_action2',
             'f_emoticons',
             'e_code',
-            array(),
-        ),*/
+            [],
+        ],*/
 
         [
             'cns_delete_welcome_email',
@@ -315,13 +315,13 @@ function cleanup()
             [db_get_first_id(), db_get_first_id() + 1],
         ],
 
-        /*array(  Probably not wanted
+        /*[  Probably not wanted
             'cns_delete_custom_field',
             'cns_members_action2',
             'f_custom_fields',
             'id',
-            array(),
-        ),*/
+            [],
+        ],*/
 
         [
             'cns_delete_warning',
@@ -387,46 +387,46 @@ function cleanup()
             [],
         ],
 
-        /*array(  Probably not wanted
+        /*[  Probably not wanted
             'actual_delete_zone',
             'zones2',
             'zones',
             'zone_name',
-            array('', 'site', 'adminzone', 'cms', 'forum'),
-        ),*/
+            ['', 'site', 'adminzone', 'cms', 'forum'],
+        ],*/
 
-        /*array(  Probably not wanted
+        /*[  Probably not wanted
             'delete_cms_page',
             'zones3',
             'comcode_pages',
-            array('the_zone', 'the_page'),
-            array(
-                    array('adminzone', 'netlink'),
-                    array('adminzone', 'panel_top'),
-                    array('adminzone', 'quotes'),
-                    array('adminzone', DEFAULT_ZONE_PAGE_NAME),
-                    array('cms', 'panel_top'),
-                    array('forum', 'panel_left'),
-                    array('site', 'help'),
-                    array('site', 'panel_left'),
-                    array('site', 'panel_right'),
-                    array('site', DEFAULT_ZONE_PAGE_NAME),
-                    array('site', 'userguide_chatcode'),
-                    array('site', 'userguide_comcode'),
-                    array('', '404'),
-                    array('', 'feedback'),
-                    array('', 'keymap'),
-                    array('', 'panel_bottom'),
-                    array('', 'panel_left'),
-                    array('', 'panel_right'),
-                    array('', 'panel_top'),
-                    array('', 'privacy'),
-                    array('', 'recommend_help'),
-                    array('', 'rules'),
-                    array('', 'sitemap'),
-                    array('', DEFAULT_ZONE_PAGE_NAME),
-            ),
-        ),*/
+            ['the_zone', 'the_page'],
+            [
+                ['adminzone', 'netlink'],
+                ['adminzone', 'panel_top'],
+                ['adminzone', 'quotes'],
+                ['adminzone', DEFAULT_ZONE_PAGE_NAME],
+                ['cms', 'panel_top'],
+                ['forum', 'panel_left'],
+                ['site', 'help'],
+                ['site', 'panel_left'],
+                ['site', 'panel_right'],
+                ['site', DEFAULT_ZONE_PAGE_NAME],
+                ['site', 'userguide_chatcode'],
+                ['site', 'userguide_comcode'],
+                ['', '404'],
+                ['', 'feedback'],
+                ['', 'keymap'],
+                ['', 'panel_bottom'],
+                ['', 'panel_left'],
+                ['', 'panel_right'],
+                ['', 'panel_top'],
+                ['', 'privacy'],
+                ['', 'recommend_help'],
+                ['', 'rules'],
+                ['', 'sitemap'],
+                ['', DEFAULT_ZONE_PAGE_NAME],
+            ],
+        ],*/
 
         [
             'wiki_delete_post',

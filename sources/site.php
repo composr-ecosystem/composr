@@ -54,7 +54,7 @@ function init__site()
         /*
         Doing this redirect is too risky. Some code (including user code) may redirect back to inject missing parameters.
         if (($is_non_canonical) && (get_bot_type() !== null)) { // Force bots onto the canonical URL if there were non-standard keep parameters, as they may ignore even the canonical meta tag.
-            $non_canonical = array();
+            $non_canonical = [];
             if (is_array($NON_CANONICAL_PARAMS)) {
                 foreach (array_keys($NON_CANONICAL_PARAMS) as $n) {
                     $non_canonical[$n] = null;
@@ -537,7 +537,7 @@ function do_site_prep()
     if ((get_bot_type() !== null) && ($_SERVER['REQUEST_METHOD'] != 'POST') && (get_param_string('keep_session', null) !== null)) {
         //Too risky, what if something sets it at run-time. Relying on canonical URL is better.
         //set_http_status_code(301);
-        //header('Location: ' . escape_header(get_self_url(true, false, array('keep_session' => null, 'keep_print' => null)))); // assign_refresh not used, as it is a pre-page situation
+        //header('Location: ' . escape_header(get_self_url(true, false, ['keep_session' => null, 'keep_print' => null]))); // assign_refresh not used, as it is a pre-page situation
         //exit();
     }
 
@@ -2273,5 +2273,5 @@ function log_stats($string, $pg_time)
  */
 /*f unction _compress_html_output($data)
 {
-    return preg_replace(array('#>[ \t]+#', '#[ \t]+<#', '#\n[ \t]+\r?\n#', '#\n+#'), array('> ', ' <', "\n", "\n"), $data);
+    return preg_replace(['#>[ \t]+#', '#[ \t]+<#', '#\n[ \t]+\r?\n#', '#\n+#'], ['> ', ' <', "\n", "\n"], $data);
 }*/

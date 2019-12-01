@@ -45,7 +45,7 @@ class Persistent_caching_filesystem
         if ($this->objects_list === null) {
             $this->objects_list = $this->get('PERSISTENT_CACHE_OBJECTS');
             if ($this->objects_list === null) {
-                $this->objects_list = array();
+                $this->objects_list = [];
             }
         }
         return $this->objects_list;*/

@@ -49,7 +49,7 @@ class Block_main_forum_topics
     public function caching_environment()
     {
         $info = [];
-        $info['cache_on'] = 'array(array_key_exists(\'title\',$map)?$map[\'title\']:\'\',array_key_exists(\'hot\',$map)?$map[\'hot\']:\'0\',array_key_exists(\'param\',$map)?$map[\'param\']:do_lang(\'DEFAULT_FORUM_TITLE\'),array_key_exists(\'limit\',$map)?$map[\'limit\']:6,array_key_exists(\'date_key\',$map)?$map[\'date_key\']:\'lasttime\',array_key_exists(\'username_key\',$map)?$map[\'username_key\']:\'firstusername\',array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
+        $info['cache_on'] = '[array_key_exists(\'title\',$map]?$map[\'title\']:\'\',array_key_exists(\'hot\',$map)?$map[\'hot\']:\'0\',array_key_exists(\'param\',$map)?$map[\'param\']:do_lang(\'DEFAULT_FORUM_TITLE\'),array_key_exists(\'limit\',$map)?$map[\'limit\']:6,array_key_exists(\'date_key\',$map)?$map[\'date_key\']:\'lasttime\',array_key_exists(\'username_key\',$map)?$map[\'username_key\']:\'firstusername\',array_key_exists(\'check\',$map)?($map[\'check\']==\'1\'):true)';
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 10;
         return $info;

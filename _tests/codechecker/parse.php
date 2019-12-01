@@ -1608,7 +1608,7 @@ function _parse_variable_dereferencing_chain_segment($suppress_error)
 
         /*case 'CURLY_OPEN':  Not in PHP 7
             pparse__parser_next();
-            $variable = array('CHAR_OF_STRING', _parse_expression(), $GLOBALS['I']);
+            $variable = ['CHAR_OF_STRING', _parse_expression(], $GLOBALS['I']);
             pparse__parser_expect('CURLY_CLOSE');
             break;*/
 

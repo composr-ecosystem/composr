@@ -307,7 +307,7 @@ class Module_admin_cns_forums extends Standard_crud_module
      *
      * @param  AUTO_LINK $id The ID of the forum we are generating the tree below (start recursion with db_get_first_id())
      * @param  SHORT_TEXT $forum The name of the forum $id
-     * @param  array $all_forums A list of rows of all forums, or array() if the function is to get the list itself
+     * @param  array $all_forums A list of rows of all forums, or [] if the function is to get the list itself
      * @param  integer $position The relative position of this forum wrt the others on the same level/branch in the UI
      * @param  integer $sub_num_in_parent_forum_grouping The number of forums in the parent forum grouping
      * @param  ?BINARY $order_sub_alpha Whether to order own subcategories alphabetically (null: ask the DB)

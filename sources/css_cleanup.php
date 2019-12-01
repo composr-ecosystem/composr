@@ -412,7 +412,7 @@ class EmToPx extends CSSCleanup
             }
             $may_be_chained_by[] = $selector;
 
-            //$_selectors = isset($this->selectors[$selector]) ? $this->selectors[$selector] : array(); Actually we might have selectors that have multiple comma-d components, so this is too naive even for our approximations
+            //$_selectors = isset($this->selectors[$selector]) ? $this->selectors[$selector] : []; Actually we might have selectors that have multiple comma-d components, so this is too naive even for our approximations
             $_selectors = [];
             foreach ($this->selectors as $__selector => $__selectors) {
                 if ($this->selector_corresponds($selector, $__selector, $may_be_chained_by)) {

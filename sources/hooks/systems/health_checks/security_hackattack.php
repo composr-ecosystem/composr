@@ -185,9 +185,9 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         $threshold_rps_compound = floatval(get_option('hc_compound_requests_per_second_threshold'));
 
         /*  Test
-        $RATE_LIMITING_DATA = array(
+        $RATE_LIMITING_DATA = [
             '1.2.3.4' => array_fill(0, 30, time()),
-        );
+        ];
         */
 
         if (!empty($RATE_LIMITING_DATA)) {

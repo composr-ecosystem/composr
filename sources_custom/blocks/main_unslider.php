@@ -45,7 +45,7 @@ class Block_main_unslider
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             explode(',', isset($map['pages']) ? $map['pages'] : 'slide1,slide2,slide3,slide4,slide5,slide6'),
             isset($map['width']) ? $map['width'] : '100%',
             isset($map['height']) ? $map['height'] : '',
@@ -55,7 +55,7 @@ class Block_main_unslider
             ((isset($map['keypresses']) ? $map['keypresses'] : '0') == '1'),
             isset($map['slider_id']) ? $map['slider_id'] : 'unslider',
             isset($map['bgcolor']) ? str_replace('#', '', $map['bgcolor']) : '',
-        )
+        ]
 PHP;
         $info['ttl'] = 1000; /* Page include is going to happen within Tempcode, so caching won't affect that */
         return $info;

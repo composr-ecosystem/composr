@@ -54,7 +54,7 @@ class Block_main_search
         ?
         null/*URL parameters affect default form field settings*/
         :
-        array(
+        [
             array_key_exists('title', $map) ? $map['title'] : null,
             array_key_exists('input_fields', $map) ? $map['input_fields'] : '',
             array_key_exists('extra', $map) ? $map['extra'] : '',
@@ -69,7 +69,7 @@ class Block_main_search
             array_key_exists('limit_to', $map) ? $map['limit_to'] : '',
             array_key_exists('search_under', $map) ? $map['search_under'] : '',
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('search'),
-        )
+        ]
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 2);
         return $info;

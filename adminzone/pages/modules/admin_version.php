@@ -857,7 +857,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_guid', ['resource_guid']);
             $GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_label', ['resource_label'/*, 'resource_type'key would be too long*/]);
             $GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_moniker', ['resource_moniker', 'resource_type']);
-            //$GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_label_uniqueness', array('resource_label', 'resource_resource_fs_hook'));key would be too long
+            //$GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_label_uniqueness', ['resource_label', 'resource_resource_fs_hook']);key would be too long
             $GLOBALS['SITE_DB']->create_index('alternative_ids', 'resource_moniker_uniq', ['resource_moniker', 'resource_resource_fs_hook']);
 
             add_privilege('SUBMISSION', 'edit_meta_fields');
@@ -1145,7 +1145,7 @@ class Module_admin_version
     public function get_entry_points($check_perms = true, $member_id = null, $support_crosslinks = true, $be_deferential = false)
     {
         return [
-            // Keep it off for now 'browse' => array('PROJECT_SPONSORS', 'menu/adminzone/sponsors'),
+            // Keep it off for now 'browse' => ['PROJECT_SPONSORS', 'menu/adminzone/sponsors'],
         ];
     }
 
@@ -1193,7 +1193,7 @@ class Module_admin_version
         while (($row = $sheet_reader->read_row()) !== false) {
             /*if (!empty($row['Bug-fix sponsor'])) { Don't actually want to list bug-fix sponsors
                 if (!isset($sponsors[$row['Bug-fix sponsor']])) {
-                    $sponsors[$row['Bug-fix sponsor']] = array('AREAS' => array());
+                    $sponsors[$row['Bug-fix sponsor']] = ['AREAS' => []];
                 }
                 $sponsors[$row['Bug-fix sponsor']]['AREAS'][] = $row['Title'];
             }*/

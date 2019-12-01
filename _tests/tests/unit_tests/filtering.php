@@ -43,7 +43,7 @@ class filtering_test_set extends cms_test_case
             {
                 public function info()
                 {
-                    return array(
+                    return [
                         'support_custom_fields' => true,
 
                         'content_type_label' => 'TITLE',
@@ -118,8 +118,8 @@ class filtering_test_set extends cms_test_case
 
                         'actionlog_regexp' => null,
 
-                        'filtercode_protected_fields' => array('t_secret'),
-                    );
+                        'filtercode_protected_fields' => ['t_secret'],
+                    ];
                 }
             }
         ";
@@ -224,13 +224,13 @@ class filtering_test_set extends cms_test_case
             'id>=1' => [1, 2, 3],
             'id=' => [1, 2, 3], // because no filter
             'id=1' => [1],
-            //Depends on DB 'id==' => array(), // because nothing matches 0 after string coercion
+            //Depends on DB 'id==' => [], // because nothing matches 0 after string coercion
             'id==1' => [1],
             // No ~= for integers
             // No ~ for integers
             'id<>' => [1, 2, 3], // because no filter
             'id<>1' => [2, 3],
-            //Depends on DB 'id!=' => array(1, 2, 3), // because nothing matches 0 after string coercion and negative
+            //Depends on DB 'id!=' => [1, 2, 3], // because nothing matches 0 after string coercion and negative
             'id!=1' => [2, 3],
             'id@1-2' => [1, 2],
 
@@ -259,13 +259,13 @@ class filtering_test_set extends cms_test_case
         $filter_tests['t_member>=' . strval($guest_id)] = [$guest_id, $admin_id, $test_id];
         $filter_tests['t_member='] = [$guest_id, $admin_id, $test_id]; // because no filter
         $filter_tests['t_member=' . strval($guest_id)] = [$guest_id];
-        //Depends on DB 't_member=='] = array(); // because nothing matches 0 after string coercion
+        //Depends on DB 't_member=='] = []; // because nothing matches 0 after string coercion
         $filter_tests['t_member==' . strval($guest_id)] = [$guest_id];
         // No ~= for integers
         // No ~ for integers
         $filter_tests['t_member<>'] = [$guest_id, $admin_id, $test_id]; // because no filter
         $filter_tests['t_member<>' . strval($guest_id)] = [$admin_id, $test_id];
-        //Depends on DB 't_member!='] = array($guest_id, $admin_id, $test_id); // because nothing matches 0 after string coercion and negative
+        //Depends on DB 't_member!='] = [$guest_id, $admin_id, $test_id]; // because nothing matches 0 after string coercion and negative
         $filter_tests['t_member!=' . strval($guest_id)] = [$admin_id, $test_id];
         $filter_tests['t_member@' . strval($guest_id) . '-' . strval($admin_id)] = [$guest_id, $admin_id];
 
@@ -285,13 +285,13 @@ class filtering_test_set extends cms_test_case
             't_real>=1.1' => [2, 3],
             't_real=' => [1, 2, 3], // because no filter
             't_real=1.0' => [1],
-            //Depends on DB 't_real==' => array(), // because nothing matches 0.0 after string coercion
+            //Depends on DB 't_real==' => [], // because nothing matches 0.0 after string coercion
             't_real==1.0' => [1],
             // No ~= for floats
             // No ~ for floats
             't_real<>' => [1, 2, 3], // because no filter
             't_real<>1.0' => [2, 3],
-            //Depends on DB 't_real!=' => array(1, 2, 3), // because nothing matches 0.0 after string coercion and negative
+            //Depends on DB 't_real!=' => [1, 2, 3], // because nothing matches 0.0 after string coercion and negative
             't_real!=1' => [2, 3],
             't_real@1.1-2.0' => [2],
 
@@ -302,13 +302,13 @@ class filtering_test_set extends cms_test_case
             't_time>=1100000' => [2, 3],
             't_time=' => [1, 2, 3], // because no filter
             't_time=1000000' => [1],
-            //Depends on DB 't_time==' => array(), // because nothing matches 0 after string coercion
+            //Depends on DB 't_time==' => [], // because nothing matches 0 after string coercion
             't_time==1000000' => [1],
             // No ~= for integers
             // No ~ for integers
             't_time<>' => [1, 2, 3], // because no filter
             't_time<>1000000' => [2, 3],
-            //Depends on DB 't_time!=' => array(1, 2, 3), // because nothing matches 0 after string coercion and negative
+            //Depends on DB 't_time!=' => [1, 2, 3], // because nothing matches 0 after string coercion and negative
             't_time!=1000000' => [2, 3],
             't_time@1000000-2000000' => [1, 2],
 
@@ -353,13 +353,13 @@ class filtering_test_set extends cms_test_case
             't_binary>=0' => [1, 2, 3],
             't_binary=' => [1, 2, 3], // because no filter
             't_binary=0' => [1],
-            //Depends on DB 't_binary==' => array(1), // because 0 matches after string coercion
+            //Depends on DB 't_binary==' => [1], // because 0 matches after string coercion
             't_binary==0' => [1],
             // No ~= for integers
             // No ~ for integers
             't_binary<>' => [1, 2, 3], // because no filter
             't_binary<>0' => [2, 3],
-            //Depends on DB 't_binary!=' => array(2, 3), // because 0 matches after string coercion and negative
+            //Depends on DB 't_binary!=' => [2, 3], // because 0 matches after string coercion and negative
             't_binary!=0' => [2, 3],
             't_binary@0-1' => [1, 2, 3],
 
@@ -372,9 +372,9 @@ class filtering_test_set extends cms_test_case
             'id=1,t_binary=0' => [1],
 
             // Filtering on multiple keys
-            //Depends on DB 'id|t_id_text=1' => array(1),
-            //Depends on DB 'id|t_id_text=axxxxx' => array(1),
-            //Depends on DB 'id|t_id_text=zxxxxx' => array(),
+            //Depends on DB 'id|t_id_text=1' => [1],
+            //Depends on DB 'id|t_id_text=axxxxx' => [1],
+            //Depends on DB 'id|t_id_text=zxxxxx' => [],
             'id|t_member=4' => [],
 
             // Filtering on multiple values

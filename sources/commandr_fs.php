@@ -52,22 +52,22 @@ class Commandr_fs
 
         /*
         The pwd is stored in a flat array, each value holds the key for each level in the $this->commandr_fs array that is in the pwd:
-            $this->pwd=array('blah2','foo3','bar');
+            $this->pwd=['blah2','foo3','bar'];
 
         The virtual filesystem is a nested directory structure, where terminals mapping to strings represent Commandr-fs hooks
-            $this->commandr_fs = array(
-                'blah' => array(),
-            *** 'blah2' => array(
-                    'foo' => array(),
-                    'foo2' => array(),
-                *** 'foo3' => array(
+            $this->commandr_fs = [
+                'blah' => [],
+            *** 'blah2' => [
+                    'foo' => [],
+                    'foo2' => [],
+                *** 'foo3' => [
                     *** 'bar' => 'members', // 'members' hook is tied into 'bar', rather than an explicit array
-                        'bar2' => array(),
-                    ),
-                    'foo4' => array(),
-                    ),
-                'blah3' => array(),
-            );
+                        'bar2' => [],
+                    ],
+                    'foo4' => [],
+                    ],
+                'blah3' => [],
+            ];
         */
 
         // Build up the filesystem structure

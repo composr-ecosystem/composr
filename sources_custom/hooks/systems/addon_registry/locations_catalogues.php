@@ -175,7 +175,7 @@ class Hook_addon_registry_locations_catalogues
             $GLOBALS['SITE_DB']->create_index('locations', 'l_country', ['l_country']);
             $GLOBALS['SITE_DB']->create_index('locations', 'l_latitude', ['l_latitude']);
             $GLOBALS['SITE_DB']->create_index('locations', 'l_longitude', ['l_longitude']);
-            //$GLOBALS['SITE_DB']->create_index('locations', 'l_postcode', array('l_postcode'));
+            //$GLOBALS['SITE_DB']->create_index('locations', 'l_postcode', ['l_postcode']);
         }
     }
 }

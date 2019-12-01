@@ -46,7 +46,7 @@ class database_relations_test_set extends cms_test_case
     {
         $table_descriptions = get_table_descriptions();
 
-        $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', array('DISTINCT m_table'));
+        $all_tables = $GLOBALS['SITE_DB']->query_select('db_meta', ['DISTINCT m_table']);
         foreach ($all_tables as $table) {
             if (!table_has_purpose_flag($table['m_table'], TABLE_PURPOSE__NON_BUNDLED)) {
                 $this->assertTrue(array_key_exists($table['m_table'], $table_descriptions), 'Table description not provided: ' . $table['m_table']);

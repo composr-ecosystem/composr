@@ -50,12 +50,12 @@ class Block_bottom_tag_cloud
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('title', $map) ? $map['title'] : do_lang('search:TAG_CLOUD'),
             array_key_exists('max', $map) ? intval($map['max']) : 30,
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
             array_key_exists('param', $map) ? $map['param'] : '',
-        )
+        ]
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 60;
         return $info;

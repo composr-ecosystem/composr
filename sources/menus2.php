@@ -114,28 +114,28 @@ function create_menu_structure($structure, $menu_name = 'main_menu', $reset = tr
     /*
         CALLING SAMPLE:
 
-        $structure = array(
-            array(
+        $structure = [
+            [
                 ':example1', // Page-link
                 'Example 1', // Caption
                 true, // Check permissions
-                array( // Children
-                    array(
+                [ // Children
+                    [
                         ':example2', // Page-link
                         'Example 2', // Caption
                         true, // Check permissions
                         // No children
-                    ),
-                ),
-            ),
+                    ],
+                ],
+            ],
 
-            array(
+            [
                 ':example3', // Page-link
                 'Example 3', // Caption
                 false, // Check permissions
                 // No children
-            ),
-        );
+            ],
+        ];
         create_menu_structure($structure);
     */
 

@@ -59,7 +59,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
             }
             $array .= "        '" . $name . "' => '" . $type . "'";
         }
-        fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->create_table('$table', array(\n$array), true, false, null);\n"));
+        fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->create_table('$table', [\n$array], true, false, null);\n"));
 
         require_code('database_relations');
         if (table_has_purpose_flag($table, TABLE_PURPOSE__NO_BACKUPS)) {
@@ -101,7 +101,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
                     }
                 }
 
-                fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->query_insert('$table', array($list));\n"));
+                fwrite($install_php_file, preg_replace('#^#m', '//', "    \$GLOBALS['SITE_DB']->query_insert('$table', [$list]);\n"));
             }
 
             $start += 100;
@@ -113,7 +113,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
     // For each index, build up a Composr index creation command
     $indices = $GLOBALS['SITE_DB']->query_select($db_meta_indices, ['*']);
     foreach ($indices as $index) {
-        if (fwrite($install_php_file, preg_replace('#^#m', '//', '    $GLOBALS[\'SITE_DB\']->create_index(\'' . $index['i_table'] . '\', \'' . $index['i_name'] . '\', array(\'' . str_replace(',', '\', \'', $index['i_fields']) . '\'));' . "\n")) == 0) {
+        if (fwrite($install_php_file, preg_replace('#^#m', '//', '    $GLOBALS[\'SITE_DB\']->create_index(\'' . $index['i_table'] . '\', \'' . $index['i_name'] . '\', [\'' . str_replace(',', '\', \'', $index['i_fields']] . '\'));' . "\n")) == 0) {
             warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
         }
     }
@@ -205,18 +205,18 @@ function make_backup($file, $b_type = 'full', $max_size = 100, $callback = null)
 //COMMANDS BEGIN...
 //
 //    \$GLOBALS['SITE_DB']->drop_table_if_exists('db_meta');
-//    \$GLOBALS['SITE_DB']->create_table('db_meta', array(
+//    \$GLOBALS['SITE_DB']->create_table('db_meta', [
 //        'm_table' => '*ID_TEXT',
 //        'm_name' => '*ID_TEXT',
 //        'm_type' => 'ID_TEXT'
-//    ));
+//    ]);
 //
 //    \$GLOBALS['SITE_DB']->drop_table_if_exists('db_meta_indices');
-//    \$GLOBALS['SITE_DB']->create_table('db_meta_indices', array(
+//    \$GLOBALS['SITE_DB']->create_table('db_meta_indices', [
 //        'i_table' => '*ID_TEXT',
 //        'i_name' => '*ID_TEXT',
 //        'i_fields' => '*ID_TEXT',
-//    ));
+//    ]);
 ");
     get_table_backup($log_file, 'db_meta', 'db_meta_indices', $install_data_php_file, $callback);
 

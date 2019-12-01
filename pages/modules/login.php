@@ -89,12 +89,12 @@ class Module_login
         }
         $ret = [
             'browse' => ['_LOGIN', 'menu/site_meta/user_actions/login'],
-            //'logout' => array('LOGOUT', 'menu/site_meta/user_actions/logout'), Don't show an immediate action, don't want accidental preloading
-            //'concede' => array('CONCEDED_MODE', 'menu/site_meta/user_actions/concede'), Don't show an immediate action, don't want accidental preloading
+            //'logout' => ['LOGOUT', 'menu/site_meta/user_actions/logout'], Don't show an immediate action, don't want accidental preloading
+            //'concede' => ['CONCEDED_MODE', 'menu/site_meta/user_actions/concede'], Don't show an immediate action, don't want accidental preloading
         ];
         /*
         if (get_option('is_on_invisibility') == '1')
-            $ret['invisible'] = array('INVISIBLE', 'menu/site_meta/user_actions/invisible'); Don't show an immediate action, don't want accidental preloading
+            $ret['invisible'] = ['INVISIBLE', 'menu/site_meta/user_actions/invisible']; Don't show an immediate action, don't want accidental preloading
         */
         return $ret;
     }

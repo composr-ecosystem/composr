@@ -28,7 +28,7 @@ if (!function_exists('init__notifications')) {
                 (
                     (\$notification_code == 'cns_topic') &&
                     (is_numeric(\$code_category)) &&
-                    (\$GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', array('id' => intval(\$code_category))) === null)
+                    (\$GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_forum_id', ['id' => intval(\$code_category)]) === null)
                 ) ||
 
                 // New private topic?

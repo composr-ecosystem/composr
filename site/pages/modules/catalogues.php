@@ -375,7 +375,7 @@ class Module_catalogues
 
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_long', '#lcv_value', ['cv_value']);
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_short', '#scv_value', ['cv_value']);
-            //$GLOBALS['SITE_DB']->create_index('catalogue_efv_long', 'ilcv_value', array('cv_value'));  Not allowed, LONG_TEXT can not be in an index (except fulltext indices). People shouldn't order by this anyway
+            //$GLOBALS['SITE_DB']->create_index('catalogue_efv_long', 'ilcv_value', ['cv_value']);  Not allowed, LONG_TEXT can not be in an index (except fulltext indices). People shouldn't order by this anyway
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_short', 'iscv_value', ['cv_value']);
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_long', 'lcf_id', ['cf_id']);
             $GLOBALS['SITE_DB']->create_index('catalogue_efv_short', 'scf_id', ['cf_id']);

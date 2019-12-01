@@ -56,7 +56,7 @@ function init__webstandards_js_lint()
         // Each entry is a pair: inherit-from, properties array. Each property is a list: type, name, [function-return-type]. Types prefixed with ! are "this type or anything inherited from it"
 
         /* ECMA */
-        'Object' => [null, [['!', 'prototype'],/*array('String', 'Value'), array('function', 'Get', '!Object'), array('function', 'Put'), array('function', 'CanPut', 'Boolean'), array('function', 'HasProperty', 'Boolean'), array('function', 'Delete'), array('String', 'DefaultValue'), array('function', 'Construct', '!Object'), array('function', 'Match', 'Boolean'),*/ ['function', '!constructor', '!Object'], ['function', '!toString', 'String'], ['function', '!toLocaleString', 'String'], ['function', '!valueOf', '!Object'], ['function', '!hasOwnProperty', 'Boolean'], ['function', '!isPrototypeOf', 'Boolean'], ['function', '!propertyIsEnumerable', 'Boolean'],]],
+        'Object' => [null, [['!', 'prototype'],/*['String', 'Value'], ['function', 'Get', '!Object'], ['function', 'Put'], ['function', 'CanPut', 'Boolean'], ['function', 'HasProperty', 'Boolean'], ['function', 'Delete'], ['String', 'DefaultValue'], ['function', 'Construct', '!Object'], ['function', 'Match', 'Boolean'],*/ ['function', '!constructor', '!Object'], ['function', '!toString', 'String'], ['function', '!toLocaleString', 'String'], ['function', '!valueOf', '!Object'], ['function', '!hasOwnProperty', 'Boolean'], ['function', '!isPrototypeOf', 'Boolean'], ['function', '!propertyIsEnumerable', 'Boolean'],]],
         'function' => ['Object', [['arguments', 'arguments'], ['function', 'Call', '!Object'], ['function', 'HasInstance', 'Boolean'],]], // Has special language support
         'Function' => ['function', []],
         'Array' => ['Object', [['Number', 'length'], ['function', 'concat', 'Array'], ['function', 'join', 'String'], ['function', 'pop', '!Object'], ['function', 'push', 'Number'], ['function', 'reverse'], ['function', 'shift', '!Object'], ['function', 'slice', 'Array'], ['function', 'sort'], ['function', 'splice', 'Array'], ['function', 'unshift', 'Number'],]], // Has special language support
@@ -65,7 +65,7 @@ function init__webstandards_js_lint()
         'Number' => ['Object', [['Number', '!MAX_VALUE'], ['Number', '!MIN_VALUE'], ['Number', '!NaN'], ['Number', '!NEGATIVE_INFINITY'], ['Number', '!POSITIVE_INFINITY'], ['function', 'toString', 'String'], ['function', 'toLocaleString', 'String'], ['function', 'toFixed', 'String'], ['function', 'toExponential', 'String'], ['function', 'toPrecision', 'String'],]], // Has special language support
         'Math' => ['Object', [['Number', '!E'], ['Number', '!LN10'], ['Number', '!LN2'], ['Number', '!LOG2E'], ['Number', '!LOG10E'], ['Number', '!PI'], ['Number', '!SQRT1_2'], ['Number', '!SQRT2'], ['function', '!abs', 'Number'], ['function', '!acos', 'Number'], ['function', '!asin', 'Number'], ['function', '!atan', 'Number'], ['function', '!atan2', 'Number'], ['function', '!ceil', 'Number'], ['function', '!cos', 'Number'], ['function', '!exp', 'Number'], ['function', '!floor', 'Number'], ['function', '!log', 'Number'], ['function', '!max', 'Number'], ['function', '!min', 'Number'], ['function', '!pox', 'Number'], ['function', '!random', 'Number'], ['function', '!round', 'Number'], ['function', '!sin', 'Number'], ['function', '!sqrt', 'Number'], ['function', '!tan', 'Number'],]],
         'Date' => ['Object', [['function', '!parse', 'Number'], ['function', '!UTC', 'Number'], ['function', 'toDateString', 'String'], ['function', 'toTimeString', 'String'], ['function', 'toLocaleString', 'String'], ['function', 'toLocaleDateString', 'String'], ['function', 'toLocaleTimeString', 'String'], ['function', 'getTime', 'Number'], ['function', 'getFullYear', 'Number'], ['function', 'getUTCFullYear', 'Number'], ['function', 'getMonth', 'Number'], ['function', 'getUTCMonth', 'Number'], ['function', 'getDate', 'Number'], ['function', 'getUTCDate', 'Number'], ['function', 'getDay', 'Number'], ['function', 'getUTCDay', 'Number'], ['function', 'getHours', 'Number'], ['function', 'getUTCHours', 'Number'], ['function', 'getMinutes', 'Number'], ['function', 'getUTCMinutes', 'Number'], ['function', 'getSeconds', 'Number'], ['function', 'getUTCSeconds', 'Number'], ['function', 'getMilliseconds', 'Number'], ['function', 'getUTCMilliseconds', 'Number'], ['function', 'getTimezoneOffset', 'Number'], ['function', 'setTime'], ['function', 'setMilliseconds'], ['function', 'setUTCMilliseconds'], ['function', 'setSeconds'], ['function', 'setUTCSeconds'], ['function', 'setMinutes'], ['function', 'setUTCMinutes'], ['function', 'setHours'], ['function', 'setUTCHours'], ['function', 'setDate'], ['function', 'setUTCDate'], ['function', 'setMonth'], ['function', 'setUTCMonth'], ['function', 'setFullYear'], ['function', 'setUTCFullYear'], ['function', 'toUTCString', 'String'],]],
-        'RegExp' => ['Object', [['String', '$1'],/*array('function', 'compile'),*/ ['String', '$2'], ['String', '$3'], ['String', '$4'], ['String', '$5'], ['function', 'exec', 'Boolean'], ['function', 'test', 'Boolean'], ['String', 'source'], ['Boolean', 'global'], ['Boolean', 'ignoreCase'], ['Boolean', 'multiline'], ['Number', 'lastIndex'],]], // Has special language support
+        'RegExp' => ['Object', [['String', '$1'],/*['function', 'compile'],*/ ['String', '$2'], ['String', '$3'], ['String', '$4'], ['String', '$5'], ['function', 'exec', 'Boolean'], ['function', 'test', 'Boolean'], ['String', 'source'], ['Boolean', 'global'], ['Boolean', 'ignoreCase'], ['Boolean', 'multiline'], ['Number', 'lastIndex'],]], // Has special language support
         'Error' => ['Object', [['String', '!name'], ['String', '!message'],]],
         'EvalError' => ['Error', []],
         'RangeError' => ['Error', []],
@@ -102,7 +102,7 @@ function init__webstandards_js_lint()
         'TableRow' => ['Element', [['ElementArray', 'cells'], ['Number', 'sectionRowIndex'], ['Number', 'rowIndex'], ['function', 'insertCell', 'TableData'], ['function', 'deleteCell'],]],
         'Self' => ['Window', [['Number', 'outerHeight'], ['Number', 'outerWidth'], ['Number', 'screenTop'], ['Number', 'screenLeft'], ['Number', 'screenX'], ['Number', 'screenY'],]],
         'Screen' => ['Object', [['Number', 'availWidth'], ['Number', 'availHeight'], ['Number', 'colorDepth'], ['Number', 'width'], ['Number', 'height'],]],
-        'Window' => ['Object', [['JSON', 'JSON'], ['Console', 'console'], ['Storage', 'sessionStorage'], ['Storage', 'localStorage'], ['function', 'onmousewheel'], ['function', 'onpagehide'], ['function', 'onpageshow'], ['function', 'onunload'], ['function', 'onload'], ['History', 'history'], ['Event', 'event'], ['String', 'status'], ['Document', 'document'], ['WindowArray', 'frames'], ['Navigator', 'navigator'], ['Location', 'location'], ['Screen', 'screen'], ['Boolean', 'closed'], ['Window', 'opener'], ['Window', 'parent'], ['Self', 'self'], ['Window', 'top']/*, array('function', 'alert')*/, ['function', 'blur'], ['function', 'focus'], ['function', 'clearInterval'], ['function', 'clearTimeout'], ['function', 'close']/*, array('function', 'confirm', 'Boolean')*/, ['function', 'moveBy'], ['function', 'open', 'Window'], ['function', 'print']/*, array('function', 'prompt', '!Object')*/, ['function', 'scrollBy'], ['function', 'scrollTo'], ['function', 'setInterval', 'Number'], ['function', 'setTimeout', 'Number'], ['function', 'encodeURIComponent', 'String'], ['function', 'encodeURI', 'String'], ['function', 'decodeURIComponent', 'String'], ['function', 'decodeURI', 'String'], ['function', 'isFinite', 'Boolean'], ['function', 'isNaN', 'Boolean'], ['function', 'parseFloat', 'Number'], ['function', 'parseInt', 'Number'], ['function', 'eval', '!Object'], ['function', 'void', 'undefined'],]],
+        'Window' => ['Object', [['JSON', 'JSON'], ['Console', 'console'], ['Storage', 'sessionStorage'], ['Storage', 'localStorage'], ['function', 'onmousewheel'], ['function', 'onpagehide'], ['function', 'onpageshow'], ['function', 'onunload'], ['function', 'onload'], ['History', 'history'], ['Event', 'event'], ['String', 'status'], ['Document', 'document'], ['WindowArray', 'frames'], ['Navigator', 'navigator'], ['Location', 'location'], ['Screen', 'screen'], ['Boolean', 'closed'], ['Window', 'opener'], ['Window', 'parent'], ['Self', 'self'], ['Window', 'top']/*, ['function', 'alert']*/, ['function', 'blur'], ['function', 'focus'], ['function', 'clearInterval'], ['function', 'clearTimeout'], ['function', 'close']/*, ['function', 'confirm', 'Boolean']*/, ['function', 'moveBy'], ['function', 'open', 'Window'], ['function', 'print']/*, ['function', 'prompt', '!Object']*/, ['function', 'scrollBy'], ['function', 'scrollTo'], ['function', 'setInterval', 'Number'], ['function', 'setTimeout', 'Number'], ['function', 'encodeURIComponent', 'String'], ['function', 'encodeURI', 'String'], ['function', 'decodeURIComponent', 'String'], ['function', 'decodeURI', 'String'], ['function', 'isFinite', 'Boolean'], ['function', 'isNaN', 'Boolean'], ['function', 'parseFloat', 'Number'], ['function', 'parseInt', 'Number'], ['function', 'eval', '!Object'], ['function', 'void', 'undefined'],]],
         'Event' => ['Object', [['function', 'stopPropagation'], ['Boolean', 'cancelBubble'], ['!Element', 'target'], ['!Element', 'srcElement'], ['!Element', 'fromElement'], ['!Element', 'relatedTarget'], ['Number', 'clientX'], ['Number', 'clientY'], ['Number', 'offsetX'], ['Number', 'offsetY'], ['Number', 'pageX'], ['Number', 'pageY'], ['Number', 'screenX'], ['Number', 'screenY'], ['Boolean', 'altKey'], ['Boolean', 'metaKey'], ['Boolean', 'ctrlKey'], ['Boolean', 'shiftKey'], ['Number', 'keyCode'], ['Number', 'which'], ['Number', 'charCode'], ['Number', 'button'], ['String', 'type'],]],
         'History' => ['Object', [['Number', 'length'], ['function', 'back'], ['function', 'forward'], ['function', 'go'],]],
         'Location' => ['Object', [['String', 'hash'], ['String', 'host'], ['String', 'hostname'], ['String', 'href'], ['String', 'pathname'], ['Number', 'port'], ['String', 'protocol'], ['String', 'search'], ['function', 'assign'], ['function', 'reload'], ['function', 'replace'],]],
@@ -446,7 +446,7 @@ function js_check_command($command, $depth)
                 foreach ($c[2] as $case) {
                     /*
                     if ($case[0] !== null) {
-                        $passes = js_ensure_type(array($switch_type), js_check_expression($case[0]), $c_pos, 'Switch type inconsistency');    We are not so type-strict in JS
+                        $passes = js_ensure_type([$switch_type], js_check_expression($case[0]), $c_pos, 'Switch type inconsistency');    We are not so type-strict in JS
                         if ($passes) {
                             js_infer_expression_type_to_variable_type($switch_type, $case[0]);
                         }
@@ -465,7 +465,7 @@ function js_check_command($command, $depth)
                 $GLOBALS['JS_PARSING_CONDITIONAL'] = true;
                 $t = js_check_expression($c[1]);
                 $GLOBALS['JS_PARSING_CONDITIONAL'] = $rem;
-                /*$passes = js_ensure_type(array('Boolean'), $t, $c_pos, 'Conditionals must be Boolean (if) [is ' . $t . ']');    We are not so type-strict in JS
+                /*$passes = js_ensure_type(['Boolean'], $t, $c_pos, 'Conditionals must be Boolean (if) [is ' . $t . ']');    We are not so type-strict in JS
                 if ($passes) {
                     js_infer_expression_type_to_variable_type('Boolean', $c[1]);
                 }*/
@@ -476,7 +476,7 @@ function js_check_command($command, $depth)
                 $GLOBALS['JS_PARSING_CONDITIONAL'] = true;
                 $t = js_check_expression($c[1]);
                 $GLOBALS['JS_PARSING_CONDITIONAL'] = $rem;
-                /*$passes = js_ensure_type(array('Boolean'), $t, $c_pos, 'Conditionals must be Boolean (if-else)');    We are not so type-strict in JS
+                /*$passes = js_ensure_type(['Boolean'], $t, $c_pos, 'Conditionals must be Boolean (if-else)');    We are not so type-strict in JS
                 if ($passes) {
                     js_infer_expression_type_to_variable_type('Boolean', $c[1]);
                 }*/
@@ -484,7 +484,7 @@ function js_check_command($command, $depth)
                 js_check_command($c[3], $depth);
                 break;
             case 'FOREACH_list':
-                /*$passes = js_ensure_type(array('Array'), js_check_expression($c[1]), $c_pos, 'FOR-OF must take Array');    Could be any object in JS
+                /*$passes = js_ensure_type(['Array'], js_check_expression($c[1]), $c_pos, 'FOR-OF must take Array');    Could be any object in JS
                 if ($passes) {
                     js_infer_expression_type_to_variable_type('Array', $c[1]);
                 }*/
@@ -633,23 +633,23 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
         $GLOBALS['JS_PARSING_CONDITIONAL'] = true;
         $t = js_check_expression($e[1], false, $is_guarded);
         $GLOBALS['JS_PARSING_CONDITIONAL'] = $rem;
-        //$passes = js_ensure_type(array('Boolean'), $t, $c_pos, 'Conditionals must be Boolean (ternary)');    We are not so type-strict in JS
+        //$passes = js_ensure_type(['Boolean'], $t, $c_pos, 'Conditionals must be Boolean (ternary)');    We are not so type-strict in JS
         //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $e[1]);
         $type_a = js_check_expression($e[2][0]);
         $type_b = js_check_expression($e[2][1]);
         /*if (($type_a != 'Null') && ($type_b != 'Null'))
         {
-            $passes = js_ensure_type(array($type_a), $type_b, $c_pos, 'Type symmetry error in ternary operator');    We are not so type-strict in JS
+            $passes = js_ensure_type([$type_a], $type_b, $c_pos, 'Type symmetry error in ternary operator');    We are not so type-strict in JS
             //if ($passes) js_infer_expression_type_to_variable_type($type_a, $e[2][1]);
         }*/
         return $type_a;
     }
     if (in_array($e[0], ['BOOLEAN_AND', 'BOOLEAN_OR'])) {
         $exp = js_check_expression($e[1], false, $is_guarded);
-        //$passes = js_ensure_type(array('Boolean'), $exp, $c_pos - 1, 'Can only use Boolean combinators with Booleans');    We are not so type-strict in JS
+        //$passes = js_ensure_type(['Boolean'], $exp, $c_pos - 1, 'Can only use Boolean combinators with Booleans');    We are not so type-strict in JS
         //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $e[1]);
         $exp = js_check_expression($e[2]);
-        //$passes = js_ensure_type(array('Boolean'), $exp, $c_pos, 'Can only use Boolean combinators with Booleans');    We are not so type-strict in JS
+        //$passes = js_ensure_type(['Boolean'], $exp, $c_pos, 'Can only use Boolean combinators with Booleans');    We are not so type-strict in JS
         //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $e[2]);
         return '!Object'; // JS is weird, ORing actually returns the first "truey" element
     }
@@ -768,7 +768,7 @@ function js_check_expression($e, $secondary = false, $is_guarded = false)
             return js_check_expression($inner[1], false, $is_guarded);
         case 'BOOLEAN_NOT':
             $expression = js_check_expression($inner[1], false, $is_guarded);
-            //$passes = js_ensure_type(array('Boolean'), $expression, $c_pos, 'Can only \'NOT\' a Boolean');    We are not so type-strict in JS
+            //$passes = js_ensure_type(['Boolean'], $expression, $c_pos, 'Can only \'NOT\' a Boolean');    We are not so type-strict in JS
             //if ($passes) js_infer_expression_type_to_variable_type('Boolean', $inner[1]);
             return 'Boolean';
         case 'TYPEOF':

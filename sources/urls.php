@@ -412,7 +412,7 @@ function has_keep_parameters()
  * Build and return a proper URL, from the $parameters array.
  * Note: URL parameters should always be in lower case (one of the coding standards).
  *
- * @param  array $parameters A map of parameter names to parameter values. E.g. array('page'=>'example','type'=>'foo','id'=>2). Values may be strings or integers, or Tempcode, or null. null indicates "skip this". 'page' cannot be null.
+ * @param  array $parameters A map of parameter names to parameter values. E.g. ['page'=>'example','type'=>'foo','id'=>2]. Values may be strings or integers, or Tempcode, or null. null indicates "skip this". 'page' cannot be null.
  * @param  ID_TEXT $zone_name The zone the URL is pointing to. YOU SHOULD NEVER HARD CODE THIS: USE '_SEARCH', '_SELF' (if you're self-referencing your own page) or the output of get_module_zone.
  * @param  array $skip Parameters to explicitly not put in the URL (perhaps because we have $keep_all set, or we are blocking certain keep_ values). The format is of a map where the keys are the names, and the values are true.
  * @param  boolean $keep_all Whether to keep all non-skipped parameters that were in the current URL, in this URL
@@ -478,7 +478,7 @@ function build_url($parameters, $zone_name = '_SEARCH', $skip = [], $keep_all = 
  * Build and return a proper page-link, from the $parameters array.
  * Note: URL parameters should always be in lower case (one of the coding standards).
  *
- * @param  array $parameters A map of parameter names to parameter values. E.g. array('page'=>'example','type'=>'foo','id'=>2). Values may be strings or integers, or Tempcode, or null. null indicates "skip this". 'page' cannot be null.
+ * @param  array $parameters A map of parameter names to parameter values. E.g. ['page'=>'example','type'=>'foo','id'=>2]. Values may be strings or integers, or Tempcode, or null. null indicates "skip this". 'page' cannot be null.
  * @param  ID_TEXT $zone_name The zone the URL is pointing to. YOU SHOULD NEVER HARD CODE THIS- USE '_SEARCH', '_SELF' (if you're self-referencing your own page) or the output of get_module_zone.
  * @param  array $skip Parameters to explicitly to explicitly not put in the URL (perhaps because we have $keep_all set, or we are blocking certain keep_ values). The format is of a map where the keys are the names, and the values are true.
  * @param  string $hash Hash portion of the URL (blank: none). May or may not start '#' - code will put it on if needed

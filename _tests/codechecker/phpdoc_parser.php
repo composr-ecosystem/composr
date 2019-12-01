@@ -54,7 +54,7 @@ ini_set('memory_limit', '-1');
 $classes = [];
 $global = [];
 global $TO_USE;
-//$files = array($COMPOSR_PATH . '/sources/global2.php'); For debugging
+//$files = [$COMPOSR_PATH . '/sources/global2.php']; For debugging
 foreach ($files as $filename) {
     if (strpos($filename, 'sabredav/') !== false || strpos($filename, 'Swift/') !== false || strpos($filename, 'tracker/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
         continue;

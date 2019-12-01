@@ -51,9 +51,9 @@ class Block_main_leader_board
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('leader_board'),
-        )
+        ]
 PHP;
         $info['ttl'] = 60 * 15; // 15 minutes
         return $info;

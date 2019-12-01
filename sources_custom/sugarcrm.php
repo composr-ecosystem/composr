@@ -393,7 +393,7 @@ function save_message_into_sugarcrm($sync_type, $mappings, $subject, $body, $fro
         // If there's an existing lead with this e-mail then put an addendum on the description to mention that
         /*$existing_leads = $SUGARCRM->search_by_module(        Opens too many files
             $from_email,
-            array('Leads'),
+            ['Leads'],
             0,
             -1
         );

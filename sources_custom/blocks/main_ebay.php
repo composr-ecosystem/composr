@@ -45,14 +45,14 @@ class Block_main_ebay
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             empty($map['title']) ? do_lang('BLOCK_EBAY_TITLE') : $map['title'],
             empty($map['max_entries']) ? 4 : intval($map['max_entries']),
             empty($map['image_size']) ? 80 : intval($map['image_size']),
             empty($map['domain']) ? 0 : intval(preg_replace('#=.*$#', '', $map['domain'])),
             isset($map['seller']) ? $map['seller'] : '',
             empty($map['query']) ? '' : preg_replace('#\s#', '+', $map['query']),
-        )
+        ]
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : 15;
         return $info;

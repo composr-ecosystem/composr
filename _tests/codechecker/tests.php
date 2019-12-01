@@ -43,7 +43,7 @@ END;
 
     // This is a good test for loops
     $tests[2] = <<<END
-foreach (array(1,2) as \$a=>\$b)
+foreach ([1,2] as \$a=>\$b)
 {
     while (true)
     {
@@ -106,12 +106,12 @@ END;
     // This is a good test for various things
     $tests[5] = <<<END
 global \$A;
-\$b=array(1=>3,2=>3);
+\$b=[1=>3,2=>3];
 echo \$A[\$b[1]];
 \$c='foo';
 echo \$c[0];
 list(\$a1,\$b1,\$c1)=\$A;
-\$A=array(-1,2,3);
+\$A=[-1,2,3];
 \$c=!true;
 \$d=\$c?1:0;
 END;
@@ -256,7 +256,7 @@ if (true)
 {
     while (true)
     {
-        foreach (array() as \$a)
+        foreach ([] as \$a)
         {
             do
             {
@@ -446,7 +446,7 @@ END;
     $tests[47] = <<<END
 // <deep variable referencing>
 \$a='';
-\$b=array();
+\$b=[];
 echo \$b[''][''][''][''][\$a];
 END;
 
@@ -475,7 +475,7 @@ function fpassthru(\$a)
 END;
 
     $tests[51] = <<<END
-\$a=array();
+\$a=[];
 \$a[]='bar';
 END;
 
@@ -492,11 +492,11 @@ END;
 END;
 
     $tests[55] = <<<END
-\$whatever=array('a'=>1,'a'=>1);
+\$whatever=['a'=>1,'a'=>1];
 END;
 
     $tests[56] = <<<END
-preg_match_all('','',array());
+preg_match_all('','',[]);
 END;
 
     $tests[57] = <<<END
@@ -539,7 +539,7 @@ interface B extends A
 }
 interface C
 {
-    public \$c=array();
+    public \$c=[];
     public function baz();
 }
 interface D extends A, C
@@ -610,9 +610,9 @@ END;
 END;
 
     $tests[67] = <<<END
-foreach (array() as \$a)
+foreach ([] as \$a)
 {
-    foreach (array() as \$a)
+    foreach ([] as \$a)
     {
     }
 }

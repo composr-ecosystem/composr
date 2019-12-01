@@ -265,14 +265,14 @@ Ask us if you wanted to be listed as one of the [page=\"site:stars\"]Composr dev
                 'options' => '',
                 'required' => false,
             ],
-            /*'materials' => array(     Too much to upload this now, don't want to risk 'crashes' for very large files
+            /*'materials' => [     Too much to upload this now, don't want to risk 'crashes' for very large files
                 'label' => 'Project materials',
                 'description' => 'Attach any materials you need worked with, e.g. logos, brand guidelines, or policy documents.',
                 'type' => 'upload_multi',
                 'default' => '',
                 'options' => '',
                 'required' => false,
-            ),*/
+            ],*/
             'materials' => [
                 'label' => 'Pre-existing project materials',
                 'description' => 'What project materials already exist? You can attach them to your support ticket later.',

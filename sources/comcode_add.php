@@ -100,7 +100,7 @@ function _get_details_comcode_tags()
         'post' => ['param', 'forum'],
         'topic' => ['param', 'forum'],
         'attachment' => ['description', 'thumb_url', 'width', 'height', 'framed', 'type', 'thumb', 'length', 'filename', 'mime_type', 'filesize', 'click_url', 'float'],
-        //'attachment_safe' => array('description', 'filename', 'type', 'width', 'height', 'float', 'thumb_url'),   Merged into attachment in UI
+        //'attachment_safe' => ['description', 'filename', 'type', 'width', 'height', 'float', 'thumb_url'],   Merged into attachment in UI
     ];
 
     if (addon_installed('ecommerce')) {

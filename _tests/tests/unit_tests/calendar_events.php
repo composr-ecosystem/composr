@@ -639,7 +639,7 @@ class calendar_events_test_set extends cms_test_case
         delete_calendar_event($this->event_id);
     }
 
-    public function testNormaliseTimeArray()
+    public function testNormaliseTime[]
     {
         if (($this->only !== null) && ($this->only != 'testNormaliseTimeArray')) {
             return;

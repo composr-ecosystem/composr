@@ -372,7 +372,7 @@ function _helper_show_forum_topics($this_ref, $name, $limit, $start, &$max_rows,
         $out[$i]['forum_id'] = $r['t_forum_id'];
 
         $_post_query_sql = preg_replace('/(?<=\W)t.id/', strval($out[$i]['id']), $post_query_sql);
-        $fp_rows = $this_ref->db->query($_post_query_sql, 1, 0, false, true/*, array('p_post' => 'LONG_TRANS__COMCODE') we already added it further up*/);
+        $fp_rows = $this_ref->db->query($_post_query_sql, 1, 0, false, true/*, ['p_post' => 'LONG_TRANS__COMCODE'] we already added it further up*/);
         if (!array_key_exists(0, $fp_rows)) {
             unset($out[$i]);
             continue;
@@ -478,7 +478,7 @@ function _helper_get_forum_topic_posts($this_ref, $topic_id, &$count, $max, $sta
         $select .= ',' . db_function('COALESCE', ['(SELECT SUM(rating-1) FROM ' . $this_ref->db->get_table_prefix() . 'rating WHERE ' . db_string_equal_to('rating_for_type', 'post') . ' AND rating_for_id=' . db_cast('p.id', 'CHAR') . ')', '0']) . ' AS compound_rating';
     }
     $rows = $this_ref->db->query('SELECT ' . $select . ' FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false) . ' WHERE ' . $where . ' ORDER BY ' . $order, $max, $start, false, true, ['p_post' => 'LONG_TRANS__COMCODE']);
-    $count = $this_ref->db->query_select_value_if_there('f_topics', 't_cache_num_posts', ['id' => $topic_id]); // This may be slow for large topics: $this_ref->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false) . ' WHERE ' . $where, false, true, array('p_post' => 'LONG_TRANS__COMCODE'));
+    $count = $this_ref->db->query_select_value_if_there('f_topics', 't_cache_num_posts', ['id' => $topic_id]); // This may be slow for large topics: $this_ref->db->query_value_if_there('SELECT COUNT(*) FROM ' . $this_ref->db->get_table_prefix() . 'f_posts p' . $this_ref->db->prefer_index('f_posts', 'in_topic', false) . ' WHERE ' . $where, false, true, ['p_post' => 'LONG_TRANS__COMCODE']);
     if ($count === null) {
         return -2;
     }

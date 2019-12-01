@@ -304,7 +304,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                     if (($attributes['type'] == 'checkbox') && (isset($attributes['id']))) {
                         $pre_content = substr($OUT, 0, $POS);
                         if (preg_match('#<label for="' . preg_quote($attributes['id'], '#') . '">[^:]+<input[^<>]+id="' . preg_quote($attributes['id'], '#') . '"#', $pre_content) != 0) {
-                            //$errors[] = array('ACCESSIB_COLONS_IN_PRE_LABELS');   Over-prescriptive
+                            //$errors[] = ['ACCESSIB_COLONS_IN_PRE_LABELS'];   Over-prescriptive
                         }
                     }
 
@@ -322,7 +322,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
             case 'select':
                 $webstandards_check = function_exists('get_param_integer') ? get_param_integer('keep_webstandards_check', get_param_integer('webstandards_check', 0)) : 0;
                 if ((isset($attributes['onchange'])) && (strpos($attributes['onchange'], 'form.submit()') !== false) && (strpos($attributes['onchange'], '/*guarded*/') === false) && ($webstandards_check == 0)) {
-                    //$errors[] = array('WCAG_AUTO_SUBMIT_LIST'); Outdated, active JS now expected
+                    //$errors[] = ['WCAG_AUTO_SUBMIT_LIST']; Outdated, active JS now expected
                 }
                 break;
 
@@ -367,7 +367,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                 if (!isset($attributes['abbr'])) {
                     $content = trim(substr($OUT, $POS, strpos($OUT, '</th>', $POS) - $POS)); // This isn't perfect - In theory a th could contain a table itself: but it's not very semantic if it does
                     if (strlen(trim(@html_entity_decode(strip_tags($content), ENT_QUOTES))) > 40) {
-                        $errors[] = array('WCAG_TH_TOO_LONG');
+                        $errors[] = ['WCAG_TH_TOO_LONG'];
                     }
                 }
                 */
@@ -397,7 +397,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
         {
             global $LAST_HEADING;
             if ($LAST_HEADING < intval(substr($tag, 1)) - 1) {
-                $errors[] = array('WCAG_HEADING_ORDER');
+                $errors[] = ['WCAG_HEADING_ORDER'];
             }
             $LAST_HEADING = intval(substr($tag, 1));
         }*/
@@ -454,7 +454,7 @@ function _check_blockyness($tag, $attributes, $self_close, $close)
             $errors[] = [$TAGS_DEPRECATE_ALLOW ? 'XHTML_DEPRECATED_TAG' : 'XHTML_UNKNOWN_TAG', $tag];
         }
     } elseif ((isset($TAGS_INLINE[$tag])) || (isset($TAGS_INLINE_DEPRECATED[$tag]))) {
-        //if (($BLOCK_CONSTRAIN) && ($PARENT_TAG != 'span') && ((isset($TAGS_NORMAL[$PARENT_TAG])) || ((isset($TAGS_NORMAL_DEPRECATED[$PARENT_TAG]))))) $errors[] = array('XHTML_ANCESTOR_INLINE_NORMAL', $tag); This restriction isn't really a proper one, some checkers seem to have it but it is not used anymore (XHTML5+) and pretty silly
+        //if (($BLOCK_CONSTRAIN) && ($PARENT_TAG != 'span') && ((isset($TAGS_NORMAL[$PARENT_TAG])) || ((isset($TAGS_NORMAL_DEPRECATED[$PARENT_TAG]))))) $errors[] = ['XHTML_ANCESTOR_INLINE_NORMAL', $tag]; This restriction isn't really a proper one, some checkers seem to have it but it is not used anymore (XHTML5+) and pretty silly
         if (($tag !== 'label') && ($tag !== 'a')) { // We don't count <a> as an inline ancestor as although it's an inline element, its Content model is defined as "Transparent" in HTML5 - which means it inherits the Content model of its parent.
             $ANCESTOR_INLINE += $dif;
         }
@@ -548,7 +548,7 @@ function _check_attributes($tag, $attributes, $self_close, $close)
             $errors = array_merge($errors, check_spelling(clean_simple_html_for_spellcheck($value)));
         }
 
-        //if (($attribute == 'alt') && ($tag != 'input') && (strlen(strip_tags($value)) > 150)) $errors[] = array('WCAG_ATTRIBUTE_TOO_LONG', $attribute);
+        //if (($attribute == 'alt') && ($tag != 'input') && (strlen(strip_tags($value)) > 150)) $errors[] = ['WCAG_ATTRIBUTE_TOO_LONG', $attribute];
 
         if (($attribute == 'href') || ($attribute == 'src') || (($attribute == 'data') && ($tag == 'object'))) {
             $CRAWLED_URLS[] = @html_entity_decode($value, ENT_QUOTES);
@@ -770,7 +770,7 @@ function _check_labelling($tag, $attributes, $self_close, $close)
 
     global $FOR_LABEL_IDS, $FOR_LABEL_IDS_2, $INPUT_TAG_IDS;
     if (($tag == 'td')/* || ($tag == 'div')*/) {
-        //$FOR_LABEL_IDS = array(); // Can't work across table cells      Actually this is an ancient and lame restriction that hurts accessibility more than helping it
+        //$FOR_LABEL_IDS = []; // Can't work across table cells      Actually this is an ancient and lame restriction that hurts accessibility more than helping it
     }
     if (($tag == 'label') && (isset($attributes['for']))) {
         $FOR_LABEL_IDS[$attributes['for']] = 1;

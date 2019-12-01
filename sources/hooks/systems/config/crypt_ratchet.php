@@ -71,7 +71,7 @@ class Hook_config_crypt_ratchet
         $cost = 10;
         do {
             $start = microtime(true);
-            password_hash('test', PASSWORD_BCRYPT, array('cost' => $cost));
+            password_hash('test', PASSWORD_BCRYPT, ['cost' => $cost]);
             $end = microtime(true);
             $time_dif = ($end - $start);
             $cost++;

@@ -82,7 +82,7 @@ class Hook_page_groupings_core
             ((get_forum_type() == 'cns')/*Is on members menu*/ || (addon_installed('securitylogging'))) ? null : ['tools', 'menu/adminzone/tools/users/investigate_user', ['admin_lookup', [], get_module_zone('admin_lookup')], do_lang_tempcode('lookup:INVESTIGATE_USER'), 'lookup:DOC_INVESTIGATE_USER'],
             addon_installed('xml_fields') ? ['setup', 'menu/adminzone/setup/xml_fields', ['admin_config', ['type' => 'xml_fields'], get_module_zone('admin_config')], do_lang_tempcode('config:FIELD_FILTERS'), 'config:DOC_FIELD_FILTERS'] : null,
 
-            //((get_forum_type() != 'cns') || (!has_privilege($member_id, 'control_usergroups'))) ? null : array('tools', 'menu/social/groups', array('groups', array('type' => 'browse'), get_module_zone('groups'), do_lang_tempcode('SWITCH_ZONE_WARNING')), do_lang_tempcode('SECONDARY_GROUP_MEMBERSHIP'), 'cns:DOC_SECONDARY_GROUP_MEMBERSHIP'), Excessive
+            //((get_forum_type() != 'cns') || (!has_privilege($member_id, 'control_usergroups'))) ? null : ['tools', 'menu/social/groups', ['groups', ['type' => 'browse'], get_module_zone('groups'), do_lang_tempcode('SWITCH_ZONE_WARNING')], do_lang_tempcode('SECONDARY_GROUP_MEMBERSHIP'), 'cns:DOC_SECONDARY_GROUP_MEMBERSHIP'], Excessive
             ['tools', 'menu/adminzone/tools/cleanup', ['admin_cleanup', ['type' => 'browse'], get_module_zone('admin_cleanup')], do_lang_tempcode('cleanup:CLEANUP_TOOLS'), 'cleanup:DOC_CLEANUP_TOOLS'],
             ['tools', 'menu/adminzone/tools/broken_urls', ['admin_broken_urls', ['type' => 'browse'], get_module_zone('admin_broken_urls')], do_lang_tempcode('cleanup:BROKEN_URLS'), 'cleanup:DOC_BROKEN_URLS'],
             (get_value('brand_base_url') === null) ? ['tools', 'menu/adminzone/tools/upgrade', ['admin_config', ['type' => 'upgrader'], get_module_zone('admin_config')], do_lang_tempcode('upgrade:UPGRADER_UPGRADER_TITLE'), 'upgrade:UPGRADER_UPGRADER_INTRO'] : null,
@@ -98,7 +98,7 @@ class Hook_page_groupings_core
             (get_forum_type() != 'cns') ? null : ['security', 'menu/adminzone/security/usergroups_temp', ['admin_group_member_timeouts', ['type' => 'browse'], get_module_zone('admin_group_member_timeouts')], do_lang_tempcode('group_member_timeouts:GROUP_MEMBER_TIMEOUTS'), 'group_member_timeouts:DOC_MANAGE_GROUP_MEMBER_TIMEOUTS'],
             (get_forum_type() == 'cns') ? null : ['security', 'menu/social/groups', ['admin_permissions', ['type' => 'absorb'], get_module_zone('admin_security')], do_lang_tempcode('permissions:ABSORB_PERMISSIONS'), 'permissions:DOC_ABSORB_PERMISSIONS'],
 
-            //(get_comcode_zone(DEFAULT_ZONE_PAGE_NAME, false) === null) ? null : array('', 'menu/' . DEFAULT_ZONE_PAGE_NAME, array(DEFAULT_ZONE_PAGE_NAME, array(), get_comcode_zone(DEFAULT_ZONE_PAGE_NAME)), do_lang_tempcode('HOME')),  Attached to zone, so this is not needed
+            //(get_comcode_zone(DEFAULT_ZONE_PAGE_NAME, false) === null) ? null : ['', 'menu/' . DEFAULT_ZONE_PAGE_NAME, [DEFAULT_ZONE_PAGE_NAME, [], get_comcode_zone(DEFAULT_ZONE_PAGE_NAME)], do_lang_tempcode('HOME')],  Attached to zone, so this is not needed
             ['', 'menu/pages', ['admin', ['type' => 'pages'], 'adminzone'], do_lang_tempcode('PAGES')],
             ['', 'menu/rich_content', ['admin', ['type' => 'rich_content'], 'adminzone'], do_lang_tempcode('menus:RICH_CONTENT')],
             ['', 'menu/site_meta', ['admin', ['type' => 'site_meta'], 'adminzone'], do_lang_tempcode('menus:SITE_META')],
@@ -106,15 +106,15 @@ class Hook_page_groupings_core
 
             (get_comcode_zone('about', false) === null) ? null : ['pages', 'menu/pages/about_us', ['about', [], get_comcode_zone('about')], do_lang_tempcode('menus:ABOUT')],
 
-            //(get_comcode_zone('keymap', false) === null) ? null : array('site_meta',/*'menu/pages/keymap'*/null, array('keymap', array(), get_comcode_zone('keymap')), do_lang_tempcode('KEYBOARD_MAP')),   Shows as child of help page
+            //(get_comcode_zone('keymap', false) === null) ? null : ['site_meta',/*'menu/pages/keymap'*/null, ['keymap', [], get_comcode_zone('keymap')], do_lang_tempcode('KEYBOARD_MAP')],   Shows as child of help page
             (get_comcode_zone('privacy', false) === null || get_option('bottom_show_privacy_link') == '1') ? null : ['site_meta', 'menu/pages/privacy_policy', ['privacy', [], get_comcode_zone('privacy')], do_lang_tempcode('PRIVACY')],
             (get_comcode_zone('rules', false) === null || get_option('bottom_show_rules_link') == '1') ? null : ['site_meta', 'menu/pages/rules', ['rules', [], get_comcode_zone('rules')], do_lang_tempcode('RULES')],
             (get_comcode_zone('feedback', false) === null || get_option('bottom_show_feedback_link') == '1') ? null : ['site_meta', 'menu/site_meta/contact_us', ['feedback', [], get_comcode_zone('feedback')], do_lang_tempcode('FEEDBACK')],
-            //(get_comcode_zone('sitemap', false) === null || get_option('bottom_show_sitemap_button') == '1') ? null : array('site_meta', 'tool_buttons/sitemap', array('sitemap', array(), get_comcode_zone('sitemap')), do_lang_tempcode('SITEMAP')),   Redundant, menu itself is a sitemap
+            //(get_comcode_zone('sitemap', false) === null || get_option('bottom_show_sitemap_button') == '1') ? null : ['site_meta', 'tool_buttons/sitemap', ['sitemap', [], get_comcode_zone('sitemap')], do_lang_tempcode('SITEMAP')],   Redundant, menu itself is a sitemap
             // userguide_comcode is child of help_page
             (get_forum_type() == 'none' || !is_guest($member_id)) ? null : ['site_meta', 'menu/site_meta/user_actions/login', ['login', [], ''], do_lang_tempcode('_LOGIN')],
             (get_forum_type() != 'none' || is_guest($member_id)) ? null : ['site_meta', 'tool_buttons/notifications', ['notifications', [], get_module_zone('notifications')], do_lang_tempcode('notifications:NOTIFICATIONS')],
-            //(get_forum_type() == 'none' || is_guest($member_id)) ? null : array('site_meta', 'menu/site_meta/user_actions/logout', array('login', array(), ''), do_lang_tempcode('LOGOUT')), Don't show an immediate action, don't want accidental preloading
+            //(get_forum_type() == 'none' || is_guest($member_id)) ? null : ['site_meta', 'menu/site_meta/user_actions/logout', ['login', [], ''), do_lang_tempcode('LOGOUT')], Don't show an immediate action, don't want accidental preloading
             (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/join', ['join', [], get_module_zone('join')], do_lang_tempcode('_JOIN')],
             (get_forum_type() != 'cns') ? null : ['site_meta', 'menu/site_meta/user_actions/lost_password', ['lost_password', [], get_module_zone('lost_password')], do_lang_tempcode('cns:LOST_PASSWORD')],
 

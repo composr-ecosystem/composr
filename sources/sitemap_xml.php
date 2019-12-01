@@ -298,7 +298,7 @@ function build_sitemap_cache_table()
 
     // Load ALL URL ID monikers (for efficiency)
     global $LOADED_MONIKERS_CACHE;
-    if ($GLOBALS['SITE_DB']->query_select_value('url_id_monikers', 'COUNT(*)'/*, array('m_deprecated' => 0) Poor performance to include this and it's unnecessary*/) < 10000) {
+    if ($GLOBALS['SITE_DB']->query_select_value('url_id_monikers', 'COUNT(*)'/*, ['m_deprecated' => 0] Poor performance to include this and it's unnecessary*/) < 10000) {
         $results = $GLOBALS['SITE_DB']->query_select('url_id_monikers', ['m_moniker', 'm_resource_page', 'm_resource_type', 'm_resource_id'], ['m_deprecated' => 0]);
         foreach ($results as $result) {
             $LOADED_MONIKERS_CACHE[$result['m_resource_page']][$result['m_resource_type']][$result['m_resource_id']] = $result['m_moniker'];

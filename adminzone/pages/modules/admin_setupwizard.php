@@ -91,7 +91,7 @@ class Module_admin_setupwizard
         }
 
         if ($type != 'browse') {
-            //breadcrumb_set_parents(array(array('_SELF:_SELF:browse', do_lang_tempcode('START'))));
+            //breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('START')]]);
 
             $step = min(10, intval(substr($type, 4)));
         }
@@ -483,7 +483,7 @@ class Module_admin_setupwizard
             $addon_list_advanced_on_by_default = [];
         }
 
-        /*$addon_list_on_by_default = array(   These will be put on in individual Setup Wizard profiles; we list them here just so our addon_setupwizard automated test can ensure we haven't forgotten to consider their status
+        /*$addon_list_on_by_default = [   These will be put on in individual Setup Wizard profiles; we list them here just so our addon_setupwizard automated test can ensure we haven't forgotten to consider their status
             'aggregate_types',
             'authors',
             'calendar',
@@ -517,7 +517,7 @@ class Module_admin_setupwizard
             'welcome_emails',
             'wiki',
             'zone_logos',
-        );*/
+        ];*/
 
         // These are on by default regardless of install profile. It's useful, because we don't want install profiles to have to be too prescriptive, and we want old ones to keep working well even if new addons have been introduced.
         if ($addon_list_on_by_default !== null) {

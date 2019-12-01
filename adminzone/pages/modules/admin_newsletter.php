@@ -1401,7 +1401,7 @@ class Module_admin_newsletter extends Standard_crud_module
                 foreach ($send_details as $key => $val) {
                     $send_details_string_exp .= '"' . str_replace("\n", '\n', addslashes($key)) . '"=>"' . str_replace("\n", '\n', addslashes($val)) . '",';
                 }
-                $schedule_code = ':require_code(\'newsletter\'); send_newsletter("' . php_addslashes($message) . '","' . php_addslashes($subject) . '","' . php_addslashes($lang) . '",array(' . $send_details_string_exp . '),' . strval($html_only) . ',"' . php_addslashes($from_email) . '","' . php_addslashes($from_name) . '",' . strval($priority) . ',json_decode("' . php_addslashes($spreadsheet_data) . '",true),"' . php_addslashes($template) . '");';
+                $schedule_code = ':require_code(\'newsletter\'); send_newsletter("' . php_addslashes($message) . '","' . php_addslashes($subject) . '","' . php_addslashes($lang) . '",[' . $send_details_string_exp . '],' . strval($html_only) . ',"' . php_addslashes($from_email) . '","' . php_addslashes($from_name) . '",' . strval($priority) . ',json_decode("' . php_addslashes($spreadsheet_data) . '",true),"' . php_addslashes($template) . '");';
                 $start_year = intval(date('Y', $schedule));
                 $start_month = intval(date('m', $schedule));
                 $start_day = intval(date('d', $schedule));

@@ -640,12 +640,12 @@ class Browser
             if (stripos($this->_agent, 'msnb') !== false) {
                 $aresult = explode(' ', stristr(str_replace(';', '; ', $this->_agent), 'MSN'));
                 $this->setBrowser(self::BROWSER_MSN);
-                $this->setVersion(str_replace(array('(', ')', ';'), '', $aresult[1]));
+                $this->setVersion(str_replace(['(', ']', ';'), '', $aresult[1]));
                 return true;
             }
             $aresult = explode(' ', stristr(str_replace(';', '; ', $this->_agent), 'msie'));
             $this->setBrowser(self::BROWSER_IE);
-            $this->setVersion(str_replace(array('(', ')', ';'), '', $aresult[1]));
+            $this->setVersion(str_replace(['(', ']', ';'), '', $aresult[1]));
             return true;
         } // Test for Pocket IE
         elseif (stripos($this->_agent, 'mspie') !== false || stripos($this->_agent, 'pocket') !== false) {
@@ -747,7 +747,7 @@ class Browser
         if (stripos($this->_agent, 'NetPositive') !== false) {
             $aresult = explode('/', stristr($this->_agent, 'NetPositive'));
             $aversion = explode(' ', $aresult[1]);
-            $this->setVersion(str_replace(array('(', ')', ';'), '', $aversion[0]));
+            $this->setVersion(str_replace(['(', ']', ';'), '', $aversion[0]));
             $this->setBrowser(self::BROWSER_NETPOSITIVE);
             return true;
         }

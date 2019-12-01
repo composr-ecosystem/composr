@@ -121,7 +121,7 @@ class Hook_import_cms_merge
            'menu_items' => [],
            'cns_custom_profile_fields' => ['cns_groups'],
            'cns_multi_moderations' => ['cns_forums'],
-           //'cns_groups' => array('catalogues'), Cyclic dependency, so we won't do this one
+           //'cns_groups' => ['catalogues'], Cyclic dependency, so we won't do this one
            'cns_members' => ['cns_groups', 'cns_custom_profile_fields', 'attachments'],
            'cns_forums' => ['cns_forum_groupings', 'cns_members', 'cns_groups', 'catalogues'],
            'cns_topics' => ['cns_forums', 'cns_members', 'catalogues'],

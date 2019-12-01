@@ -459,7 +459,7 @@ function get_html_trace()
     $trace = [];
     foreach ($_trace as $i => $stage) {
         $traces = [];
-        //if (in_array($stage['function'], array('get_html_trace', 'composr_error_handler', 'fatal_exit'))) continue;
+        //if (in_array($stage['function'], ['get_html_trace', 'composr_error_handler', 'fatal_exit'])) continue;
         $file = '';
         $line = '';
         $__value = mixed();

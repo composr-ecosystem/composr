@@ -209,11 +209,11 @@ foreach (array_keys($langs) as $lang) {
     $mailer_script = '
 <' . '?php
 
-function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = array())
+function is_control_field($field_name, $include_email_metafields = false, $include_login_fields = false, $extra_boring_fields = [])
 {
     // NB: Keep this function synced with the copy of it in static_export.php
 
-    $boring_fields = array(
+    $boring_fields = [
         // Passed through metadata
         "id",
 
@@ -255,24 +255,24 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
 
         // Data relaying for Suhosin workaround
         "post_data",
-    );
+    ];
     if ($include_email_metafields) {
-        $boring_fields = array_merge($boring_fields, array(
+        $boring_fields = array_merge($boring_fields, [
             "subject",
             "title",
             "name",
             "email",
             "to_members_email",
             "to_written_name",
-        ));
+        ]);
     }
     if ($include_login_fields) {
-        $boring_fields = array_merge($boring_fields, array(
+        $boring_fields = array_merge($boring_fields, [
             "username",
             "password",
             "remember_me",
             "login_invisible",
-        ));
+        ]);
     }
     if (in_array($field_name, $boring_fields)) {
         return true;
@@ -282,7 +282,7 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
         return true;
     }
 
-    $prefixes = array(
+    $prefixes = [
         // Standard hidden-fields convention
         "_",
 
@@ -303,11 +303,11 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
 
         // Relating to permissions setting
         "access_",
-    );
+    ];
     if ($include_email_metafields) {
-        $prefixes = array_merge($prefixes, array(
+        $prefixes = array_merge($prefixes, [
             "field_tagged__",
-        ));
+        ]);
     }
     foreach ($prefixes as $prefix) {
         if (substr($field_name, 0, strlen($prefix)) == $prefix) {
@@ -315,21 +315,21 @@ function is_control_field($field_name, $include_email_metafields = false, $inclu
         }
     }
 
-    $suffixes = array(
+    $suffixes = [
         // Relating to posting form/WYSIWYG
         "_parsed",
         "__is_wysiwyg",
-    );
+    ];
     foreach ($suffixes as $suffix) {
         if (substr($field_name, -strlen($suffix)) == $suffix) {
             return true;
         }
     }
 
-    $substrings = array(
+    $substrings = [
         // Passed through metadata
         "confirm",
-    );
+    ];
     foreach ($substrings as $substring) {
         if (strpos($field_name, $substring) !== false) {
             return true;
@@ -366,7 +366,7 @@ $name = post_param_string("name", "' . do_lang('UNKNOWN') . '");
 
 $post = post_param_string("post", "");
 
-$fields = array();
+$fields = [];
 foreach (array_keys($_POST) as $key) {
     if (!is_control_field($key)) {
         $fields[$key] = post_param_string("label_for__" . $key, titleify($key));

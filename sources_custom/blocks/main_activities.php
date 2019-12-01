@@ -100,16 +100,16 @@ class Block_main_activities
      */
     /*function caching_environment()
     {
-        $info = array();
+        $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('grow', $map) ? ($map['grow'] == '1') : true,
             array_key_exists('max', $map) ? intval($map['max']) : 10,
             array_key_exists('refresh_time', $map) ? intval($map['refresh_time']) : 30,
             array_key_exists('param', $map) ? $map['param'] : do_lang('ACTIVITY'),
             array_key_exists('mode', $map) ? $map['mode'] : 'all',
             get_member(),
-        )
+        ]
 PHP;
         $info['ttl'] = 3;
         return $info;

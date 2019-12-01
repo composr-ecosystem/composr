@@ -1197,7 +1197,7 @@ function get_page_grouping_links()
 function get_root_comcode_pages($zone, $include_zone = false)
 {
     /*
-    $rows[$zone] = $GLOBALS['SITE_DB']->query_select('comcode_pages', array('the_page', 'p_validated'), array('the_zone' => $zone, 'p_parent_page' => ''));
+    $rows[$zone] = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'p_validated'], ['the_zone' => $zone, 'p_parent_page' => '']);
     return collapse_2d_complexity('the_page', 'p_validated', $rows[$zone]);
     */
 

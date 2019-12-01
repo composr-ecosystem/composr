@@ -54,13 +54,13 @@ class Block_main_awards
         ?
         null
         :
-        array(
+        [
             array_key_exists('guid', $map) ? $map['guid'] : '',
             (array_key_exists('give_context', $map) ? $map['give_context'] : '0') == '1',
             (array_key_exists('include_breadcrumbs', $map) ? $map['include_breadcrumbs'] : '0') == '1',
             array_key_exists('param', $map) ? $map['param'] : strval(db_get_first_id()),
             array_key_exists('zone', $map) ? $map['zone'] : '_SEARCH',
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to submit link
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 24); // Intentionally, do randomisation acts as 'of the day'

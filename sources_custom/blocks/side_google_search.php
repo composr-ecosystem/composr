@@ -45,10 +45,10 @@ class Block_side_google_search
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('page_name', $map) ? $map['page_name'] : 'google_search',
             array_key_exists('param', $map) ? $map['param'] : '',
-        )
+        ]
 PHP;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (24 * 60 * 60 * 14);
         return $info;

@@ -85,7 +85,7 @@ class CMS_CSV_Writer_Spout extends CMS_Spreadsheet_Writer
 
         cms_ini_set('ocproducts.type_strictness', '0');
 
-        $this->writer->addRow(Box\Spout\Writer\Common\Creator\WriterEntityFactory::createRowFromArray($_row));
+        $this->writer->addRow(Box\Spout\Writer\Common\Creator\WriterEntityFactory::createRowFrom[$_row]);
 
         cms_ini_set('ocproducts.type_strictness', '1');
     }

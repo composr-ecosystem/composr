@@ -324,7 +324,7 @@ function cns_get_member_best_group_property($member_id, $property)
 function cns_get_best_group_property($groups, $property)
 {
     $big_is_better = ['gift_points_per_day', 'gift_points_base', 'enquire_on_new_ips', 'is_super_admin', 'is_super_moderator', 'max_daily_upload_mb', 'max_attachments_per_post', 'max_avatar_width', 'max_avatar_height', 'max_post_length_comcode', 'max_sig_length_comcode'];
-    //$small_and_perfectly_formed = array('flood_control_submit_secs', 'flood_control_access_secs'); Not needed by elimination, but nice to have here as a note
+    //$small_and_perfectly_formed = ['flood_control_submit_secs', 'flood_control_access_secs']; Not needed by elimination, but nice to have here as a note
 
     $go_super_size = in_array($property, $big_is_better);
 
@@ -373,7 +373,7 @@ function get_probation_group()
  * @param  boolean $skip_secret Whether to skip looking at secret usergroups, unless we have access
  * @param  boolean $handle_probation Whether to take probation into account
  * @param  boolean $include_implicit Whether to include implicit groups
- * @return array Flipped list (e.g. array(1=>true,2=>true,3=>true) for someone in (1,2,3)).
+ * @return array Flipped list (e.g. [1=>true,2=>true,3=>true] for someone in (1,2,3)).
  */
 function cns_get_members_groups($member_id = null, $skip_secret = false, $handle_probation = true, $include_implicit = true)
 {

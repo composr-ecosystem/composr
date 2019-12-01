@@ -50,10 +50,10 @@ class Block_main_quotes
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('title', $map) ? $map['title'] : '-',
             array_key_exists('param', $map) ? $map['param'] : 'quotes',
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS; // Due to edit link
         $info['ttl'] = 5;

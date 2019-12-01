@@ -262,7 +262,7 @@ class Module_admin_themes
         if ($type == 'screen_preview') {
             $function = get_param_string('function');
 
-            //get_screen_title('SCREEN_PREVIEW', true, array(escape_html($function))); // Affects breadcrumbs etc
+            //get_screen_title('SCREEN_PREVIEW', true, [escape_html($function])); // Affects breadcrumbs etc
             get_screen_title($function, false); // Affects breadcrumbs etc
             breadcrumb_set_parents([['_SELF:_SELF:screen_previews', do_lang_tempcode('SCREEN_PREVIEWS')]]);
         }

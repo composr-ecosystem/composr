@@ -228,7 +228,7 @@ class CMS_simple_xml_reader
      * Pull a portion of an XML tree structure back into textual XML.
      *
      * @param  array $xml_children Level of XML tree
-     * @param  array $xml_namespaces XML namespaces array( 'ns-prefix:' => 'http://example.com/namespace-uri' )
+     * @param  array $xml_namespaces XML namespaces [ 'ns-prefix:' => 'http://example.com/namespace-uri' ]
      * @return string The combined XML
      */
     public function pull_together($xml_children, $xml_namespaces = [])
@@ -260,7 +260,7 @@ class CMS_simple_xml_reader
      * Element names and attributes have complete namespace URIs as a prefix for some reason, this fixes that.
      *
      * @param  string $node_name Node name
-     * @param  array $xml_namespaces XML namespaces array( 'ns-prefix:' => 'http://example.com/namespace-uri' )
+     * @param  array $xml_namespaces XML namespaces [ 'ns-prefix:' => 'http://example.com/namespace-uri' ]
      * @return string
      */
     protected function _fix_namespace($node_name, $xml_namespaces)

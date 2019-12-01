@@ -102,13 +102,13 @@ class BrokenURLScanner
         /*
         For testing...
         $url = get_base_url() . '/foo.html';
-        $urls[] = array(
+        $urls[] = [
             'url' => $url,
             'table_name' => null,
             'field_name' => null,
             'identifier' => null,
             'edit_url' => null,
-        );
+        ];
         return $urls;
         */
 

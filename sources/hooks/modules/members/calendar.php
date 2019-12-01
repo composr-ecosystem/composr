@@ -35,7 +35,7 @@ class Hook_members_calendar
             return [];
         }
 
-        //if (!has_privilege(get_member(), 'assume_any_member')) return array();  Now will have separate permission filtering
+        //if (!has_privilege(get_member(), 'assume_any_member')) return [];  Now will have separate permission filtering
         if (!has_actual_page_access(get_member(), 'calendar', get_module_zone('calendar'))) {
             return [];
         }

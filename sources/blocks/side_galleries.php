@@ -50,13 +50,13 @@ class Block_side_galleries
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('depth', $map) ? intval($map['depth']) : 0,
             array_key_exists('param', $map) ? $map['param'] : 'root',
             array_key_exists('zone', $map) ? $map['zone'] : '',
             array_key_exists('show_empty', $map) ? ($map['show_empty'] == '1') : false,
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         $info['ttl'] = (get_value('disable_block_timeout') === '1') ? (60 * 60 * 24 * 365 * 5/*5 year timeout*/) : (60 * 2);

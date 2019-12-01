@@ -2000,7 +2000,7 @@ class Module_topics
                     do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'post'),
                 ];
             }
-            //if ($intended_solely_for === null) $moderation_options[] = array(do_lang_tempcode('CASCADING'), 'cascading', false, do_lang_tempcode('DESCRIPTION_CASCADING'));     Too much to offer this too
+            //if ($intended_solely_for === null) $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', false, do_lang_tempcode('DESCRIPTION_CASCADING')];     Too much to offer this too
         } else {
             $moderation_options = [];
             $hidden_fields->attach(form_input_hidden('validated', '1'));
@@ -2358,7 +2358,7 @@ class Module_topics
 
                 $_topic_id = strval($topic_id);
                 $schedule_code = <<<END
-:\$GLOBALS['FORUM_DB']->query_update('f_topics',array('t_cache_first_time'=>time(),'t_validated'=>1),array('id'=>{$_topic_id}),'',1);
+:\$GLOBALS['FORUM_DB']->query_update('f_topics',['t_cache_first_time'=>time(],'t_validated'=>1),['id'=>{$_topic_id}],'',1);
 END;
 
                 $schedule = post_param_date('schedule');
@@ -2436,7 +2436,7 @@ END;
                     $_new_title = ($new_title === null) ? 'null' : ('\'' . str_replace("\n", '\'."\n".\'', addslashes($new_title)) . '\'');
 
                     $schedule_code = <<<END
-:require_code('cns_topics_action2'); require_code('cns_topics_action'); cns_edit_topic($topic_id,null,null,$validated,$open,$pinned,$cascading,'',$_new_title); if (($to!=$forum_id) && ($to !== null)) cns_move_topics($forum_id,$to,array($topic_id)); \$post_id=cns_make_post($topic_id,$__title,$_postdetails,$skip_sig,$_first_post,$validated,$is_emphasised,$_postdetailser_name_if_guest,null,null,null,$_intended_solely_for,null,nullfalse,true,null,true,$topic_title,null,$anonymous==1); if (addon_installed('awards')) { require_code('awards'); handle_award_setting('post',strval(\$post_id)); }
+:require_code('cns_topics_action2'); require_code('cns_topics_action'); cns_edit_topic($topic_id,null,null,$validated,$open,$pinned,$cascading,'',$_new_title); if (($to!=$forum_id) && ($to !== null)) cns_move_topics($forum_id,$to,[$topic_id]); \$post_id=cns_make_post($topic_id,$__title,$_postdetails,$skip_sig,$_first_post,$validated,$is_emphasised,$_postdetailser_name_if_guest,null,null,null,$_intended_solely_for,null,nullfalse,true,null,true,$topic_title,null,$anonymous==1); if (addon_installed('awards')) { require_code('awards'); handle_award_setting('post',strval(\$post_id)); }
 END;
                     require_code('calendar');
                     $start_year = intval(date('Y', $schedule));

@@ -36,9 +36,9 @@ class Hook_privacy_commandr extends Hook_privacy_base
 
         return [
             'cookies' => [
-                /*'commandr_*' => $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? null : array(    Silly to include this
+                /*'commandr_*' => $GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? null : [    Silly to include this
                     'reason' => 'Your current Commandr system environment',
-                ),*/
+                ],*/
             ],
 
             'positive' => [

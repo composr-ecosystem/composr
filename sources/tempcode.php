@@ -236,9 +236,9 @@ function missing_template_parameter($origin)
 function build_closure_tempcode($type, $name, $parameters, $escaping = [])
 {
     if ($escaping === null) {
-        $_escaping = 'array()';
+        $_escaping = '[]';
     } else {
-        $_escaping = 'array(' . @implode(',', $escaping) . ')';
+        $_escaping = '[' . @implode(',', $escaping] . ')';
     }
 
     $_type = strval($type);
@@ -294,9 +294,9 @@ function build_closure_tempcode($type, $name, $parameters, $escaping = [])
 
         $funcdef = "\$tpl_funcs['$myfunc']=\"echo ";
         if (($type === TC_SYMBOL) && (function_exists('ecv_' . $name))) {
-            $funcdef .= "ecv_" . $name . "(\\\$cl," . ($_escaping) . ",array(" . $_parameters . "));\";\n";
+            $funcdef .= "ecv_" . $name . "(\\\$cl," . ($_escaping) . ",[" . $_parameters . "]);\";\n";
         } else {
-            $funcdef .= "ecv(\\\$cl," . ($_escaping) . "," . ($_type) . ",\\\"" . ($_name) . "\\\",array(" . $_parameters . "));\";\n";
+            $funcdef .= "ecv(\\\$cl," . ($_escaping) . "," . ($_type) . ",\\\"" . ($_name) . "\\\",[" . $_parameters . "]);\";\n";
         }
 
         switch ($_name) {

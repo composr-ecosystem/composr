@@ -54,7 +54,7 @@ class Block_main_cc_embed
         ?
         null
         :
-        array(
+        [
             array_key_exists('as_guest', $map) ? ($map['as_guest'] == '1') : false,
             get_param_integer($block_id . '_max',
             array_key_exists('max', $map) ? intval($map['max']) : 30),
@@ -69,7 +69,7 @@ class Block_main_cc_embed
             array_key_exists('filter', $map) ? $map['filter'] : '',
             array_key_exists('param', $map) ? $map['param'] : db_get_first_id(),
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-        )
+        ]
 PHP;
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;
         if (addon_installed('content_privacy')) {

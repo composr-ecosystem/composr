@@ -275,8 +275,8 @@ class Module_admin_revisions
         }
 
         /*if (has_privilege(get_member(), 'undo_revisions')) {
-            $undo_url = build_url(array('page' => '_SELF', 'type' => 'undo', 'id' => $revision['id']), '_SELF');
-            $delete = do_template('BUTTON_SCREEN_ITEM', array(
+            $undo_url = build_url(['page' => '_SELF', 'type' => 'undo', 'id' => $revision['id']], '_SELF');
+            $delete = do_template('BUTTON_SCREEN_ITEM', [
                 '_GUID' => '8b3b9bc19246045bf1537ee0f6b67fe1',
                 'REL' => 'undo',
                 'IMMEDIATE' => true,
@@ -284,7 +284,7 @@ class Module_admin_revisions
                 'FULL_TITLE' => do_lang_tempcode('UNDO_REVISION'),
                 'TITLE' => do_lang_tempcode('UNDO'),
                 'IMG' => 'buttons/undo',
-            ));
+            ]);
             $_revision[] = $delete;
         }*/
 

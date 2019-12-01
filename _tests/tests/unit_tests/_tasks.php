@@ -135,7 +135,7 @@ class _tasks_test_set extends cms_test_case
 
         /*
         This validator seems to be down now, so we implement a new one below
-        $post_params = array('snip' => $ical);
+        $post_params = ['snip' => $ical];
         $url = 'http://severinghaus.org/projects/icv/';
         if ($result === null) {
             $this->assertTrue(false, 'ical validator is down?');
@@ -147,17 +147,17 @@ class _tasks_test_set extends cms_test_case
         $result = http_get_contents('https://ical-validator.herokuapp.com/validate/', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'timeout' => 20.0]);
         if ($result !== null) {
             /* Could not get this working with upload method
-            $matches = array();
+            $matches = [];
             preg_match('#<form id="id2" method="post" action="([^"]*)"#', $result, $matches);
             $rel_url = $matches[1];
             preg_match('#jsessionid=(\w+)#', $result, $matches);
             $session_id = $matches[1];
-            $files = array('file' => $temp_path);
-            $post_params = array('id2_hf_0' => '', 'Validate' => '');
-            $cookies = array('JSESSIONID' => $session_id);
-            $extra_headers = array();
+            $files = ['file' => $temp_path];
+            $post_params = ['id2_hf_0' => '', 'Validate' => ''];
+            $cookies = ['JSESSIONID' => $session_id];
+            $extra_headers = [];
             $url = qualify_url(html_entity_decode($rel_url, ENT_QUOTES), 'https://ical-validator.herokuapp.com/validate/');
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers));
+            $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'ignore_http_status' => $this->debug, 'trigger_error' => false, 'files' => $files, 'post_params' => $post_params, 'cookies' => $cookies, 'extra_headers' => $extra_headers]);
             */
 
             $matches = [];

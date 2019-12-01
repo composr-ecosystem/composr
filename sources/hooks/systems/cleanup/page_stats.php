@@ -125,7 +125,7 @@ class Hook_cleanup_page_stats
                         $list .= strval($value);
                     }
                 }
-                fwrite($tmpfile, "   \$GLOBALS['SITE_DB']->query_insert('stats',array($list));\n");
+                fwrite($tmpfile, "   \$GLOBALS['SITE_DB']->query_insert('stats',[$list]);\n");
 
                 if ($or_list != '') {
                     $or_list .= ' OR ';

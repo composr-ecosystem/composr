@@ -2504,7 +2504,7 @@ function step_10_populate_database()
             }
         }
     }
-    //$log->attach(do_template('INSTALLER_DONE_SOMETHING', array('_GUID' => '6a160da6fd9031e90b37a40aea149137', 'SOMETHING' => do_lang('TABLES_CREATED', 'Composr'))));
+    //$log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '6a160da6fd9031e90b37a40aea149137', 'SOMETHING' => do_lang('TABLES_CREATED', 'Composr'])));
 
     return $log;
 }

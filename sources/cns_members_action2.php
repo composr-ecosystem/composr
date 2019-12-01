@@ -594,7 +594,7 @@ function cns_get_member_fields_settings($mini_mode = true, $special_type = '', $
     /*
     if (!$mini_mode) {
         if (($doing_timezones) || ($doing_langs) || ($doing_email_option) || ($doing_wide_option) || ($doing_theme_option) || ($doing_local_forum_options)) {
-            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', array('_GUID' => '3cd79bbea084ec1fe148edddad7d52b4', 'FORCE_OPEN' => ($member_id === null) ? true : null, 'TITLE' => do_lang_tempcode('SETTINGS'))));
+            $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '3cd79bbea084ec1fe148edddad7d52b4', 'FORCE_OPEN' => ($member_id === null] ? true : null, 'TITLE' => do_lang_tempcode('SETTINGS'))));
             $added_section = true;
         }
     }
@@ -1678,10 +1678,12 @@ function cns_check_name_valid(&$username, $member_id = null, $password = null, $
 {
     /* This would be an internationalisation mistake
     $striped_username = $username;
-    $allowed_characters = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-                                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ',
-                                '#', '@', ':', ';', '/', "\\", '.', ',', '|', '!', '%', '$', '^', '(', '*', ')', '-', '_', '+', '=', '[', ']', '{', '}', '~');
+    $allowed_characters = [
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ',
+        '#', '@', ':', ';', '/', "\\", '.', ',', '|', '!', '%', '$', '^', '(', '*', ')', '-', '_', '+', '=', '[', ']', '{', '}', '~',
+    ];
     foreach ($allowed_characters as $allowed_character) {
         $striped_username = str_replace($allowed_character, '', $striped_username);
     }

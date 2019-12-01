@@ -50,7 +50,7 @@ class Block_main_news_grid
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             array_key_exists('optimise', $map) ? $map['optimise'] : '0',
             (array_key_exists('pagination', $map) ? $map['pagination'] : '0') == '1',
             array_key_exists('title', $map) ? escape_html($map['title']) : '(default title)',
@@ -70,7 +70,7 @@ class Block_main_news_grid
             array_key_exists('zone', $map) ? $map['zone'] : get_module_zone('news'),
             array_key_exists('select_and', $map) ? $map['select_and'] : '',
             array_key_exists('check', $map) ? ($map['check'] == '1') : true,
-        )
+        ]
 PHP;
 
         $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT | CACHE_AGAINST_PERMISSIVE_GROUPS;

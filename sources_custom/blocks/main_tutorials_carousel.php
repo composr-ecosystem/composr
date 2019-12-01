@@ -45,9 +45,9 @@ class Block_main_tutorials_carousel
     {
         $info = [];
         $info['cache_on'] = <<<'PHP'
-        array(
+        [
             empty($map['param']) ? '' : $map['param'],
-        )
+        ]
 PHP;
         $info['ttl'] = 60;
         return $info;

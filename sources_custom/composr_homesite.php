@@ -216,7 +216,7 @@ function get_composr_branches()
             $version_file = shell_exec('git show ' . $git_branch . ':sources/version.php');
 
             $tempnam = cms_tempnam();
-            file_put_contents($tempnam, $version_file . "\n\necho serialize(array(cms_version_number(), defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown', defined('cms_version_branch_eol') ? cms_version_branch_eol() : null));");
+            file_put_contents($tempnam, $version_file . "\n\necho serialize([cms_version_number(], defined('cms_version_branch_status') ? cms_version_branch_status() : 'Unknown', defined('cms_version_branch_eol') ? cms_version_branch_eol() : null));");
             $results = @unserialize(shell_exec('php ' . $tempnam));
             unlink($tempnam);
             if ((is_array($results)) && (count($results) == 3)) {
@@ -685,7 +685,7 @@ function reset_aliases()
             $text .= $vd . "\n";
         }
     }
-    $sites = $GLOBALS['SITE_DB']->query_select('sites', array('s_codename', 's_domain_name'));
+    $sites = $GLOBALS['SITE_DB']->query_select('sites', ['s_codename', 's_domain_name']);
     foreach ($sites as $site) {
         $text .= $site['s_codename'] . '.composr.info:' . 'alias-demonstratr_' . $site['s_codename'] . "\n";
         if ($site['s_domain_name'] != '') {
@@ -697,13 +697,13 @@ function reset_aliases()
 
     // Rebuild rcpthosts
     $vds = cms_file_safe(special_demonstratr_dir() . '/rcpthosts');
-    $hosts = array();
+    $hosts = [];
     foreach ($vds as $vd) {
         if (trim($vd) != '') {
             $hosts[$vd] = true;
         }
     }
-    $sites = $GLOBALS['SITE_DB']->query_select('sites', array('s_codename', 's_domain_name'));
+    $sites = $GLOBALS['SITE_DB']->query_select('sites', ['s_codename', 's_domain_name']);
     foreach ($sites as $site) {
         $hosts[$site['s_codename'] . '.composr.info'] = true;
         if ($site['s_domain_name'] != '') {
@@ -724,7 +724,7 @@ function reset_aliases()
     closedir($d);
 
     // Rebuild alias files
-    $emails = $GLOBALS['SITE_DB']->query_select('sites_email', array('*'));
+    $emails = $GLOBALS['SITE_DB']->query_select('sites_email', ['*']);
     foreach ($emails as $email) {
         $path = $a_path . '/.qmail-demonstratr_' . filter_naughty($email['s_codename']) . '_' . filter_naughty(str_replace('.', ':', $email['s_email_from']));
         cms_file_put_contents_safe($path, '&' . $email['s_email_to'], FILE_WRITE_FIX_PERMISSIONS);
@@ -745,9 +745,9 @@ function find_server_load($server)
     return 1; // Not currently supported, needs customising per-server
 
     /*
-    //$stats = http_get_contents('http://' . $server . '/data_custom/stats.php?html=1', array('convert_to_internal_encoding' => true));
+    //$stats = http_get_contents('http://' . $server . '/data_custom/stats.php?html=1', ['convert_to_internal_encoding' => true]);
     $stats = shell_exec('php /home/demonstratr/public_html/data_custom/stats.php 1');
-    $matches = array();
+    $matches = [];
     preg_match('#Memory%: (.*)<br />Swap%: (.*)<br />15-min-load: load average: (.*)<br />5-min-load: (.*)<br />1-min-load: (.*)<br />CPU-user%: (.*)<br />CPU-idle%: (.*)<br />Free-space: (.*)#', $stats, $matches);
     list(, $mempercent, $swappercent, $load_15, $load_5, $load_1, $cpu_usage, $cpu_idle, $freespace) = $matches;
     if (intval($freespace) < 1024 * 1024 * 1024) {
@@ -906,5 +906,5 @@ function demonstratr_delete_site($server, $codename, $bulk = false)
     reset_base_config_file($server);
 
     // Special
-    //$GLOBALS['SITE_DB']->query_delete('sites_email', array('s_codename' => $codename));
+    //$GLOBALS['SITE_DB']->query_delete('sites_email', ['s_codename' => $codename]);
 }

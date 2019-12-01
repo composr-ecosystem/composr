@@ -449,7 +449,7 @@ class Module_admin_cns_groups extends Standard_crud_module
             $result_entries->attach(results_entry($fr, true));
         }
 
-        $search_url = null; //build_url(array('page' => 'search', 'id' => 'cns_clubs'), get_module_zone('search'));
+        $search_url = null; //build_url(['page' => 'search', 'id' => 'cns_clubs'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'groups'], get_module_zone('groups'));
 
         return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gdfg43tfdgdfgdrfgd', true), true, $search_url, $archive_url];

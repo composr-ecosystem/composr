@@ -566,7 +566,7 @@ class Module_admin_actionlog
             }
 
             /*if (has_privilege(get_member(), 'undo_revisions')) {
-                $undo_url = build_url(array('page' => 'admin_revisions', 'type' => 'undo', 'id' => $revision['id'], 'revision_type' => $revision['revision_type'], 'redirect' => protect_url_parameter(SELF_REDIRECT)), get_module_zone('admin_revisions'));
+                $undo_url = build_url(['page' => 'admin_revisions', 'type' => 'undo', 'id' => $revision['id'], 'revision_type' => $revision['revision_type'], 'redirect' => protect_url_parameter(SELF_REDIRECT]), get_module_zone('admin_revisions'));
                 $delete = hyperlink($delete_url, do_lang_tempcode('UNDO'), false, false, do_lang_tempcode('UNDO_REVISION'), null, new Tempcode());
                 $fields['UNDO_REVISION'] = $delete;
             }*/

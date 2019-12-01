@@ -341,7 +341,7 @@ class Module_newsletter
 
             /*
             Insecure, potential information leak
-            $existing_record = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', array('n_forename', 'n_surname'), array('email' => $their_email), '', 1);
+            $existing_record = $GLOBALS['SITE_DB']->query_select('newsletter_subscribers', ['n_forename', 'n_surname'], ['email' => $their_email], '', 1);
             if (array_key_exists(0, $existing_record)) {
                 $forename = $existing_record[0]['n_forename'];
                 $surname = $existing_record[0]['n_surname'];

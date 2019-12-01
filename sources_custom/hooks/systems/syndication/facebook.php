@@ -98,12 +98,12 @@ class Hook_syndication_facebook
         if ($member_id === null) {
             /*$FACEBOOK_CONNECT->setExtendedAccessToken();
             $FACEBOOK_CONNECT->api('/oauth/access_token', 'POST',
-                array(
+                [
                     'grant_type' => 'fb_exchange_token',
                     'client_id' => get_option('facebook_appid'),
                     'client_secret' => get_option('facebook_secret_code'),
                     'fb_exchange_token' => $access_token
-                )
+                ]
             );*/
 
             if (get_option('facebook_uid') == '') {

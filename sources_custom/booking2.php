@@ -249,8 +249,8 @@ function get_bookable_details_from_form()
     ];
 
     /*
-    $blacked = array();
-    $supplements = array();
+    $blacked = [];
+    $supplements = [];
     foreach (array_keys($_POST) as $key) {
         if (substr($key, 0, 8) == 'blacked_') {
             if (post_param_integer($key, 0) == 1) {

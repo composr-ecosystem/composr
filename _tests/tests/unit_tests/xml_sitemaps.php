@@ -53,20 +53,20 @@ class xml_sitemaps_test_set extends cms_test_case
 
             /* Bots apparently being blocked on here now
             $url = 'https://ipullrank.com/tools/map-broker/index.php';
-            $post_params = array(
+            $post_params = [
                 'option' => '1',
                 'page' => 'go',
-            );
+            ];
 
             $tmp_file = get_file_base() . '/temp.xml';
             $cleaned_c = preg_replace('#https?://[^<>"]*#', 'http://example.com/', $c); // It checks URLs, which we don't want
             $cleaned_c = preg_replace('#(?U)(</url>.*</url>)(?-U).*</url>#s', '$1', $cleaned_c); // Strip down to speed up. Have 2 URLs else the validator is buggy
             file_put_contents($tmp_file, $cleaned_c);
 
-            $files = array(
+            $files = [
                 'xmlfile' => $tmp_file,
-            );
-            $result = http_get_contents($url, array('convert_to_internal_encoding' => true, 'timeout' => 20.0, 'post_params' => $post_params, 'files' => $files));
+            ];
+            $result = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 20.0, 'post_params' => $post_params, 'files' => $files]);
 
             unlink($tmp_file);
 
