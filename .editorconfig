@@ -70,8 +70,8 @@ tab_width = 3
 #  themes/default/javascript/plupload.js themes/default/javascript_custom/columns.js \
 #  themes/default/javascript_custom/jquery_flip.js themes/default/javascript_custom/tag_cloud.js \
 #  themes/default/javascript_custom/base64.js mobiquo/smartbanner mobiquo/lib sources_custom/composr_mobile_sdk/ios/ApnsPHP \
-#  data_custom/errorlog.php data_custom/execute_temp.php data_custom/latest_activity.bin data_custom/permission_checks.log \
-#  uploads _config.php sources_custom/browser_detect.php tracker _old _tests/html_dump _tests/cmstest _tests/screens_tested \
+#  data_custom/errorlog.php data_custom/execute_temp.php \
+#  uploads _config.php sources_custom/browser_detect.php tracker _old _tests/html_dump _tests/screens_tested \
 #  docs/api docs/composr-api-template data_custom/upload-crop caches exports imports nbproject themes/default/templates_cached/EN \
 #  _tests/codechecker/codechecker.app _tests/codechecker/netbeans/nbproject _tests/codechecker/netbeans/build _tests/codechecker/netbeans/dist \
 #  temp themes/default/javascript/xsl_mopup.js data/modules/admin_stats/IP_Country.txt docs \
