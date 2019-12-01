@@ -1940,10 +1940,13 @@ function is_writable($path)
 /**
  * Finds whether a variable exists / is not null / is an actually dereferencable array element. Do not use this for the null case, and otherwise ONLY when for efficiency reasons.
  *
- * @param  mixed $path The variable
+ * @param  mixed $path_a The variable
+ * @param  mixed $path_b The variable
+ * @param  mixed $path_c The variable
+ * @param  mixed $path_d The variable
  * @return boolean Whether it is set
  */
-function isset(&$path)
+function isset(&$path_a, &$path_b = true, &$path_c = true, &$path_d = true)
 {
     return false;
 }

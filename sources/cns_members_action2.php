@@ -1656,7 +1656,7 @@ function cns_set_custom_field($member_id, $field_id, $value, $type = null, $defe
     }
 
     global $MEMBER_CACHE_FIELD_MAPPINGS;
-    if ((isset($MEMBER_CACHE_FIELD_MAPPINGS)) && (isset($MEMBER_CACHE_FIELD_MAPPINGS[$member_id]))) {
+    if (isset($MEMBER_CACHE_FIELD_MAPPINGS, $MEMBER_CACHE_FIELD_MAPPINGS[$member_id])) {
         unset($MEMBER_CACHE_FIELD_MAPPINGS[$member_id]);
     }
 

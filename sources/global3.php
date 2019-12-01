@@ -698,7 +698,7 @@ function restore_output_state($just_tempcode = false, $merge_current = false, $k
         foreach ($old_state as $var => $val) {
             if ((!$just_tempcode) || ($var == 'CYCLES') || ($var == 'TEMPCODE_SETGET')) {
                 $merge_array = (($merge_current) && (is_array($val)) && (isset($mergeable_arrays[$var])));
-                $merge_tempcode = (($merge_current) && (isset($val->codename/*faster than is_object*/)) && (isset($mergeable_tempcode[$var])));
+                $merge_tempcode = (($merge_current) && (isset($val->codename/*faster than is_object*/, $mergeable_tempcode[$var])));
                 $mergeable = $merge_array || $merge_tempcode;
                 if (($keep === []) || (!in_array($var, $keep)) || ($mergeable)) {
                     if ($merge_array) {

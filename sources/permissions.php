@@ -474,7 +474,7 @@ function has_category_access($member_id, $module, $category)
     }
 
     global $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE;
-    if ((isset($CATEGORY_ACCESS_CACHE[$member_id])) && (isset($CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]))) {
+    if ((isset($CATEGORY_ACCESS_CACHE[$member_id], $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]))) {
         handle_permission_check_logging($member_id, 'has_category_access', [$module, $category], $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category]);
         return $CATEGORY_ACCESS_CACHE[$member_id][$module . '/' . $category];
     }

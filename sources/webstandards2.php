@@ -184,7 +184,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                 if (($GLOBALS['WEBSTANDARDS_MANUAL']) && (isset($attributes['name'])) && ($attributes['name'] == 'robots')) {
                     $errors[] = ['MANUAL_META'];
                 }
-                if ((isset($attributes['http-equiv'])) && (isset($attributes['content'])) && (strtolower($attributes['http-equiv']) == 'content-type') && ((strpos($attributes['content'], 'text/html;') !== false) || (strpos($attributes['content'], 'application/xhtml+xml;') !== false)) && (strpos($attributes['content'], 'charset=') !== false)) {
+                if ((isset($attributes['http-equiv'], $attributes['content'])) && (strtolower($attributes['http-equiv']) == 'content-type') && ((strpos($attributes['content'], 'text/html;') !== false) || (strpos($attributes['content'], 'application/xhtml+xml;') !== false)) && (strpos($attributes['content'], 'charset=') !== false)) {
                     $GLOBALS['FOUND_CONTENTTYPE'] = true;
                 }
                 if (!empty($attributes['content'])) {
@@ -293,7 +293,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                         }
                     }
 
-                    if ((isset($attributes['size'])) && (isset($attributes['type'])) && (($attributes['type'] == 'week') || ($attributes['type'] == 'hidden')/* || ($attributes['type'] == 'color') || ($attributes['type'] == 'number') Size would apply if browser is using non-HTML5 fallback*/ || ($attributes['type'] == 'month') || ($attributes['type'] == 'range') || ($attributes['type'] == 'radio') || ($attributes['type'] == 'checkbox'))) {
+                    if ((isset($attributes['size'], $attributes['type'])) && (($attributes['type'] == 'week') || ($attributes['type'] == 'hidden')/* || ($attributes['type'] == 'color') || ($attributes['type'] == 'number') Size would apply if browser is using non-HTML5 fallback*/ || ($attributes['type'] == 'month') || ($attributes['type'] == 'range') || ($attributes['type'] == 'radio') || ($attributes['type'] == 'checkbox'))) {
                         $errors[] = ['XHTML_NO_SIZE_FOR'];
                     }
 
@@ -387,7 +387,7 @@ function __check_tag($tag, $attributes, $self_close, $close, $errors)
                 if ((isset($attributes['longdesc'])) && (!isset($attributes['dlink']))) {
                     $errors[] = ['WCAG_LONGTEXT_DLINK'];
                 }
-                if ((isset($attributes['alt'])) && (isset($attributes['src'])) && ($attributes['alt'] != '') && ($attributes['alt'] == $attributes['src'])) {
+                if ((isset($attributes['alt'], $attributes['src'])) && ($attributes['alt'] != '') && ($attributes['alt'] == $attributes['src'])) {
                     $errors[] = ['XHTML_MISSING_ATTRIBUTE', 'img', 'alt'];
                 }
                 break;
@@ -644,7 +644,7 @@ function _check_externals($tag, $attributes, $self_close, $close)
 
     $errors = [];
 
-    if (($tag == 'link') && ($GLOBALS['WEBSTANDARDS_CSS']) && (!$GLOBALS['NO_XHTML_LINK_FOLLOW']) && (isset($attributes['href'])) && (isset($attributes['type'])) && ($attributes['type'] == 'text/css') && (!isset($VALIDATED_ALREADY[$attributes['href']]))) { // Validate CSS
+    if (($tag == 'link') && ($GLOBALS['WEBSTANDARDS_CSS']) && (!$GLOBALS['NO_XHTML_LINK_FOLLOW']) && (isset($attributes['href'], $attributes['type'])) && ($attributes['type'] == 'text/css') && (!isset($VALIDATED_ALREADY[$attributes['href']]))) { // Validate CSS
         $VALIDATED_ALREADY[$attributes['href']] = 1;
         $url = qualify_url($attributes['href'], $GLOBALS['URL_BASE']);
         if ($url != '') {
@@ -725,7 +725,7 @@ function _check_link_accessibility($tag, $attributes, $self_close, $close)
         $filtered_href = str_replace('/index.php', '', $attributes['href']);
         $filtered_href = preg_replace('#&keep_session=[^&]*#', '', $filtered_href);
 
-        if (($WEBSTANDARDS_MANUAL) && (isset($A_LINKS[$title])) && (isset($A_LINKS[$title][$content])) && ($A_LINKS[$title][$content] != $attributes['href']) && ($A_LINKS[$title][$content] != $filtered_href)) {
+        if (($WEBSTANDARDS_MANUAL) && (isset($A_LINKS[$title], $A_LINKS[$title][$content])) && ($A_LINKS[$title][$content] != $attributes['href']) && ($A_LINKS[$title][$content] != $filtered_href)) {
             $errors[] = ['WCAG_DODGY_LINK', $A_LINKS[$title][$content]];
         }
         $bad_strings = ['click'/*,'here'*/];

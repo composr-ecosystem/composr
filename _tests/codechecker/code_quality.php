@@ -1481,10 +1481,10 @@ function check_call($c, $c_pos, $class = null, $function_guard = '')
     if ((isset($GLOBALS['CHECKS'])) && ($function == 'unlink')) {
         log_warning('Be very careful that shared URLs cannot be deleted (check upload dir, and staff access)', $c_pos);
     }
-    if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (in_array($function, ['query_update', 'query_delete']))) {
+    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (in_array($function, ['query_update', 'query_delete']))) {
         log_warning('Check log_it/cat-entry-handling/delete_lang', $c_pos);
     }
-    //if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && ($function == 'query_select')) log_warning('Check that non-singular select is wanted for this query', $c_pos);  This is REALLY pedantic ;) I'm sure MySQL is clever enough to see that only one row can match against a key
+    //if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && ($function == 'query_select')) log_warning('Check that non-singular select is wanted for this query', $c_pos);  This is REALLY pedantic ;) I'm sure MySQL is clever enough to see that only one row can match against a key
 
     if ($ret !== null) {
         return $ret['type'];

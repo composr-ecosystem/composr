@@ -601,7 +601,7 @@ function lex($text = null)
                     }
                     $tokens[] = ['string_literal', $special_token_value, $i];
                     $tokens[] = ['COMMAND_TERMINATE', $i];
-                    if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
+                    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Should\'t this be templated?', $i, true);
                     }
                     $special_token_value = '';
@@ -796,7 +796,7 @@ function lex($text = null)
                 if (($char == '"') && (!$escape_flag)) {
                     $lex_state = PLEXER_FREE;
                     $tokens[] = ['string_literal', $special_token_value, $i];
-                    if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
+                    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Should\'t this be templated?', $i, true);
                     }
                     $special_token_value = '';
@@ -850,7 +850,7 @@ function lex($text = null)
                 if (($char == "'") && (!$escape_flag)) {
                     $lex_state = PLEXER_FREE;
                     $tokens[] = ['string_literal', $special_token_value, $i];
-                    if ((isset($GLOBALS['CHECKS'])) && (isset($GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
+                    if ((isset($GLOBALS['CHECKS'], $GLOBALS['PEDANTIC'])) && (strpos($special_token_value, '<') !== false) && (strpos($special_token_value, '<') != strlen($special_token_value) - 1)) {
                         log_warning('Shouldn\'t this be templated?', $i, true);
                     }
                     $special_token_value = '';

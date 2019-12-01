@@ -315,7 +315,7 @@ function find_available_addons($installed_too = true, $gather_mtimes = true, $al
             $info['tar_path'] = $full;
 
             foreach ($addons_available_for_installation as $i => $a) { // Deduplicate, may be multiple versions in imports/addons
-                if ((strtolower($a['name']) == strtolower($info['name'])) && (isset($a['version'])) && (isset($info['version']))) {
+                if ((strtolower($a['name']) == strtolower($info['name'])) && (isset($a['version'], $info['version']))) {
                     if (version_compare($a['version'], $info['version']) > 0) {
                         continue 2;
                     } else {

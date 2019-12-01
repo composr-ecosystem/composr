@@ -162,7 +162,7 @@ function convert_composr_type_codes($type_has, $type_id, $type_wanted)
             $cma_ob = get_content_object($content_type);
             $cma_info = $cma_ob->info();
             $cma_info['content_type'] = $content_type;
-            if ((isset($cma_info[$type_has])) && (isset($cma_info[$type_wanted])) && (($cma_info[$type_has] == $type_id) || ($cma_info[$type_has] == preg_replace('#__.*$#', '', $type_id)))) {
+            if ((isset($cma_info[$type_has], $cma_info[$type_wanted])) && (($cma_info[$type_has] == $type_id) || ($cma_info[$type_has] == preg_replace('#__.*$#', '', $type_id)))) {
                 $found_type_id = $cma_info[$type_wanted];
                 break;
             }

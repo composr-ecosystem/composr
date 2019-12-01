@@ -529,7 +529,7 @@ function require_lang($codename, $lang = null, $type = null, $ignore_errors = fa
         }
     }
 
-    if ((isset($LANG_LOADED_LANG[$lang])) && (isset($LANG_LOADED_LANG[$lang][$codename]))) {
+    if (isset($LANG_LOADED_LANG[$lang], $LANG_LOADED_LANG[$lang][$codename])) {
         return;
     }
 

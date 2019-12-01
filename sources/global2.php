@@ -936,7 +936,7 @@ function get_charset()
     }
 
     global $LANGS_REQUESTED;
-    if ((function_exists('do_lang')) && (function_exists('user_lang')) && (isset($LANGS_REQUESTED['critical_error'])) && (isset($LANGS_REQUESTED['global'])) && (!in_safe_mode())) {
+    if ((function_exists('do_lang')) && (function_exists('user_lang')) && (isset($LANGS_REQUESTED['critical_error'], $LANGS_REQUESTED['global'])) && (!in_safe_mode())) {
         $attempt = do_lang('charset', null, null, null, null, false);
         if ($attempt !== null) {
             $charset_cache = trim($attempt);

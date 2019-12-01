@@ -1152,7 +1152,7 @@ function ecv_SET($lang, $escaped, $param)
     global $TEMPCODE_SETGET;
 
     if (isset($param[1])) {
-        if ((count($param) == 2) || (isset($param[1]) && isset($param[1]->codename)/*faster than is_object*/)) {
+        if ((count($param) == 2) || (isset($param[1], $param[1]->codename)/*faster than is_object*/)) {
             $TEMPCODE_SETGET[$param[0]] = $param[1];
         } else {
             $param_copy = $param;

@@ -34,7 +34,7 @@ function email_spam_check($mime_email)
     $_spam_test = cms_http_request('http://spamcheck.postmarkapp.com/filter', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'raw_post' => true, 'post_params' => [json_encode(['email' => $mime_email, 'options' => 'long'])], 'raw_content_type' => 'application/json']);
     if ($_spam_test->data != '') {
         $spam_test = @json_decode($_spam_test->data, true);
-        if (($spam_test !== null) && (isset($spam_test['success'])) && (isset($spam_test['report'])) && (isset($spam_test['score']))) {
+        if (isset($spam_test, $spam_test['success'], $spam_test['report'], $spam_test['score'])) {
             if ($spam_test['success']) {
                 $spam_report = $spam_test['report'];
                 $spam_score = $spam_test['score'];

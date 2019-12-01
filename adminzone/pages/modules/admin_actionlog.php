@@ -524,7 +524,7 @@ class Module_admin_actionlog
             $revision = $revision_engine->find_revision_for_log($id);
         }
         if ($revision !== null) {
-            if (isset($revision['r_resource_type']) && isset($revision['r_resource_id'])) {
+            if (isset($revision['r_resource_type'], $revision['r_resource_id'])) {
                 require_code('content');
                 list($content_title, , , , $content_url) = content_get_details($revision['r_resource_type'], $revision['r_resource_id']);
                 if (cms_empty_safe($content_title)) {

@@ -153,7 +153,7 @@ function wysiwyg_comcode_markup_style($tag, $attributes = null, $embed = null, $
         }
     }
 
-    if ((isset($TEXTUAL_TAGS_WYSIWYG[$tag])) && (isset($BLOCK_TAGS[$tag]))) {
+    if (isset($TEXTUAL_TAGS_WYSIWYG[$tag], $BLOCK_TAGS[$tag])) {
         if (!$html_errors) {
             return WYSIWYG_COMCODE__XML_BLOCK;
         }
