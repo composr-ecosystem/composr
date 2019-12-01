@@ -67,18 +67,19 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
     // Work out $sort...
 
     if ($sort_name === null) {
-        $sort = $sort_default;
+        $_sort = $sort_default;
     } else {
         if ($sort_default === null) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR'));
         }
 
-        $sort = get_param_string($sort_name, $sort_default);
+        $_sort = get_param_string($sort_name, $sort_default);
     }
 
     if ($sort_filter_func !== null) {
-        list($sort, $keyset_field, $keyset_field_stripped) = call_user_func($sort_filter_func, $sort);
+        list($sort, $keyset_field, $keyset_field_stripped) = call_user_func($sort_filter_func, $_sort);
     } else {
+        $sort = $_sort;
         $keyset_field = null;
         $keyset_field_stripped = null;
     }
@@ -98,7 +99,15 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
         if ($test !== null) {
             $compound = @json_decode($test);
             if (is_array($compound) && count($compound) == 4) {
-                list($max, $start, $sort, $keyset_param) = $compound;
+                list($max, $start, $_sort, $keyset_param) = $compound;
+
+                if ($sort_filter_func !== null) {
+                    list($sort, $keyset_field, $keyset_field_stripped) = call_user_func($sort_filter_func, $_sort);
+                } else {
+                    $sort = $_sort;
+                    $keyset_field = null;
+                    $keyset_field_stripped = null;
+                }
             }
         }
     }
@@ -125,7 +134,7 @@ function get_keyset_pagination_settings($max_name, $max_default, $start_name, $c
 
     // ---
 
-    $compound = json_encode(array($max, $start, $sort, $keyset_param));
+    $compound = json_encode(array($max, $start, $_sort, $keyset_param));
 
     return array($max, $altered_start, $sort, $sql_sup, $sql_sup_order_by, $start, $compound, $keyset_field_stripped);
 }
