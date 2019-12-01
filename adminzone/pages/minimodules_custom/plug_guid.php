@@ -115,7 +115,7 @@ function callback($match)
     if ($first_param_name != '_GUID') {
         echo 'Insert needed for ' . escape_html($template_name) . '<br />';
         $GUID_LANDSCAPE[$template_name][] = [$FILENAME, $line, $new_guid];
-        return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . $whitespace . "'" . $first_param_name . "' => " . (($first_param_value === null] ? $first_param_value : ' ');
+        return "do_template('" . $template_name . "', [" . $whitespace . "'_GUID' => '" . $new_guid . "'," . $whitespace . "'" . $first_param_name . "' => " . (($first_param_value === null) ? $first_param_value : ' ');
     }
 
     // Handle existing GUIDs

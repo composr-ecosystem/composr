@@ -194,7 +194,7 @@ function create_addon($file, $files, $addon_name, $incompatibilities, $dependenc
             $data = '<' . '?php' . "\n";
             foreach ($images as $image) {
                 if (($image['url'] != '') && ($image['url'] != find_theme_image($image['id'], true, true, 'default'))) {
-                    $data .= '$GLOBALS[\'SITE_DB\']->query_insert(\'theme_images\', [\'id\' => \'' . db_escape_string($image['id']] . '\', \'theme\' => \'' . db_escape_string($image['theme']) . '\', \'url\' => \'' . db_escape_string($image['url']) . '\', \'lang\' => \'' . db_escape_string($image['lang']) . '\'), false, true);' . "\n";
+                    $data .= '$GLOBALS[\'SITE_DB\']->query_insert(\'theme_images\', [\'id\' => \'' . db_escape_string($image['id']) . '\', \'theme\' => \'' . db_escape_string($image['theme']) . '\', \'url\' => \'' . db_escape_string($image['url']) . '\', \'lang\' => \'' . db_escape_string($image['lang']) . '\'], false, true);' . "\n";
                 }
             }
             tar_add_file($tar, 'addon_install_code.php', $data, 0444, time());

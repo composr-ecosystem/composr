@@ -510,9 +510,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                             $name = 'TERNARY';
                         }
                         if (function_exists('ecv_' . $name)) {
-                            $new_line = 'ecv_' . $name . '($cl,[' . implode(',', array_map('strval', $escaped]) . '),[' . $_opener_params . '])';
+                            $new_line = 'ecv_' . $name . '($cl,[' . implode(',', array_map('strval', $escaped)) . '],[' . $_opener_params . '])';
                         } else {
-                            $new_line = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_SYMBOL) . ',' . $first_param . ',[' . $_opener_params . '])';
+                            $new_line = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_SYMBOL) . ',' . $first_param . ',[' . $_opener_params . '])';
                         }
                         if ((may_optimise_out_symbol(trim($first_param, '"'))) && (tc_is_all_static($_opener_params))) { // Can optimise out?
                             $tpl_funcs = [];
@@ -533,7 +533,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 $new_line = '"' . php_addslashes($eval) . '"';
                                 $_GET = $tmp;
                                 $current_level_data[] = $new_line;
-                                $current_level_data[] = 'ecv_KEEP($cl,[' . implode(',', array_map('strval', $escaped]) . '),["' . ((strpos($new_line, '?'] === false) ? '1' : '0') . '"))';
+                                $current_level_data[] = 'ecv_KEEP($cl,[' . implode(',', array_map('strval', $escaped)) . '],["' . ((strpos($new_line, '?') === false) ? '1' : '0') . '"])';
                                 $GLOBALS['HAS_KEEP_IN_URL_CACHE'] = null; // The temporary $_GET change can cause this to go wrong
                                 break;
                             }
@@ -542,7 +542,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         break;
 
                     case PARSE_LANGUAGE_REFERENCE:
-                        $new_line = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_LANGUAGE_REFERENCE) . ',' . $first_param . ',[' . $_opener_params . '])';
+                        $new_line = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_LANGUAGE_REFERENCE) . ',' . $first_param . ',[' . $_opener_params . '])';
                         if (tc_is_all_static($_opener_params)) { // Optimise out for simple case?
                             $tpl_funcs = [];
                             $looked_up = tempcode_compiler_eval('return ' . $new_line . ';', $tpl_funcs, [], $cl);
@@ -721,7 +721,7 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                                 $reset_code = '';
                             }
                             $funcdef = /*if (!isset(\$tpl_funcs['$myfunc']))\n\t*/"\$tpl_funcs['$myfunc']=\"{$reset_code}echo " . php_addslashes($_past_level_data) . ";\";\n";
-                            $past_level_data = ['new Tempcode([[\'' . $myfunc . '\'=>"' . php_addslashes($funcdef] . '"],[[["' . $myfunc . '",[],' . strval(TC_KNOWN) . ',\'\',\'\']]]])'];
+                            $past_level_data = ['new Tempcode([[\'' . $myfunc . '\'=>"' . php_addslashes($funcdef) . '"],[[["' . $myfunc . '",[],' . strval(TC_KNOWN) . ',\'\',\'\']]]])'];
                         }
 
                         // Generate standard PHP code for directive
@@ -925,9 +925,9 @@ function compile_template($data, $template_name, $theme, $lang, $tolerate_errors
                         }
                         $directive_name = $eval;
                         if (isset($GLOBALS['DIRECTIVES_NEEDING_VARS'][$directive_name])) {
-                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . ',\'vars\'=>$parameters])';
+                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . ',\'vars\'=>$parameters])';
                         } else {
-                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped]) . '),' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . '])';
+                            $current_level_data[] = 'ecv($cl,[' . implode(',', array_map('strval', $escaped)) . '],' . strval(TC_DIRECTIVE) . ',' . $first_param . ',[' . $_opener_params . '])';
                         }
                     }
                 }

@@ -516,7 +516,7 @@ function _read_php_function_line($_line)
                     $arg_default = '';
                     $parse = 'in_args';
                     $ref = false;
-                } elseif (($char == ']') && ($in_string === null) && (!$escaping) && (preg_match('#^\s*\[[^\]]*$#', $arg_default) == 0)) {
+                } elseif (($char == ')') && ($in_string === null) && (!$escaping) && (preg_match('#^\s*\[[^\]]*$#', $arg_default) == 0)) {
                     $default_raw = $arg_default;
                     if ($arg_default === 'true') {
                         $default = 'boolean-true'; // hack, to stop booleans coming out of arrays as integers

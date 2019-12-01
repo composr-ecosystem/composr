@@ -1680,6 +1680,13 @@ function _parse_literal()
             $literal = ['CONSTANT', $_literal[1], $GLOBALS['I']];
             break;
 
+        case 'EXTRACT_OPEN':
+            pparse__parser_expect('EXTRACT_OPEN');
+            $details = _parse_create_array('EXTRACT_CLOSE');
+            pparse__parser_expect('EXTRACT_CLOSE');
+            $literal = ['CREATE_ARRAY', $details, $GLOBALS['I']];
+            break;
+
         case 'ARRAY':
             pparse__parser_next(); // Skip over the ARRAY
             pparse__parser_expect('PARENTHESIS_OPEN');

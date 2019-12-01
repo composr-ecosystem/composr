@@ -238,7 +238,7 @@ function build_closure_tempcode($type, $name, $parameters, $escaping = [])
     if ($escaping === null) {
         $_escaping = '[]';
     } else {
-        $_escaping = '[' . @implode(',', $escaping] . ')';
+        $_escaping = '[' . @implode(',', $escaping) . ']';
     }
 
     $_type = strval($type);

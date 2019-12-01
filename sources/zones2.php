@@ -342,7 +342,7 @@ function save_zone_base_url($zone, $base_url)
         $path = trim($path, '/ ');
 
         if (($domain != $main_site_domain) || (($path != '') && ($path != $main_site_path))) { // If not fully benign
-            $config_file .= "\n\$SITE_INFO['ZONE_MAPPING_" . addslashes($zone) . "'] = ['" . addslashes($domain] . "', '" . addslashes(trim($path, '/')) . "');\n";
+            $config_file .= "\n\$SITE_INFO['ZONE_MAPPING_" . addslashes($zone) . "'] = ['" . addslashes($domain) . "', '" . addslashes(trim($path, '/')) . "'];\n";
         }
     }
 

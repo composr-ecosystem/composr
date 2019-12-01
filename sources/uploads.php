@@ -382,9 +382,9 @@ function get_url($specify_name, $attach_name, $upload_folder, $obfuscate = 0, $e
     $thumb = null;
 
     $filearrays = [];
-    get_upload_file[$attach_name, $filearrays];
+    get_upload_file_array($attach_name, $filearrays);
     if ($thumb_specify_name != '') {
-        get_upload_file[$thumb_specify_name, $filearrays];
+        get_upload_file_array($thumb_specify_name, $filearrays);
     }
 
     $plupload_uploaded = false;
@@ -868,7 +868,7 @@ function _check_enforcement_of_type($member_id, $file, $enforce_type, $accept_er
 function _get_upload_url($member_id, $attach_name, $upload_folder, $upload_folder_full, $enforce_type = 15, $obfuscate = 0, $accept_errors = false, $filename = null)
 {
     $filearrays = [];
-    get_upload_file[$attach_name, $filearrays];
+    get_upload_file_array($attach_name, $filearrays);
 
     $file = shorten_urlencoded_filename($filearrays[$attach_name]['name']);
 
@@ -971,7 +971,7 @@ function handle_upload_post_processing($enforce_type, $path, $upload_folder, $fi
  * @param  ID_TEXT $name The name of the HTTP file parameter storing the upload
  * @param  array $filearrays Where we are storing our file arrays
  */
-function get_upload_file[$name, &$filearrays]
+function get_upload_file_array($name, &$filearrays)
 {
     if (!isset($_FILES[$name])) {
         $name = preg_replace('#\d+$#', '', $name);

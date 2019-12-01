@@ -113,7 +113,7 @@ function get_table_backup($log_file, $db_meta, $db_meta_indices, &$install_php_f
     // For each index, build up a Composr index creation command
     $indices = $GLOBALS['SITE_DB']->query_select($db_meta_indices, ['*']);
     foreach ($indices as $index) {
-        if (fwrite($install_php_file, preg_replace('#^#m', '//', '    $GLOBALS[\'SITE_DB\']->create_index(\'' . $index['i_table'] . '\', \'' . $index['i_name'] . '\', [\'' . str_replace(',', '\', \'', $index['i_fields']] . '\'));' . "\n")) == 0) {
+        if (fwrite($install_php_file, preg_replace('#^#m', '//', '    $GLOBALS[\'SITE_DB\']->create_index(\'' . $index['i_table'] . '\', \'' . $index['i_name'] . '\', [\'' . str_replace(',', '\', \'', $index['i_fields']) . '\']);' . "\n")) == 0) {
             warn_exit(do_lang_tempcode('COULD_NOT_SAVE_FILE', escape_html('?')), false, true);
         }
     }

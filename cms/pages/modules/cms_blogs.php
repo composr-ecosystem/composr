@@ -413,7 +413,7 @@ class Module_cms_blogs extends Standard_crud_module
         $scheduled = null;
 
         if (addon_installed('calendar')) {
-            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id] . '),\'\',1);';
+            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id) . '],\'\',1);';
             $past_event = $GLOBALS['SITE_DB']->query_select('calendar_events', ['e_start_day', 'e_start_month', 'e_start_year', 'e_start_hour', 'e_start_minute'], [$GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code], '', 1);
             $scheduled = array_key_exists(0, $past_event) ? [$past_event[0]['e_start_minute'], $past_event[0]['e_start_hour'], $past_event[0]['e_start_month'], $past_event[0]['e_start_day'], $past_event[0]['e_start_year']] : null;
             if (($scheduled !== null) && (mktime($scheduled[1], $scheduled[0], 0, $scheduled[2], $scheduled[3], $scheduled[4]) < time())) {
@@ -499,7 +499,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         if ($schedule !== null) {
             require_code('calendar');
-            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id] . '),\'\',1);';
+            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id) . '],\'\',1);';
             $start_year = intval(date('Y', $schedule));
             $start_month = intval(date('m', $schedule));
             $start_day = intval(date('d', $schedule));
@@ -556,7 +556,7 @@ class Module_cms_blogs extends Standard_crud_module
 
         if ((addon_installed('calendar')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
             require_code('calendar2');
-            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id] . '),\'\',1);';
+            $schedule_code = ':$GLOBALS[\'SITE_DB\']->query_update(\'news\',[\'date_and_time\'=>$GLOBALS[\'_EVENT_TIMESTAMP\'],\'validated\'=>1],[\'id\'=>' . strval($id) . '],\'\',1);';
             $past_event = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_events', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('e_content') => $schedule_code]);
             require_code('calendar');
             if ($past_event !== null) {
