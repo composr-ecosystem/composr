@@ -23,6 +23,9 @@ class blocks_test_set extends cms_test_case
         parent::setUp();
 
         require_code('zones2');
+
+        disable_php_memory_limit();
+        cms_extend_time_limit(TIME_LIMIT_EXTEND_slow);
     }
 
     public function testBlockCacheSignatureParsing()
@@ -30,14 +33,21 @@ class blocks_test_set extends cms_test_case
         $blocks = find_all_blocks();
         $map = [];
         foreach (array_keys($blocks) as $codename) {
+            if (($this->only !== null) && ($this->only != $codename)) {
+                continue;
+            }
+
             list($object) = do_block_hunt_file($codename, $map);
             if ((is_object($object)) && (method_exists($object, 'caching_environment'))) {
+                if ($this->debug) {
+                    var_dump($codename);
+                }
+
                 $info = $object->caching_environment($map);
                 if ((isset($info['cache_on'])) && (is_string($info['cache_on']))) {
                     $cache_on = $info['cache_on'];
 
                     if ($this->debug) {
-                        var_dump($codename);
                         var_dump($info['cache_on']);
                     }
 
@@ -52,6 +62,10 @@ class blocks_test_set extends cms_test_case
     {
         $blocks = find_all_blocks();
         foreach (array_keys($blocks) as $block) {
+            if (($this->only !== null) && ($this->only != $block)) {
+                continue;
+            }
+
             $path = _get_block_path($block);
             $c = cms_file_get_contents_safe($path, FILE_READ_LOCK | FILE_READ_BOM);
             $this->assertTrue(strpos($c, 'warn_exit(') === false, 'warn_exit in ' . $path);
@@ -69,6 +83,10 @@ class blocks_test_set extends cms_test_case
 
         $blocks = find_all_blocks();
         foreach ($blocks as $block => $type) {
+            if (($this->only !== null) && ($this->only != $block)) {
+                continue;
+            }
+
             $parameters = get_block_parameters($block, true);
             $this->assertTrue(count(array_unique($parameters)) == count($parameters), 'Duplicated parameters in ' . $block);
 
